@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ShieldCheck, Factory, Search, ArrowRight } from "lucide-react";
+import { ShieldCheck, Box, Search, ArrowRight, Factory } from "lucide-react";
 
 export default function Home() {
   return (
@@ -34,7 +34,7 @@ export default function Home() {
       {/* Features Section */}
       <section className="py-20 bg-background">
         <div className="container px-4">
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             <Card className="bg-card hover:shadow-lg transition-shadow">
               <CardHeader>
                 <Factory className="h-12 w-12 text-primary mb-4" />
@@ -55,8 +55,26 @@ export default function Home() {
 
             <Card className="bg-card hover:shadow-lg transition-shadow">
               <CardHeader>
+                <Box className="h-12 w-12 text-primary mb-4" />
+                <CardTitle>Browse Products</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-muted-foreground">
+                  Explore our collection of certified sustainable products with digital passports.
+                </p>
+                <Link href="/products">
+                  <Button className="w-full group">
+                    View Products
+                    <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-card hover:shadow-lg transition-shadow">
+              <CardHeader>
                 <Search className="h-12 w-12 text-primary mb-4" />
-                <CardTitle>For Consumers</CardTitle>
+                <CardTitle>Verify Products</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-muted-foreground">
@@ -64,7 +82,7 @@ export default function Home() {
                 </p>
                 <Link href="/verify">
                   <Button variant="outline" className="w-full group">
-                    Verify Product
+                    Verify Now
                     <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </Link>
@@ -74,13 +92,13 @@ export default function Home() {
             <Card className="bg-card hover:shadow-lg transition-shadow">
               <CardHeader>
                 <ShieldCheck className="h-12 w-12 text-primary mb-4" />
-                <CardTitle>Blockchain Security</CardTitle>
+                <CardTitle>Digital Passports</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-muted-foreground">
-                  Immutable and transparent product certification powered by blockchain technology.
+                  Access comprehensive product information and sustainability metrics.
                 </p>
-                <Link href="/about">
+                <Link href="/products">
                   <Button variant="secondary" className="w-full group">
                     Learn More
                     <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
