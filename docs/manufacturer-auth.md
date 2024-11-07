@@ -13,6 +13,7 @@
 Zorunlu Alanlar:
 - Şirket ünvanı (*)
 - Vergi kimlik numarası (*)
+  - 10 haneli olmalı
 
 Opsiyonel Alanlar:
 - Ticaret sicil numarası
@@ -22,8 +23,17 @@ Opsiyonel Alanlar:
 Zorunlu Alanlar:
 - Ad soyad (*)
 - T.C. kimlik numarası (*)
+  - 11 haneli olmalı
+  - İlk hanesi 0 olamaz
+  - Son hanesi çift sayı olmalı
+  - İlk 10 hanenin toplamının birler basamağı, 11. haneye eşit olmalı
+  - 1, 3, 5, 7, 9. hanelerin toplamının 7 katından, 2, 4, 6, 8. hanelerin toplamı çıkarıldığında elde edilen sonucun birler basamağı, 10. haneye eşit olmalı
 - Kurumsal e-posta adresi (*)
+  - Geçerli bir e-posta formatında olmalı (örneğin, example@domain.com)
 - Cep telefonu numarası (*)
+  - Ülke kodu seçimi yapılmalı (örneğin, Türkiye için +90)
+  - Başında 0 olmadan girilmeli
+  - 10 haneli olmalı (örneğin, 5XX XXX XXXX)
 
 #### 1.2.3 Adres Bilgileri
 Zorunlu Alanlar:
