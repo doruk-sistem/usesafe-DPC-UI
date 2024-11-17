@@ -18,7 +18,7 @@ export default function Home() {
               Ensuring product authenticity and sustainability through blockchain-powered certification
             </p>
             <div className="flex gap-4">
-              <Link href="/manufacturer/register">
+              <Link href="/auth/register">
                 <Button size="lg">Get Started</Button>
               </Link>
               <Link href="/verify">
@@ -44,7 +44,7 @@ export default function Home() {
                 <p className="text-muted-foreground">
                   Register your company and certify your products with our digital certification system.
                 </p>
-                <Link href="/manufacturer/register">
+                <Link href="/auth/register">
                   <Button className="w-full group">
                     Register Now
                     <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />

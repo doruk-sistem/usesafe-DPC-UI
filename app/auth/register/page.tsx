@@ -1,8 +1,9 @@
 "use client";
 
+import { Factory } from "lucide-react";
+
 import { RegisterForm } from "@/components/auth/register-form";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Factory } from "lucide-react";
 
 export default function RegisterPage() {
   return (

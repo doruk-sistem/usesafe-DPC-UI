@@ -1,20 +1,23 @@
-"use client";
-
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+import type { z } from "zod";
+
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { useToast } from "@/components/ui/use-toast";
-import { CompanyInfoStep } from "./steps/company-info";
-import { OwnerInfoStep } from "./steps/owner-info";
-import { AddressStep } from "./steps/address";
-import { DocumentsStep } from "./steps/documents";
-import { RegistrationSuccess } from "./steps/registration-success";
-import { registerSchema } from "@/lib/schemas/auth";
 import { Progress } from "@/components/ui/progress";
-import type { z } from "zod";
+import { useRegistrationSteps } from "@/lib/hooks/use-registration-steps";
+import { useToast } from "@/lib/hooks/use-toast";
+import { registerSchema } from "@/lib/schemas/auth";
+import { ManufacturerService } from "@/lib/services/manufacturer";
+import { prepareRegistrationData } from "@/lib/utils/registration-mapper";
+
+import { AddressStep } from "./steps/address";
+import { CompanyInfoStep } from "./steps/company-info";
+import { DocumentsStep } from "./steps/documents";
+import { OwnerInfoStep } from "./steps/owner-info";
+import { RegistrationSuccess } from "./steps/registration-success";
 
 type FormData = z.infer<typeof registerSchema>;
 
@@ -26,7 +29,6 @@ const steps = [
 ];
 
 export function RegisterForm() {
-  const [step, setStep] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const { toast } = useToast();
@@ -58,29 +60,51 @@ export function RegisterForm() {
     mode: "onChange", // Enable real-time validation
   });
 
-  const onSubmit = async (data: FormData) => {
+  const { 
+    currentStep, 
+    totalSteps, 
+    nextStep, 
+    prevStep, 
+    isLastStep, 
+    progress 
+  } = useRegistrationSteps(form);
+
+  const onNextStep = async () => {
     try {
-      setIsSubmitting(true);
-      // TODO: Implement API call
-      console.log(data);
+      // Always try to progress to the next step
+      const stepValidated = await nextStep();
       
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // If this is the last step and validation passes, submit the full registration
+      if (isLastStep && stepValidated) {
+        setIsSubmitting(true);
+        
+        // Prepare registration data
+        const registrationData = prepareRegistrationData(form.getValues());
 
-      setIsSubmitted(true);
-      toast({
-        title: "Registration Submitted Successfully",
-        description: "Please check your email to verify your account.",
-      });
-
-      // Simulate email verification and redirect
-      setTimeout(() => {
-        router.push("/auth/pending-approval");
-      }, 5000);
+        console.log(registrationData);
+        
+        // Submit registration
+        const response = await ManufacturerService.register(registrationData);
+        
+        if (response.success) {
+          setIsSubmitted(true);
+          toast({
+            title: "Registration Submitted Successfully",
+            description: "Please check your email to verify your account.",
+          });
+  
+          // Redirect after showing success message
+          setTimeout(() => {
+            router.push("/auth/pending-approval");
+          }, 5000);
+        } else {
+          throw new Error(response.message || 'Registration failed');
+        }
+      }
     } catch (error) {
       toast({
         title: "Registration Failed",
-        description: "There was an error submitting your registration. Please try again.",
+        description: error instanceof Error ? error.message : "There was an error submitting your registration. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -88,48 +112,33 @@ export function RegisterForm() {
     }
   };
 
-  const nextStep = async () => {
-    const fields = Object.keys(form.getValues());
-    const currentStepFields = fields.filter(field => {
-      if (step === 0) return ["companyName", "taxId", "tradeRegisterNumber", "mersisNumber"].includes(field);
-      if (step === 1) return ["ownerName", "nationalId", "email", "countryCode", "phone", "password", "confirmPassword"].includes(field);
-      if (step === 2) return ["address", "city", "district", "postalCode"].includes(field);
-      return ["documents"].includes(field);
-    });
-
-    const isValid = await form.trigger(currentStepFields);
-    if (isValid) {
-      setStep((prev) => Math.min(prev + 1, steps.length - 1));
-    }
-  };
-
-  const prevStep = () => {
-    setStep((prev) => Math.max(prev - 1, 0));
-  };
-
   if (isSubmitted) {
     return <RegistrationSuccess />;
   }
 
-  const progress = ((step + 1) / steps.length) * 100;
-  const CurrentStepComponent = steps[step].component;
+  const CurrentStepComponent = steps[currentStep].component;
 
   return (
     <div className="space-y-8">
       <div className="space-y-2">
         <Progress value={progress} className="h-2" />
         <div className="flex justify-between text-sm text-muted-foreground">
-          <span>Step {step + 1} of {steps.length}</span>
-          <span>{steps[step].title}</span>
+          <span>Step {currentStep + 1} of {totalSteps}</span>
+          <span>{steps[currentStep].title}</span>
         </div>
       </div>
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form className="space-y-8"  // Add these for debugging
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              console.log('Enter key pressed');
+            }
+          }}>
           <CurrentStepComponent form={form} />
 
           <div className="flex justify-between pt-4">
-            {step > 0 && (
+            {currentStep > 0 && (
               <Button 
                 type="button" 
                 variant="outline" 
@@ -139,24 +148,14 @@ export function RegisterForm() {
                 Previous
               </Button>
             )}
-            {step < steps.length - 1 ? (
-              <Button 
-                type="button" 
-                onClick={nextStep} 
-                className="ml-auto"
-                disabled={isSubmitting}
-              >
-                Next
-              </Button>
-            ) : (
-              <Button 
-                type="submit" 
-                className="ml-auto"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? "Submitting..." : "Submit Registration"}
-              </Button>
-            )}
+            <Button 
+              type="button"
+              className="ml-auto"
+              disabled={isSubmitting}
+              onClick={() => onNextStep()}
+            >
+              {isSubmitting ? "Submitting..." : isLastStep ? "Submit Registration" : "Next"}
+            </Button>
           </div>
         </form>
       </Form>

@@ -1,4 +1,4 @@
-"use client";
+import type { UseFormReturn } from "react-hook-form";
 
 import {
   FormControl,
@@ -8,199 +8,96 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import type { UseFormReturn } from "react-hook-form";
 
 interface DocumentsStepProps {
   form: UseFormReturn<any>;
 }
+
+interface DocumentFieldProps {
+  name: string;
+  label: string;
+  multiple?: boolean;
+  required?: boolean;
+}
+
+const requiredDocuments: DocumentFieldProps[] = [
+  { name: 'signatureCircular', label: 'Signature Circular', required: true },
+  { name: 'tradeRegistry', label: 'Trade Registry Gazette', required: true },
+  { name: 'taxPlate', label: 'Tax Plate', required: true },
+  { name: 'activityCertificate', label: 'Activity Certificate', required: true },
+];
+
+const optionalDocuments: DocumentFieldProps[] = [
+  { name: 'isoCertificates', label: 'ISO Certificates', multiple: true },
+  { name: 'qualityCertificates', label: 'Quality Certificates', multiple: true },
+  { name: 'exportDocuments', label: 'Export Documents', multiple: true },
+  { name: 'productionPermits', label: 'Production Permits', multiple: true },
+];
+
+const DocumentField = ({ 
+  form, 
+  name, 
+  label, 
+  multiple = false, 
+  required = false 
+}: DocumentFieldProps & { form: UseFormReturn<any> }) => (
+  <FormField
+    control={form.control}
+    name={name}
+    render={({ field: { onChange, value, ...field } }) => (
+      <FormItem>
+        <FormLabel>{label} {required && '*'}</FormLabel>
+        <FormControl>
+          <Input
+            type="file"
+            accept=".pdf,.jpg,.jpeg,.png"
+            multiple={multiple}
+            onChange={(e) => {
+              const files = multiple 
+                ? Array.from(e.target.files || [])
+                : e.target.files?.[0];
+              
+              if (multiple) {
+                onChange(files);
+              } else if (files) {
+                const fileUrl = URL.createObjectURL(files);
+                onChange(fileUrl);
+                
+                return () => URL.revokeObjectURL(fileUrl);
+              }
+            }}
+            {...field}
+          />
+        </FormControl>
+        <FormMessage />
+      </FormItem>
+    )}
+  />
+);
 
 export function DocumentsStep({ form }: DocumentsStepProps) {
   return (
     <div className="space-y-6">
       <div className="space-y-4">
         <h3 className="font-medium">Required Documents</h3>
-        <FormField
-          control={form.control}
-          name="signatureCircular"
-          render={({ field: { onChange, value, ...field } }) => (
-            <FormItem>
-              <FormLabel>Signature Circular *</FormLabel>
-              <FormControl>
-                <Input
-                  type="file"
-                  accept=".pdf,.jpg,.jpeg,.png"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    onChange(file);
-                  }}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="tradeRegistry"
-          render={({ field: { onChange, value, ...field } }) => (
-            <FormItem>
-              <FormLabel>Trade Registry Gazette *</FormLabel>
-              <FormControl>
-                <Input
-                  type="file"
-                  accept=".pdf,.jpg,.jpeg,.png"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    onChange(file);
-                  }}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="taxPlate"
-          render={({ field: { onChange, value, ...field } }) => (
-            <FormItem>
-              <FormLabel>Tax Plate *</FormLabel>
-              <FormControl>
-                <Input
-                  type="file"
-                  accept=".pdf,.jpg,.jpeg,.png"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    onChange(file);
-                  }}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="activityCertificate"
-          render={({ field: { onChange, value, ...field } }) => (
-            <FormItem>
-              <FormLabel>Activity Certificate *</FormLabel>
-              <FormControl>
-                <Input
-                  type="file"
-                  accept=".pdf,.jpg,.jpeg,.png"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    onChange(file);
-                  }}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {requiredDocuments.map(doc => (
+          <DocumentField 
+            key={doc.name} 
+            form={form} 
+            {...doc} 
+          />
+        ))}
       </div>
 
       <div className="space-y-4">
         <h3 className="font-medium">Optional Documents</h3>
-        <FormField
-          control={form.control}
-          name="isoCertificates"
-          render={({ field: { onChange, value, ...field } }) => (
-            <FormItem>
-              <FormLabel>ISO Certificates</FormLabel>
-              <FormControl>
-                <Input
-                  type="file"
-                  accept=".pdf,.jpg,.jpeg,.png"
-                  multiple
-                  onChange={(e) => {
-                    const files = Array.from(e.target.files || []);
-                    onChange(files);
-                  }}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="qualityCertificates"
-          render={({ field: { onChange, value, ...field } }) => (
-            <FormItem>
-              <FormLabel>Quality Certificates</FormLabel>
-              <FormControl>
-                <Input
-                  type="file"
-                  accept=".pdf,.jpg,.jpeg,.png"
-                  multiple
-                  onChange={(e) => {
-                    const files = Array.from(e.target.files || []);
-                    onChange(files);
-                  }}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="exportDocuments"
-          render={({ field: { onChange, value, ...field } }) => (
-            <FormItem>
-              <FormLabel>Export Documents</FormLabel>
-              <FormControl>
-                <Input
-                  type="file"
-                  accept=".pdf,.jpg,.jpeg,.png"
-                  multiple
-                  onChange={(e) => {
-                    const files = Array.from(e.target.files || []);
-                    onChange(files);
-                  }}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="productionPermits"
-          render={({ field: { onChange, value, ...field } }) => (
-            <FormItem>
-              <FormLabel>Production Permits</FormLabel>
-              <FormControl>
-                <Input
-                  type="file"
-                  accept=".pdf,.jpg,.jpeg,.png"
-                  multiple
-                  onChange={(e) => {
-                    const files = Array.from(e.target.files || []);
-                    onChange(files);
-                  }}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {optionalDocuments.map(doc => (
+          <DocumentField 
+            key={doc.name} 
+            form={form} 
+            {...doc} 
+          />
+        ))}
       </div>
     </div>
   );
