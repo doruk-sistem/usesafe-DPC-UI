@@ -1,8 +1,15 @@
 "use client";
 
-import { Product } from "@/lib/data/products";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  ArrowLeft,
+  Download,
+} from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import {
   Table,
@@ -12,13 +19,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  ArrowLeft,
-  Download,
-} from "lucide-react";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import Image from "next/image";
+import { Product } from "@/lib/data/products";
 
 interface ProductDetailsProps {
   product: Product;

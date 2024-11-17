@@ -1,8 +1,18 @@
 "use client";
 
-import { DPP } from "@/lib/data/sample-dpps";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Package2,
+  Factory,
+  Recycle,
+  Award,
+  ArrowLeft,
+  TimerIcon,
+} from "lucide-react";
+import Link from "next/link";
+
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import {
   Table,
@@ -12,16 +22,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Package2,
-  Factory,
-  Recycle,
-  Award,
-  Timeline,
-  ArrowLeft,
-} from "lucide-react";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { DPP } from "@/lib/data/sample-dpps";
 
 interface DPPDetailsProps {
   dpp: DPP;
@@ -167,7 +168,7 @@ export function DPPDetails({ dpp }: DPPDetailsProps) {
       <Card>
         <CardHeader>
           <div className="flex items-center gap-2">
-            <Timeline className="h-6 w-6 text-primary" />
+            <TimerIcon className="h-6 w-6 text-primary" />
             <CardTitle>Product Lifecycle</CardTitle>
           </div>
         </CardHeader>

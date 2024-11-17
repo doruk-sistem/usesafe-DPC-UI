@@ -12,7 +12,7 @@ export default function RegisterPage() {
         <Factory className="h-12 w-12 text-primary mb-4" />
         <h1 className="text-3xl font-bold mb-2">Manufacturer Registration</h1>
         <p className="text-muted-foreground max-w-2xl">
-          Join UseSafe's digital certification platform to verify and showcase your products' authenticity and sustainability.
+          Join UseSafe&apos;s digital certification platform to verify and showcase your products&apos; authenticity and sustainability.
         </p>
       </div>
 

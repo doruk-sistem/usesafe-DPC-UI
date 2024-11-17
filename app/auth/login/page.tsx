@@ -1,8 +1,9 @@
 "use client";
 
+import { ShieldCheck } from "lucide-react";
+
 import { LoginForm } from "@/components/auth/login-form";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { ShieldCheck } from "lucide-react";
 
 export default function LoginPage() {
   return (
