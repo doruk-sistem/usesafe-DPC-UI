@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
-import { sampleDPPs } from "@/lib/data/sample-dpps";
+
 import { DPPDetails } from "@/components/dpp/dpp-details";
+import { sampleDPPs } from "@/lib/data/sample-dpps";
 
 export function generateStaticParams() {
   return sampleDPPs.map((dpp) => ({

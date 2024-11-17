@@ -1,5 +1,6 @@
-import { ProductList } from "@/components/products/product-list";
 import { Box } from "lucide-react";
+
+import { ProductList } from "@/components/products/product-list";
 
 export default function ProductsPage() {
   return (

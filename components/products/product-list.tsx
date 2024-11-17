@@ -1,10 +1,11 @@
 "use client";
 
-import Link from "next/link";
-import { products } from "@/lib/data/products";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
+import Link from "next/link";
+
+import { Badge } from "@/components/ui/badge";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { products } from "@/lib/data/products";
 
 export function ProductList() {
   return (
