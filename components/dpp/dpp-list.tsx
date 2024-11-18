@@ -1,10 +1,9 @@
-"use client";
-
-import Link from "next/link";
-import { sampleDPPs } from "@/lib/data/sample-dpps";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Package2 } from "lucide-react";
+import Link from "next/link";
+
+import { Badge } from "@/components/ui/badge";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { sampleDPPs } from "@/lib/data/sample-dpps";
 
 export function DPPList() {
   return (
@@ -45,3 +44,4 @@ export function DPPList() {
       ))}
     </div>
   );
+}

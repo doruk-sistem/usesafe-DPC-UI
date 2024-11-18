@@ -52,14 +52,15 @@ const DocumentField = ({
             type="file"
             accept=".pdf,.jpg,.jpeg,.png"
             multiple={multiple}
-            onChange={(e) => {
-              const files = multiple 
-                ? Array.from(e.target.files || [])
-                : e.target.files?.[0];
-              
-              if (multiple) {
-                onChange(files);
-              } else if (files) {
+            onChange={async (files) => {
+              if (Array.isArray(files)) {
+                if (files.length > 0) {
+                  const fileUrl = URL.createObjectURL(files[0]);
+                  onChange(fileUrl);
+                  
+                  return () => URL.revokeObjectURL(fileUrl);
+                }
+              } else if (files instanceof File) {
                 const fileUrl = URL.createObjectURL(files);
                 onChange(fileUrl);
                 

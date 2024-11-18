@@ -1,7 +1,8 @@
-"use client";
-
 import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
 import { useForm } from "react-hook-form";
+import type { z } from "zod";
+
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -14,8 +15,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { loginSchema } from "@/lib/schemas/auth";
-import Link from "next/link";
-import type { z } from "zod";
 
 type FormData = z.infer<typeof loginSchema>;
 

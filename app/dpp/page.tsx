@@ -1,5 +1,6 @@
-import { DPPList } from "@/components/dpp/dpp-list";
 import { Search } from "lucide-react";
+
+import { DPPList } from "@/components/dpp/dpp-list";
 
 export default function DPPPage() {
   return (
