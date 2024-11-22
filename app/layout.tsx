@@ -20,6 +20,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        {/* Add permissions policy for camera access */}
+        <meta httpEquiv="Permissions-Policy" content="camera=*" />
+      </head>
       <body className={inter.className}>
         <ThemeProvider
           attribute="class"

@@ -7,6 +7,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 
+import { ProductQR } from "@/components/products/product-qr";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -194,6 +195,11 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               <p className="text-muted-foreground">{product.carbonFootprint}</p>
             </div>
           </CardContent>
+        </Card>
+
+        {/* QR Code */}
+        <Card className="md:col-span-2">
+          <ProductQR productId={product.id} productName={product.name} />
         </Card>
       </div>
     </div>

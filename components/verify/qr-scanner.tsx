@@ -15,9 +15,10 @@ export function QRScanner({ onScan }: QRScannerProps) {
   const { toast } = useToast();
   const [isScanning, setIsScanning] = useState(false);
   const scannerRef = useRef<Html5Qrcode | null>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const scannerId = "qr-scanner-reader";
 
   useEffect(() => {
+    // Cleanup function
     return () => {
       if (scannerRef.current?.isScanning) {
         scannerRef.current.stop().catch(console.error);
@@ -27,8 +28,6 @@ export function QRScanner({ onScan }: QRScannerProps) {
 
   const startScanner = async () => {
     try {
-      if (!containerRef.current) return;
-
       const cameras = await Html5Qrcode.getCameras();
       if (!cameras || cameras.length === 0) {
         throw new Error("No cameras found on your device.");
@@ -36,33 +35,66 @@ export function QRScanner({ onScan }: QRScannerProps) {
 
       // Initialize scanner if not already done
       if (!scannerRef.current) {
-        scannerRef.current = new Html5Qrcode(containerRef.current.id);
+        scannerRef.current = new Html5Qrcode(scannerId);
       }
 
+      // Try to use the back camera first
+      const cameraId = cameras.length > 1 ? cameras[1].id : cameras[0].id;
+
       await scannerRef.current.start(
-        { facingMode: "environment" },
+        { deviceId: { exact: cameraId } },
         {
           fps: 10,
           qrbox: { width: 250, height: 250 },
+          aspectRatio: 1.0,
         },
         (decodedText) => {
           onScan(decodedText);
           stopScanner();
         },
-        (error) => {
-          // Only log actual errors, not failed scans
-          if (error?.name !== "NotFoundException") {
-            console.error("Scan error:", error);
+        (errorMessage) => {
+          // Ignore "NotFoundException" as it's just the scanner looking for QR codes
+          if (errorMessage?.includes("NotFoundException")) {
+            return;
           }
+          console.error("QR Scan error:", errorMessage);
         }
       );
 
       setIsScanning(true);
     } catch (error) {
       console.error("Scanner error:", error);
+      
+      // If device selection fails, try with basic constraints
+      if (scannerRef.current) {
+        try {
+          await scannerRef.current.start(
+            { facingMode: "environment" },
+            {
+              fps: 10,
+              qrbox: { width: 250, height: 250 },
+              aspectRatio: 1.0,
+            },
+            (decodedText) => {
+              onScan(decodedText);
+              stopScanner();
+            },
+            (errorMessage) => {
+              if (!errorMessage?.includes("NotFoundException")) {
+                console.error("QR Scan error:", errorMessage);
+              }
+            }
+          );
+          setIsScanning(true);
+          return;
+        } catch (fallbackError) {
+          console.error("Fallback scanner error:", fallbackError);
+        }
+      }
+
       toast({
         title: "Camera Error",
-        description: error instanceof Error ? error.message : "Failed to access camera. Please check permissions.",
+        description: "Failed to access camera. Please check permissions and try again.",
         variant: "destructive",
       });
       setIsScanning(false);
@@ -99,19 +131,28 @@ export function QRScanner({ onScan }: QRScannerProps) {
         {isScanning ? "Stop Scanner" : "Start Scanner"}
       </Button>
 
-      {isScanning && (
-        <div className="relative">
-          <div 
-            ref={containerRef}
-            id="qr-scanner-container" 
-            className="overflow-hidden rounded-lg"
-            style={{ width: '100%', maxWidth: '500px', margin: '0 auto' }}
-          />
-          <p className="text-sm text-muted-foreground mt-2 text-center">
-            Position the QR code within the frame to scan
-          </p>
-        </div>
-      )}
+      <div className="relative">
+        <div 
+          id={scannerId}
+          className={`overflow-hidden rounded-lg transition-opacity ${isScanning ? 'opacity-100' : 'opacity-0 h-0'}`}
+          style={{ 
+            width: '100%', 
+            maxWidth: '500px', 
+            margin: '0 auto',
+            aspectRatio: '1',
+          }}
+        />
+        {isScanning && (
+          <div className="mt-4 space-y-2">
+            <div className="flex items-center justify-center">
+              <div className="animate-pulse w-16 h-1 bg-primary rounded" />
+            </div>
+            <p className="text-sm text-muted-foreground text-center">
+              Position the QR code within the frame to scan
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
