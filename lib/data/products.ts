@@ -36,480 +36,580 @@ export interface Product {
 
 export const products: Product[] = [
   {
-    id: "PROD-2024-001",
-    name: "Organic Cotton Baby Bodysuit Set",
-    manufacturer: "e-bebek Organics",
-    category: "Baby Clothing",
-    image: "https://images.unsplash.com/photo-1522771930-78848d9293e8?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
-    description: "Premium 3-piece organic cotton bodysuit set for babies, featuring snap closures and gentle elastic. Perfect for sensitive skin.",
+    id: "PROD-2024-012",
+    name: "AGM LEO Advanced Battery",
+    manufacturer: "İnci Akü",
+    category: "Automotive Batteries",
+    image: "/images/agm-leo-battery.png", // Placeholder image path
+    description: "Advanced Absorbent Glass Mat (AGM) battery with superior performance, designed for modern vehicles with high electrical demands.",
     basicInfo: {
-      model: "EB-BC-2024",
-      serialNumber: "EB-BC-2024-1234",
-      manufacturingDate: "2024-02-15",
+      model: "AGM-LEO-12V-65AH",
+      serialNumber: "86901451725441",
+      manufacturingDate: "2024-04-01",
       origin: "Turkey",
-      weight: "200g",
-      dimensions: "20cm x 15cm x 3cm (per piece)"
+      weight: "17.5 kg",
+      dimensions: "242mm x 175mm x 190mm"
     },
     technicalSpecs: [
-      { name: "Size Range", value: "0-3 months" },
-      { name: "Material Type", value: "100% Organic Cotton" },
-      { name: "Closure Type", value: "Snap Buttons" },
-      { name: "Care Instructions", value: "Machine wash 30°C" },
-      { name: "Pack Contents", value: "3 Bodysuits" }
+      { name: "Voltage", value: "12V" },
+      { name: "Capacity", value: "65 Ah" },
+      { name: "Battery Type", value: "AGM" },
+      { name: "Color", value: "Gri" },
+      { name: "Cycle Life", value: "High" }
     ],
     materials: [
       { 
-        name: "Organic Cotton", 
-        percentage: 96, 
+        name: "Lead", 
+        percentage: 62, 
         recyclable: true,
-        description: "GOTS certified organic cotton from sustainable farms"
+        description: "CAS No: 7439-92-1"
       },
       { 
-        name: "Elastic", 
-        percentage: 4, 
+        name: "Sulfuric Acid", 
+        percentage: 31, 
         recyclable: false,
-        description: "Gentle elastic for comfort"
+        description: "CAS No: 7664-93-9 - Electrolyte"
+      },
+      { 
+        name: "Antimony", 
+        percentage: 1, 
+        recyclable: true,
+        description: "CAS No: 7440-36-0"
+      },
+      { 
+        name: "Tin", 
+        percentage: 0.2, 
+        recyclable: true,
+        description: "CAS No: 7440-31-5"
+      },
+      { 
+        name: "Arsenic", 
+        percentage: 0.1, 
+        recyclable: false,
+        description: "CAS No: 7440-38-2"
+      },
+      { 
+        name: "Polypropylene", 
+        percentage: 3.5, 
+        recyclable: true,
+        description: "CAS No: 9003-07-0 - Case material"
+      },
+      { 
+        name: "Silica", 
+        percentage: 1.2, 
+        recyclable: true,
+        description: "CAS No: 112926-00-8"
+      },
+      { 
+        name: "Natural Rubber", 
+        percentage: 0.5, 
+        recyclable: true,
+        description: "CAS No: 9006-04-6"
+      },
+      { 
+        name: "Oil", 
+        percentage: 0.5, 
+        recyclable: false,
+        description: "CAS No: 64742-52-5"
       }
     ],
     certifications: [
       {
-        name: "GOTS Organic",
-        issuedBy: "Global Organic Textile Standard",
-        validUntil: "2025-02-15",
-        status: "valid",
-        documentUrl: "/certificates/gots.pdf"
+        name: "CE Sertifikası",
+        issuedBy: "TSE",
+        validUntil: "2025-04-01",
+        status: Math.random() > 0.5 ? "valid" : "expired",
+        documentUrl: "/certificates/ce-battery.pdf"
       },
       {
-        name: "OEKO-TEX Standard 100",
-        issuedBy: "OEKO-TEX",
-        validUntil: "2025-02-15",
-        status: "valid",
-        documentUrl: "/certificates/oeko-tex.pdf"
-      }
-    ],
-    sustainabilityScore: 92,
-    carbonFootprint: "3.2 kg CO2e"
-  },
-  {
-    id: "PROD-2024-002",
-    name: "Safe Journey Convertible Car Seat",
-    manufacturer: "e-bebek Safety",
-    category: "Car Seats",
-    image: "https://cdn05.e-bebek.com/mnresize/1000/1000/media/p/joie-spi-360-0-18-kg-oto-koltugu_5056080605890_01.jpg",
-    description: "Joie Spin 360 Dönebilen Güvenli Araba Koltuğu - Çok Aşamalı Konfor ve Güvenlik, 0-4 Yaş Arası Bebekler İçin",
-    basicInfo: {
-      model: "EB-CS-2024",
-      serialNumber: "EB-CS-2024-5678",
-      manufacturingDate: "2024-01-20",
-      origin: "Turkey",
-      weight: "12.5kg",
-      dimensions: "73cm x 45cm x 55cm"
-    },
-    technicalSpecs: [
-      { name: "Weight Capacity", value: "2.3-29.4 kg" },
-      { name: "Installation", value: "ISOFIX + Support Leg" },
-      { name: "Safety Features", value: "Side Impact Protection" },
-      { name: "Recline Positions", value: "6 positions" },
-      { name: "Usage Modes", value: "Rear & Forward Facing" }
-    ],
-    materials: [
-      { 
-        name: "Impact-Resistant Plastic", 
-        percentage: 65, 
-        recyclable: true,
-        description: "High-grade recyclable safety plastic"
-      },
-      { 
-        name: "EPS Foam", 
-        percentage: 20, 
-        recyclable: true,
-        description: "Energy-absorbing safety foam"
-      },
-      { 
-        name: "Recycled Polyester", 
-        percentage: 15, 
-        recyclable: true,
-        description: "Breathable fabric from recycled materials"
-      }
-    ],
-    certifications: [
-      {
-        name: "ECE R129/03",
-        issuedBy: "European Safety Standards",
-        validUntil: "2029-01-20",
-        status: "valid",
-        documentUrl: "/certificates/ece.pdf"
-      },
-      {
-        name: "TSE Safety Certification",
+        name: "TSE",
         issuedBy: "Turkish Standards Institution",
-        validUntil: "2029-01-20",
-        status: "valid",
-        documentUrl: "/certificates/tse.pdf"
+        validUntil: "2025-04-01",
+        status: Math.random() > 0.5 ? "valid" : "expired",
+        documentUrl: "/certificates/tse-battery.pdf"
+      },
+      {
+        name: "IEC 62040-1",
+        issuedBy: "TSE",
+        validUntil: "2025-04-01",
+        status: Math.random() > 0.5 ? "valid" : "expired",
+        documentUrl: "/certificates/iec-62040-1.pdf"
+      },
+      {
+        name: "IEC 62477-1",
+        issuedBy: "TSE",
+        validUntil: "2025-04-01",
+        status: Math.random() > 0.5 ? "valid" : "expired",
+        documentUrl: "/certificates/iec-62477-1.pdf"
+      },
+      {
+        name: "IEC 60896",
+        issuedBy: "TSE",
+        validUntil: "2025-04-01",
+        status: Math.random() > 0.5 ? "valid" : "expired",
+        documentUrl: "/certificates/iec-60896.pdf"
+      },
+      {
+        name: "RoHS Belgesi",
+        issuedBy: "Eurocert",
+        validUntil: "2025-04-01",
+        status: Math.random() > 0.5 ? "valid" : "expired",
+        documentUrl: "/certificates/rohs-battery.pdf"
       }
     ],
-    sustainabilityScore: 85,
-    carbonFootprint: "18.5 kg CO2e"
+    sustainabilityScore: 70,
+    carbonFootprint: "20.5 kg CO2e"
   },
   {
-    id: "PROD-2024-010",
-    name: "Nepia Genki! Premium Soft Bebek Bezi",
-    manufacturer: "Nepia",
-    category: "Diapers",
-    image: "https://cdn05.e-bebek.com/mnresize/1000/1000/media/p/bebek-bezi-premium-soft-3-beden-firsat-paketi-76-adet-7-12-kg_4902011862003_01.jpg",
-    description: "Yumuşak ve nefes alan premium bebek bezi, çok katmanlı emici teknoloji ile maksimum konfor sağlar. Hassas ciltler için yumuşak dokunuş.",
+    id: "PROD-2024-013",
+    name: "EFB MAX TIGRIS Enhanced Flooded Battery",
+    manufacturer: "İnci Akü",
+    category: "Automotive Batteries",
+    image: "/images/efb-max-battery.png", // Placeholder image path
+    description: "Enhanced Flooded Battery (EFB) with high capacity and advanced cycling performance for start-stop vehicles.",
     basicInfo: {
-      model: "EB-DB-2024",
-      serialNumber: "EB-DB-2024-6789",
-      manufacturingDate: "2024-03-05",
+      model: "EFB-TIGRIS-12V-145AH",
+      serialNumber: "8690145155004",
+      manufacturingDate: "2024-04-01",
       origin: "Turkey",
-      weight: "2.8kg",
-      dimensions: "40cm x 30cm x 35cm"
+      weight: "38 kg",
+      dimensions: "513mm x 189mm x 220mm"
     },
     technicalSpecs: [
-      { name: "Size Range", value: "Newborn to Size 5" },
-      { name: "Pack Count", value: "120 diapers" },
-      { name: "Absorption", value: "12 hours" },
-      { name: "Biodegradable", value: "Yes" },
-      { name: "Wetness Indicator", value: "Yes" }
+      { name: "Voltage", value: "12V" },
+      { name: "Capacity", value: "145 Ah" },
+      { name: "Battery Type", value: "Enhanced Flooded" },
+      { name: "Color", value: "Gri" },
+      { name: "Start-Stop Compatible", value: "Yes" }
     ],
     materials: [
       { 
-        name: "Bamboo Fiber", 
-        percentage: 45, 
+        name: "Lead", 
+        percentage: 62, 
         recyclable: true,
-        description: "Sustainable bamboo top sheet"
+        description: "CAS No: 7439-92-1"
       },
       { 
-        name: "Plant-based Core", 
-        percentage: 40, 
-        recyclable: true,
-        description: "Biodegradable absorbent material"
-      },
-      { 
-        name: "Bio-film", 
-        percentage: 15, 
-        recyclable: true,
-        description: "Compostable waterproof layer"
-      }
-    ],
-    certifications: [
-      {
-        name: "Biodegradable Materials",
-        issuedBy: "DIN CERTCO",
-        validUntil: "2025-03-05",
-        status: "valid",
-        documentUrl: "/certificates/din.pdf"
-      },
-      {
-        name: "FSC Bamboo",
-        issuedBy: "Forest Stewardship Council",
-        validUntil: "2025-03-05",
-        status: "valid",
-        documentUrl: "/certificates/fsc-bamboo.pdf"
-      }
-    ],
-    sustainabilityScore: 93,
-    carbonFootprint: "5.6 kg CO2e"
-  },
-  {
-    id: "PROD-2024-003",
-    name: "Natural Care Baby Feeding Set",
-    manufacturer: "e-bebek Essentials",
-    category: "Feeding",
-    image: "https://images.unsplash.com/photo-1594150878496-a921e5af8907?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
-    description: "Complete eco-friendly feeding set including BPA-free bottles, natural nipples, and sterilizer made from sustainable materials.",
-    basicInfo: {
-      model: "EB-BF-2024",
-      serialNumber: "EB-BF-2024-9012",
-      manufacturingDate: "2024-03-01",
-      origin: "Turkey",
-      weight: "850g",
-      dimensions: "28cm x 18cm x 15cm"
-    },
-    technicalSpecs: [
-      { name: "Bottle Capacity", value: "150ml & 250ml" },
-      { name: "Heat Resistance", value: "Up to 180°C" },
-      { name: "Dishwasher Safe", value: "Yes" },
-      { name: "Flow Rate", value: "Adjustable" },
-      { name: "Set Contents", value: "2 Bottles, 4 Nipples, Sterilizer" }
-    ],
-    materials: [
-      { 
-        name: "Medical Grade PP", 
-        percentage: 70, 
-        recyclable: true,
-        description: "BPA-free, food-grade polypropylene"
-      },
-      { 
-        name: "Silicone", 
-        percentage: 20, 
-        recyclable: true,
-        description: "Medical-grade soft silicone"
-      },
-      { 
-        name: "Other Components", 
-        percentage: 10, 
-        recyclable: true,
-        description: "Recyclable packaging and accessories"
-      }
-    ],
-    certifications: [
-      {
-        name: "EU Food Contact Safety",
-        issuedBy: "European Commission",
-        validUntil: "2026-03-01",
-        status: "valid",
-        documentUrl: "/certificates/eu-food.pdf"
-      },
-      {
-        name: "BPA Free Certification",
-        issuedBy: "SGS",
-        validUntil: "2026-03-01",
-        status: "valid",
-        documentUrl: "/certificates/bpa-free.pdf"
-      }
-    ],
-    sustainabilityScore: 88,
-    carbonFootprint: "4.8 kg CO2e"
-  },
-  {
-    id: "PROD-2024-005",
-    name: "Obasan Organik Gebelik Destek Yastığı",
-    manufacturer: "Obasan",
-    category: "Maternity",
-    image: "https://cdn05.e-bebek.com/mnresize/1000/1000/media/p/hamile-uyku-destek-yastigi_8680075433662_05.jpg",
-    description: "İki parçalı, çıkarılabilir fermarlı organik yün ve pamuklu terapi yastığı. Hamilelik boyunca vücut desteği sağlar, yan uyku ve emzirme için ideal.",
-    basicInfo: {
-      model: "EB-MP-2024",
-      serialNumber: "EB-MP-2024-7890",
-      manufacturingDate: "2024-01-15",
-      origin: "Turkey",
-      weight: "1.8kg",
-      dimensions: "140cm x 80cm x 20cm"
-    },
-    technicalSpecs: [
-      { name: "Fill Material", value: "Organic Buckwheat Hulls" },
-      { name: "Cover Material", value: "Organic Cotton" },
-      { name: "Shape", value: "C-shaped" },
-      { name: "Cover Removable", value: "Yes" },
-      { name: "Usage", value: "Pregnancy & Nursing" }
-    ],
-    materials: [
-      { 
-        name: "Organic Cotton", 
-        percentage: 55, 
-        recyclable: true,
-        description: "GOTS certified organic cotton cover"
-      },
-      { 
-        name: "Buckwheat Hulls", 
-        percentage: 40, 
-        recyclable: true,
-        description: "Natural, biodegradable filling"
-      },
-      { 
-        name: "Natural Latex", 
-        percentage: 5, 
-        recyclable: true,
-        description: "Support structure"
-      }
-    ],
-    certifications: [
-      {
-        name: "GOTS Organic",
-        issuedBy: "Global Organic Textile Standard",
-        validUntil: "2025-01-15",
-        status: "valid",
-        documentUrl: "/certificates/gots-pillow.pdf"
-      },
-      {
-        name: "OEKO-TEX Standard 100",
-        issuedBy: "OEKO-TEX",
-        validUntil: "2025-01-15",
-        status: "valid",
-        documentUrl: "/certificates/oeko-tex-pillow.pdf"
-      }
-    ],
-    sustainabilityScore: 95,
-    carbonFootprint: "2.8 kg CO2e"
-  },
-  {
-    id: "PROD-2024-006",
-    name: "Natural Baby Care Gift Set",
-    manufacturer: "e-bebek Naturals",
-    category: "Baby Care",
-    image: "https://images.unsplash.com/photo-1602664876866-d3b33b77756b?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
-    description: "Complete organic baby care set including shampoo, lotion, oil, and cream, all made with natural ingredients safe for sensitive skin.",
-    basicInfo: {
-      model: "EB-BC-2024",
-      serialNumber: "EB-BC-2024-3456",
-      manufacturingDate: "2024-02-20",
-      origin: "Turkey",
-      weight: "1.2kg",
-      dimensions: "25cm x 20cm x 15cm"
-    },
-    technicalSpecs: [
-      { name: "Product Count", value: "5 items" },
-      { name: "Shelf Life", value: "24 months" },
-      { name: "pH Level", value: "5.5" },
-      { name: "Fragrance", value: "Natural" },
-      { name: "Total Volume", value: "750ml" }
-    ],
-    materials: [
-      { 
-        name: "Organic Ingredients", 
-        percentage: 95, 
-        recyclable: true,
-        description: "Natural plant extracts and oils"
-      },
-      { 
-        name: "Natural Preservatives", 
-        percentage: 5, 
-        recyclable: true,
-        description: "Plant-derived preservatives"
-      }
-    ],
-    certifications: [
-      {
-        name: "Organic Cosmetics",
-        issuedBy: "COSMOS",
-        validUntil: "2026-02-20",
-        status: "valid",
-        documentUrl: "/certificates/cosmos.pdf"
-      },
-      {
-        name: "Dermatologically Tested",
-        issuedBy: "Dermatest",
-        validUntil: "2026-02-20",
-        status: "valid",
-        documentUrl: "/certificates/dermatest.pdf"
-      }
-    ],
-    sustainabilityScore: 94,
-    carbonFootprint: "3.5 kg CO2e"
-  },
-  {
-    id: "PROD-2024-007",
-    name: "Smart Baby Monitor",
-    manufacturer: "e-bebek Tech",
-    category: "Electronics",
-    image: "https://images.unsplash.com/photo-1595131838595-3154b9f4450b?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
-    description: "Energy-efficient smart baby monitor with HD video, temperature sensing, and two-way audio, made with recyclable materials.",
-    basicInfo: {
-      model: "EB-BM-2024",
-      serialNumber: "EB-BM-2024-8901",
-      manufacturingDate: "2024-03-01",
-      origin: "Turkey",
-      weight: "350g",
-      dimensions: "12cm x 8cm x 8cm"
-    },
-    technicalSpecs: [
-      { name: "Camera Resolution", value: "1080p HD" },
-      { name: "Range", value: "300m" },
-      { name: "Battery Life", value: "12 hours" },
-      { name: "Night Vision", value: "Infrared LED" },
-      { name: "Connectivity", value: "Wi-Fi 2.4GHz" }
-    ],
-    materials: [
-      { 
-        name: "Recycled ABS", 
-        percentage: 75, 
-        recyclable: true,
-        description: "Durable, recycled plastic housing"
-      },
-      { 
-        name: "PCB Components", 
-        percentage: 15, 
-        recyclable: true,
-        description: "Lead-free electronics"
-      },
-      { 
-        name: "Other Materials", 
-        percentage: 10, 
+        name: "Sulfuric Acid", 
+        percentage: 31, 
         recyclable: false,
-        description: "Battery and sensors"
+        description: "CAS No: 7664-93-9 - Electrolyte"
+      },
+      { 
+        name: "Antimony", 
+        percentage: 1, 
+        recyclable: true,
+        description: "CAS No: 7440-36-0"
+      },
+      { 
+        name: "Tin", 
+        percentage: 0.2, 
+        recyclable: true,
+        description: "CAS No: 7440-31-5"
+      },
+      { 
+        name: "Arsenic", 
+        percentage: 0.1, 
+        recyclable: false,
+        description: "CAS No: 7440-38-2"
+      },
+      { 
+        name: "Polypropylene", 
+        percentage: 3.5, 
+        recyclable: true,
+        description: "CAS No: 9003-07-0 - Case material"
+      },
+      { 
+        name: "Silica", 
+        percentage: 1.2, 
+        recyclable: true,
+        description: "CAS No: 112926-00-8"
+      },
+      { 
+        name: "Natural Rubber", 
+        percentage: 0.5, 
+        recyclable: true,
+        description: "CAS No: 9006-04-6"
+      },
+      { 
+        name: "Oil", 
+        percentage: 0.5, 
+        recyclable: false,
+        description: "CAS No: 64742-52-5"
       }
     ],
     certifications: [
       {
-        name: "CE Safety",
-        issuedBy: "European Union",
-        validUntil: "2029-03-01",
-        status: "valid",
-        documentUrl: "/certificates/ce.pdf"
+        name: "CE Sertifikası",
+        issuedBy: "TSE",
+        validUntil: "2025-04-01",
+        status: Math.random() > 0.5 ? "valid" : "expired",
+        documentUrl: "/certificates/ce-efb.pdf"
       },
       {
-        name: "RoHS Compliance",
-        issuedBy: "EU Commission",
-        validUntil: "2029-03-01",
-        status: "valid",
-        documentUrl: "/certificates/rohs.pdf"
+        name: "TSE",
+        issuedBy: "Turkish Standards Institution",
+        validUntil: "2025-04-01",
+        status: Math.random() > 0.5 ? "valid" : "expired",
+        documentUrl: "/certificates/tse-efb.pdf"
+      },
+      {
+        name: "IEC 62040-1",
+        issuedBy: "TSE",
+        validUntil: "2025-04-01",
+        status: Math.random() > 0.5 ? "valid" : "expired",
+        documentUrl: "/certificates/iec-62040-1-efb.pdf"
+      },
+      {
+        name: "IEC 62477-1",
+        issuedBy: "TSE",
+        validUntil: "2025-04-01",
+        status: Math.random() > 0.5 ? "valid" : "expired",
+        documentUrl: "/certificates/iec-62477-1-efb.pdf"
+      },
+      {
+        name: "IEC 60896",
+        issuedBy: "TSE",
+        validUntil: "2025-04-01",
+        status: Math.random() > 0.5 ? "valid" : "expired",
+        documentUrl: "/certificates/iec-60896-efb.pdf"
+      },
+      {
+        name: "RoHS Belgesi",
+        issuedBy: "Eurocert",
+        validUntil: "2025-04-01",
+        status: Math.random() > 0.5 ? "valid" : "expired",
+        documentUrl: "/certificates/rohs-efb.pdf"
       }
     ],
-    sustainabilityScore: 82,
-    carbonFootprint: "8.5 kg CO2e"
+    sustainabilityScore: 75,
+    carbonFootprint: "28.5 kg CO2e"
   },
   {
-    id: "PROD-2024-008",
-    name: "Organic Baby Play Mat",
-    manufacturer: "e-bebek Home",
-    category: "Nursery",
-    image: "https://images.unsplash.com/photo-1587165282385-fe9bbf5eb1a0?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
-    description: "Non-toxic, organic cotton play mat with natural dyes and sustainable padding, perfect for tummy time and early development.",
+    id: "PROD-2024-014",
+    name: "MAXIM A GORILLA Heavy Duty Battery",
+    manufacturer: "İnci Akü",
+    category: "Automotive Batteries",
+    image: "/images/maxim-gorilla-battery.png", // Placeholder image path
+    description: "Robust and powerful battery designed for heavy-duty applications, offering exceptional performance and durability.",
     basicInfo: {
-      model: "EB-PM-2024",
-      serialNumber: "EB-PM-2024-2345",
-      manufacturingDate: "2024-02-10",
+      model: "MAXIM-GORILLA-12V-105AH",
+      serialNumber: "8690145165164",
+      manufacturingDate: "2024-04-01",
       origin: "Turkey",
-      weight: "1.5kg",
-      dimensions: "150cm x 150cm x 2cm"
+      weight: "28 kg",
+      dimensions: "242mm x 175mm x 190mm"
     },
     technicalSpecs: [
-      { name: "Material", value: "Organic Cotton + Natural Latex" },
-      { name: "Thickness", value: "2cm" },
-      { name: "Water Resistant", value: "Yes" },
-      { name: "Anti-slip Base", value: "Yes" },
-      { name: "Foldable", value: "Yes" }
+      { name: "Voltage", value: "12V" },
+      { name: "Capacity", value: "105 Ah" },
+      { name: "Battery Type", value: "Heavy Duty" },
+      { name: "Color", value: "Siyah" },
+      { name: "Cold Cranking Amps", value: "850 CCA" }
     ],
     materials: [
       { 
-        name: "Organic Cotton", 
+        name: "Lead", 
+        percentage: 62, 
+        recyclable: true,
+        description: "CAS No: 7439-92-1"
+      },
+      { 
+        name: "Sulfuric Acid", 
+        percentage: 31, 
+        recyclable: false,
+        description: "CAS No: 7664-93-9 - Electrolyte"
+      },
+      { 
+        name: "Antimony", 
+        percentage: 1, 
+        recyclable: true,
+        description: "CAS No: 7440-36-0"
+      },
+      { 
+        name: "Tin", 
+        percentage: 0.2, 
+        recyclable: true,
+        description: "CAS No: 7440-31-5"
+      },
+      { 
+        name: "Arsenic", 
+        percentage: 0.1, 
+        recyclable: false,
+        description: "CAS No: 7440-38-2"
+      },
+      { 
+        name: "Polypropylene", 
+        percentage: 3.5, 
+        recyclable: true,
+        description: "CAS No: 9003-07-0 - Case material"
+      },
+      { 
+        name: "Silica", 
+        percentage: 1.2, 
+        recyclable: true,
+        description: "CAS No: 112926-00-8"
+      },
+      { 
+        name: "Natural Rubber", 
+        percentage: 0.5, 
+        recyclable: true,
+        description: "CAS No: 9006-04-6"
+      },
+      { 
+        name: "Oil", 
+        percentage: 0.5, 
+        recyclable: false,
+        description: "CAS No: 64742-52-5"
+      }
+    ],
+    certifications: [
+      {
+        name: "CE Sertifikası",
+        issuedBy: "TSE",
+        validUntil: "2025-04-01",
+        status: Math.random() > 0.5 ? "valid" : "expired",
+        documentUrl: "/certificates/ce-gorilla.pdf"
+      },
+      {
+        name: "TSE",
+        issuedBy: "Turkish Standards Institution",
+        validUntil: "2025-04-01",
+        status: Math.random() > 0.5 ? "valid" : "expired",
+        documentUrl: "/certificates/tse-gorilla.pdf"
+      },
+      {
+        name: "IEC 62040-1",
+        issuedBy: "TSE",
+        validUntil: "2025-04-01",
+        status: Math.random() > 0.5 ? "valid" : "expired",
+        documentUrl: "/certificates/iec-62040-1-gorilla.pdf"
+      },
+      {
+        name: "IEC 62477-1",
+        issuedBy: "TSE",
+        validUntil: "2025-04-01",
+        status: Math.random() > 0.5 ? "valid" : "expired",
+        documentUrl: "/certificates/iec-62477-1-gorilla.pdf"
+      },
+      {
+        name: "IEC 60896",
+        issuedBy: "TSE",
+        validUntil: "2025-04-01",
+        status: Math.random() > 0.5 ? "valid" : "expired",
+        documentUrl: "/certificates/iec-60896-gorilla.pdf"
+      },
+      {
+        name: "RoHS Belgesi",
+        issuedBy: "Eurocert",
+        validUntil: "2025-04-01",
+        status: Math.random() > 0.5 ? "valid" : "expired",
+        documentUrl: "/certificates/rohs-gorilla.pdf"
+      }
+    ],
+    sustainabilityScore: 68,
+    carbonFootprint: "32.5 kg CO2e"
+  },
+  {
+    id: "PROD-2024-015",
+    name: "SUPRA SENTOR Premium Battery",
+    manufacturer: "İnci Akü",
+    category: "Automotive Batteries",
+    image: "/images/supra-sentor-battery.png", // Placeholder image path
+    description: "High-performance battery with superior energy storage and reliability, ideal for modern vehicles with complex electrical systems.",
+    basicInfo: {
+      model: "SUPRA-SENTOR-12V-90AH",
+      serialNumber: "8690145143810",
+      manufacturingDate: "2024-04-01",
+      origin: "Turkey",
+      weight: "24 kg",
+      dimensions: "353mm x 175mm x 190mm"
+    },
+    technicalSpecs: [
+      { name: "Voltage", value: "12V" },
+      { name: "Capacity", value: "90 Ah" },
+      { name: "Battery Type", value: "Premium" },
+      { name: "Color", value: "Siyah" },
+      { name: "Maintenance Free", value: "Yes" }
+    ],
+    materials: [
+      { 
+        name: "Lead", 
+        percentage: 59, 
+        recyclable: true,
+        description: "CAS No: 7439-92-1"
+      },
+      { 
+        name: "Sulfuric Acid", 
+        percentage: 31, 
+        recyclable: false,
+        description: "CAS No: 7664-93-9 - Electrolyte"
+      },
+      { 
+        name: "Calcium", 
+        percentage: 0.02, 
+        recyclable: true,
+        description: "CAS No: 7440-70-2"
+      },
+      { 
+        name: "Arsenic", 
+        percentage: 0.035, 
+        recyclable: false,
+        description: "CAS No: 7440-38-2"
+      },
+      { 
+        name: "Antimony", 
+        percentage: 0.78, 
+        recyclable: true,
+        description: "CAS No: 7440-36-0"
+      },
+      { 
+        name: "Tin", 
+        percentage: 0.16, 
+        recyclable: true,
+        description: "CAS No: 7440-31-5"
+      }
+    ],
+    certifications: [
+      {
+        name: "CE Sertifikası",
+        issuedBy: "TSE",
+        validUntil: "2025-04-01",
+        status: Math.random() > 0.5 ? "valid" : "expired",
+        documentUrl: "/certificates/ce-sentor.pdf"
+      },
+      {
+        name: "TSE",
+        issuedBy: "Turkish Standards Institution",
+        validUntil: "2025-04-01",
+        status: Math.random() > 0.5 ? "valid" : "expired",
+        documentUrl: "/certificates/tse-sentor.pdf"
+      },
+      {
+        name: "IEC 62040-1",
+        issuedBy: "TSE",
+        validUntil: "2025-04-01",
+        status: Math.random() > 0.5 ? "valid" : "expired",
+        documentUrl: "/certificates/iec-62040-1-sentor.pdf"
+      },
+      {
+        name: "IEC 62477-1",
+        issuedBy: "TSE",
+        validUntil: "2025-04-01",
+        status: Math.random() > 0.5 ? "valid" : "expired",
+        documentUrl: "/certificates/iec-62477-1-sentor.pdf"
+      },
+      {
+        name: "IEC 60896",
+        issuedBy: "TSE",
+        validUntil: "2025-04-01",
+        status: Math.random() > 0.5 ? "valid" : "expired",
+        documentUrl: "/certificates/iec-60896-sentor.pdf"
+      },
+      {
+        name: "RoHS Belgesi",
+        issuedBy: "Eurocert",
+        validUntil: "2025-04-01",
+        status: Math.random() > 0.5 ? "valid" : "expired",
+        documentUrl: "/certificates/rohs-sentor.pdf"
+      }
+    ],
+    sustainabilityScore: 72,
+    carbonFootprint: "26.5 kg CO2e"
+  },
+  {
+    id: "PROD-2024-016",
+    name: "MARİN & KARAVAN Battery",
+    manufacturer: "İnci Akü",
+    category: "Marine & Caravan Batteries",
+    image: "/images/marine-karavan-battery.png",
+    description: "Specialized battery for marine and caravan applications, designed for robust performance in challenging environments.",
+    basicInfo: {
+      model: "L5 Marine",
+      serialNumber: "8690145143773",
+      manufacturingDate: "2024-04-01",
+      origin: "Turkey", 
+      weight: "24 kg",
+      dimensions: "353mm x 1075mm x 190mm"
+    },
+    technicalSpecs: [
+      { name: "Voltage", value: "12V" },
+      { name: "Capacity", value: "90 Ah" },
+      { name: "Battery Type", value: "Marine" },
+      { name: "Color", value: "Siyah" },
+      { name: "Terminal Position", value: "0" }
+    ],
+    materials: [
+      { 
+        name: "Lead", 
         percentage: 60, 
         recyclable: true,
-        description: "GOTS certified organic cotton surface"
+        description: "CAS No: 7439-92-1"
       },
       { 
-        name: "Natural Latex", 
-        percentage: 35, 
-        recyclable: true,
-        description: "FSC certified natural rubber padding"
+        name: "Sulfuric Acid", 
+        percentage: 6.5, 
+        recyclable: false,
+        description: "CAS No: 7664-93-9 - Electrolyte"
       },
       { 
-        name: "Natural Dyes", 
-        percentage: 5, 
+        name: "Arsenic", 
+        percentage: 1, 
+        recyclable: false,
+        description: "CAS No: 7440-38-2 - Less than 1%"
+      },
+      { 
+        name: "Copper", 
+        percentage: 1, 
         recyclable: true,
-        description: "Plant-based colorants"
+        description: "CAS No: 7440-50-8 - Less than 1%"
       }
     ],
     certifications: [
       {
-        name: "GOTS Organic",
-        issuedBy: "Global Organic Textile Standard",
-        validUntil: "2025-02-10",
-        status: "valid",
-        documentUrl: "/certificates/gots-mat.pdf"
+        name: "CE Sertifikası",
+        issuedBy: "TSE",
+        validUntil: "2025-04-01",
+        status: Math.random() > 0.5 ? "valid" : "expired",
+        documentUrl: "/certificates/ce-marine.pdf"
       },
       {
-        name: "FSC Certified Latex",
-        issuedBy: "Forest Stewardship Council",
-        validUntil: "2025-02-10",
-        status: "valid",
-        documentUrl: "/certificates/fsc.pdf"
+        name: "TSE",
+        issuedBy: "Turkish Standards Institution",
+        validUntil: "2025-04-01",
+        status: Math.random() > 0.5 ? "valid" : "expired",
+        documentUrl: "/certificates/tse-marine.pdf"
+      },
+      {
+        name: "IEC 62040-1",
+        issuedBy: "TSE",
+        validUntil: "2025-04-01",
+        status: Math.random() > 0.5 ? "valid" : "expired",
+        documentUrl: "/certificates/iec-62040-1-marine.pdf"
+      },
+      {
+        name: "IEC 62477-1",
+        issuedBy: "TSE",
+        validUntil: "2025-04-01",
+        status: Math.random() > 0.5 ? "valid" : "expired",
+        documentUrl: "/certificates/iec-62477-1-marine.pdf"
+      },
+      {
+        name: "IEC 60896",
+        issuedBy: "TSE",
+        validUntil: "2025-04-01",
+        status: Math.random() > 0.5 ? "valid" : "expired",
+        documentUrl: "/certificates/iec-60896-marine.pdf"
+      },
+      {
+        name: "RoHS Belgesi",
+        issuedBy: "Eurocert",
+        validUntil: "2025-04-01",
+        status: Math.random() > 0.5 ? "valid" : "expired",
+        documentUrl: "/certificates/rohs-marine.pdf"
       }
     ],
-    sustainabilityScore: 96,
-    carbonFootprint: "4.2 kg CO2e"
-  },
-
+    sustainabilityScore: 70,
+    carbonFootprint: "25.5 kg CO2e"
+  }
 ];
