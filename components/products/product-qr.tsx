@@ -2,6 +2,7 @@
 
 import { Download } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,7 +13,12 @@ interface ProductQRProps {
 }
 
 export function ProductQR({ productId, productName }: ProductQRProps) {
-  const qrValue = `${window.location.origin}/products/${productId}`;
+  const [qrValue, setQrValue] = useState("");
+  
+  useEffect(() => {
+    setQrValue(`${window.location.origin}/products/${productId}`);
+  }, [productId]);
+
   const qrFileName = `${productName.toLowerCase().replace(/\s+/g, '-')}-qr.png`;
 
   const downloadQR = () => {
@@ -27,6 +33,8 @@ export function ProductQR({ productId, productName }: ProductQRProps) {
     link.click();
     document.body.removeChild(link);
   };
+
+  if (!qrValue) return null;
 
   return (
     <Card>
