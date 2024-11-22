@@ -2,15 +2,29 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
-  // Add security headers
-  const headers = new Headers(request.headers);
-  const response = NextResponse.next({
-    request: {
-      headers,
-    },
-  });
+  // Get the pathname
+  const path = request.nextUrl.pathname;
+
+  // Define protected routes
+  const protectedRoutes = ['/dashboard'];
+
+  // Check if the path is protected
+  const isProtectedRoute = protectedRoutes.some(route => 
+    path.startsWith(route)
+  );
+
+  // Get the token from the session (this is a simplified example)
+  const token = request.cookies.get('auth_token');
+
+  // If the route is protected and there's no token, redirect to login
+  if (isProtectedRoute && !token) {
+    const loginUrl = new URL('/auth/login', request.url);
+    loginUrl.searchParams.set('from', path);
+    return NextResponse.redirect(loginUrl);
+  }
 
   // Add security headers
+  const response = NextResponse.next();
   response.headers.set('X-Frame-Options', 'DENY');
   response.headers.set('X-Content-Type-Options', 'nosniff');
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');

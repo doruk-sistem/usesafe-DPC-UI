@@ -1,4 +1,7 @@
+"use client";
+
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
@@ -15,11 +18,15 @@ import {
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { loginSchema } from "@/lib/schemas/auth";
+import { dummyUser } from "@/lib/auth";
 
 type FormData = z.infer<typeof loginSchema>;
 
 export function LoginForm() {
   const { toast } = useToast();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const from = searchParams.get('from') || '/dashboard';
 
   const form = useForm<FormData>({
     resolver: zodResolver(loginSchema),
@@ -31,12 +38,24 @@ export function LoginForm() {
 
   const onSubmit = async (data: FormData) => {
     try {
-      // TODO: Implement API call
-      console.log(data);
-      toast({
-        title: "Login Successful",
-        description: "Welcome back to UseSafe.",
-      });
+      // Dummy authentication for demo
+      if (data.email === dummyUser.email && data.password === dummyUser.password) {
+        // In a real app, this would be an API call that returns a token
+        const token = "dummy_token";
+        
+        // Store the token in a cookie
+        document.cookie = `auth_token=${token}; path=/; max-age=86400; secure; samesite=strict`;
+        
+        toast({
+          title: "Login Successful",
+          description: "Welcome back to UseSafe.",
+        });
+
+        // Redirect to the dashboard or the original requested page
+        router.push(from);
+      } else {
+        throw new Error("Invalid credentials");
+      }
     } catch (error) {
       toast({
         title: "Login Failed",
