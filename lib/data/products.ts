@@ -157,7 +157,7 @@ export const products: Product[] = [
         documentUrl: "/certificates/rohs-battery.pdf"
       }
     ],
-    sustainabilityScore: 70,
+    sustainabilityScore: 85,
     carbonFootprint: "20.5 kg CO2e"
   },
   {
@@ -282,7 +282,7 @@ export const products: Product[] = [
         documentUrl: "/certificates/rohs-efb.pdf"
       }
     ],
-    sustainabilityScore: 75,
+    sustainabilityScore: 83,
     carbonFootprint: "28.5 kg CO2e"
   },
   {
@@ -407,7 +407,7 @@ export const products: Product[] = [
         documentUrl: "/certificates/rohs-gorilla.pdf"
       }
     ],
-    sustainabilityScore: 68,
+    sustainabilityScore: 82,
     carbonFootprint: "32.5 kg CO2e"
   },
   {
@@ -514,7 +514,7 @@ export const products: Product[] = [
         documentUrl: "/certificates/rohs-sentor.pdf"
       }
     ],
-    sustainabilityScore: 72,
+    sustainabilityScore: 87,
     carbonFootprint: "26.5 kg CO2e"
   },
   {
@@ -609,7 +609,7 @@ export const products: Product[] = [
         documentUrl: "/certificates/rohs-marine.pdf"
       }
     ],
-    sustainabilityScore: 70,
+    sustainabilityScore: 81,
     carbonFootprint: "25.5 kg CO2e"
   }
 ];
