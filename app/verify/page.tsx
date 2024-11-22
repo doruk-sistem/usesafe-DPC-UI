@@ -1,10 +1,39 @@
-import { Search } from "lucide-react";
+"use client";
 
-import { Button } from "@/components/ui/button";
+import { Search } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { useToast } from "@/components/ui/use-toast";
+import { ManualInput } from "@/components/verify/manual-input";
+import { QRScanner } from "@/components/verify/qr-scanner";
 
 export default function VerifyPage() {
+  const router = useRouter();
+  const { toast } = useToast();
+  const [manualInput, setManualInput] = useState("");
+
+  const handleProductCode = (code: string) => {
+    // Validate product code format (example: PROD-2024-XXX)
+    const isValid = /^PROD-\d{4}-\d{3}$/.test(code);
+
+    if (isValid) {
+      router.push(`/products/${code}`);
+    } else {
+      toast({
+        title: "Invalid Product Code",
+        description: "Please enter a valid product code or scan a valid QR code.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleManualSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    handleProductCode(manualInput);
+  };
+
   return (
     <div className="container max-w-2xl mx-auto py-10 px-4">
       <div className="flex flex-col items-center text-center mb-10">
@@ -19,19 +48,25 @@ export default function VerifyPage() {
         <CardHeader>
           <CardTitle>Product Verification</CardTitle>
         </CardHeader>
-        <CardContent>
-          <form className="space-y-4">
-            <div className="flex gap-2">
-              <Input placeholder="Enter Product ID (e.g., PROD-2024-001)" />
-              <Button type="submit">Verify</Button>
+        <CardContent className="space-y-6">
+          <ManualInput
+            value={manualInput}
+            onChange={setManualInput}
+            onSubmit={handleManualSubmit}
+          />
+
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t" />
             </div>
-            <div className="text-center">
-              <span className="text-sm text-muted-foreground">or</span>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-2 text-muted-foreground">
+                or scan QR code
+              </span>
             </div>
-            <Button variant="outline" className="w-full">
-              Scan QR Code
-            </Button>
-          </form>
+          </div>
+
+          <QRScanner onScan={handleProductCode} />
         </CardContent>
       </Card>
     </div>
