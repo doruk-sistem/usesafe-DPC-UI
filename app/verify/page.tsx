@@ -4,7 +4,7 @@ import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import { ManualInput } from "@/components/verify/manual-input";
 import { QRScanner } from "@/components/verify/qr-scanner";
@@ -15,12 +15,26 @@ export default function VerifyPage() {
   const [manualInput, setManualInput] = useState("");
 
   const handleProductCode = (code: string) => {
-    // Validate product code format (example: PROD-2024-XXX)
-    const isValid = /^PROD-\d{4}-\d{3}$/.test(code);
+    try {
+      // Handle both direct product codes and full URLs
+      let productCode = code;
+      
+      // If it's a URL, extract the product code
+      if (code.startsWith('http')) {
+        const url = new URL(code);
+        const pathParts = url.pathname.split('/');
+        productCode = pathParts[pathParts.length - 1];
+      }
 
-    if (isValid) {
-      router.push(`/products/${code}`);
-    } else {
+      // Basic validation before redirecting to validation page
+      const isValidFormat = /^PROD-\d{4}-\d{3}$/.test(productCode);
+
+      if (isValidFormat) {
+        router.push(`/verify/${productCode}`);
+      } else {
+        throw new Error("Invalid product code format");
+      }
+    } catch (error) {
       toast({
         title: "Invalid Product Code",
         description: "Please enter a valid product code or scan a valid QR code.",
@@ -47,6 +61,9 @@ export default function VerifyPage() {
       <Card>
         <CardHeader>
           <CardTitle>Product Verification</CardTitle>
+          <CardDescription>
+            Verify product authenticity using a product code or QR code
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <ManualInput

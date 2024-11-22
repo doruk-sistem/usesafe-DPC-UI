@@ -18,7 +18,6 @@ export function QRScanner({ onScan }: QRScannerProps) {
   const scannerId = "qr-scanner-reader";
 
   useEffect(() => {
-    // Cleanup function
     return () => {
       if (scannerRef.current?.isScanning) {
         scannerRef.current.stop().catch(console.error);
@@ -52,12 +51,8 @@ export function QRScanner({ onScan }: QRScannerProps) {
           onScan(decodedText);
           stopScanner();
         },
-        (errorMessage) => {
-          // Ignore "NotFoundException" as it's just the scanner looking for QR codes
-          if (errorMessage?.includes("NotFoundException")) {
-            return;
-          }
-          console.error("QR Scan error:", errorMessage);
+        () => {
+          // Ignore QR scanning errors as they're expected when no QR code is in view
         }
       );
 
@@ -79,10 +74,8 @@ export function QRScanner({ onScan }: QRScannerProps) {
               onScan(decodedText);
               stopScanner();
             },
-            (errorMessage) => {
-              if (!errorMessage?.includes("NotFoundException")) {
-                console.error("QR Scan error:", errorMessage);
-              }
+            () => {
+              // Ignore QR scanning errors
             }
           );
           setIsScanning(true);
