@@ -33,9 +33,9 @@ interface ProductDetailsProps {
 export function ProductDetails({ product }: ProductDetailsProps) {
   const hazardPictograms = [
     { src: "/images/hazard-health.gif", alt: "Health Hazard", description: "May cause respiratory irritation" },
-    { src: "/images/hazard-explosive.gif", alt: "Explosive", description: "Risk of explosion under specific conditions" },
+    { src: "/images/hazard-explosive.gif", alt: "Corrosive", description: "Contains corrosive materials" },
     { src: "/images/hazard-warning.png", alt: "Warning", description: "General safety warning" },
-    { src: "/images/hazard-corrosive.gif", alt: "Corrosive", description: "Contains corrosive materials" },
+    { src: "/images/hazard-explosive.jpeg", alt: "Explosive", description: "Risk of explosion under specific conditions" },
     { src: "/images/hazard-environmental.png", alt: "Environmental Hazard", description: "May pollute water sources" },
   ];
 
