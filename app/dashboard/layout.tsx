@@ -4,10 +4,10 @@ import { LayoutDashboard, Box, FileText, ShieldCheck, Settings, Bell } from "luc
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { cn } from "@/lib/utils";
 
 const sidebarItems = [
   {
@@ -50,7 +50,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       <aside className="hidden lg:flex w-64 flex-col border-r bg-muted/40">
         <div className="p-6">
           <Link href="/dashboard" className="flex items-center gap-2 font-semibold">
-            <ShieldCheck className="h-6 w-6" />
+            <ShieldCheck className="h-6 w-6 shrink-0 text-primary" />
             <span>UseSafe</span>
           </Link>
         </div>
@@ -61,14 +61,16 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 key={item.href}
                 variant={pathname === item.href ? "secondary" : "ghost"}
                 className={cn(
-                  "w-full justify-start gap-2",
+                  "w-full h-10 px-4 justify-start",
                   pathname === item.href && "bg-secondary"
                 )}
                 asChild
               >
                 <Link href={item.href}>
-                  <item.icon className="h-4 w-4" />
-                  {item.title}
+                  <div className="flex items-center gap-3">
+                    <item.icon className="h-4 w-4 shrink-0" />
+                    <span>{item.title}</span>
+                  </div>
                 </Link>
               </Button>
             ))}
@@ -86,7 +88,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         <SheetContent side="left" className="w-64 p-0">
           <SheetHeader className="p-6">
             <SheetTitle className="flex items-center gap-2">
-              <ShieldCheck className="h-6 w-6" />
+              <ShieldCheck className="h-6 w-6 shrink-0 text-primary" />
               <span>UseSafe</span>
             </SheetTitle>
           </SheetHeader>
@@ -97,14 +99,16 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                   key={item.href}
                   variant={pathname === item.href ? "secondary" : "ghost"}
                   className={cn(
-                    "w-full justify-start gap-2",
+                    "w-full h-10 px-4 justify-start",
                     pathname === item.href && "bg-secondary"
                   )}
                   asChild
                 >
                   <Link href={item.href}>
-                    <item.icon className="h-4 w-4" />
-                    {item.title}
+                    <div className="flex items-center gap-3">
+                      <item.icon className="h-4 w-4 shrink-0" />
+                      <span>{item.title}</span>
+                    </div>
                   </Link>
                 </Button>
               ))}

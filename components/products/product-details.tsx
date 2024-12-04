@@ -7,6 +7,8 @@ import {
   HardHat,
   Warehouse,
   Skull,
+  Box,
+  Settings,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -90,10 +92,10 @@ export function ProductDetails({ product }: ProductDetailsProps) {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="container mx-auto space-y-12 px-4 py-8 max-w-7xl">
       <div className="flex items-center gap-4">
         <Link href="/products">
-          <Button variant="ghost" size="sm">
+          <Button variant="ghost" size="sm" className="gradient-hover">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Products
           </Button>
@@ -101,26 +103,111 @@ export function ProductDetails({ product }: ProductDetailsProps) {
       </div>
 
       {/* Product Overview */}
-      <div className="grid gap-6 md:grid-cols-2">
-        <Card className="md:col-span-2">
-          <div className="aspect-video relative">
+      <div className="grid gap-8 lg:grid-cols-2 items-start max-w-[1400px] mx-auto">
+        <div className="space-y-6">
+          <div className="aspect-square relative rounded-lg overflow-hidden bg-white shadow-lg group">
             <Image
               src={product.image}
               alt={product.name}
               fill
-              className="object-cover rounded-t-lg"
+              className="object-cover group-hover:scale-105 transition-transform duration-300"
             />
           </div>
-          <CardHeader>
-            <div className="space-y-2">
-              <CardTitle className="text-2xl">{product.name}</CardTitle>
-              <p className="text-muted-foreground">{product.description}</p>
+          <div className="grid grid-cols-4 gap-4">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="aspect-square relative rounded-md overflow-hidden bg-white shadow-md cursor-pointer hover:ring-2 ring-primary/50 transition-all duration-200">
+                <Image
+                  src={product.image}
+                  alt={`${product.name} view ${i + 1}`}
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="space-y-6">
+          <div className="space-y-4 sticky top-4">
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent leading-tight">
+              {product.name}
+            </h1>
+            <p className="text-lg text-muted-foreground leading-relaxed">
+              {product.description}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="p-4 rounded-lg bg-gradient-to-br from-background to-muted/50 shadow-md card-hover">
+              <p className="text-sm text-muted-foreground">Model</p>
+              <p className="font-semibold">{product.basicInfo.model}</p>
             </div>
+            <div className="p-4 rounded-lg bg-gradient-to-br from-background to-muted/50 shadow-md card-hover">
+              <p className="text-sm text-muted-foreground">Serial Number</p>
+              <p className="font-semibold">{product.basicInfo.serialNumber}</p>
+            </div>
+          </div>
+
+          <div className="border-t border-b py-6 space-y-4 border-border/50">
+            <h2 className="text-xl font-semibold">Key Features</h2>
+            <div className="grid grid-cols-2 gap-4">
+              {product.technicalSpecs.map((spec, index) => (
+                <div key={index} className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-gradient-to-r from-primary to-secondary"></div>
+                  <span className="text-sm font-medium">{spec.name}:</span>
+                  <span className="text-sm text-muted-foreground">{spec.value}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid gap-8 lg:grid-cols-2 mt-16 max-w-[1400px] mx-auto">
+        {/* Basic Information */}
+        <Card className="bg-gradient-to-br from-background to-muted shadow-lg card-hover">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Box className="h-5 w-5 text-primary" />
+              Basic Information
+            </CardTitle>
           </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {Object.entries(product.basicInfo).map(([key, value]) => (
+                <div key={key} className="flex justify-between">
+                  <dt className="text-sm font-medium capitalize">
+                    {key.replace(/([A-Z])/g, ' $1').trim()}
+                  </dt>
+                  <dd className="text-sm text-primary">{value}</dd>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Technical Specifications */}
+        <Card className="bg-gradient-to-br from-background to-muted shadow-lg card-hover">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Settings className="h-5 w-5 text-primary" />
+              Technical Specifications
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {product.technicalSpecs.map((spec, index) => (
+                <div key={index} className="flex justify-between">
+                  <dt className="text-sm font-medium">{spec.name}</dt>
+                  <dd className="text-sm text-primary">{spec.value}</dd>
+                </div>
+              ))}
+            </div>
+          </CardContent>
         </Card>
 
         {/* Hazard Pictograms */}
-        <Card className="md:col-span-2">
+        <Card className="lg:col-span-2">
           <CardHeader>
             <div className="flex items-center gap-2">
               <Skull className="h-5 w-5 text-destructive" />
@@ -130,17 +217,6 @@ export function ProductDetails({ product }: ProductDetailsProps) {
           <CardContent>
             <div className="flex flex-wrap gap-8 justify-center">
               {hazardPictograms.map((pictogram, index) => (
-                // <div key={index} className="text-center">
-                //   <div className="w-24 h-24 relative mb-2">
-                //     <Image
-                //       src={pictogram.src}
-                //       alt={pictogram.alt}
-                //       fill
-                //       className="object-contain"
-                //     />
-                //   </div>
-                //   <p className="text-sm text-muted-foreground">{pictogram.alt}</p>
-                // </div>
                 <div className="flex flex-col items-center gap-3 p-4 rounded-lg border bg-white" key={index} >
                 <div className="relative w-24 h-24">
                   <Image
@@ -160,44 +236,8 @@ export function ProductDetails({ product }: ProductDetailsProps) {
           </CardContent>
         </Card>
 
-        {/* Basic Information */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Basic Information</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <dl className="space-y-4">
-              {Object.entries(product.basicInfo).map(([key, value]) => (
-                <div key={key} className="flex justify-between">
-                  <dt className="text-sm text-muted-foreground capitalize">
-                    {key.replace(/([A-Z])/g, ' $1').trim()}
-                  </dt>
-                  <dd className="text-sm font-medium">{value}</dd>
-                </div>
-              ))}
-            </dl>
-          </CardContent>
-        </Card>
-
-        {/* Technical Specifications */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Technical Specifications</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <dl className="space-y-4">
-              {product.technicalSpecs.map((spec, index) => (
-                <div key={index} className="flex justify-between">
-                  <dt className="text-sm text-muted-foreground">{spec.name}</dt>
-                  <dd className="text-sm font-medium">{spec.value}</dd>
-                </div>
-              ))}
-            </dl>
-          </CardContent>
-        </Card>
-
         {/* Materials */}
-        <Card className="md:col-span-2">
+        <Card className="lg:col-span-2">
           <CardHeader>
             <CardTitle>Materials</CardTitle>
           </CardHeader>
@@ -230,7 +270,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
         </Card>
 
         {/* Health and Safety Section */}
-        <Card className="md:col-span-2">
+        <Card className="lg:col-span-2">
           <CardHeader>
             <div className="flex items-center gap-2">
               <HardHat className="h-5 w-5 text-primary" />
@@ -249,7 +289,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
         </Card>
 
         {/* Emergency Procedures */}
-        <Card className="md:col-span-2">
+        <Card className="lg:col-span-2">
           <CardHeader>
             <div className="flex items-center gap-2">
               <AlertTriangle className="h-5 w-5 text-destructive" />
@@ -268,7 +308,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
         </Card>
 
         {/* Storage and Installation */}
-        <Card className="md:col-span-2">
+        <Card className="lg:col-span-2">
           <CardHeader>
             <div className="flex items-center gap-2">
               <Warehouse className="h-5 w-5 text-primary" />
@@ -294,7 +334,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
         </Card>
 
         {/* Certifications */}
-        <Card className="md:col-span-2">
+        <Card className="lg:col-span-2">
           <CardHeader>
             <CardTitle>Certifications</CardTitle>
           </CardHeader>
@@ -338,7 +378,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
         </Card>
 
         {/* Sustainability Metrics */}
-        <Card className="md:col-span-2">
+        <Card className="lg:col-span-2">
           <CardHeader>
             <CardTitle>Sustainability Metrics</CardTitle>
           </CardHeader>
@@ -365,7 +405,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
         </Card>
 
         {/* QR Code */}
-        <Card className="md:col-span-2">
+        <Card className="lg:col-span-2">
           <ProductQR productId={product.id} productName={product.name} />
         </Card>
       </div>
