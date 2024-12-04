@@ -1,7 +1,7 @@
 "use client";
 
-import { ProductList } from "@/components/dashboard/products/product-list";
 import { ProductHeader } from "@/components/dashboard/products/product-header";
+import { ProductList } from "@/components/dashboard/products/product-list";
 
 export default function ProductsPage() {
   return (
