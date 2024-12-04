@@ -4,8 +4,17 @@ When using client-side hooks (useState and useEffect) in a component that's bein
 
 Do not write code that will trigger this error: "Warning: Extra attributes from the server: %s%s""class,style"
 
-By default, this template supports JSX syntax with Tailwind CSS classes, the shadcn/ui library, React hooks, and Lucide React for icons. Do not install other packages for UI themes, icons, etc unless absolutely necessary or I request them.
+By default, this template supports JSX syntax with Tailwind CSS classes, React hooks, and Lucide React for icons. Do not install other packages for UI themes, icons, etc unless absolutely necessary or I request them.
 
 Use icons from lucide-react for logos.
 
-Use stock photos from unsplash where appropriate, only valid URLs you know exist.
+Use stock photos from unsplash where appropriate, only valid URLs you know exist. Do not download the images, only link to them in image tags.
+
+make it mobile responsive
+
+Use early returns whenever possible to make the code more readable.
+Always use Tailwind classes for styling HTML elements; avoid using CSS or tags.
+Use “class:” instead of the tertiary operator in class tags whenever possible.
+Use descriptive variable and function/const names. Also, event functions should be named with a “handle” prefix, like “handleClick” for onClick and “handleKeyDown” for onKeyDown.
+Implement accessibility features on elements. For example, a tag should have a tabindex=“0”, aria-label, on:click, and on:keydown, and similar attributes.
+Use consts instead of functions, for example, “const toggle = () =>”. Also, define a type if possible.
