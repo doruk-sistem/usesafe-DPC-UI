@@ -3,10 +3,14 @@
 import { ShieldCheck, LogIn, Box, Factory, Search } from "lucide-react";
 import Link from "next/link";
 
+import { useAuth } from "@/lib/hooks/use-auth";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
+import { UserNav } from "@/components/layout/user-nav";
 
 export function Navbar() {
+  const { user, isLoading } = useAuth();
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container px-6 md:px-8 mx-auto flex h-16 items-center">
@@ -39,12 +43,20 @@ export function Navbar() {
         </nav>
 
         <div className="flex items-center space-x-2 ml-4">
-          <Link href="/auth/login">
-            <Button variant="outline" size="sm" className="gap-2">
-              <LogIn className="h-4 w-4" />
-              Sign In
-            </Button>
-          </Link>
+          {!isLoading && (
+            <>
+              {user ? (
+                <UserNav />
+              ) : (
+                <Link href="/auth/login">
+                  <Button variant="outline" size="sm" className="gap-2">
+                    <LogIn className="h-4 w-4" />
+                    Sign In
+                  </Button>
+                </Link>
+              )}
+            </>
+          )}
           <ModeToggle />
         </div>
       </div>

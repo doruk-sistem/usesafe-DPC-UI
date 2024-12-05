@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
 
+import { useAuth } from "@/lib/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -17,7 +18,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
-import { dummyUser } from "@/lib/auth";
+import { createToken, dummyUser } from "@/lib/auth";
 import { loginSchema } from "@/lib/schemas/auth";
 
 type FormData = z.infer<typeof loginSchema>;
@@ -25,6 +26,7 @@ type FormData = z.infer<typeof loginSchema>;
 export function LoginForm() {
   const { toast } = useToast();
   const router = useRouter();
+  const { signIn } = useAuth();
   const searchParams = useSearchParams();
   const from = searchParams.get('from') || '/dashboard';
 
@@ -40,11 +42,11 @@ export function LoginForm() {
     try {
       // Dummy authentication for demo
       if (data.email === dummyUser.email && data.password === dummyUser.password) {
-        // In a real app, this would be an API call that returns a token
-        const token = "dummy_token";
-        
-        // Store the token in a cookie
+        // Create a proper JWT token
+        const token = await createToken(dummyUser);
+
         document.cookie = `auth_token=${token}; path=/; max-age=86400; secure; samesite=strict`;
+        await signIn(token);
         
         toast({
           title: "Login Successful",

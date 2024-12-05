@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.5] - 2024-12-05
+
+### Added
+- Authentication state management with React Context
+- User navigation component with dropdown menu
+- Secure token handling and verification
+- Automatic authentication status check
+- Sign out functionality
+- User profile display in navigation
+
+### Changed
+- Updated navbar to show user profile when authenticated
+- Wrapped application with AuthProvider
+- Enhanced navigation UI for authenticated users
+
 ## [0.1.4] - 2024-12-05
 
 ### Enhanced

@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 
 import { Navbar } from "@/components/layout/navbar";
+import { AuthProvider } from "@/components/providers/auth-provider";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 
@@ -21,7 +22,6 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        {/* Add permissions policy for camera access */}
         <meta httpEquiv="Permissions-Policy" content="camera=*" />
       </head>
       <body className={inter.className}>
@@ -31,11 +31,13 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div className="relative min-h-screen bg-background">
-            <Navbar />
-            <main className="relative">{children}</main>
-          </div>
-          <Toaster />
+          <AuthProvider>
+            <div className="relative min-h-screen bg-background">
+              <Navbar />
+              <main className="relative">{children}</main>
+            </div>
+            <Toaster />
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>
