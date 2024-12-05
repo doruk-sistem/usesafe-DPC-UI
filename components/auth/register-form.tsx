@@ -1,12 +1,13 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { Progress } from "@/components/ui/progress";
+import { useAuth } from "@/lib/hooks/use-auth";
 import { useRegistrationSteps } from "@/lib/hooks/use-registration-steps";
 import { useToast } from "@/lib/hooks/use-toast";
 import { registerSchema } from "@/lib/schemas/auth";
@@ -31,6 +32,7 @@ const steps = [
 export function RegisterForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const { signUp } = useAuth();
   const { toast } = useToast();
   const router = useRouter();
 
@@ -78,27 +80,41 @@ export function RegisterForm() {
       if (isLastStep && stepValidated) {
         setIsSubmitting(true);
         
-        // Prepare registration data
-        const registrationData = prepareRegistrationData(form.getValues());
+        try {
+          const formData = form.getValues();
+          
+          // Create Supabase user
+          await signUp(formData.email, formData.password, {
+            full_name: formData.ownerName,
+            company_name: formData.companyName,
+            role: 'manufacturer',
+          });
 
-        console.log(registrationData);
-        
-        // Submit registration
-        const response = await ManufacturerService.register(registrationData);
-        
-        if (response.success) {
+          // Prepare and submit manufacturer data
+          const registrationData = prepareRegistrationData(formData);
+          const response = await ManufacturerService.register(registrationData);
+          
+          if (!response.success) {
+            throw new Error(response.message || 'Registration failed');
+          }
+
           setIsSubmitted(true);
           toast({
             title: "Registration Submitted Successfully",
             description: "Please check your email to verify your account.",
           });
-  
+
           // Redirect after showing success message
           setTimeout(() => {
             router.push("/auth/pending-approval");
           }, 5000);
-        } else {
-          throw new Error(response.message || 'Registration failed');
+        } catch (error) {
+          toast({
+            title: "Registration Failed",
+            description: error instanceof Error ? error.message : "There was an error submitting your registration. Please try again.",
+            variant: "destructive",
+          });
+          throw error;
         }
       }
     } catch (error) {

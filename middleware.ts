@@ -1,25 +1,30 @@
+import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-export function middleware(request: NextRequest) {
-  // Get the pathname
-  const path = request.nextUrl.pathname;
+export async function middleware(request: NextRequest) {
+  const res = NextResponse.next();
+  const supabase = createMiddlewareClient({ req: request, res });
+
+  // Refresh session if expired
+  await supabase.auth.getSession();
 
   // Define protected routes
   const protectedRoutes = ['/dashboard'];
 
   // Check if the path is protected
   const isProtectedRoute = protectedRoutes.some(route => 
-    path.startsWith(route)
+    request.nextUrl.pathname.startsWith(route)
   );
 
-  // Get the token from the session (this is a simplified example)
-  const token = request.cookies.get('auth_token');
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
-  // If the route is protected and there's no token, redirect to login
-  if (isProtectedRoute && !token) {
+  // If the route is protected and there's no session, redirect to login
+  if (isProtectedRoute && !session) {
     const loginUrl = new URL('/auth/login', request.url);
-    loginUrl.searchParams.set('from', path);
+    loginUrl.searchParams.set('from', request.nextUrl.pathname);
     return NextResponse.redirect(loginUrl);
   }
 

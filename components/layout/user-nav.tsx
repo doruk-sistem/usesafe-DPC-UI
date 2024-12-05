@@ -3,7 +3,6 @@
 import { LogOut, Settings, User } from "lucide-react";
 import Link from "next/link";
 
-import { useAuth } from "@/lib/hooks/use-auth";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,11 +14,20 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useAuth } from "@/lib/hooks/use-auth";
 
 export function UserNav() {
   const { user, signOut } = useAuth();
 
   if (!user) return null;
+  
+  const userMetadata = user.user_metadata || {};
+  const fullName = userMetadata.full_name || user.email?.split('@')[0] || 'User';
+  const initials = fullName
+    .split(' ')
+    .map(n => n[0])
+    .join('')
+    .toUpperCase();
 
   return (
     <DropdownMenu>
@@ -27,7 +35,7 @@ export function UserNav() {
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
             <AvatarFallback>
-              {user.name.split(' ').map(n => n[0]).join('')}
+              {initials}
             </AvatarFallback>
           </Avatar>
         </Button>
@@ -35,7 +43,7 @@ export function UserNav() {
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">{user.name}</p>
+            <p className="text-sm font-medium leading-none">{fullName}</p>
             <p className="text-xs leading-none text-muted-foreground">
               {user.email}
             </p>

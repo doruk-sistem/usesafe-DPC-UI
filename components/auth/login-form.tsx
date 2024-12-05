@@ -18,7 +18,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
-import { createToken, dummyUser } from "@/lib/auth";
 import { loginSchema } from "@/lib/schemas/auth";
 
 type FormData = z.infer<typeof loginSchema>;
@@ -40,28 +39,18 @@ export function LoginForm() {
 
   const onSubmit = async (data: FormData) => {
     try {
-      // Dummy authentication for demo
-      if (data.email === dummyUser.email && data.password === dummyUser.password) {
-        // Create a proper JWT token
-        const token = await createToken(dummyUser);
+      await signIn(data.email, data.password);
+      
+      toast({
+        title: "Login Successful",
+        description: "Welcome back to UseSafe.",
+      });
 
-        document.cookie = `auth_token=${token}; path=/; max-age=86400; secure; samesite=strict`;
-        await signIn(token);
-        
-        toast({
-          title: "Login Successful",
-          description: "Welcome back to UseSafe.",
-        });
-
-        // Redirect to the dashboard or the original requested page
-        router.push(from);
-      } else {
-        throw new Error("Invalid credentials");
-      }
+      router.push(from);
     } catch (error) {
       toast({
         title: "Login Failed",
-        description: "Invalid email or password.",
+        description: error instanceof Error ? error.message : "Invalid credentials",
         variant: "destructive",
       });
     }
