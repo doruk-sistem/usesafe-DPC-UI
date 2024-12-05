@@ -13,10 +13,7 @@ export interface Product {
     weight: string;
     dimensions: string;
   };
-  technicalSpecs: {
-    name: string;
-    value: string;
-  }[];
+  technicalSpecs: TechnicalSpec[];
   materials: {
     name: string;
     percentage: number;
@@ -32,6 +29,11 @@ export interface Product {
   }[];
   sustainabilityScore: number;
   carbonFootprint: string;
+}
+
+export interface TechnicalSpec {
+  name: string;
+  value: string;
 }
 
 export const products: Product[] = [

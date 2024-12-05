@@ -1,73 +1,76 @@
-import {
-  Box,
-  FileCheck,
-  ShieldCheck,
-  AlertTriangle,
-  CheckCircle2,
-  Clock,
+"use client";
+
+import { motion } from "framer-motion";
+import { 
+  Box, 
+  FileText, 
+  ShieldCheck, 
+  TrendingUp, 
+  AlertTriangle 
 } from "lucide-react";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { EnhancedCard } from "@/components/ui/enhanced-card";
 
-const metrics = [
+const metricCards = [
   {
     title: "Total Products",
-    value: "24",
-    change: "+2",
+    value: "42",
     icon: Box,
+    gradient: "from-blue-500 to-blue-700",
+    trend: "+12.5%"
   },
   {
-    title: "Pending Applications",
-    value: "3",
-    change: "-1",
-    icon: Clock,
-  },
-  {
-    title: "Active DPCs",
-    value: "18",
-    change: "+2",
-    icon: ShieldCheck,
-  },
-  {
-    title: "Document Verifications",
-    value: "12",
-    change: "+3",
-    icon: FileCheck,
-  },
-  {
-    title: "System Alerts",
-    value: "2",
-    change: "-1",
+    title: "Pending Certifications",
+    value: "7",
     icon: AlertTriangle,
+    gradient: "from-yellow-500 to-yellow-700",
+    trend: "+3.2%"
   },
   {
-    title: "Successful Verifications",
-    value: "96.5%",
-    change: "+0.5%",
-    icon: CheckCircle2,
+    title: "Approved Documents",
+    value: "128",
+    icon: FileText,
+    gradient: "from-green-500 to-green-700",
+    trend: "+22.1%"
   },
+  {
+    title: "Compliance Rate",
+    value: "94%",
+    icon: ShieldCheck,
+    gradient: "from-purple-500 to-purple-700",
+    trend: "+5.6%"
+  }
 ];
 
 export function DashboardMetrics() {
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {metrics.map((metric) => (
-        <Card key={metric.title}>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">
-              {metric.title}
-            </CardTitle>
-            <metric.icon className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{metric.value}</div>
-            <p className={`text-xs ${
-              metric.change.startsWith("+") ? "text-green-500" : "text-red-500"
-            }`}>
-              {metric.change} from last month
-            </p>
-          </CardContent>
-        </Card>
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      {metricCards.map((card, index) => (
+        <EnhancedCard 
+          key={card.title}
+          gradient={`bg-gradient-to-br ${card.gradient}`}
+        >
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ 
+              delay: index * 0.2, 
+              type: "spring", 
+              stiffness: 100 
+            }}
+            className="flex justify-between items-center"
+          >
+            <div>
+              <p className="text-sm text-white/80 mb-2">{card.title}</p>
+              <h3 className="text-3xl font-bold text-white">{card.value}</h3>
+              <div className="flex items-center mt-2 text-xs text-white/70">
+                <TrendingUp className="h-4 w-4 mr-1" />
+                <span>{card.trend}</span>
+              </div>
+            </div>
+            <card.icon className="h-12 w-12 text-white/30" />
+          </motion.div>
+        </EnhancedCard>
       ))}
     </div>
   );

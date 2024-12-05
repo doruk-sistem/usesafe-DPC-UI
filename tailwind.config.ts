@@ -21,6 +21,7 @@ const config: Config = {
       },
       boxShadow: {
         'glow': '0 0 20px -5px var(--tw-shadow-color)',
+        'soft-glow': '0 0 15px rgba(var(--primary-rgb), 0.3)',
       },
       colors: {
         background: 'hsl(var(--background))',
@@ -81,10 +82,22 @@ const config: Config = {
             height: '0',
           },
         },
+        float: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-10px)' },
+        },
+        sparkle: {
+          '0%, 100%': { opacity: '0' },
+          '50%': { opacity: '1' }
+        }
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'ping-slow': 'ping 2s cubic-bezier(0, 0, 0.2, 1) infinite',
+        'float': 'float 3s ease-in-out infinite',
+        sparkle: 'sparkle 1.5s infinite'
       },
     },
   },

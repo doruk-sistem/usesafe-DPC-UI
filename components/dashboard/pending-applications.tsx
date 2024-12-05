@@ -1,73 +1,83 @@
-import { Clock } from "lucide-react";
-import Link from "next/link";
+"use client";
 
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { motion } from "framer-motion";
+import { 
+  FileQuestion, 
+  CheckCircle2, 
+  XCircle 
+} from "lucide-react";
 
-const applications = [
+const pendingApplications = [
   {
-    id: "DPC-023",
-    type: "DPC",
-    name: "AGM LEO Battery",
+    id: "DPC-001",
+    product: "AGM LEO Advanced Battery",
     status: "pending",
-    submitted: "2024-03-15T09:45:00",
+    submittedDate: "2024-01-15"
   },
   {
-    id: "DOC-089",
-    type: "Document",
-    name: "ISO 9001 Certificate",
-    status: "pending",
-    submitted: "2024-03-15T09:15:00",
+    id: "DPC-002",
+    product: "EFB MAX TIGRIS Battery",
+    status: "review",
+    submittedDate: "2024-01-20"
   },
   {
-    id: "DPC-024",
-    type: "DPC",
-    name: "EFB MAX TIGRIS Battery",
-    status: "pending",
-    submitted: "2024-03-15T08:30:00",
-  },
+    id: "DPC-003",
+    product: "MAXIM A GORILLA Battery",
+    status: "rejected",
+    submittedDate: "2024-01-10"
+  }
 ];
 
 export function PendingApplications() {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Clock className="h-5 w-5" />
-          Pending Applications
-        </CardTitle>
-        <CardDescription>Recent applications requiring attention</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          {applications.map((application) => (
-            <div
-              key={application.id}
-              className="flex items-center justify-between space-x-4"
-            >
-              <div className="space-y-1">
-                <p className="text-sm font-medium leading-none">
-                  {application.name}
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  {application.type} · {application.id}
-                </p>
-              </div>
-              <Button variant="outline" size="sm" asChild>
-                <Link href={`/dashboard/${application.type.toLowerCase()}s/${application.id}`}>
-                  Review
-                </Link>
-              </Button>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="bg-white rounded-xl shadow-lg p-6 border"
+    >
+      <h2 className="text-xl font-semibold mb-4">Pending Applications</h2>
+      <div className="space-y-4">
+        {pendingApplications.map((app, index) => (
+          <motion.div
+            key={app.id}
+            initial={{ x: -20, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ delay: index * 0.1 }}
+            className="flex items-center space-x-4 p-4 
+              hover:bg-muted/50 rounded-lg 
+              transition-colors duration-200 group"
+          >
+            <div className={`
+              p-3 rounded-full 
+              ${app.status === 'pending' 
+                ? 'bg-blue-100 text-blue-600'
+                : app.status === 'review'
+                ? 'bg-yellow-100 text-yellow-600'
+                : 'bg-red-100 text-red-600'}
+            `}>
+              {app.status === 'pending' && <FileQuestion className="h-5 w-5" />}
+              {app.status === 'review' && <CheckCircle2 className="h-5 w-5" />}
+              {app.status === 'rejected' && <XCircle className="h-5 w-5" />}
             </div>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
+            <div className="flex-1">
+              <h3 className="font-medium">{app.product}</h3>
+              <p className="text-sm text-muted-foreground">
+                {app.id} · Submitted {app.submittedDate}
+              </p>
+            </div>
+            <div className={`
+              px-3 py-1 rounded-full text-xs font-medium
+              ${app.status === 'pending' 
+                ? 'bg-blue-50 text-blue-600'
+                : app.status === 'review'
+                ? 'bg-yellow-50 text-yellow-600'
+                : 'bg-red-50 text-red-600'}
+            `}>
+              {app.status.charAt(0).toUpperCase() + app.status.slice(1)}
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </motion.div>
   );
 }
