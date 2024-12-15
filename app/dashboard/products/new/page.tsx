@@ -24,7 +24,7 @@ export default function NewProductPage() {
       const uploadedImages = await Promise.all(
         data.images.map(async (image) => {
           if (image.url.startsWith('blob:')) {
-            const uploadedUrl = await StorageService.uploadProductImage(image.url, user.id);
+            const uploadedUrl = await StorageService.uploadProductImage(image.url, user.user_metadata["company_id"] || "7d26ed35-49ca-4c0d-932e-52254fb0e5b8");
             
             if (!uploadedUrl) {
               toast({

@@ -1,7 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Battery, MoreHorizontal, FileText, ExternalLink, CheckCircle, XCircle, Clock, AlertCircle } from "lucide-react";
+import { Battery, MoreHorizontal, FileText, ImageOff } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -12,6 +11,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import type { Product } from "@/lib/types/product";
+import { StorageHelper } from '@/lib/utils/storage';
 
 interface ProductListProps {
   products: Product[];
@@ -19,6 +19,23 @@ interface ProductListProps {
 }
 
 export function ProductList({ products, isLoading }: ProductListProps) {
+  const getImageUrl = (url: string): string => {
+    if (!url) return '/images/placeholder-product.png';
+    
+    // If it's already a full URL, return it
+    if (url.startsWith('http')) return url;
+    
+    // Otherwise, get the public URL from storage
+    try {
+      return StorageHelper.getPublicUrl(url, {
+        bucketName: process.env.NEXT_PUBLIC_PRODUCT_IMAGES_BUCKET
+      });
+    } catch (error) {
+      console.error('Error getting public URL:', error);
+      return null;
+    }
+  };
+
   if (isLoading) {
     return (
       <Card>
@@ -71,11 +88,9 @@ export function ProductList({ products, isLoading }: ProductListProps) {
           <TableHeader>
             <TableRow>
               <TableHead>Product</TableHead>
-              <TableHead>Type</TableHead>
-              <TableHead>Specifications</TableHead>
+              <TableHead>Category</TableHead>
+              <TableHead>Basic Info</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead>DPC Status</TableHead>
-              <TableHead>Certifications</TableHead>
               <TableHead></TableHead>
             </TableRow>
           </TableHeader>
@@ -84,71 +99,63 @@ export function ProductList({ products, isLoading }: ProductListProps) {
               <TableRow key={product.id}>
                 <TableCell>
                   <div className="flex items-center gap-4">
-                    <div className="relative h-12 w-12">
-                      {product.image && (
+                    <div className="relative w-12 h-12">
+                      {product.images?.[0]?.url ? (
                         <Image
-                          src={product.image}
-                          alt={product.name}
-                          fill
+                          src={getImageUrl(product.images[0].url)}
+                          alt={product.images[0].alt || 'Product image'}
+                          width={48}
+                          height={48}
                           className="rounded-md object-cover"
                         />
+                      ) : (
+                        <div className="w-12 h-12 bg-muted rounded-md flex items-center justify-center">
+                          <ImageOff className="h-6 w-6 text-muted-foreground" />
+                        </div>
                       )}
                     </div>
                     <div>
                       <p className="font-medium">{product.name}</p>
                       <p className="text-sm text-muted-foreground">
-                        {product.model} · {product.serial_number}
+                        {product.model}
                       </p>
                     </div>
                   </div>
                 </TableCell>
                 <TableCell>
                   <Badge variant="secondary">
-                    {product.type}
+                    {product.product_type}
                   </Badge>
                 </TableCell>
                 <TableCell>
-                  <div className="space-y-1 text-sm">
-                    <p>
-                      {product.voltage} · {product.capacity}
-                    </p>
-                    <p className="text-muted-foreground">{product.dimensions}</p>
+                  <div className="space-y-2">
+                    <div className="space-y-1">
+                      {product.key_features.slice(0, 3).map((feature) => (
+                        <div key={feature.name} className="flex items-center text-sm">
+                          <span className="text-muted-foreground w-20">{feature.name}:</span>
+                          <span>{feature.value}</span>
+                        </div>
+                      ))}
+                      {product.key_features.length > 3 && (
+                        <Badge variant="secondary" className="text-xs">
+                          +{product.key_features.length - 3} more
+                        </Badge>
+                      )}
+                    </div>
                   </div>
                 </TableCell>
                 <TableCell>
                   <Badge
                     variant={
-                      product.status === "active"
+                      product.status === "NEW"
                         ? "success"
-                        : product.status === "draft"
-                        ? "secondary"
-                        : "warning"
-                    }
-                  >
-                    {product.status}
-                  </Badge>
-                </TableCell>
-                <TableCell>
-                  <Badge
-                    variant={
-                      product.dpc_status === "approved"
-                        ? "success"
-                        : product.dpc_status === "pending"
+                        : product.status === "DRAFT"
                         ? "warning"
-                        : "secondary"
+                        : "destructive"
                     }
                   >
-                    {product.dpc_status}
+                    {product.status.toLowerCase()}
                   </Badge>
-                </TableCell>
-                <TableCell>
-                  <div className="flex gap-1">
-                    {product.certifications?.map((cert, index) => (
-                      <Badge key={index} variant="outline">
-                        {cert}
-                      </Badge>
-                    ))}
-                  </div>
                 </TableCell>
                 <TableCell>
                   <DropdownMenu>
@@ -178,14 +185,6 @@ export function ProductList({ products, isLoading }: ProductListProps) {
                           View Documents
                         </Link>
                       </DropdownMenuItem>
-                      {product.dpc_status !== "approved" && (
-                        <DropdownMenuItem asChild>
-                          <Link href={`/dashboard/products/${product.id}/dpc/new`}>
-                            <ExternalLink className="h-4 w-4 mr-2" />
-                            Submit DPC
-                          </Link>
-                        </DropdownMenuItem>
-                      )}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>
