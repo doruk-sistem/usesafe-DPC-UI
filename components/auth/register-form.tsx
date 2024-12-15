@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
 
+import { useAuth } from "@/lib/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { Progress } from "@/components/ui/progress";
-import { useAuth } from "@/lib/hooks/use-auth";
 import { useRegistrationSteps } from "@/lib/hooks/use-registration-steps";
 import { useToast } from "@/lib/hooks/use-toast";
 import { registerSchema } from "@/lib/schemas/auth";
@@ -82,13 +82,6 @@ export function RegisterForm() {
         
         try {
           const formData = form.getValues();
-          
-          // Create Supabase user
-          await signUp(formData.email, formData.password, {
-            full_name: formData.ownerName,
-            company_name: formData.companyName,
-            role: 'manufacturer',
-          });
 
           // Prepare and submit manufacturer data
           const registrationData = prepareRegistrationData(formData);
@@ -97,6 +90,13 @@ export function RegisterForm() {
           if (!response.success) {
             throw new Error(response.message || 'Registration failed');
           }
+
+           // Create Supabase user
+           await signUp(formData.email, formData.password, {
+            full_name: formData.ownerName,
+            company_id: response.registrationId,
+            role: 'manufacturer',
+          });
 
           setIsSubmitted(true);
           toast({

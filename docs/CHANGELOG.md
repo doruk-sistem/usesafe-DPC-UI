@@ -5,6 +5,97 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.8] - 2024-12-10
+
+### Added
+- Updated product form schema with dynamic key features
+- Added support for multiple product images
+- Enhanced type definitions for product features
+- Improved form validation for new product structure
+
+### Changed
+- Updated database schema for flexible product management
+- Added Row Level Security policies for data protection
+- Implemented key_features as dynamic JSON array
+- Enhanced product types with proper validation
+- Added company-specific product management
+- Improved image handling with JSON structure
+
+### Fixed
+- Added robust error handling for Supabase storage bucket uploads
+- Improved image upload validation in product creation flow
+- Added explicit bucket existence check before file upload
+
+### Enhanced
+- Product form with image upload capabilities
+- Storage service for managing product images
+- Product creation flow with image handling
+
+## [0.1.7] - 2024-12-05
+
+### Added
+- Comprehensive database schema for product management
+- Product types and DPP templates tables
+- DPP generation with QR code support
+- Database triggers for timestamp updates
+- Type definitions for database entities
+- DPP service with CRUD operations
+- DPP template form component
+- QR code generation functionality
+
+## [0.1.7] - 2024-12-05
+
+### Added
+- New product creation page with form validation
+- Product form component with comprehensive fields
+- Client-side validation using Zod
+- Proper error handling and success notifications
+- Responsive form layout
+
+### Fixed
+- Added proper Supabase type definitions
+- Fixed product service queries
+- Fixed NEXT_NOT_FOUND error for new product page
+
+## [0.1.6] - 2024-12-05
+
+### Added
+- Image upload functionality using Supabase Storage
+- Product image preview in form
+- Image upload service with error handling
+- Automatic image URL generation
+- Secure file storage with company-specific paths
+
+### Enhanced
+- Product form with image upload capabilities
+- Storage service for managing product images
+- Product creation flow with image handling
+
+- New product creation page with form validation
+- Product form component with comprehensive fields
+- Client-side validation using Zod
+- Proper error handling and success notifications
+- Responsive form layout
+
+### Fixed
+- Added proper Supabase type definitions
+- Fixed product service queries
+- Fixed NEXT_NOT_FOUND error for new product page
+
+### Added
+- Company-specific product listing page
+- Real-time product data fetching from Supabase
+- Loading states and error handling
+- Empty state handling
+- Responsive product filtering and search
+- Enhanced product table with sorting capabilities
+- Supabase integration for product management
+- Company-specific product CRUD operations
+- Product service with data access controls
+- Custom hooks for product management
+- Type definitions for Supabase tables
+- Proper error handling for product operations
+
 ## [0.1.5] - 2024-12-05
 
 ### Added

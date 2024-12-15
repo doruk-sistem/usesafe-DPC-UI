@@ -3,10 +3,10 @@
 import { ShieldCheck, LogIn, Box, Factory, Search } from "lucide-react";
 import Link from "next/link";
 
-import { UserNav } from "@/components/layout/user-nav";
+import { useAuth } from "@/lib/hooks/use-auth";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/lib/hooks/use-auth";
+import { UserNav } from "@/components/layout/user-nav";
 
 export function Navbar() {
   const { user, isLoading } = useAuth();
