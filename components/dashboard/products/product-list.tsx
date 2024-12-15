@@ -28,7 +28,7 @@ export function ProductList({ products, isLoading }: ProductListProps) {
     // Otherwise, get the public URL from storage
     try {
       return StorageHelper.getPublicUrl(url, {
-        bucketName: process.env.NEXT_PUBLIC_PRODUCT_IMAGES_BUCKET
+        bucketName: process.env.PRODUCT_IMAGES_BUCKET
       });
     } catch (error) {
       console.error('Error getting public URL:', error);
