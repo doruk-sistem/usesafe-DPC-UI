@@ -1,5 +1,5 @@
 import { supabase } from '@/lib/supabase';
-import type { DPP, DPPTemplate } from '@/lib/types/database';
+import type { DPP, DPPListItem, NewDPP } from '@/lib/types/dpp';
 import QRCode from 'qrcode';
 
 export class DPPService {
@@ -13,13 +13,34 @@ export class DPPService {
     }
   }
 
-  static async createDPP(data: Partial<DPP>): Promise<DPP> {
+  static async createDPP(data: NewDPP): Promise<DPP> {
     try {
-      const qrCode = await this.generateQRCode(data.serial_number!);
+      // Get template ID based on product type
+      const { data: product } = await supabase
+        .from('products')
+        .select('product_type')
+        .eq('id', data.product_id)
+        .single();
+
+      if (!product) throw new Error('Product not found');
+
+      const { data: template } = await supabase
+        .from('dpp_templates')
+        .select('id')
+        .eq('product_type', product.product_type)
+        .single();
+
+      if (!template) throw new Error('No template found for this product type');
+
+      const qrCode = await this.generateQRCode(data.serial_number);
       
       const { data: dpp, error } = await supabase
         .from('dpps')
-        .insert([{ ...data, qr_code: qrCode }])
+        .insert([{ 
+          ...data, 
+          qr_code: qrCode,
+          template_id: template.id 
+        }])
         .select()
         .single();
 
@@ -31,14 +52,42 @@ export class DPPService {
     }
   }
 
-  static async getDPPTemplate(productTypeId: number): Promise<DPPTemplate> {
+  static async getDPPs(companyId: string): Promise<DPPListItem[]> {
     const { data, error } = await supabase
-      .from('dpp_templates')
-      .select('*')
-      .eq('product_type_id', productTypeId)
-      .single();
+      .from('dpps')
+      .select(`
+        *,
+        products (
+          name,
+          product_type,
+          company_id
+        )
+      `)
+      .eq('products.company_id', companyId)
+      .order('created_at', { ascending: false });
 
     if (error) throw error;
+
+    return data.map(dpp => ({
+      ...dpp,
+      product_name: dpp.products.name,
+      product_type: dpp.products.product_type,
+      company_id: dpp.products.company_id
+    }));
+  }
+
+  static async getDPP(id: string): Promise<DPP | null> {
+    const { data, error } = await supabase
+      .from('dpps')
+      .select(`
+        *,
+        products (*),
+        dpp_templates (*)
+      `)
+      .eq('id', id)
+      .single();
+
+    if (error) return null;
     return data;
   }
 
@@ -47,8 +96,8 @@ export class DPPService {
       .from('dpps')
       .select(`
         *,
-        product:products(*),
-        template:dpp_templates(*)
+        products (*),
+        dpp_templates (*)
       `)
       .eq('serial_number', serialNumber)
       .single();

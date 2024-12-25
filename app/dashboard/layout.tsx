@@ -3,6 +3,7 @@
 import { LayoutDashboard, Box, FileText, ShieldCheck, Settings, Bell } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { QrCode } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -19,6 +20,11 @@ const sidebarItems = [
     title: "Products",
     href: "/dashboard/products",
     icon: Box,
+  },
+  {
+    title: "DPPs",
+    href: "/dashboard/dpps",
+    icon: QrCode,
   },
   {
     title: "Documents",
