@@ -36,11 +36,6 @@ const sidebarItems = [
     href: "/dashboard/certifications",
     icon: ShieldCheck,
   },
-  {
-    title: "Settings",
-    href: "/dashboard/settings",
-    icon: Settings,
-  },
 ];
 
 interface DashboardLayoutProps {

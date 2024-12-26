@@ -1,6 +1,6 @@
 "use client";
 
-import { LogOut, Settings, User } from "lucide-react";
+import { LogOut, Settings, LayoutDashboard } from "lucide-react";
 import Link from "next/link";
 
 import { useAuth } from "@/lib/hooks/use-auth";
@@ -17,12 +17,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export function UserNav() {
-  const { user, signOut } = useAuth();
+  const { user, signOut, isAdmin } = useAuth();
 
   if (!user) return null;
   
   const userMetadata = user.user_metadata || {};
   const fullName = userMetadata.full_name || user.email?.split('@')[0] || 'User';
+  const dashboardUrl = isAdmin() ? '/admin' : '/dashboard';
   const initials = fullName
     .split(' ')
     .map(n => n[0])
@@ -49,6 +50,12 @@ export function UserNav() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
+          <DropdownMenuItem asChild>
+            <Link href={dashboardUrl}>
+              <LayoutDashboard className="mr-2 h-4 w-4" />
+              <span>Dashboard</span>
+            </Link>
+          </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link href="/dashboard/settings">
               <Settings className="mr-2 h-4 w-4" />

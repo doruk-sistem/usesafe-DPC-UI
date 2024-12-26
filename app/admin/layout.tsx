@@ -1,6 +1,6 @@
 "use client";
 
-import { LayoutDashboard, Users, FileCheck, Shield, Settings, Bell } from "lucide-react";
+import { LayoutDashboard, Users, FileCheck, Shield, Bell } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -31,10 +31,10 @@ const sidebarItems = [
     icon: Shield,
   },
   {
-    title: "System",
-    href: "/admin/system",
-    icon: Settings,
-  },
+    title: "DPP Templates",
+    href: "/admin/templates",
+    icon: Shield,
+  }
 ];
 
 interface AdminLayoutProps {
