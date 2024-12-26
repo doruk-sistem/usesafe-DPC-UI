@@ -1,6 +1,6 @@
 "use client";
 
-import { User } from '@supabase/supabase-js';
+import type { User } from '@supabase/supabase-js';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -29,9 +29,20 @@ export function useAuth() {
   const signIn = async (email: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({
       email,
-      password,
+      password
     });
+
     if (error) throw error;
+
+    // Get session after sign in
+    const { data: { session } } = await supabase.auth.getSession();
+    
+    // Redirect based on role
+    if (session?.user?.user_metadata?.role === 'admin') {
+      router.push('/admin');
+    } else {
+      router.push('/dashboard');
+    }
   };
 
   const signUp = async (email: string, password: string, metadata: any) => {
@@ -50,6 +61,10 @@ export function useAuth() {
     if (error) throw error;
     router.push('/');
   };
+  
+  const isAdmin = () => {
+    return user?.user_metadata?.role === 'admin';
+  };
 
   return {
     user,
@@ -57,5 +72,6 @@ export function useAuth() {
     signIn,
     signUp,
     signOut,
+    isAdmin
   };
 }

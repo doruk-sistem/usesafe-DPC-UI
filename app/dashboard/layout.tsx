@@ -3,6 +3,7 @@
 import { LayoutDashboard, Box, FileText, ShieldCheck, Settings, Bell } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { QrCode } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -21,6 +22,11 @@ const sidebarItems = [
     icon: Box,
   },
   {
+    title: "DPPs",
+    href: "/dashboard/dpps",
+    icon: QrCode,
+  },
+  {
     title: "Documents",
     href: "/dashboard/documents",
     icon: FileText,
@@ -29,11 +35,6 @@ const sidebarItems = [
     title: "Certifications",
     href: "/dashboard/certifications",
     icon: ShieldCheck,
-  },
-  {
-    title: "Settings",
-    href: "/dashboard/settings",
-    icon: Settings,
   },
 ];
 

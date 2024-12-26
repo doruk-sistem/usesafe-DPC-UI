@@ -1,8 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link"; 
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
 
@@ -22,12 +21,13 @@ import { loginSchema } from "@/lib/schemas/auth";
 
 type FormData = z.infer<typeof loginSchema>;
 
-export function LoginForm() {
+interface LoginFormProps {
+  from?: string | null;
+}
+
+export function LoginForm({ from }: LoginFormProps) {
   const { toast } = useToast();
-  const router = useRouter();
   const { signIn } = useAuth();
-  const searchParams = useSearchParams();
-  const from = searchParams.get('from') || '/dashboard';
 
   const form = useForm<FormData>({
     resolver: zodResolver(loginSchema),
@@ -42,15 +42,13 @@ export function LoginForm() {
       await signIn(data.email, data.password);
       
       toast({
-        title: "Login Successful",
-        description: "Welcome back to UseSafe.",
+        title: "Success",
+        description: "Logged in successfully",
       });
-
-      router.push(from);
     } catch (error) {
       toast({
         title: "Login Failed",
-        description: error instanceof Error ? error.message : "Invalid credentials",
+        description: "Invalid email or password",
         variant: "destructive",
       });
     }

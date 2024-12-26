@@ -2,7 +2,11 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  role: string;
+  role: 'admin' | 'manufacturer';
+  user_metadata?: {
+    company_id?: string;
+    full_name?: string;
+  };
 }
 
 export interface AuthState {
@@ -13,4 +17,5 @@ export interface AuthState {
 export interface AuthContextType extends AuthState {
   signIn: (token: string) => void;
   signOut: () => void;
+  isAdmin: () => boolean;
 }

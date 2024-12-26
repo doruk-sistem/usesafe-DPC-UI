@@ -10,13 +10,17 @@ export async function middleware(request: NextRequest) {
   await supabase.auth.getSession();
 
   // Define protected routes
-  const protectedRoutes = ['/dashboard'];
+  const protectedRoutes = ['/dashboard', '/admin'];
+  const adminRoutes = ['/admin'];
 
   // Check if the path is protected
   const isProtectedRoute = protectedRoutes.some(route => 
     request.nextUrl.pathname.startsWith(route)
   );
 
+  const isAdminRoute = adminRoutes.some(route =>
+    request.nextUrl.pathname.startsWith(route)
+  );
   const {
     data: { session },
   } = await supabase.auth.getSession();
@@ -26,6 +30,10 @@ export async function middleware(request: NextRequest) {
     const loginUrl = new URL('/auth/login', request.url);
     loginUrl.searchParams.set('from', request.nextUrl.pathname);
     return NextResponse.redirect(loginUrl);
+  }
+  // If it's an admin route, check if user has admin role
+  if (isAdminRoute && session?.user?.user_metadata?.role !== 'admin') {
+    return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
   // Add security headers

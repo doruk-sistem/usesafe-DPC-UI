@@ -1,11 +1,15 @@
 "use client";
 
+import { useSearchParams } from 'next/navigation';
 import { ShieldCheck } from "lucide-react";
 
 import { LoginForm } from "@/components/auth/login-form";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 
 export default function LoginPage() {
+  const searchParams = useSearchParams();
+  const from = searchParams.get('from');
+
   return (
     <div className="container max-w-md mx-auto py-10 px-4">
       <div className="flex flex-col items-center text-center mb-10">
@@ -24,7 +28,7 @@ export default function LoginPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <LoginForm />
+          <LoginForm from={from} />
         </CardContent>
       </Card>
     </div>
