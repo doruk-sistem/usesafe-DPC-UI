@@ -1,6 +1,8 @@
-import { DPPTemplateService } from "@/lib/services/dpp-template";
+import { notFound } from 'next/navigation';
+
 import { DPPTemplatePreview } from "@/components/admin/templates/template-preview";
 import { Card } from "@/components/ui/card";
+import { DPPTemplateService } from "@/lib/services/dpp-template";
 
 // Generate static params for all templates
 export async function generateStaticParams() {
@@ -15,7 +17,27 @@ export async function generateStaticParams() {
   }
 }
 
-export default function TemplatePreviewPage({ params }: { params: { id: string } }) {
+// Get template data for the page
+async function getTemplate(id: string) {
+  try {
+    const template = await DPPTemplateService.getTemplate(id);
+    if (!template) {
+      return null;
+    }
+    return template;
+  } catch (error) {
+    console.error('Error fetching template:', error);
+    return null;
+  }
+}
+
+export default async function TemplatePreviewPage({ params }: { params: { id: string } }) {
+  const template = await getTemplate(params.id);
+
+  if (!template) {
+    notFound();
+  }
+
   return (
     <div className="space-y-6">
       <div>
@@ -26,7 +48,7 @@ export default function TemplatePreviewPage({ params }: { params: { id: string }
       </div>
 
       <Card className="p-6">
-        <DPPTemplatePreview templateId={params.id} />
+        <DPPTemplatePreview template={template} />
       </Card>
     </div>
   );

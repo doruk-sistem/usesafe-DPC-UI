@@ -1,45 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { FileText } from "lucide-react";
 import Image from "next/image";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
-import { DPPTemplateService } from "@/lib/services/dpp-template";
 import type { DPPTemplate } from "@/lib/types/dpp";
 
 interface DPPTemplatePreviewProps {
-  templateId: string;
+  template: DPPTemplate;
 }
 
-export function DPPTemplatePreview({ templateId }: DPPTemplatePreviewProps) {
-  const [template, setTemplate] = useState<DPPTemplate | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const loadTemplate = async () => {
-      try {
-        const data = await DPPTemplateService.getTemplate(templateId);
-        setTemplate(data);
-      } catch (error) {
-        console.error('Error loading template:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadTemplate();
-  }, [templateId]);
-
-  if (isLoading) {
-    return <Skeleton className="h-[400px]" />;
-  }
-
-  if (!template) {
-    return <div>Template not found</div>;
-  }
+export function DPPTemplatePreview({ template }: DPPTemplatePreviewProps) {
 
   return (
     <div className="space-y-8">
