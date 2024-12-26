@@ -95,4 +95,20 @@
     mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
     mask-composite: exclude;
   }
+
+  .gradient-card {
+    @apply relative overflow-hidden;
+  }
+  
+  .gradient-card::before {
+    @apply content-[''] absolute inset-0 bg-gradient-to-br opacity-0 transition-opacity duration-300;
+  }
+  
+  .gradient-card:hover::before {
+    @apply opacity-10;
+  }
+  
+  .metric-icon {
+    @apply p-2 rounded-lg transition-colors duration-300;
+  }
 }

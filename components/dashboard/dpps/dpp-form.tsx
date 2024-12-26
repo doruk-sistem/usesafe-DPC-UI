@@ -56,7 +56,13 @@ export function DPPForm() {
         throw new Error('Please select a product');
       }
 
-      await DPPService.createDPP(values);
+      const { product_id, serial_number, manufacturing_date, manufacturing_facility } = values;
+      await DPPService.createDPP({
+        product_id,
+        serial_number,
+        manufacturing_date,
+        manufacturing_facility
+      });
       
       toast({
         title: "Success",

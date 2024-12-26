@@ -51,9 +51,9 @@ export interface DPPTemplate {
 }
 
 export interface NewDPPTemplate extends Omit<DPPTemplate, 'id' | 'created_at' | 'updated_at'> {}
-export interface NewDPP {
+export type NewDPP = {
   product_id: string;
   serial_number: string;
   manufacturing_date: string;
   manufacturing_facility: string;
-}
+};

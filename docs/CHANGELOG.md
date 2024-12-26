@@ -207,4 +207,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - QR code generation
 - Responsive UI components
 - Tailwind CSS styling
-- shadcn/ui components integration
+- shadcn/ui components integration## [Unreleased]
+
+### Changed
+- Converted template detail and preview pages to client components
+- Implemented dynamic template loading from Supabase
+- Added loading states and error handling for template pages
+- Enhanced template preview with dynamic field rendering
+
+### Removed
+- Removed static template data and generateStaticParams
+
+### Added
+- Added DPPTemplate and DPPTemplateField type definitions
+- Improved type safety in template components
+- Enhanced error handling and null checks
+
+### Fixed
+- Fixed type issues in template pages
+- Added proper null checks for template data
+- Improved error message styling
+
+### Enhanced
+- Improved error handling in DPPTemplateService
+- Added toast notifications for template operations
+- Enhanced type safety in template hooks
+- Better handling of empty states and error cases
+
+### Fixed
+- Fixed error handling in template service
+- Improved error messages and user feedback
+- Added proper null checks and type guards
+
