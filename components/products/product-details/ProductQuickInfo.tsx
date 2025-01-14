@@ -1,35 +1,43 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { Barcode, Factory } from "lucide-react";
 
-interface ProductQuickInfoProps {
+import { Card } from "@/components/ui/card";
+
+export interface ProductQuickInfoProps {
   model: string;
-  serialNumber: string;
+  manufacturer: string;
   cardVariants: any;
 }
 
-export function ProductQuickInfo({ 
-  model, 
-  serialNumber, 
-  cardVariants 
-}: ProductQuickInfoProps) {
+export function ProductQuickInfo({ model, manufacturer, cardVariants }: ProductQuickInfoProps) {
   return (
-    <div className="grid grid-cols-2 gap-6">
-      <motion.div 
+    <div className="grid grid-cols-2 gap-4">
+      <motion.div
         variants={cardVariants}
         whileHover="hover"
-        className="p-5 rounded-2xl bg-gradient-to-br from-background to-muted/50 shadow-lg card-hover"
       >
-        <p className="text-sm text-muted-foreground mb-2">Model</p>
-        <p className="font-semibold text-lg">{model}</p>
+        <Card className="p-4 flex items-center gap-3">
+          <Barcode className="w-5 h-5 text-primary" />
+          <div>
+            <p className="text-sm text-muted-foreground">Model</p>
+            <p className="font-medium">{model}</p>
+          </div>
+        </Card>
       </motion.div>
-      <motion.div 
+
+      <motion.div
         variants={cardVariants}
         whileHover="hover"
-        className="p-5 rounded-2xl bg-gradient-to-br from-background to-muted/50 shadow-lg card-hover"
       >
-        <p className="text-sm text-muted-foreground mb-2">Serial Number</p>
-        <p className="font-semibold text-lg">{serialNumber}</p>
+        <Card className="p-4 flex items-center gap-3">
+          <Factory className="w-5 h-5 text-primary" />
+          <div>
+            <p className="text-sm text-muted-foreground">Manufacturer</p>
+            <p className="font-medium">{manufacturer}</p>
+          </div>
+        </Card>
       </motion.div>
     </div>
   );

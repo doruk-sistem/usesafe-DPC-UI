@@ -1,39 +1,43 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { ListChecks } from "lucide-react";
 
-import { TechnicalSpec } from "@/lib/data/products";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { KeyFeature } from "@/lib/types/product";
 
-interface ProductKeyFeaturesProps {
-  technicalSpecs: TechnicalSpec[];
+export interface ProductKeyFeaturesProps {
+  features: KeyFeature[];
   itemVariants: any;
 }
 
-export function ProductKeyFeatures({ 
-  technicalSpecs, 
-  itemVariants 
-}: ProductKeyFeaturesProps) {
+export function ProductKeyFeatures({ features, itemVariants }: ProductKeyFeaturesProps) {
   return (
-    <motion.div 
+    <motion.div
       variants={itemVariants}
-      className="border-t border-b py-8 space-y-6 border-border/50"
+      whileHover="hover"
     >
-      <h2 className="text-2xl font-semibold mb-4">Key Features</h2>
-      <div className="grid grid-cols-2 gap-4">
-        {technicalSpecs.map((spec, index) => (
-          <motion.div 
-            key={index}
-            variants={itemVariants}
-            className="flex items-center gap-3 bg-muted/30 p-3 rounded-lg"
-          >
-            <div className="w-3 h-3 rounded-full bg-gradient-to-r from-primary to-secondary"></div>
-            <div>
-              <span className="text-sm font-medium block">{spec.name}</span>
-              <span className="text-sm text-muted-foreground">{spec.value}</span>
-            </div>
-          </motion.div>
-        ))}
-      </div>
+      <Card>
+        <CardHeader>
+          <div className="flex items-center gap-2">
+            <ListChecks className="w-5 h-5 text-primary" />
+            <CardTitle>Key Features</CardTitle>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-4 md:grid-cols-2">
+            {features.map((feature, index) => (
+              <div key={index} className="flex items-start gap-2">
+                <span className="font-medium">{feature.name}:</span>
+                <span className="text-muted-foreground">
+                  {feature.value}
+                  {feature.unit && ` ${feature.unit}`}
+                </span>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
     </motion.div>
   );
 } 

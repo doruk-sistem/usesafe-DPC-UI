@@ -13,6 +13,42 @@ import type { NewProduct, DPPSection } from "@/lib/types/product";
 import { BasicInfoStep } from "./steps/BasicInfoStep";
 import { DPPConfigStep } from "./steps/DPPConfigStep";
 
+const materialValueSchema = z.object({
+  percentage: z.number(),
+  recyclable: z.boolean(),
+  description: z.string()
+});
+
+const certificationValueSchema = z.object({
+  issuedBy: z.string(),
+  validUntil: z.string(),
+  status: z.enum(['valid', 'expired']),
+  documentUrl: z.string().optional()
+});
+
+const dppFieldSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  type: z.enum(['text', 'number', 'date', 'select', 'multiselect', 'material', 'certification']),
+  required: z.boolean(),
+  value: z.union([
+    z.string(),
+    z.number(),
+    z.array(z.string()),
+    materialValueSchema,
+    certificationValueSchema
+  ]).optional(),
+  options: z.array(z.string()).optional()
+});
+
+const dppSectionSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  fields: z.array(dppFieldSchema),
+  required: z.boolean(),
+  order: z.number()
+});
+
 const productSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   description: z.string().min(5, "Product description is required"),
@@ -29,11 +65,8 @@ const productSchema = z.object({
     unit: z.string().optional()
   })).default([]),
   dpp_config: z.object({
-    sections: z.array(z.object({
-      id: z.string(),
-      title: z.string(),
-      fields: z.array(z.any())
-    }))
+    sections: z.array(dppSectionSchema),
+    lastUpdated: z.string()
   }).optional(),
 });
 
