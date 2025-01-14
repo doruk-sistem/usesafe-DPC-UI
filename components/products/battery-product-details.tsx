@@ -6,7 +6,7 @@ import Link from "next/link";
 
 import { ProductQR } from "@/components/products/product-qr";
 import { Button } from "@/components/ui/button";
-import { Product } from "@/lib/data/products";
+import { Product } from "@/lib/types/product";
 
 import { Card, CardHeader, CardTitle, CardContent } from "../ui/card";
 
@@ -20,15 +20,57 @@ import { ProductImageGallery } from "./product-details/ProductImageGallery";
 import { ProductKeyFeatures } from "./product-details/ProductKeyFeatures";
 import { ProductQuickInfo } from "./product-details/ProductQuickInfo";
 import { SustainabilityMetricsCard } from "./product-details/SustainabilityMetricsCard";
-import { TechnicalSpecificationsCard } from "./product-details/TechnicalSpecificationsCard";
 
-
-
-interface ProductDetailsProps {
+interface BatteryProductDetailsProps {
   product: Product;
 }
 
-export function ProductDetails({ product }: ProductDetailsProps) {
+export function BatteryProductDetails({ product }: BatteryProductDetailsProps) {
+  // Extract data from DPP config
+  const getFieldValue = (sectionId: string, fieldId: string) => {
+    const section = product.dpp_config?.sections.find(s => s.id === sectionId);
+    const field = section?.fields.find(f => f.id === fieldId);
+    return field?.value;
+  };
+
+  const getFieldsByType = (sectionId: string, fieldType: string) => {
+    const section = product.dpp_config?.sections.find(s => s.id === sectionId);
+    return section?.fields.filter(f => f.type === fieldType) || [];
+  };
+
+  // Get manufacturer and category from basic info section
+  const manufacturer = getFieldValue("basic-info", "manufacturer") as string || "";
+  const category = getFieldValue("basic-info", "category") as string || "";
+
+  // Get materials from materials section
+  const materials = getFieldsByType("materials", "material").map(field => ({
+    name: field.name,
+    percentage: (field.value as any).percentage,
+    recyclable: (field.value as any).recyclable,
+    description: (field.value as any).description
+  }));
+
+  // Get certifications from certifications section
+  const certifications = getFieldsByType("certifications", "certification").map(field => ({
+    name: field.name,
+    issuedBy: (field.value as any).issuedBy,
+    validUntil: (field.value as any).validUntil,
+    status: (field.value as any).status,
+    documentUrl: (field.value as any).documentUrl
+  }));
+
+  // Get technical specs from key_features
+  const features = product.key_features;
+
+  // Get environmental metrics
+  const environmentalFields = product.dpp_config?.sections
+    .find(s => s.id === "environmental")
+    ?.fields.map(field => ({
+      id: field.id,
+      name: field.name,
+      value: typeof field.value === 'object' ? JSON.stringify(field.value) : field.value
+    })) || [];
+
   // Predefined arrays for specific sections
   const hazardPictograms = [
     { src: "/images/hazard-health.gif", alt: "Health Hazard", description: "May cause respiratory irritation" },
@@ -187,7 +229,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
       >
         {/* Image Gallery */}
         <ProductImageGallery 
-          image={product.image} 
+          images={product.images} 
           name={product.name} 
           itemVariants={itemVariants} 
         />
@@ -206,14 +248,14 @@ export function ProductDetails({ product }: ProductDetailsProps) {
 
           {/* Quick Info Cards */}
           <ProductQuickInfo 
-            model={product.basicInfo.model} 
-            serialNumber={product.basicInfo.serialNumber} 
+            model={product.model}
+            manufacturer={manufacturer}
             cardVariants={cardVariants} 
           />
 
           {/* Key Features */}
           <ProductKeyFeatures 
-            technicalSpecs={product.technicalSpecs} 
+            features={features}
             itemVariants={itemVariants} 
           />
         </motion.div>
@@ -222,13 +264,9 @@ export function ProductDetails({ product }: ProductDetailsProps) {
       <div className="grid gap-8 lg:grid-cols-2 mt-16 max-w-[1400px] mx-auto">
         {/* Basic Information */}
         <BasicInformationCard 
-          basicInfo={product.basicInfo} 
-          cardVariants={cardVariants} 
-        />
-
-        {/* Technical Specifications */}
-        <TechnicalSpecificationsCard 
-          technicalSpecs={product.technicalSpecs} 
+          manufacturer={manufacturer}
+          category={category}
+          model={product.model}
           cardVariants={cardVariants} 
         />
 
@@ -240,7 +278,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
 
         {/* Materials */}
         <MaterialsCard 
-          materials={product.materials} 
+          materials={materials} 
           itemVariants={itemVariants} 
         />
 
@@ -297,14 +335,13 @@ export function ProductDetails({ product }: ProductDetailsProps) {
 
         {/* Certifications */}
         <CertificationsCard 
-          certifications={product.certifications} 
+          certifications={certifications} 
           itemVariants={itemVariants} 
         />
 
         {/* Sustainability Metrics */}
         <SustainabilityMetricsCard 
-          sustainabilityScore={product.sustainabilityScore} 
-          carbonFootprint={product.carbonFootprint} 
+          environmentalFields={environmentalFields}
           cardVariants={cardVariants} 
         />
 

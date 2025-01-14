@@ -3,20 +3,19 @@
 import { motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
 import Image from "next/image";
+import { ProductImage } from "@/lib/types/product";
 
 interface ProductImageGalleryProps {
-  image: string;
+  images: ProductImage[];
   name: string;
   itemVariants: any;
 }
 
-export function ProductImageGallery({ 
-  image, 
-  name, 
-  itemVariants 
-}: ProductImageGalleryProps) {
+export function ProductImageGallery({ images, name, itemVariants }: ProductImageGalleryProps) {
+  const primaryImage = images.find(img => img.is_primary) || images[0];
+
   return (
-    <motion.div 
+    <motion.div
       variants={itemVariants}
       whileHover="hover"
       className="space-y-8"
@@ -33,7 +32,7 @@ export function ProductImageGallery({
           className="w-full h-full"
         >
           <Image
-            src={image}
+            src={primaryImage.url}
             alt={name}
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-300"
@@ -59,7 +58,7 @@ export function ProductImageGallery({
       
       {/* Thumbnail Gallery */}
       <div className="grid grid-cols-4 gap-4">
-        {[...Array(4)].map((_, i) => (
+        {images.map((image, i) => (
           <motion.div 
             key={i}
             variants={itemVariants}
@@ -67,8 +66,8 @@ export function ProductImageGallery({
             className="aspect-square relative rounded-xl overflow-hidden bg-white shadow-md cursor-pointer hover:ring-4 ring-primary/50 transition-all duration-200"
           >
             <Image
-              src={image}
-              alt={`${name} view ${i + 1}`}
+              src={image.url}
+              alt={image.alt}
               fill
               className="object-cover"
             />

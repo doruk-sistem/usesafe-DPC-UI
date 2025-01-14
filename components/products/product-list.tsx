@@ -14,6 +14,8 @@ import { Badge } from "@/components/ui/badge";
 import { CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { EnhancedCard } from "@/components/ui/enhanced-card";
 import { products } from "@/lib/data/products";
+import { textileProducts } from "@/lib/data/textile-products";
+import { Product } from "@/lib/types/product";
 
 export function ProductList() {
   const containerVariants = {
@@ -37,6 +39,30 @@ export function ProductList() {
         stiffness: 100
       }
     }
+  };
+
+  const allProducts = [...textileProducts, ...products];
+
+  const getSustainabilityScore = (product: Product) => {
+    const score = product.dpp_config?.sections.find(s => s.id === "environmental")
+      ?.fields.find(f => f.id === "sustainability-score")?.value;
+    return typeof score === 'number' ? score : 0;
+  };
+
+  const getCarbonFootprint = (product: Product) => {
+    const footprint = product.dpp_config?.sections.find(s => s.id === "environmental")
+      ?.fields.find(f => f.id === "carbon-footprint")?.value;
+    return typeof footprint === 'string' ? footprint : "0 kg CO2e";
+  };
+
+  const getManufacturer = (product: Product) => {
+    return product.dpp_config?.sections.find(s => s.id === "basic-info")
+      ?.fields.find(f => f.id === "manufacturer")?.value as string || "Unknown";
+  };
+
+  const getCategory = (product: Product) => {
+    return product.dpp_config?.sections.find(s => s.id === "basic-info")
+      ?.fields.find(f => f.id === "category")?.value as string || product.product_type;
   };
 
   const getSustainabilityIcon = (score: number) => {
@@ -63,94 +89,102 @@ export function ProductList() {
       variants={containerVariants}
       className="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
     >
-      {products.map((product) => (
-        <motion.div
-          key={product.id}
-          variants={itemVariants}
-          whileHover={{ scale: 1.05 }}
-          className="group"
-        >
-          <Link href={`/products/${product.id}`}>
-            <EnhancedCard 
-              hoverEffect={true}
-              className="overflow-hidden h-full"
-            >
-              <div className="aspect-video relative group">
-                <Image
-                  src={product.image}
-                  alt={product.name}
-                  fill
-                  className="object-cover transition-transform duration-300 group-hover:scale-110"
-                />
-                <div className="absolute top-2 right-2 bg-background/70 rounded-full p-1">
-                  {getSustainabilityIcon(product.sustainabilityScore)}
-                </div>
-              </div>
-              
-              <CardHeader>
-                <div className="space-y-1">
-                  <CardTitle className="text-lg flex items-center justify-between">
-                    {product.name}
-                    <Badge variant="secondary" className="ml-2">
-                      {product.category}
-                    </Badge>
-                  </CardTitle>
-                  <CardDescription className="flex items-center">
-                    <Factory className="w-4 h-4 mr-2 text-muted-foreground" />
-                    {product.manufacturer}
-                  </CardDescription>
-                </div>
-              </CardHeader>
-              
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">
-                      Sustainability Score
-                    </span>
-                    <Badge 
-                      variant={getSustainabilityVariant(product.sustainabilityScore)}
-                      className="flex items-center gap-1"
-                    >
-                      {getSustainabilityIcon(product.sustainabilityScore)}
-                      {product.sustainabilityScore}%
-                    </Badge>
+      {allProducts.map((product) => {
+        const sustainabilityScore = getSustainabilityScore(product);
+        const carbonFootprint = getCarbonFootprint(product);
+        const manufacturer = getManufacturer(product);
+        const category = getCategory(product);
+        const primaryImage = product.images.find(img => img.is_primary) || product.images[0];
+
+        return (
+          <motion.div
+            key={product.id}
+            variants={itemVariants}
+            whileHover={{ scale: 1.05 }}
+            className="group"
+          >
+            <Link href={`/products/${product.id}`}>
+              <EnhancedCard 
+                hoverEffect={true}
+                className="overflow-hidden h-full"
+              >
+                <div className="aspect-video relative group">
+                  <Image
+                    src={primaryImage.url}
+                    alt={primaryImage.alt}
+                    fill
+                    className="object-cover transition-transform duration-300 group-hover:scale-110"
+                  />
+                  <div className="absolute top-2 right-2 bg-background/70 rounded-full p-1">
+                    {getSustainabilityIcon(sustainabilityScore)}
                   </div>
-                  
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">
-                      Carbon Footprint
-                    </span>
-                    <span 
-                      className={`text-sm font-medium ${
-                        parseCarbonFootprint(product.carbonFootprint) <= 50 
-                          ? 'text-green-600' 
-                          : parseCarbonFootprint(product.carbonFootprint) <= 100 
-                            ? 'text-yellow-600' 
-                            : 'text-red-600'
-                      }`}
-                    >
-                      {product.carbonFootprint}
-                    </span>
-                  </div>
-                  
-                  <motion.div
-                    whileHover={{ scale: 1.05 }}
-                    className="w-full bg-muted rounded-full h-2 mt-4"
-                  >
-                    <motion.div 
-                      initial={{ width: 0 }}
-                      animate={{ width: `${product.sustainabilityScore}%` }}
-                      transition={{ duration: 1 }}
-                      className="bg-primary h-full rounded-full"
-                    />
-                  </motion.div>
                 </div>
-              </CardContent>
-            </EnhancedCard>
-          </Link>
-        </motion.div>
-      ))}
+                
+                <CardHeader>
+                  <div className="space-y-1">
+                    <CardTitle className="text-lg flex items-center justify-between">
+                      {product.name}
+                      <Badge variant="secondary" className="ml-2">
+                        {category}
+                      </Badge>
+                    </CardTitle>
+                    <CardDescription className="flex items-center">
+                      <Factory className="w-4 h-4 mr-2 text-muted-foreground" />
+                      {manufacturer}
+                    </CardDescription>
+                  </div>
+                </CardHeader>
+                
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">
+                        Sustainability Score
+                      </span>
+                      <Badge 
+                        variant={getSustainabilityVariant(sustainabilityScore)}
+                        className="flex items-center gap-1"
+                      >
+                        {getSustainabilityIcon(sustainabilityScore)}
+                        {sustainabilityScore}%
+                      </Badge>
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">
+                        Carbon Footprint
+                      </span>
+                      <span 
+                        className={`text-sm font-medium ${
+                          parseCarbonFootprint(carbonFootprint) <= 50 
+                            ? 'text-green-600' 
+                            : parseCarbonFootprint(carbonFootprint) <= 100 
+                              ? 'text-yellow-600' 
+                              : 'text-red-600'
+                        }`}
+                      >
+                        {carbonFootprint}
+                      </span>
+                    </div>
+                    
+                    <motion.div
+                      whileHover={{ scale: 1.05 }}
+                      className="w-full bg-muted rounded-full h-2 mt-4"
+                    >
+                      <motion.div 
+                        initial={{ width: 0 }}
+                        animate={{ width: `${sustainabilityScore}%` }}
+                        transition={{ duration: 1 }}
+                        className="bg-primary h-full rounded-full"
+                      />
+                    </motion.div>
+                  </div>
+                </CardContent>
+              </EnhancedCard>
+            </Link>
+          </motion.div>
+        );
+      })}
     </motion.div>
   );
 }

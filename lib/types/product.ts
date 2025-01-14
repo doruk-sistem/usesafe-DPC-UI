@@ -1,11 +1,28 @@
 import { Database } from './supabase';
 
+export type DPPFieldType = 'text' | 'number' | 'date' | 'select' | 'multiselect' | 'material' | 'certification';
+
+export type MaterialValue = {
+  percentage: number;
+  recyclable: boolean;
+  description: string;
+};
+
+export type CertificationValue = {
+  issuedBy: string;
+  validUntil: string;
+  status: 'valid' | 'expired';
+  documentUrl?: string;
+};
+
+export type DPPFieldValue = string | number | string[] | MaterialValue | CertificationValue;
+
 export type DPPField = {
   id: string;
   name: string;
-  type: 'text' | 'number' | 'date' | 'select' | 'multiselect';
+  type: DPPFieldType;
   required: boolean;
-  value?: string | number | string[];
+  value?: DPPFieldValue;
   options?: string[];
 };
 

@@ -1,43 +1,49 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Box } from "lucide-react";
+import { Info } from "lucide-react";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
-interface BasicInformationCardProps {
-  basicInfo: {
-    [key: string]: string;
-  };
+export interface BasicInformationCardProps {
+  manufacturer: string;
+  category: string;
+  model: string;
   cardVariants: any;
 }
 
 export function BasicInformationCard({ 
-  basicInfo, 
+  manufacturer, 
+  category, 
+  model,
   cardVariants 
 }: BasicInformationCardProps) {
   return (
-    <motion.div 
+    <motion.div
       variants={cardVariants}
       whileHover="hover"
     >
-      <Card className="bg-gradient-to-br from-background to-muted shadow-lg card-hover">
+      <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Box className="h-5 w-5 text-primary" />
-            Basic Information
-          </CardTitle>
+          <div className="flex items-center gap-2">
+            <Info className="w-5 h-5 text-primary" />
+            <CardTitle>Basic Information</CardTitle>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {Object.entries(basicInfo).map(([key, value]) => (
-              <div key={key} className="flex justify-between">
-                <dt className="text-sm font-medium capitalize">
-                  {key.replace(/([A-Z])/g, ' $1').trim()}
-                </dt>
-                <dd className="text-sm text-primary">{value}</dd>
-              </div>
-            ))}
+            <div className="flex items-start gap-2">
+              <span className="font-medium">Manufacturer:</span>
+              <span className="text-muted-foreground">{manufacturer}</span>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="font-medium">Category:</span>
+              <span className="text-muted-foreground">{category}</span>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="font-medium">Model:</span>
+              <span className="text-muted-foreground">{model}</span>
+            </div>
           </div>
         </CardContent>
       </Card>
