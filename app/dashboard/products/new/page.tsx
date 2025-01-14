@@ -109,7 +109,7 @@ export default function NewProductPage() {
       <div>
         <h1 className="text-2xl font-semibold">Add New Product</h1>
         <p className="text-sm text-muted-foreground">
-          Create a new product in your catalog
+          Create a new product and configure its Digital Product Passport
         </p>
       </div>
 

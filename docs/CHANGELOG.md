@@ -5,6 +5,39 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.10] - 2024-03-21
+
+### Added
+- Integrated DPP Configurator into product form
+- Added default DPP sections and fields
+- Added required DPP sections handling
+- Enhanced product form with two-step wizard
+
+### Changed
+- Updated product form to use DPP Configurator
+- Improved DPP configuration interface
+- Enhanced form validation for DPP fields
+
+## [0.1.9] - 2024-03-20
+
+### Added
+- Two-step product registration process
+- DPP configuration with drag-and-drop interface
+- Split screen interface for DPP element management
+- Support for mandatory and optional DPP fields
+- Enhanced product form with progress indicator
+- QR code generation for products
+
+### Enhanced
+- Product form with image upload capabilities
+- Product type definitions with DPP support
+- Product service with QR code generation
+
+### Changed
+- Updated product form to use two-step wizard
+- Enhanced product types with DPP configuration
+- Improved form validation for DPP fields
+
 ## [0.1.8] - 2024-12-10
 
 ### Added
@@ -238,4 +271,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed error handling in template service
 - Improved error messages and user feedback
 - Added proper null checks and type guards
-

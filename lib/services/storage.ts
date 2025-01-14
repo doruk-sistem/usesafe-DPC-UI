@@ -1,7 +1,7 @@
 import { StorageHelper } from '@/lib/utils/storage';
 
 export class StorageService {
-  private static readonly PRODUCT_IMAGES_BUCKET = process.env.PRODUCT_IMAGES_BUCKET;
+  private static readonly PRODUCT_IMAGES_BUCKET = process.env.NEXT_PUBLIC_PRODUCT_IMAGES_BUCKET;
 
   static async uploadProductImage(file: File | string, companyId: string): Promise<string | null> {
     try {
