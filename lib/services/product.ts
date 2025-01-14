@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabase';
+import QRCode from 'qrcode';
 import type { NewProduct, Product, ProductResponse, UpdateProduct } from '@/lib/types/product';
 
 export class ProductService {
@@ -33,23 +34,32 @@ export class ProductService {
   }
 
   static async createProduct(product: NewProduct): Promise<ProductResponse> {
-    const { data, error } = await supabase
-      .from('products')
-      .insert([product])
-      .select()
-      .single();
+    try {
+      const { data, error } = await supabase
+        .from('products')
+        .insert([product])
+        .select()
+        .single();
 
-    if (error) {
-      console.error('Product creation error:', error);
-      return { 
-        error: { 
-          message: 'Failed to create product',
-          field: error.details 
-        } 
+      if (error) {
+        console.error('Product creation error:', error);
+        return { 
+          error: { 
+            message: 'Failed to create product',
+            field: error.details 
+          } 
+        };
+      }
+
+      return { data };
+    } catch (error) {
+      console.error('Error in createProduct:', error);
+      return {
+        error: {
+          message: error instanceof Error ? error.message : 'Unknown error occurred'
+        }
       };
     }
-
-    return { data };
   }
 
   static async updateProduct(id: string, product: UpdateProduct): Promise<ProductResponse> {
