@@ -22,13 +22,26 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import type { NewProduct } from "@/lib/types/product";
+import type { NewProduct, KeyFeature } from "@/lib/types/product";
+import type { Json } from "@/lib/types/supabase";
 
 interface BasicInfoStepProps {
   form: UseFormReturn<NewProduct>;
 }
 
 export function BasicInfoStep({ form }: BasicInfoStepProps) {
+  const convertToKeyFeature = (json: Json): KeyFeature => {
+    if (typeof json === 'object' && json !== null && !Array.isArray(json)) {
+      const obj = json as Record<string, Json>;
+      return {
+        name: typeof obj.name === 'string' ? obj.name : "",
+        value: typeof obj.value === 'string' ? obj.value : "",
+        unit: typeof obj.unit === 'string' ? obj.unit : undefined
+      };
+    }
+    return { name: "", value: "", unit: undefined };
+  };
+
   return (
     <div className="space-y-8">
       <Card className="p-4">
@@ -156,7 +169,7 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
           name="model"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Category</FormLabel>
+              <FormLabel>Model</FormLabel>
               <FormControl>
                 <Input placeholder="Enter product model" {...field} />
               </FormControl>
@@ -174,66 +187,67 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
                 <FormLabel>Key Features</FormLabel>
                 <FormControl>
                   <div className="space-y-4">
-                    {field.value.map((feature, index) => (
-                      <div key={index} className="flex gap-4">
-                        <Input
-                          placeholder="Feature name"
-                          value={feature.name}
-                          onChange={(e) => {
-                            const newFeatures = [...(field.value || [])];
-                            newFeatures[index] = {
-                              ...feature,
-                              name: e.target.value
-                            };
-                            field.onChange(newFeatures);
-                          }}
-                        />
-                        <Input
-                          placeholder="Value"
-                          value={feature.value}
-                          onChange={(e) => {
-                            const newFeatures = [...(field.value || [])];
-                            newFeatures[index] = {
-                              ...feature,
-                              value: e.target.value
-                            };
-                            field.onChange(newFeatures);
-                          }}
-                        />
-                        <Input
-                          placeholder="Unit (optional)"
-                          value={feature.unit || ""}
-                          onChange={(e) => {
-                            const newFeatures = [...(field.value || [])];
-                            newFeatures[index] = {
-                              ...feature,
-                              unit: e.target.value
-                            };
-                            field.onChange(newFeatures);
-                          }}
-                        />
-                        <Button
-                          type="button"
-                          variant="destructive"
-                          size="icon"
-                          onClick={() => {
-                            const newFeatures = [...field.value];
-                            newFeatures.splice(index, 1);
-                            field.onChange(newFeatures);
-                          }}
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    ))}
+                    {(Array.isArray(field.value) ? field.value : []).map((feature: Json, index: number) => {
+                      const keyFeature = convertToKeyFeature(feature);
+                      return (
+                        <div key={index} className="flex gap-4">
+                          <Input
+                            placeholder="Feature name"
+                            value={keyFeature.name}
+                            onChange={(e) => {
+                              const newFeatures = [...(Array.isArray(field.value) ? field.value : [])];
+                              newFeatures[index] = {
+                                ...keyFeature,
+                                name: e.target.value
+                              };
+                              field.onChange(newFeatures);
+                            }}
+                          />
+                          <Input
+                            placeholder="Value"
+                            value={keyFeature.value}
+                            onChange={(e) => {
+                              const newFeatures = [...(Array.isArray(field.value) ? field.value : [])];
+                              newFeatures[index] = {
+                                ...keyFeature,
+                                value: e.target.value
+                              };
+                              field.onChange(newFeatures);
+                            }}
+                          />
+                          <Input
+                            placeholder="Unit (optional)"
+                            value={keyFeature.unit || ""}
+                            onChange={(e) => {
+                              const newFeatures = [...(Array.isArray(field.value) ? field.value : [])];
+                              newFeatures[index] = {
+                                ...keyFeature,
+                                unit: e.target.value || undefined
+                              };
+                              field.onChange(newFeatures);
+                            }}
+                          />
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="icon"
+                            onClick={() => {
+                              const newFeatures = [...(Array.isArray(field.value) ? field.value : [])];
+                              newFeatures.splice(index, 1);
+                              field.onChange(newFeatures);
+                            }}
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      );
+                    })}
                     <Button
                       type="button"
                       variant="outline"
                       onClick={() => {
-                        field.onChange([
-                          ...field.value,
-                          { name: "", value: "", unit: "" }
-                        ]);
+                        const newFeature: KeyFeature = { name: "", value: "", unit: undefined };
+                        field.onChange([...(Array.isArray(field.value) ? field.value : []), newFeature]);
                       }}
                     >
                       <Plus className="h-4 w-4 mr-2" />

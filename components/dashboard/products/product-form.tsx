@@ -169,8 +169,6 @@ export function ProductForm({ onSubmit, defaultValues }: ProductFormProps) {
   const progress = (step / 2) * 100;
 
   const handleSubmit = async (data: NewProduct) => {
-    console.log(data)
-    
     try {
       setIsSubmitting(true);
       await onSubmit({
@@ -179,8 +177,11 @@ export function ProductForm({ onSubmit, defaultValues }: ProductFormProps) {
           sections: selectedSections.map(section => ({
             id: section.id,
             title: section.title,
-            fields: section.fields
-          }))
+            fields: section.fields,
+            required: section.required,
+            order: section.order
+          })),
+          lastUpdated: new Date().toISOString()
         }
       });
     } finally {
@@ -190,11 +191,11 @@ export function ProductForm({ onSubmit, defaultValues }: ProductFormProps) {
 
   const handleNextStep = (e: React.MouseEvent) => {
     e.preventDefault();
-    //form.trigger().then((isValid) => {
-    //  if (isValid) {
+    form.trigger().then((isValid) => {
+      if (isValid) {
         setStep(2);
-    //  }
-    //});
+      }
+    });
   };
 
   return (
