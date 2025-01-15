@@ -28,14 +28,22 @@ interface BatteryProductDetailsProps {
 export function BatteryProductDetails({ product }: BatteryProductDetailsProps) {
   // Extract data from DPP config
   const getFieldValue = (sectionId: string, fieldId: string) => {
-    const section = product.dpp_config?.sections.find(s => s.id === sectionId);
-    const field = section?.fields.find(f => f.id === fieldId);
+    if (!product?.dpp_config?.sections) return undefined;
+    
+    const section = product.dpp_config.sections.find(s => s.id === sectionId);
+    if (!section?.fields) return undefined;
+    
+    const field = section.fields.find(f => f.id === fieldId);
     return field?.value;
   };
 
   const getFieldsByType = (sectionId: string, fieldType: string) => {
-    const section = product.dpp_config?.sections.find(s => s.id === sectionId);
-    return section?.fields.filter(f => f.type === fieldType) || [];
+    if (!product?.dpp_config?.sections) return [];
+    
+    const section = product.dpp_config.sections.find(s => s.id === sectionId);
+    if (!section?.fields) return [];
+    
+    return section.fields.filter(f => f.type === fieldType) || [];
   };
 
   // Get manufacturer and category from basic info section
@@ -45,18 +53,18 @@ export function BatteryProductDetails({ product }: BatteryProductDetailsProps) {
   // Get materials from materials section
   const materials = getFieldsByType("materials", "material").map(field => ({
     name: field.name,
-    percentage: (field.value as any).percentage,
-    recyclable: (field.value as any).recyclable,
-    description: (field.value as any).description
+    percentage: (field.value as any)?.percentage || 0,
+    recyclable: (field.value as any)?.recyclable || false,
+    description: (field.value as any)?.description || ""
   }));
 
   // Get certifications from certifications section
   const certifications = getFieldsByType("certifications", "certification").map(field => ({
     name: field.name,
-    issuedBy: (field.value as any).issuedBy,
-    validUntil: (field.value as any).validUntil,
-    status: (field.value as any).status,
-    documentUrl: (field.value as any).documentUrl
+    issuedBy: (field.value as any)?.issuedBy || "",
+    validUntil: (field.value as any)?.validUntil || "",
+    status: (field.value as any)?.status || "unknown",
+    documentUrl: (field.value as any)?.documentUrl || ""
   }));
 
   // Get technical specs from key_features
@@ -65,7 +73,7 @@ export function BatteryProductDetails({ product }: BatteryProductDetailsProps) {
   // Get environmental metrics
   const environmentalFields = product.dpp_config?.sections
     .find(s => s.id === "environmental")
-    ?.fields.map(field => ({
+    ?.fields?.map(field => ({
       id: field.id,
       name: field.name,
       value: typeof field.value === 'object' ? JSON.stringify(field.value) : field.value

@@ -6,12 +6,14 @@ import { DPPConfigurator } from "../dpp-configurator";
 import type { NewProduct, DPPSection } from "@/lib/types/product";
 
 interface DPPConfigStepProps {
+  form: UseFormReturn<NewProduct>;
   availableSections: DPPSection[];
   selectedSections: DPPSection[];
   onSectionsChange: (sections: DPPSection[]) => void;
 }
 
 export function DPPConfigStep({ 
+  form,
   availableSections, 
   selectedSections, 
   onSectionsChange 

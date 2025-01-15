@@ -44,25 +44,41 @@ export function ProductList() {
   const allProducts = [...textileProducts, ...products];
 
   const getSustainabilityScore = (product: Product) => {
-    const score = product.dpp_config?.sections.find(s => s.id === "environmental")
-      ?.fields.find(f => f.id === "sustainability-score")?.value;
+    if (!product?.dpp_config?.sections) return 0;
+    
+    const environmentalSection = product.dpp_config.sections.find(s => s.id === "environmental");
+    if (!environmentalSection?.fields) return 0;
+    
+    const score = environmentalSection.fields.find(f => f.id === "sustainability-score")?.value;
     return typeof score === 'number' ? score : 0;
   };
 
   const getCarbonFootprint = (product: Product) => {
-    const footprint = product.dpp_config?.sections.find(s => s.id === "environmental")
-      ?.fields.find(f => f.id === "carbon-footprint")?.value;
+    if (!product?.dpp_config?.sections) return "0 kg CO2e";
+    
+    const environmentalSection = product.dpp_config.sections.find(s => s.id === "environmental");
+    if (!environmentalSection?.fields) return "0 kg CO2e";
+    
+    const footprint = environmentalSection.fields.find(f => f.id === "carbon-footprint")?.value;
     return typeof footprint === 'string' ? footprint : "0 kg CO2e";
   };
 
   const getManufacturer = (product: Product) => {
-    return product.dpp_config?.sections.find(s => s.id === "basic-info")
-      ?.fields.find(f => f.id === "manufacturer")?.value as string || "Unknown";
+    if (!product?.dpp_config?.sections) return "Unknown";
+    
+    const basicInfoSection = product.dpp_config.sections.find(s => s.id === "basic-info");
+    if (!basicInfoSection?.fields) return "Unknown";
+    
+    return basicInfoSection.fields.find(f => f.id === "manufacturer")?.value as string || "Unknown";
   };
 
   const getCategory = (product: Product) => {
-    return product.dpp_config?.sections.find(s => s.id === "basic-info")
-      ?.fields.find(f => f.id === "category")?.value as string || product.product_type;
+    if (!product?.dpp_config?.sections) return product.product_type;
+    
+    const basicInfoSection = product.dpp_config.sections.find(s => s.id === "basic-info");
+    if (!basicInfoSection?.fields) return product.product_type;
+    
+    return basicInfoSection.fields.find(f => f.id === "category")?.value as string || product.product_type;
   };
 
   const getSustainabilityIcon = (score: number) => {
