@@ -46,11 +46,34 @@ export function LoginForm({ from }: LoginFormProps) {
         description: "Logged in successfully",
       });
     } catch (error) {
-      toast({
-        title: "Login Failed",
-        description: "Invalid email or password",
-        variant: "destructive",
-      });
+      // Check if error is AuthError from Supabase
+      if (error instanceof Error) {
+        if (error.message.includes('Email not confirmed')) {
+          toast({
+            title: "Login Failed",
+            description: "Please confirm your email address before logging in",
+            variant: "destructive",
+          });
+        } else if (error.message.includes('Invalid login credentials')) {
+          toast({
+            title: "Login Failed",
+            description: "Invalid email or password",
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Login Failed",
+            description: error.message,
+            variant: "destructive",
+          });
+        }
+      } else {
+        toast({
+          title: "Login Failed",
+          description: "An unexpected error occurred",
+          variant: "destructive",
+        });
+      }
     }
   };
 

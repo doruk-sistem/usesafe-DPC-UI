@@ -1,4 +1,5 @@
 export interface RegistrationRequest {
+  // Company Information
   companyName: string;
   password: string;
   taxInfo: {
