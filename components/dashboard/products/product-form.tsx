@@ -12,6 +12,7 @@ import { Progress } from "@/components/ui/progress";
 import type { NewProduct, DPPSection } from "@/lib/types/product";
 import { BasicInfoStep } from "./steps/BasicInfoStep";
 import { DPPConfigStep } from "./steps/DPPConfigStep";
+import { DocumentUploadStep } from "./steps/DocumentUploadStep";
 
 const materialValueSchema = z.object({
   percentage: z.number(),
@@ -49,6 +50,14 @@ const dppSectionSchema = z.object({
   order: z.number()
 });
 
+const documentSchema = z.object({
+  quality_cert: z.array(z.any()).optional(),
+  safety_cert: z.array(z.any()).optional(),
+  test_reports: z.array(z.any()).optional(),
+  technical_docs: z.array(z.any()).optional(),
+  compliance_docs: z.array(z.any()).optional(),
+});
+
 const productSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   description: z.string().min(5, "Product description is required"),
@@ -64,6 +73,7 @@ const productSchema = z.object({
     value: z.string(),
     unit: z.string().optional()
   })).default([]),
+  documents: documentSchema.optional(),
   dpp_config: z.object({
     sections: z.array(dppSectionSchema),
     lastUpdated: z.string()
@@ -148,6 +158,12 @@ const requiredSections: DPPSection[] = [
   }
 ];
 
+const steps = [
+  { title: "Basic Information", component: BasicInfoStep },
+  { title: "Documents", component: DocumentUploadStep },
+  { title: "DPP Configuration", component: DPPConfigStep },
+];
+
 export function ProductForm({ onSubmit, defaultValues }: ProductFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [step, setStep] = useState(1);
@@ -162,11 +178,16 @@ export function ProductForm({ onSubmit, defaultValues }: ProductFormProps) {
       product_type: "",
       model: "",
       images: [],
-      key_features: []
+      key_features: [],
+      documents: {},
+      dpp_config: {
+        sections: requiredSections,
+        lastUpdated: new Date().toISOString()
+      }
     },
   });
 
-  const progress = (step / 2) * 100;
+  const progress = (step / 3) * 100;
 
   const handleSubmit = async (data: NewProduct) => {
     try {
@@ -193,7 +214,7 @@ export function ProductForm({ onSubmit, defaultValues }: ProductFormProps) {
     e.preventDefault();
     form.trigger().then((isValid) => {
       if (isValid) {
-        setStep(2);
+        setStep(step + 1);
       }
     });
   };
@@ -204,7 +225,8 @@ export function ProductForm({ onSubmit, defaultValues }: ProductFormProps) {
         <Progress value={progress} className="mb-8" />
 
         {step === 1 && <BasicInfoStep form={form} />}
-        {step === 2 && (
+        {step === 2 && <DocumentUploadStep form={form} />}
+        {step === 3 && (
           <DPPConfigStep
             form={form}
             availableSections={availableSections}
@@ -220,7 +242,7 @@ export function ProductForm({ onSubmit, defaultValues }: ProductFormProps) {
               Previous
             </Button>
           )}
-          {step === 1 ? (
+          {step === 1 || step === 2 ? (
             <Button type="button" onClick={handleNextStep}>
               Next
               <ArrowRight className="h-4 w-4 ml-2" /> 
