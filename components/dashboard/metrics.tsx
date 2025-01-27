@@ -1,24 +1,42 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 import { 
   Box, 
   FileText, 
   ShieldCheck, 
   TrendingUp, 
+  TrendingDown,
   AlertTriangle 
 } from "lucide-react";
+import { useProducts } from "@/lib/hooks/use-products";
 
 import { EnhancedCard } from "@/components/ui/enhanced-card";
+import { calculateProductGrowth } from "@/lib/utils/metrics";
 
-const metricCards = [
-  {
-    title: "Total Products",
-    value: "42",
-    icon: Box,
-    gradient: "from-blue-500 to-blue-700",
-    trend: "+12.5%"
-  },
+export function DashboardMetrics() {
+  const { products } = useProducts();
+  const productGrowth = calculateProductGrowth(products);
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const metricCards = [
+    {
+      title: "Total Products",
+      value: products?.length.toString() || "0",
+      icon: Box,
+      gradient: "from-blue-500 to-blue-700",
+      trend: `${productGrowth > 0 ? '+' : ''}${productGrowth}%`
+    },
   {
     title: "Pending Certifications",
     value: "7",
@@ -40,11 +58,14 @@ const metricCards = [
     gradient: "from-purple-500 to-purple-700",
     trend: "+5.6%"
   }
-];
-
-export function DashboardMetrics() {
+  ];
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+    <motion.div 
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      className="grid gap-4 md:grid-cols-2 lg:grid-cols-4"
+    >
       {metricCards.map((card, index) => (
         <EnhancedCard 
           key={card.title}
@@ -63,8 +84,15 @@ export function DashboardMetrics() {
             <div>
               <p className="text-sm text-white/80 mb-2">{card.title}</p>
               <h3 className="text-3xl font-bold text-white">{card.value}</h3>
-              <div className="flex items-center mt-2 text-xs text-white/70">
-                <TrendingUp className="h-4 w-4 mr-1" />
+              <div className={cn(
+                "flex items-center mt-2 text-xs",
+                card.trend.startsWith('+') ? "text-green-300" : "text-red-300"
+              )}>
+                {card.trend.startsWith('+') ? (
+                  <TrendingUp className="h-4 w-4 mr-1" />
+                ) : (
+                  <TrendingDown className="h-4 w-4 mr-1" />
+                )}
                 <span>{card.trend}</span>
               </div>
             </div>
@@ -72,6 +100,6 @@ export function DashboardMetrics() {
           </motion.div>
         </EnhancedCard>
       ))}
-    </div>
+    </motion.div>
   );
 }

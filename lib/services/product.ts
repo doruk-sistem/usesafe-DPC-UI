@@ -35,9 +35,19 @@ export class ProductService {
 
   static async createProduct(product: NewProduct): Promise<ProductResponse> {
     try {
+      // Extract documents if they exist, otherwise use empty object
+      const { documents = {}, ...productData } = product;
+      
+      // Validate and map documents
+      const validatedDocuments = validateAndMapDocuments(documents);
+
+      // Create the product with document URLs
       const { data, error } = await supabase
         .from('products')
-        .insert([product])
+        .insert([{
+          ...productData,
+          documents: Object.keys(validatedDocuments).length > 0 ? validatedDocuments : null
+        }])
         .select()
         .single();
 
