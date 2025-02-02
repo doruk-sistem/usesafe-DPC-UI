@@ -1,6 +1,13 @@
-import { Database } from './supabase';
+import { Database } from "./supabase";
 
-export type DPPFieldType = 'text' | 'number' | 'date' | 'select' | 'multiselect' | 'material' | 'certification';
+export type DPPFieldType =
+  | "text"
+  | "number"
+  | "date"
+  | "select"
+  | "multiselect"
+  | "material"
+  | "certification";
 
 export type MaterialValue = {
   percentage: number;
@@ -11,11 +18,16 @@ export type MaterialValue = {
 export type CertificationValue = {
   issuedBy: string;
   validUntil: string;
-  status: 'valid' | 'expired';
+  status: "valid" | "expired";
   documentUrl?: string;
 };
 
-export type DPPFieldValue = string | number | string[] | MaterialValue | CertificationValue;
+export type DPPFieldValue =
+  | string
+  | number
+  | string[]
+  | MaterialValue
+  | CertificationValue;
 
 export type DPPField = {
   id: string;
@@ -39,19 +51,10 @@ export type DPPConfig = {
   lastUpdated: string;
 };
 
-export type Product = Database['public']['Tables']['products']['Row'] & {
-  dpp_config?: DPPConfig;
-};
-
-export type NewProduct = Database['public']['Tables']['products']['Insert'] & {
-  dpp_config?: DPPConfig;
-};
-
-export type UpdateProduct = Database['public']['Tables']['products']['Update'] & {
-  dpp_config?: DPPConfig;
-};
-
-export type ProductStatus = 'DRAFT' | 'NEW' | 'DELETED' | 'ARCHIVED';
+export type Product = Database["public"]["Tables"]["products"]["Row"];
+export type NewProduct = Database["public"]["Tables"]["products"]["Insert"];
+export type UpdateProduct = Database["public"]["Tables"]["products"]["Update"];
+export type ProductStatus = "DRAFT" | "NEW" | "DELETED" | "ARCHIVED";
 
 export interface StatusTransition {
   from: ProductStatus;
@@ -69,7 +72,7 @@ export interface ProductImage {
 
 export type ProductImageJson = {
   [K in keyof ProductImage]: ProductImage[K];
-}
+};
 
 export interface KeyFeature {
   name: string;
@@ -91,18 +94,3 @@ export interface ProductResponse {
   data?: Product;
   error?: ProductError;
 }
-
-// export interface Product {
-//   id: string
-//   name: string
-//   description: string
-//   company_id: string
-//   product_type: string
-//   model: string
-//   status: ProductStatus
-//   status_history: StatusTransition[]
-//   images: Json[]
-//   key_features: Json[]
-//   created_at: string
-//   updated_at: string
-// }

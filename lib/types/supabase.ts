@@ -25,6 +25,8 @@ export interface Database {
           key_features: KeyFeature[]
           created_at: string
           updated_at: string
+          documents?: Json
+          manufacturer_id: string
         }
         Insert: {
           id?: string
@@ -43,6 +45,8 @@ export interface Database {
           key_features?: Json[]
           created_at?: string
           updated_at?: string
+          documents?: Json
+          manufacturer_id: string
         }
         Update: {
           id?: string
@@ -61,6 +65,8 @@ export interface Database {
           updated_at?: string
           product_type?: string
           model?: string
+          documents?: Json
+          manufacturer_id: string
         }
       }
     }

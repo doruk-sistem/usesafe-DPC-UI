@@ -10,6 +10,7 @@ export const prepareRegistrationData = (data: FormData): RegistrationRequest => 
   
   return {
     companyName: data.companyName,
+    companyType: data.companyType,
     password: data.password,
     taxInfo: {
       taxNumber: data.taxId,

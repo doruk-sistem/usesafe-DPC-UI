@@ -1,6 +1,9 @@
+import { CompanyType } from "../types/company";
+
 export interface RegistrationRequest {
   // Company Information
   companyName: string;
+  companyType: CompanyType;
   password: string;
   taxInfo: {
     taxNumber: string;
