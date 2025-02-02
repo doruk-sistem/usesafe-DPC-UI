@@ -22,8 +22,8 @@ export function Navbar() {
         <nav className="flex items-center space-x-4 flex-1">
           <Link href="/auth/register">
             <Button variant="ghost" className="gap-2">
-              <Factory className="h-4 w-4" />
-              Create Manufacturer
+              <Factory className="h-4 w-4" /> 
+              Company Registration
             </Button>
           </Link>
 

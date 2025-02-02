@@ -9,17 +9,15 @@ export function useProduct(productId: string) {
   const [product, setProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<ProductError | null>(null);
-  const { user } = useAuth();
-
-  const companyId = user?.user_metadata["company_id"] || "7d26ed35-49ca-4c0d-932e-52254fb0e5b8";
+  const { company } = useAuth();
 
   useEffect(() => {
     const fetchProduct = async () => {
-      if (!productId) return;
+      if (!productId || !company?.id) return;
 
       try {
         setIsLoading(true);
-        const response = await ProductService.getProduct(productId, companyId);
+        const response = await ProductService.getProduct(productId, company.id);
         
         if (response.error) {
           setError(response.error);
@@ -36,7 +34,7 @@ export function useProduct(productId: string) {
     };
 
     fetchProduct();
-  }, [companyId, productId]);
+  }, [company?.id, productId]);
 
   const updateProduct = async (updates: Partial<Product>) => {
     if (!product) return;
@@ -44,7 +42,7 @@ export function useProduct(productId: string) {
     try {
       const updateData = {
         ...updates,
-        company_id: companyId,
+        company_id: company?.id,
         images: updates.images?.map(img => ({
           url: img.url,
           alt: img.alt,

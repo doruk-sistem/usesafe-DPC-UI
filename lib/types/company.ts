@@ -2,7 +2,15 @@ export enum AddressType {
   HEADQUARTERS = 'headquarters',
   BRANCH = 'branch',
   FACTORY = 'factory',
-  WAREHOUSE = 'warehouse'
+  WAREHOUSE = 'warehouse',
+  OFFICE = 'office'
+}
+
+export enum CompanyType {
+  MANUFACTURER = 'manufacturer',
+  BRAND_OWNER = 'brand_owner',
+  MATERIAL_SUPPLIER = 'material_supplier',
+  FACTORY = 'factory'
 }
 
 export enum DocumentType {
@@ -25,6 +33,7 @@ export enum DocumentStatus {
 export interface Company {
   id: string;
   name: string;
+  companyType: CompanyType;
   taxInfo: {
     taxNumber: string;
     tradeRegistryNo?: string;

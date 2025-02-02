@@ -9,15 +9,15 @@ export function useProducts() {
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { user } = useAuth();
-
-  const companyId = user?.user_metadata["company_id"] || "7d26ed35-49ca-4c0d-932e-52254fb0e5b8";
+  const { company } = useAuth();
 
   useEffect(() => {
     const fetchProducts = async () => {
+      if (!company?.id) return;
+      
       try {
         setIsLoading(true);
-        const data = await ProductService.getProducts(companyId);
+        const data = await ProductService.getProducts(company.id);
         setProducts(data);
         setError(null);
       } catch (err) {
@@ -28,11 +28,13 @@ export function useProducts() {
     };
 
     fetchProducts();
-  }, [companyId]);
+  }, [company?.id]);
 
   const refreshProducts = async () => {
+    if (!company?.id) return;
+    
     try {
-      const data = await ProductService.getProducts(companyId);
+      const data = await ProductService.getProducts(company.id);
       setProducts(data);
       setError(null);
     } catch (err) {

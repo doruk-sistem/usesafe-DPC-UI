@@ -1,6 +1,6 @@
 import { supabase } from '@/lib/supabase';
-import QRCode from 'qrcode';
 import type { NewProduct, Product, ProductResponse, UpdateProduct } from '@/lib/types/product';
+import { validateAndMapDocuments } from '@/lib/utils/document-mapper';
 
 export class ProductService {
   static async getProducts(companyId: string): Promise<Product[]> {
@@ -37,9 +37,8 @@ export class ProductService {
     try {
       // Extract documents if they exist, otherwise use empty object
       const { documents = {}, ...productData } = product;
-      
-      // Validate and map documents
-      const validatedDocuments = validateAndMapDocuments(documents);
+      // Validate and map documents with type assertion to fix lint error
+      const validatedDocuments = validateAndMapDocuments(documents as Record<string, any[]>);
 
       // Create the product with document URLs
       const { data, error } = await supabase

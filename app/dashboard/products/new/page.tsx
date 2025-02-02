@@ -13,7 +13,7 @@ import type { NewProduct } from "@/lib/types/product";
 
 export default function NewProductPage() {
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, company } = useAuth();
   const { toast } = useToast();
 
   const handleSubmit = async (data: NewProduct) => {
@@ -24,7 +24,7 @@ export default function NewProductPage() {
       const uploadedImages = await Promise.all(
         data.images.map(async (image) => {
           if (image.url.startsWith('blob:')) {
-            const uploadedUrl = await StorageService.uploadProductImage(image.url, user.user_metadata["company_id"] || "7d26ed35-49ca-4c0d-932e-52254fb0e5b8");
+            const uploadedUrl = await StorageService.uploadProductImage(image.url, company.id);
             
             if (!uploadedUrl) {
               toast({
@@ -60,7 +60,7 @@ export default function NewProductPage() {
       const response = await ProductService.createProduct({
         ...data,
         images: validImages,
-        company_id: user.user_metadata["company_id"] || "7d26ed35-49ca-4c0d-932e-52254fb0e5b8",
+        company_id: company.id,
         status: "DRAFT",
         status_history: [{
           from: null,
@@ -114,7 +114,7 @@ export default function NewProductPage() {
       </div>
 
       <Card className="p-6">
-        <ProductForm onSubmit={handleSubmit} />
+        <ProductForm onSubmit={handleSubmit} companyType={company?.companyType || null} />
       </Card>
     </div>
   );

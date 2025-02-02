@@ -10,6 +10,7 @@ export class ManufacturerService {
         .from('companies')
         .insert([{
           name: data.companyName,
+          companyType: data.companyType,
           taxInfo: data.taxInfo,
           status: false // Pending approval
         }])
