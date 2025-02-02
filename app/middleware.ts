@@ -37,7 +37,29 @@ export async function middleware(request: NextRequest) {
   }
 
   // Add security headers
+  const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
   const response = NextResponse.next();
+  
+  let cspContent = `
+    default-src 'self';
+    script-src 'self' 'unsafe-inline' 'unsafe-eval';
+    style-src 'self' 'unsafe-inline';
+    img-src 'self' data: https: blob:;
+    font-src 'self';
+    object-src 'none';
+    base-uri 'self';
+    form-action 'self';
+    frame-ancestors 'none';
+    block-all-mixed-content;
+    upgrade-insecure-requests;
+    connect-src 'self' 
+      https://*.supabase.co 
+      https://*.supabase.net 
+      wss://*.supabase.co
+      https://api.ipify.org
+      https://udmyjobxsovqdshhavus.supabase.co;
+  `.replace(/\s{2,}/g, ' ').trim();
+
   response.headers.set('X-Frame-Options', 'DENY');
   response.headers.set('X-Content-Type-Options', 'nosniff');
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
@@ -45,10 +67,7 @@ export async function middleware(request: NextRequest) {
     'Strict-Transport-Security',
     'max-age=31536000; includeSubDomains'
   );
-  response.headers.set(
-    'Content-Security-Policy',
-    "default-src 'self'; img-src 'self' data: https:; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline';"
-  );
+  response.headers.set('Content-Security-Policy', cspContent);
 
   return response;
 }
@@ -64,4 +83,4 @@ export const config = {
      */
     '/((?!api|_next/static|_next/image|favicon.ico).*)',
   ],
-};
+}; 
