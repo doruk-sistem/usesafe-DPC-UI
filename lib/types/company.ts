@@ -40,8 +40,8 @@ export interface Company {
     mersisNo?: string;
   };
   status: boolean;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface CompanyAddress {
