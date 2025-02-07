@@ -12,7 +12,7 @@ import { Progress } from "@/components/ui/progress";
 import type { NewProduct } from "@/lib/types/product";
 import { BasicInfoStep } from "./steps/BasicInfoStep";
 import { DocumentUploadStep } from "./steps/DocumentUploadStep";
-import { ManufacturerSelect } from "./steps/ManufacturerSelect";
+import { ManufacturerSelect } from "./steps/manufacturerSelect/ManufacturerSelect";
 
 const certificationValueSchema = z.object({
   issuedBy: z.string(),
@@ -77,6 +77,7 @@ export function ProductForm({ onSubmit, defaultValues, companyType }: ProductFor
   const handleSubmit = async (data: NewProduct) => {
     try {
       setIsSubmitting(true);
+      
       await onSubmit({
         ...data,
       });
