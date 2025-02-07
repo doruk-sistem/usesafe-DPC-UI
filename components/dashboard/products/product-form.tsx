@@ -5,6 +5,9 @@ import { ArrowRight, ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { productBlockchainService } from '@/lib/services/product-blockchain';
+import { ProductBlockchainAction } from '@/lib/types/product-blockchain';
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
@@ -49,7 +52,7 @@ const productSchema = z.object({
 });
 
 interface ProductFormProps {
-  onSubmit: (data: NewProduct) => Promise<void>;
+  onSubmit: (data: NewProduct) => Promise<NewProduct | undefined>;
   defaultValues?: Partial<NewProduct>;
   companyType?: string | null;
 }
@@ -57,6 +60,12 @@ interface ProductFormProps {
 export function ProductForm({ onSubmit, defaultValues, companyType }: ProductFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [step, setStep] = useState(1);
+  const [blockchainStatus, setBlockchainStatus] = useState<{
+    success?: boolean;
+    transactionId?: string;
+    error?: string;
+  }>({});
+  const router = useRouter();
 
   const form = useForm<NewProduct>({
     resolver: zodResolver(productSchema),
@@ -75,11 +84,36 @@ export function ProductForm({ onSubmit, defaultValues, companyType }: ProductFor
   const progress = (step / 4) * 100;
 
   const handleSubmit = async (data: NewProduct) => {
+    setIsSubmitting(true);
     try {
-      setIsSubmitting(true);
+      // Önce ürünü kaydet ve ID'yi al
+      const response = await onSubmit(data);
       
-      await onSubmit({
-        ...data,
+      if (!response?.id) {
+        throw new Error('Product ID not received from server');
+      }
+
+      // Blockchain kaydı oluştur
+      const action: ProductBlockchainAction = defaultValues ? 'UPDATE' : 'CREATE';
+      const blockchainResult = await productBlockchainService.recordProductAction(
+        response.id,
+        data.name,
+        data.manufacturer_id,
+        data.description,
+        action
+      );
+
+      setBlockchainStatus({
+        success: true,
+        transactionId: blockchainResult.transactionId
+      });
+
+      // Başarılı kayıt sonrası detay sayfasına yönlendir
+      router.push(`/dashboard/products`);
+    } catch (error) {
+      setBlockchainStatus({
+        success: false,
+        error: error instanceof Error ? error.message : 'An error occurred'
       });
     } finally {
       setIsSubmitting(false);
@@ -123,6 +157,20 @@ export function ProductForm({ onSubmit, defaultValues, companyType }: ProductFor
             </Button>
           )}
         </div>
+
+        {blockchainStatus.success && (
+          <div className="mt-4 p-4 bg-green-50 text-green-700 rounded-md">
+            Product recorded to blockchain successfully.
+            <br />
+            Transaction ID: {blockchainStatus.transactionId}
+          </div>
+        )}
+
+        {blockchainStatus.error && (
+          <div className="mt-4 p-4 bg-red-50 text-red-700 rounded-md">
+            Failed to record to blockchain: {blockchainStatus.error}
+          </div>
+        )}
       </form>
     </Form>
   );

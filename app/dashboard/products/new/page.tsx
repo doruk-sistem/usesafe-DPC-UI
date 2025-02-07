@@ -1,7 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-
 import { ProductForm } from "@/components/dashboard/products/product-form";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
@@ -12,15 +10,14 @@ import { StorageService } from "@/lib/services/storage";
 import type { NewProduct } from "@/lib/types/product";
 
 export default function NewProductPage() {
-  const router = useRouter();
   const { user, company } = useAuth();
   const { toast } = useToast();
 
   const handleSubmit = async (data: NewProduct) => {
-    if (!user?.id) return;
+    if (!user?.id || !company?.id) return;
 
     try {
-      // Upload image if provided
+      // Upload images if provided
       const uploadedImages = await Promise.all(
         data.images.map(async (image) => {
           if (image.url.startsWith('blob:')) {
@@ -94,13 +91,16 @@ export default function NewProductPage() {
         description: "Product created successfully",
       });
 
-      router.push("/dashboard/products");
+      // Return the created product data for blockchain record
+      return response.data;
     } catch (error) {
+      console.error('Error creating product:', error);
       toast({
-        title: "Unexpected Error",
-        description: "An unexpected error occurred during product creation",
+        title: "Error",
+        description: "An unexpected error occurred while creating the product",
         variant: "destructive",
       });
+      throw error;
     }
   };
 
