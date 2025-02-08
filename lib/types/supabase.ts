@@ -27,6 +27,7 @@ export interface Database {
           updated_at: string
           documents?: Json
           manufacturer_id: string
+          contract_address: string | null
         }
         Insert: {
           id?: string
@@ -47,6 +48,7 @@ export interface Database {
           updated_at?: string
           documents?: Json
           manufacturer_id: string
+          contract_address?: string | null
         }
         Update: {
           id?: string
@@ -66,7 +68,8 @@ export interface Database {
           product_type?: string
           model?: string
           documents?: Json
-          manufacturer_id: string
+          manufacturer_id?: string
+          contract_address?: string | null
         }
       }
     }

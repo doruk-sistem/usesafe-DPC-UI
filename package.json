@@ -9,9 +9,13 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@hashgraph/hethers": "^1.2.6",
     "@hashgraph/sdk": "^2.56.0",
     "@hookform/resolvers": "^3.9.0",
     "@next/swc-wasm-nodejs": "13.5.1",
+    "@nomiclabs/hardhat-ethers": "^2.2.3",
+    "@nomiclabs/hardhat-waffle": "^2.0.6",
+    "@openzeppelin/contracts": "^5.2.0",
     "@radix-ui/react-accordion": "^1.2.0",
     "@radix-ui/react-alert-dialog": "^1.1.1",
     "@radix-ui/react-aspect-ratio": "^1.1.0",
@@ -43,7 +47,6 @@
     "@supabase/auth-ui-shared": "^0.1.8",
     "@supabase/postgrest-js": "^1.12.0",
     "@supabase/supabase-js": "^2.39.7",
-    "@types/node": "20.6.2",
     "@types/react": "18.2.22",
     "@types/react-dom": "18.2.7",
     "autoprefixer": "10.4.15",
@@ -57,7 +60,9 @@
     "embla-carousel-react": "^8.3.0",
     "eslint": "^8.57.0",
     "eslint-config-next": "^14.2.15",
+    "ethers": "^5.7.2",
     "framer-motion": "^11.13.1",
+    "hardhat": "^2.22.18",
     "html5-qrcode": "^2.3.8",
     "input-otp": "^1.2.4",
     "jose": "^5.2.3",
@@ -77,13 +82,15 @@
     "tailwind-merge": "^2.5.2",
     "tailwindcss": "3.3.3",
     "tailwindcss-animate": "^1.0.7",
-    "typescript": "5.2.2",
     "utf-8-validate": "^6.0.3",
     "vaul": "^0.9.9",
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@types/node": "^22.13.1",
     "@typescript-eslint/eslint-plugin": "^8.14.0",
-    "@typescript-eslint/parser": "^8.14.0"
+    "@typescript-eslint/parser": "^8.14.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3"
   }
 }

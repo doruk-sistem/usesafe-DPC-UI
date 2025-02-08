@@ -8,11 +8,13 @@ export interface ProductBlockchainRecord {
   action: ProductBlockchainAction;
   timestamp?: string;
   sequenceNumber?: number;
+  contractAddress: string;
 }
 
 export interface ProductBlockchainResponse {
   status: 'success' | 'error';
   transactionId?: string;
+  contractAddress?: string;
   message: string;
   details?: string;
 }

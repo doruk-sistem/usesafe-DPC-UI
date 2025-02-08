@@ -19,6 +19,8 @@ export function ProductBlockchainHistory({ productId }: ProductBlockchainHistory
       try {
         setLoading(true);
         const history = await productBlockchainService.getProductHistory(productId);
+
+        console.log('History:', history);
         const sortedHistory = history.sort((a, b) => {
           const timestampA = a.timestamp ? parseFloat(a.timestamp) : 0;
           const timestampB = b.timestamp ? parseFloat(b.timestamp) : 0;
@@ -97,7 +99,7 @@ export function ProductBlockchainHistory({ productId }: ProductBlockchainHistory
                 {record.manufacturer}
               </td>
               <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                {record.timestamp ? format(new Date(parseFloat(record.timestamp) * 1000), 'PPpp') : 'N/A'}
+                {record.timestamp ? format(new Date(record.timestamp), 'PPpp') : 'N/A'}
               </td>
             </tr>
           ))}
