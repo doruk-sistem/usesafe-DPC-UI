@@ -42,7 +42,7 @@ export interface Database {
             alt: string;
             is_primary: boolean;
           }[]
-          key_features?: Json[]
+          key_features?: KeyFeature[]
           created_at?: string
           updated_at?: string
           documents?: Json
@@ -60,13 +60,13 @@ export interface Database {
             alt: string;
             is_primary: boolean;
           }[]
-          key_features?: Json[]
+          key_features?: KeyFeature[]
           created_at?: string
           updated_at?: string
           product_type?: string
           model?: string
           documents?: Json
-          manufacturer_id: string
+          manufacturer_id?: string
         }
       }
     }
