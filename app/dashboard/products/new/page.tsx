@@ -1,7 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-
 import { ProductForm } from "@/components/dashboard/products/product-form";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
@@ -10,26 +8,32 @@ import { ProductService } from "@/lib/services/product";
 import { ProductStatusService } from "@/lib/services/product-status";
 import { StorageService } from "@/lib/services/storage";
 import type { NewProduct } from "@/lib/types/product";
+import { productBlockchainService } from "@/lib/services/product-blockchain";
+import { useRouter } from "next/navigation";
 
 export default function NewProductPage() {
-  const router = useRouter();
   const { user, company } = useAuth();
   const { toast } = useToast();
+  const router = useRouter();
 
   const handleSubmit = async (data: NewProduct) => {
-    if (!user?.id) return;
+    if (!user?.id || !company?.id) return;
 
     try {
-      // Upload image if provided
+      // Upload images if provided
       const uploadedImages = await Promise.all(
         data.images.map(async (image) => {
-          if (image.url.startsWith('blob:')) {
-            const uploadedUrl = await StorageService.uploadProductImage(image.url, company.id);
-            
+          if (image.url.startsWith("blob:")) {
+            const uploadedUrl = await StorageService.uploadProductImage(
+              image.url,
+              company.id
+            );
+
             if (!uploadedUrl) {
               toast({
                 title: "Image Upload Error",
-                description: "Failed to upload one or more images. Please try again.",
+                description:
+                  "Failed to upload one or more images. Please try again.",
                 variant: "destructive",
               });
               return null;
@@ -37,7 +41,7 @@ export default function NewProductPage() {
 
             return {
               ...image,
-              url: uploadedUrl
+              url: uploadedUrl,
             };
           }
           return image;
@@ -45,7 +49,7 @@ export default function NewProductPage() {
       );
 
       // Filter out any null images
-      const validImages = uploadedImages.filter(img => img !== null);
+      const validImages = uploadedImages.filter((img) => img !== null);
 
       if (validImages.length === 0) {
         toast({
@@ -62,12 +66,14 @@ export default function NewProductPage() {
         images: validImages,
         company_id: company.id,
         status: "DRAFT",
-        status_history: [{
-          from: null,
-          to: "DRAFT",
-          timestamp: new Date().toISOString(),
-          userId: user.id
-        }]
+        status_history: [
+          {
+            from: null,
+            to: "DRAFT",
+            timestamp: new Date().toISOString(),
+            userId: user.id,
+          },
+        ],
       });
 
       if (response.error) {
@@ -79,13 +85,49 @@ export default function NewProductPage() {
         return;
       }
 
+      if (!response.data?.id) {
+        throw new Error("Product ID not received from server");
+      }
+
+      // Blockchain kaydı oluştur
+      try {
+        const blockchainResult =
+          await productBlockchainService.recordProductAction(
+            response.data.id,
+            data.name,
+            data.manufacturer_id,
+            data.description,
+            "CREATE"
+          );
+
+        // Update the product with contract address
+        await ProductService.updateProduct(response.data.id, {
+          contract_address: blockchainResult.contractAddress
+        });
+
+        toast({
+          title: "Success",
+          description: `Product created and recorded to blockchain. Contract Address: ${blockchainResult.contractAddress}`,
+        });
+      } catch (blockchainError) {
+        toast({
+          title: "Warning",
+          description:
+            "Product created but blockchain record failed: " +
+            (blockchainError instanceof Error
+              ? blockchainError.message
+              : "Unknown error"),
+          variant: "destructive",
+        });
+      }
+
       // Validate if product can be moved to NEW status
       if (ProductStatusService.validateStatus(response.data)) {
         await ProductStatusService.updateStatus(
           response.data.id,
-          'NEW',
+          "NEW",
           user.id,
-          'Auto-transition: All required fields present'
+          "Auto-transition: All required fields present"
         );
       }
 
@@ -94,13 +136,16 @@ export default function NewProductPage() {
         description: "Product created successfully",
       });
 
+      // Başarılı kayıt sonrası detay sayfasına yönlendir
       router.push("/dashboard/products");
     } catch (error) {
+      console.error("Error creating product:", error);
       toast({
-        title: "Unexpected Error",
-        description: "An unexpected error occurred during product creation",
+        title: "Error",
+        description: "An unexpected error occurred while creating the product",
         variant: "destructive",
       });
+      throw error;
     }
   };
 
@@ -114,7 +159,10 @@ export default function NewProductPage() {
       </div>
 
       <Card className="p-6">
-        <ProductForm onSubmit={handleSubmit} companyType={company?.companyType || null} />
+        <ProductForm
+          onSubmit={handleSubmit}
+          companyType={company?.companyType || null}
+        />
       </Card>
     </div>
   );
