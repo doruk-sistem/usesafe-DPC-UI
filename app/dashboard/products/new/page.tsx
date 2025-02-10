@@ -10,6 +10,7 @@ import { ProductService } from "@/lib/services/product";
 import { ProductStatusService } from "@/lib/services/product-status";
 import { StorageService } from "@/lib/services/storage";
 import type { NewProduct } from "@/lib/types/product";
+import { HederaService } from "@/lib/services/hedera";
 
 export default function NewProductPage() {
   const router = useRouter();
@@ -19,7 +20,7 @@ export default function NewProductPage() {
   const handleSubmit = async (data: NewProduct) => {
     if (!user?.id) return;
 
-    try {
+    // try {
       // Upload image if provided
       const uploadedImages = await Promise.all(
         data.images.map(async (image) => {
@@ -47,7 +48,7 @@ export default function NewProductPage() {
       // Filter out any null images
       const validImages = uploadedImages.filter(img => img !== null);
 
-      if (validImages.length === 0) {
+      if (validImages.length === 0 && data.images.length > 0) {
         toast({
           title: "Error",
           description: "No images could be uploaded",
@@ -89,19 +90,41 @@ export default function NewProductPage() {
         );
       }
 
+      console.log("response.data", response.data);
+
+      // Create product on Hedera blockchain
+      const hederaSuccess = await HederaService.createProductOnBlockchain(
+        response.data.id,
+        response.data.name,
+        response.data.description,
+        response.data.status
+      );
+
+      if (!hederaSuccess) {
+        toast({
+          title: "Hedera Error",
+          description: "Failed to create product on Hedera blockchain.",
+          variant: "destructive",
+        });
+
+        // Rollback: Delete the product from the database
+        await ProductService.deleteProduct(response.data.id);
+        return;
+      }
+
       toast({
         title: "Success",
-        description: "Product created successfully",
+        description: "Product created successfully and recorded on the blockchain.",
       });
 
       router.push("/dashboard/products");
-    } catch (error) {
-      toast({
-        title: "Unexpected Error",
-        description: "An unexpected error occurred during product creation",
-        variant: "destructive",
-      });
-    }
+    // } catch (error) {
+    //   toast({
+    //     title: "Unexpected Error",
+    //     description: "An unexpected error occurred during product creation",
+    //     variant: "destructive",
+    //   });
+    // }
   };
 
   return (
