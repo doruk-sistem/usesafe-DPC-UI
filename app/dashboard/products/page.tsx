@@ -18,8 +18,10 @@ export default function ProductsPage() {
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
             <AlertCircle className="h-12 w-12 text-destructive mb-4" />
-            <h2 className="text-xl font-semibold mb-2">Error Loading Products</h2>
-            <p className="text-muted-foreground mb-4">{error}</p>
+            <h2 className="text-xl font-semibold mb-2">
+              Error Loading Products
+            </h2>
+            <p className="text-muted-foreground mb-4">{error?.message}</p>
             <Button variant="outline" onClick={() => window.location.reload()}>
               Try Again
             </Button>
