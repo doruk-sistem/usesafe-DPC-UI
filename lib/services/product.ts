@@ -1,33 +1,43 @@
-import { supabase } from '@/lib/supabase';
-import type { NewProduct, Product, ProductResponse, UpdateProduct } from '@/lib/types/product';
-import { validateAndMapDocuments } from '@/lib/utils/document-mapper';
+import { supabase } from "@/lib/supabase";
+import type {
+  NewProduct,
+  Product,
+  ProductResponse,
+  UpdateProduct,
+} from "@/lib/types/product";
+import { validateAndMapDocuments } from "@/lib/utils/document-mapper";
+
+import { createService } from "../api-client";
 
 export class ProductService {
   static async getProducts(companyId: string): Promise<Product[]> {
     const { data, error } = await supabase
-      .from('products')
-      .select('*')
-      .eq('company_id', companyId)
-      .order('created_at', { ascending: false });
+      .from("products")
+      .select("*")
+      .eq("company_id", companyId)
+      .order("created_at", { ascending: false });
 
     if (error) {
-      console.error('Error fetching products:', error);
-      throw new Error('Failed to fetch products');
+      console.error("Error fetching products:", error);
+      throw new Error("Failed to fetch products");
     }
 
     return data || [];
   }
 
-  static async getProduct(id: string, companyId: string): Promise<ProductResponse> {
+  static async getProduct(
+    id: string,
+    companyId: string
+  ): Promise<ProductResponse> {
     const { data, error } = await supabase
-      .from('products')
-      .select('*')
-      .eq('id', id)
-      .eq('company_id', companyId)
+      .from("products")
+      .select("*")
+      .eq("id", id)
+      .eq("company_id", companyId)
       .single();
 
     if (error) {
-      return { error: { message: 'Product not found' } };
+      return { error: { message: "Product not found" } };
     }
 
     return { data };
@@ -38,53 +48,64 @@ export class ProductService {
       // Extract documents if they exist, otherwise use empty object
       const { documents = {}, ...productData } = product;
       // Validate and map documents with type assertion to fix lint error
-      const validatedDocuments = validateAndMapDocuments(documents as Record<string, any[]>);
+      const validatedDocuments = validateAndMapDocuments(
+        documents as Record<string, any[]>
+      );
 
       // Create the product with document URLs
       const { data, error } = await supabase
-        .from('products')
-        .insert([{
-          ...productData,
-          documents: Object.keys(validatedDocuments).length > 0 ? validatedDocuments : null
-        }])
+        .from("products")
+        .insert([
+          {
+            ...productData,
+            documents:
+              Object.keys(validatedDocuments).length > 0
+                ? validatedDocuments
+                : null,
+          },
+        ])
         .select()
         .single();
 
       if (error) {
-        console.error('Product creation error:', error);
-        return { 
-          error: { 
-            message: 'Failed to create product',
-            field: error.details 
-          } 
+        console.error("Product creation error:", error);
+        return {
+          error: {
+            message: "Failed to create product",
+            field: error.details,
+          },
         };
       }
 
       return { data };
     } catch (error) {
-      console.error('Error in createProduct:', error);
+      console.error("Error in createProduct:", error);
       return {
         error: {
-          message: error instanceof Error ? error.message : 'Unknown error occurred'
-        }
+          message:
+            error instanceof Error ? error.message : "Unknown error occurred",
+        },
       };
     }
   }
 
-  static async updateProduct(id: string, product: UpdateProduct): Promise<ProductResponse> {
+  static async updateProduct(
+    id: string,
+    product: UpdateProduct
+  ): Promise<ProductResponse> {
     const { data, error } = await supabase
-      .from('products')
+      .from("products")
       .update(product)
-      .eq('id', id)
+      .eq("id", id)
       .select()
       .single();
 
     if (error) {
-      return { 
-        error: { 
-          message: 'Failed to update product',
-          field: error.details 
-        } 
+      return {
+        error: {
+          message: "Failed to update product",
+          field: error.details,
+        },
       };
     }
 
@@ -92,16 +113,131 @@ export class ProductService {
   }
 
   static async deleteProduct(id: string): Promise<boolean> {
-    const { error } = await supabase
-      .from('products')
-      .delete()
-      .eq('id', id)
+    const { error } = await supabase.from("products").delete().eq("id", id);
 
     if (error) {
-      console.error('Error deleting product:', error);
-      throw new Error('Failed to delete product');
+      console.error("Error deleting product:", error);
+      throw new Error("Failed to delete product");
     }
 
     return true;
   }
 }
+
+export const productService = createService({
+  getProducts: async ({ companyId }: { companyId: string }) => {
+    const { data, error } = await supabase
+      .from("products")
+      .select("*")
+      .eq("company_id", companyId)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Error fetching products:", error);
+      throw new Error("Failed to fetch products");
+    }
+
+    return data || [];
+  },
+  getProduct: async ({
+    id,
+    companyId,
+  }: {
+    id: string;
+    companyId: string;
+  }): Promise<ProductResponse> => {
+    const { data, error } = await supabase
+      .from("products")
+      .select("*")
+      .eq("id", id)
+      .eq("company_id", companyId)
+      .single();
+
+    if (error) {
+      return { error: { message: "Product not found" } };
+    }
+
+    return { data };
+  },
+  createProduct: async (product: NewProduct) => {
+    try {
+      // Extract documents if they exist, otherwise use empty object
+      const { documents = {}, ...productData } = product;
+      // Validate and map documents with type assertion to fix lint error
+      const validatedDocuments = validateAndMapDocuments(
+        documents as Record<string, any[]>
+      );
+
+      // Create the product with document URLs
+      const { data, error } = await supabase
+        .from("products")
+        .insert([
+          {
+            ...productData,
+            documents:
+              Object.keys(validatedDocuments).length > 0
+                ? validatedDocuments
+                : null,
+          },
+        ])
+        .select()
+        .single();
+
+      if (error) {
+        console.error("Product creation error:", error);
+        return {
+          error: {
+            message: "Failed to create product",
+            field: error.details,
+          },
+        };
+      }
+
+      return { data };
+    } catch (error) {
+      console.error("Error in createProduct:", error);
+
+      return {
+        error: {
+          message:
+            error instanceof Error ? error.message : "Unknown error occurred",
+        },
+      };
+    }
+  },
+  updateProduct: async ({
+    id,
+    product,
+  }: {
+    id: string;
+    product: UpdateProduct;
+  }): Promise<ProductResponse> => {
+    const { data, error } = await supabase
+      .from("products")
+      .update(product)
+      .eq("id", id)
+      .select()
+      .single();
+
+    if (error) {
+      return {
+        error: {
+          message: "Failed to update product",
+          field: error.details,
+        },
+      };
+    }
+
+    return { data };
+  },
+  deleteProduct: async ({ id }: { id: string }): Promise<boolean> => {
+    const { error } = await supabase.from("products").delete().eq("id", id);
+
+    if (error) {
+      console.error("Error deleting product:", error);
+      throw new Error("Failed to delete product");
+    }
+
+    return true;
+  },
+});

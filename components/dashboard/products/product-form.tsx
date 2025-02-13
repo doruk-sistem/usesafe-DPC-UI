@@ -3,13 +3,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRight, ArrowLeft } from "lucide-react";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, UseFormReturn } from "react-hook-form";
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { Progress } from "@/components/ui/progress";
 import type { NewProduct } from "@/lib/types/product";
+
 import { BasicInfoStep } from "./steps/BasicInfoStep";
 import { DocumentUploadStep } from "./steps/DocumentUploadStep";
 import { ManufacturerSelect } from "./steps/manufacturerSelect/ManufacturerSelect";
@@ -17,16 +18,16 @@ import { ManufacturerSelect } from "./steps/manufacturerSelect/ManufacturerSelec
 const certificationValueSchema = z.object({
   issuedBy: z.string(),
   validUntil: z.string(),
-  status: z.enum(['valid', 'expired']),
-  documentUrl: z.string().optional()
+  status: z.enum(["valid", "expired"]),
+  documentUrl: z.string().optional(),
 });
 
 const documentSchema = z.object({
-  quality_cert: z.array(z.any()).optional(),
-  safety_cert: z.array(z.any()).optional(),
-  test_reports: z.array(z.any()).optional(),
-  technical_docs: z.array(z.any()).optional(),
-  compliance_docs: z.array(z.any()).optional(),
+  quality_cert: z.array(z.string()).optional(),
+  safety_cert: z.array(z.string()).optional(),
+  test_reports: z.array(z.string()).optional(),
+  technical_docs: z.array(z.string()).optional(),
+  compliance_docs: z.array(z.string()).optional(),
 });
 
 const productSchema = z.object({
@@ -34,31 +35,45 @@ const productSchema = z.object({
   description: z.string().min(5, "Product description is required"),
   product_type: z.string().min(1, "Product type is required"),
   model: z.string().min(1, "Product model is required"),
-  images: z.array(z.object({
-    url: z.string().optional(),
-    alt: z.string(),
-    is_primary: z.boolean()
-  })).default([]),
-  key_features: z.array(z.object({
-    name: z.string(),
-    value: z.string(),
-    unit: z.string().optional()
-  })).default([]),
+  images: z
+    .array(
+      z.object({
+        url: z.string().optional(),
+        alt: z.string(),
+        is_primary: z.boolean(),
+      })
+    )
+    .default([]),
+  key_features: z
+    .array(
+      z.object({
+        name: z.string(),
+        value: z.string(),
+        unit: z.string().optional(),
+      })
+    )
+    .default([]),
   documents: documentSchema.optional(),
   manufacturer_id: z.string(),
 });
 
+type FormData = z.infer<typeof productSchema>;
+
 interface ProductFormProps {
   onSubmit: (data: NewProduct) => Promise<void>;
-  defaultValues?: Partial<NewProduct>;
+  defaultValues?: Partial<FormData>;
   companyType?: string | null;
 }
 
-export function ProductForm({ onSubmit, defaultValues, companyType }: ProductFormProps) {
+export function ProductForm({
+  onSubmit,
+  defaultValues,
+  companyType,
+}: ProductFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [step, setStep] = useState(1);
 
-  const form = useForm<NewProduct>({
+  const form = useForm<FormData>({
     resolver: zodResolver(productSchema),
     defaultValues: defaultValues || {
       name: "",
@@ -74,13 +89,29 @@ export function ProductForm({ onSubmit, defaultValues, companyType }: ProductFor
 
   const progress = (step / 4) * 100;
 
-  const handleSubmit = async (data: NewProduct) => {
+  const handleSubmit = async (data: FormData) => {
     try {
       setIsSubmitting(true);
-      
-      await onSubmit({
+      const productData: NewProduct = {
         ...data,
-      });
+        name: data.name || "",
+        description: data.description || "",
+        product_type: data.product_type || "",
+        model: data.model || "",
+        company_id: "",
+        manufacturer_id: data.manufacturer_id || "",
+        images: data.images.map((img) => ({
+          url: img.url || "",
+          alt: img.alt || "",
+          is_primary: img.is_primary || false,
+        })),
+        key_features: data.key_features.map((feature) => ({
+          name: feature.name || "",
+          value: feature.value || "",
+          unit: feature.unit,
+        })),
+      };
+      await onSubmit(productData);
     } finally {
       setIsSubmitting(false);
     }
@@ -100,13 +131,19 @@ export function ProductForm({ onSubmit, defaultValues, companyType }: ProductFor
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
         <Progress value={progress} className="mb-8" />
 
-        {step === 1 && <BasicInfoStep form={form} />}
-        {step === 2 && <DocumentUploadStep form={form} />}
-        {step === 3 && <ManufacturerSelect form={form} companyType={companyType} />}
+        {step === 1 && <BasicInfoStep form={form as any} />}
+        {step === 2 && <DocumentUploadStep form={form as any} />}
+        {step === 3 && (
+          <ManufacturerSelect form={form as any} companyType={companyType} />
+        )}
 
         <div className="flex justify-end gap-4">
           {step > 1 && (
-            <Button type="button" variant="outline" onClick={() => setStep(step - 1)}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setStep(step - 1)}
+            >
               <ArrowLeft className="h-4 w-4 mr-2" />
               Previous
             </Button>
@@ -114,7 +151,7 @@ export function ProductForm({ onSubmit, defaultValues, companyType }: ProductFor
           {step < 3 ? (
             <Button type="button" onClick={handleNextStep}>
               Next
-              <ArrowRight className="h-4 w-4 ml-2" /> 
+              <ArrowRight className="h-4 w-4 ml-2" />
             </Button>
           ) : (
             <Button type="submit" disabled={isSubmitting}>
