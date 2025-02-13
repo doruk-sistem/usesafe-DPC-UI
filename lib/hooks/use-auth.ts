@@ -1,12 +1,12 @@
 "use client";
 
-import type { User } from '@supabase/supabase-js';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState, useCallback } from 'react';
+import type { User } from "@supabase/supabase-js";
+import { useRouter } from "next/navigation";
+import { useEffect, useState, useCallback } from "react";
 
-import { supabase } from '@/lib/supabase';
-import { CompanyService } from '@/lib/services/company';
-import type { Company } from '@/lib/types/company';
+import { CompanyService } from "@/lib/services/company";
+import { supabase } from "@/lib/supabase";
+import type { Company } from "@/lib/types/company";
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
@@ -19,12 +19,14 @@ export function useAuth() {
       const companyData = await CompanyService.getCompany(companyId);
       setCompany(companyData);
     } catch (error) {
-      console.error('Error fetching company:', error);
+      console.error("Error fetching company:", error);
     }
   }, []);
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
       if (session?.user?.user_metadata?.company_id) {
         fetchCompany(session.user.user_metadata.company_id);
@@ -47,19 +49,21 @@ export function useAuth() {
   const signIn = async (email: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({
       email,
-      password
+      password,
     });
 
     if (error) throw error;
 
     // Get session after sign in
-    const { data: { session } } = await supabase.auth.getSession();
-    
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
     // Redirect based on role
-    if (session?.user?.user_metadata?.role === 'admin') {
-      router.push('/admin');
+    if (session?.user?.user_metadata?.role === "admin") {
+      router.push("/admin");
     } else {
-      router.push('/dashboard');
+      router.push("/dashboard");
     }
   };
 
@@ -77,11 +81,11 @@ export function useAuth() {
   const signOut = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
-    router.push('/');
+    router.push("/");
   };
-  
+
   const isAdmin = () => {
-    return user?.user_metadata?.role === 'admin';
+    return user?.user_metadata?.role === "admin";
   };
 
   return {
@@ -91,6 +95,6 @@ export function useAuth() {
     signIn,
     signUp,
     signOut,
-    isAdmin
+    isAdmin,
   };
 }

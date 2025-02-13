@@ -14,7 +14,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import type { NewProduct, KeyFeature } from "@/lib/types/product";
 import type { Json } from "@/lib/types/supabase";
@@ -25,12 +31,12 @@ interface BasicInfoStepProps {
 
 export function BasicInfoStep({ form }: BasicInfoStepProps) {
   const convertToKeyFeature = (json: Json): KeyFeature => {
-    if (typeof json === 'object' && json !== null && !Array.isArray(json)) {
+    if (typeof json === "object" && json !== null && !Array.isArray(json)) {
       const obj = json as Record<string, Json>;
       return {
-        name: typeof obj.name === 'string' ? obj.name : "",
-        value: typeof obj.value === 'string' ? obj.value : "",
-        unit: typeof obj.unit === 'string' ? obj.unit : undefined
+        name: typeof obj.name === "string" ? obj.name : "",
+        value: typeof obj.value === "string" ? obj.value : "",
+        unit: typeof obj.unit === "string" ? obj.unit : undefined,
       };
     }
     return { name: "", value: "", unit: undefined };
@@ -68,7 +74,10 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
                         <X className="h-4 w-4" />
                       </Button>
                       {image.is_primary && (
-                        <Badge variant="secondary" className="absolute bottom-2 left-2">
+                        <Badge
+                          variant="secondary"
+                          className="absolute bottom-2 left-2"
+                        >
                           Primary
                         </Badge>
                       )}
@@ -76,7 +85,9 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
                   ))}
                   <label className="flex flex-col items-center justify-center gap-2 cursor-pointer aspect-square rounded-lg border-2 border-dashed hover:border-primary transition-colors">
                     <Upload className="h-8 w-8 text-muted-foreground" />
-                    <span className="text-sm text-muted-foreground">Upload Image</span>
+                    <span className="text-sm text-muted-foreground">
+                      Upload Image
+                    </span>
                     <input
                       type="file"
                       accept="image/*"
@@ -87,7 +98,7 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
                           const newImage = {
                             url: URL.createObjectURL(file),
                             alt: file.name,
-                            is_primary: field.value.length === 0
+                            is_primary: field.value.length === 0,
                           };
                           field.onChange([...field.value, newImage]);
                         }
@@ -124,7 +135,10 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
             <FormItem>
               <FormLabel>Product Type</FormLabel>
               <FormControl>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Select product type" />
                   </SelectTrigger>
@@ -147,7 +161,7 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
             <FormItem className="col-span-2">
               <FormLabel>Description</FormLabel>
               <FormControl>
-                <Textarea 
+                <Textarea
                   placeholder="Enter product description"
                   className="min-h-[100px]"
                   {...field}
@@ -181,42 +195,41 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
                 <FormLabel>Key Features</FormLabel>
                 <FormControl>
                   <div className="space-y-4">
-                    {(Array.isArray(field.value) ? field.value : []).map((feature: Json, index: number) => {
-                      const keyFeature = convertToKeyFeature(feature);
-                      return (
+                    {(Array.isArray(field.value) ? field.value : []).map(
+                      (feature: KeyFeature, index: number) => (
                         <div key={index} className="flex gap-4">
                           <Input
                             placeholder="Feature name"
-                            value={keyFeature.name}
+                            value={feature.name}
                             onChange={(e) => {
-                              const newFeatures = [...(Array.isArray(field.value) ? field.value : [])];
+                              const newFeatures = [...field.value];
                               newFeatures[index] = {
-                                ...keyFeature,
-                                name: e.target.value
+                                ...feature,
+                                name: e.target.value,
                               };
                               field.onChange(newFeatures);
                             }}
                           />
                           <Input
                             placeholder="Value"
-                            value={keyFeature.value}
+                            value={feature.value}
                             onChange={(e) => {
-                              const newFeatures = [...(Array.isArray(field.value) ? field.value : [])];
+                              const newFeatures = [...field.value];
                               newFeatures[index] = {
-                                ...keyFeature,
-                                value: e.target.value
+                                ...feature,
+                                value: e.target.value,
                               };
                               field.onChange(newFeatures);
                             }}
                           />
                           <Input
                             placeholder="Unit (optional)"
-                            value={keyFeature.unit || ""}
+                            value={feature.unit || ""}
                             onChange={(e) => {
-                              const newFeatures = [...(Array.isArray(field.value) ? field.value : [])];
+                              const newFeatures = [...field.value];
                               newFeatures[index] = {
-                                ...keyFeature,
-                                unit: e.target.value || undefined
+                                ...feature,
+                                unit: e.target.value || undefined,
                               };
                               field.onChange(newFeatures);
                             }}
@@ -226,7 +239,7 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
                             variant="destructive"
                             size="icon"
                             onClick={() => {
-                              const newFeatures = [...(Array.isArray(field.value) ? field.value : [])];
+                              const newFeatures = [...field.value];
                               newFeatures.splice(index, 1);
                               field.onChange(newFeatures);
                             }}
@@ -234,14 +247,21 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
                             <X className="h-4 w-4" />
                           </Button>
                         </div>
-                      );
-                    })}
+                      )
+                    )}
                     <Button
                       type="button"
                       variant="outline"
                       onClick={() => {
-                        const newFeature: KeyFeature = { name: "", value: "", unit: undefined };
-                        field.onChange([...(Array.isArray(field.value) ? field.value : []), newFeature]);
+                        const newFeature: KeyFeature = {
+                          name: "",
+                          value: "",
+                          unit: undefined,
+                        };
+                        field.onChange([
+                          ...(Array.isArray(field.value) ? field.value : []),
+                          newFeature,
+                        ]);
                       }}
                     >
                       <Plus className="h-4 w-4 mr-2" />

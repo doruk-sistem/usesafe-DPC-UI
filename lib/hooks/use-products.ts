@@ -10,7 +10,7 @@ export function useProducts() {
   const { company } = useAuth();
 
   const {
-    data: products,
+    data: products = [],
     isLoading,
     error,
   } = productsApiHooks.useGetProductsQuery(
