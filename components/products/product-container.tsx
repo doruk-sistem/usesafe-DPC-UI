@@ -1,6 +1,7 @@
 "use client";
 
 import { Product } from "@/lib/types/product";
+
 import { BatteryProductDetails } from "./battery-product-details";
 import { TextileProductDetails } from "./textile-product-details";
 

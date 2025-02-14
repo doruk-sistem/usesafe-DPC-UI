@@ -17,9 +17,9 @@ interface HazardPictogramsCardProps {
   itemVariants: any;
 }
 
-export function HazardPictogramsCard({ 
-  hazardPictograms, 
-  itemVariants 
+export function HazardPictogramsCard({
+  hazardPictograms,
+  itemVariants,
 }: HazardPictogramsCardProps) {
   return (
     <Card className="lg:col-span-2">
@@ -30,13 +30,13 @@ export function HazardPictogramsCard({
         </div>
       </CardHeader>
       <CardContent>
-        <div className="flex flex-wrap gap-8 justify-center">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-5 justify-center">
           {hazardPictograms.map((pictogram, index) => (
-            <motion.div 
+            <motion.div
               key={index}
               variants={itemVariants}
               whileHover={{ scale: 1.05 }}
-              className="flex flex-col items-center gap-3 p-4 rounded-lg border bg-white" 
+              className="flex flex-col items-center gap-3 p-4 rounded-lg border bg-white"
             >
               <div className="relative w-24 h-24">
                 <Image
@@ -48,7 +48,9 @@ export function HazardPictogramsCard({
               </div>
               <div className="text-center">
                 <h3 className="font-semibold">{pictogram.alt}</h3>
-                <p className="text-sm text-muted-foreground">{pictogram.description}</p>
+                <p className="text-sm text-muted-foreground">
+                  {pictogram.description}
+                </p>
               </div>
             </motion.div>
           ))}
@@ -56,4 +58,4 @@ export function HazardPictogramsCard({
       </CardContent>
     </Card>
   );
-} 
+}
