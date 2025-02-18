@@ -3,11 +3,7 @@ import {
   RegistrationResponse,
 } from "@/lib/data/manufacturer";
 import { supabase } from "@/lib/supabase/client";
-import type {
-  AddressType,
-  DocumentStatus,
-  DocumentType,
-} from "@/lib/types/company";
+import { DocumentStatus, DocumentType } from "@/lib/types/company";
 
 export class ManufacturerService {
   static async register(
@@ -33,7 +29,7 @@ export class ManufacturerService {
       // Insert company addresses
       const addresses = data.addresses.map((address) => ({
         companyId: company.id,
-        type: AddressType.HEADQUARTERS,
+        type: "headquarters",
         street: address.street,
         city: address.city,
         district: address.district,

@@ -17,16 +17,9 @@ const stepValidations: StepValidation[] = [
     },
   },
   {
-    fields: ["ownerName", "nationalId", "email", "countryCode", "phone", "password", "confirmPassword"],
+    fields: ["nationalId", "email", "countryCode", "phone"],
     isValid: async (form) => {
-      const result = await form.trigger([
-        "ownerName",
-        "nationalId",
-        "email",
-        "phone",
-        "password",
-        "confirmPassword",
-      ]);
+      const result = await form.trigger(["nationalId", "email", "phone"]);
       return result;
     },
   },
@@ -38,7 +31,12 @@ const stepValidations: StepValidation[] = [
     },
   },
   {
-    fields: ["signatureCircular", "tradeRegistry", "taxPlate", "activityCertificate"],
+    fields: [
+      "signatureCircular",
+      "tradeRegistry",
+      "taxPlate",
+      "activityCertificate",
+    ],
     isValid: async (form) => {
       const result = await form.trigger([
         "signatureCircular",
@@ -58,7 +56,7 @@ export const useRegistrationSteps = (form: UseFormReturn<any>) => {
   const nextStep = async () => {
     const currentValidation = stepValidations[currentStep];
     const isValid = await currentValidation.isValid(form);
-    
+
     if (isValid) {
       setCurrentStep((prev) => Math.min(prev + 1, totalSteps - 1));
       return true;

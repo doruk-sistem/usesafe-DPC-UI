@@ -1,25 +1,31 @@
 "use client";
 
-import type { User } from "@supabase/supabase-js";
+import type {
+  User as SupabaseUser,
+  UserAttributes,
+} from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { supabase } from "@/lib/supabase/client";
 
+import type { User } from "../types/auth";
+
 import { companyApiHooks } from "./use-company";
 
 export function useAuth() {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<SupabaseUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
-  const { data: company } = companyApiHooks.useGetCompanyQuery(
+  const {
+    data: company,
+    isLoading: isCompanyLoading,
+    isFetched: isCompanyFetched,
+  } = companyApiHooks.useGetCompanyQuery(
     { id: user?.user_metadata?.company_id },
     { enabled: !!user?.user_metadata?.company_id }
   );
-
-  console.log("company::", company);
-  console.log("user::", user);
 
   useEffect(() => {
     const {
@@ -59,7 +65,11 @@ export function useAuth() {
     }
   };
 
-  const signUp = async (email: string, password: string, metadata: any) => {
+  const signUp = async (
+    email: string,
+    password: string,
+    metadata: Pick<User["user_metadata"], "role" | "full_name" | "company_id">
+  ) => {
     const { error } = await supabase.auth.signUp({
       email,
       password,
@@ -76,6 +86,11 @@ export function useAuth() {
     router.push("/");
   };
 
+  const updateUser = async (attributes: UserAttributes) => {
+    const { error } = await supabase.auth.updateUser(attributes);
+    if (error) throw error;
+  };
+
   const isAdmin = () => {
     return user?.user_metadata?.role === "admin";
   };
@@ -83,10 +98,13 @@ export function useAuth() {
   return {
     user,
     company,
+    isCompanyLoading,
+    isCompanyFetched,
     isLoading,
     signIn,
     signUp,
     signOut,
     isAdmin,
+    updateUser,
   };
 }
