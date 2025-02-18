@@ -1,12 +1,12 @@
 "use client";
- 
+
 import { ShieldCheck, LogIn, Box, Factory, Search } from "lucide-react";
 import Link from "next/link";
 
-import { useAuth } from "@/lib/hooks/use-auth";
+import { UserNav } from "@/components/layout/user-nav";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
-import { UserNav } from "@/components/layout/user-nav";
+import { useAuth } from "@/lib/hooks/use-auth";
 
 export function Navbar() {
   const { user, isLoading } = useAuth();
@@ -18,11 +18,11 @@ export function Navbar() {
           <ShieldCheck className="h-6 w-6" />
           <span className="text-xl font-bold">UseSafe</span>
         </Link>
-        
+
         <nav className="flex items-center space-x-4 flex-1">
           <Link href="/auth/register">
             <Button variant="ghost" className="gap-2">
-              <Factory className="h-4 w-4" /> 
+              <Factory className="h-4 w-4" />
               Company Registration
             </Button>
           </Link>

@@ -2,49 +2,41 @@
 
 import type { User } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 
-import { CompanyService } from "@/lib/services/company";
-import { supabase } from "@/lib/supabase";
-import type { Company } from "@/lib/types/company";
+import { supabase } from "@/lib/supabase/client";
+
+import { companyApiHooks } from "./use-company";
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
-  const [company, setCompany] = useState<Company | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
-  const fetchCompany = useCallback(async (companyId: string) => {
-    try {
-      const companyData = await CompanyService.getCompany(companyId);
-      setCompany(companyData);
-    } catch (error) {
-      console.error("Error fetching company:", error);
-    }
-  }, []);
+  const { data: company } = companyApiHooks.useGetCompanyQuery(
+    { id: user?.user_metadata?.company_id },
+    { enabled: !!user?.user_metadata?.company_id }
+  );
+
+  console.log("company::", company);
+  console.log("user::", user);
 
   useEffect(() => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
-      if (session?.user?.user_metadata?.company_id) {
-        fetchCompany(session.user.user_metadata.company_id);
-      }
       setIsLoading(false);
     });
 
     // Initial session check
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
-      if (session?.user?.user_metadata?.company_id) {
-        fetchCompany(session.user.user_metadata.company_id);
-      }
       setIsLoading(false);
     });
 
     return () => subscription.unsubscribe();
-  }, [fetchCompany]);
+  }, []);
 
   const signIn = async (email: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({

@@ -1,16 +1,23 @@
 "use client";
 
+import type { UseFormReturn } from "react-hook-form";
+
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage, 
+  FormMessage,
   FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import type { UseFormReturn } from "react-hook-form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 
 interface CompanyInfoStepProps {
@@ -36,11 +43,13 @@ export function CompanyInfoStep({ form }: CompanyInfoStepProps) {
                 <SelectItem value="brand_owner">Brand Owner</SelectItem>
                 <SelectItem value="factory">Factory</SelectItem>
                 <SelectItem value="manufacturer">Manufacturer</SelectItem>
-                <SelectItem value="material_supplier">Material Supplier</SelectItem>
+                <SelectItem value="material_supplier">
+                  Material Supplier
+                </SelectItem>
               </SelectContent>
             </Select>
             <FormDescription>
-              Select your company's primary business type
+              Select your company&apos;s primary business type
             </FormDescription>
             <FormMessage />
           </FormItem>
@@ -53,10 +62,11 @@ export function CompanyInfoStep({ form }: CompanyInfoStepProps) {
           <FormItem>
             <FormLabel>Company Name *</FormLabel>
             <FormControl>
-              <Input 
+              <Input
                 {...field}
                 className={cn(
-                  fieldState.error && "border-red-500 focus-visible:ring-red-500"
+                  fieldState.error &&
+                    "border-red-500 focus-visible:ring-red-500"
                 )}
               />
             </FormControl>
@@ -72,20 +82,19 @@ export function CompanyInfoStep({ form }: CompanyInfoStepProps) {
           <FormItem>
             <FormLabel>Tax ID *</FormLabel>
             <FormControl>
-              <Input 
-                {...field} 
-                maxLength={10} 
+              <Input
+                {...field}
+                maxLength={10}
                 pattern="\d*"
                 inputMode="numeric"
                 placeholder="Enter 10-digit Tax ID"
                 className={cn(
-                  fieldState.error && "border-red-500 focus-visible:ring-red-500"
+                  fieldState.error &&
+                    "border-red-500 focus-visible:ring-red-500"
                 )}
               />
             </FormControl>
-            <FormDescription>
-              Must be exactly 10 digits
-            </FormDescription>
+            <FormDescription>Must be exactly 10 digits</FormDescription>
             <FormMessage className="text-red-500" />
           </FormItem>
         )}
@@ -98,10 +107,11 @@ export function CompanyInfoStep({ form }: CompanyInfoStepProps) {
           <FormItem>
             <FormLabel>Trade Register Number</FormLabel>
             <FormControl>
-              <Input 
+              <Input
                 {...field}
                 className={cn(
-                  fieldState.error && "border-red-500 focus-visible:ring-red-500"
+                  fieldState.error &&
+                    "border-red-500 focus-visible:ring-red-500"
                 )}
               />
             </FormControl>
@@ -117,10 +127,11 @@ export function CompanyInfoStep({ form }: CompanyInfoStepProps) {
           <FormItem>
             <FormLabel>MERSIS Number</FormLabel>
             <FormControl>
-              <Input 
+              <Input
                 {...field}
                 className={cn(
-                  fieldState.error && "border-red-500 focus-visible:ring-red-500"
+                  fieldState.error &&
+                    "border-red-500 focus-visible:ring-red-500"
                 )}
               />
             </FormControl>
