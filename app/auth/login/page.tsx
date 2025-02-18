@@ -1,15 +1,21 @@
 "use client";
 
-import { Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
 import { ShieldCheck } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
 import { LoginForm } from "@/components/auth/login-form";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 
 function LoginContent() {
   const searchParams = useSearchParams();
-  const from = searchParams.get('from');
+  const from = searchParams.get("from");
 
   return (
     <Card>
@@ -37,13 +43,15 @@ export default function LoginPage() {
         </p>
       </div>
 
-      <Suspense fallback={
-        <Card>
-          <CardHeader>
-            <CardTitle>Loading...</CardTitle>
-          </CardHeader>
-        </Card>
-      }>
+      <Suspense
+        fallback={
+          <Card>
+            <CardHeader>
+              <CardTitle>Loading...</CardTitle>
+            </CardHeader>
+          </Card>
+        }
+      >
         <LoginContent />
       </Suspense>
     </div>

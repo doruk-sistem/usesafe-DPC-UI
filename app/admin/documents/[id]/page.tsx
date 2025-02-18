@@ -17,7 +17,8 @@ export function generateStaticParams() {
   }));
 }
 
-export default function DocumentPage({ params }: { params: { id: string } }) {
+export default async function DocumentPage(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   return (
     <div className="space-y-6">
       <DocumentDetails documentId={params.id} />
