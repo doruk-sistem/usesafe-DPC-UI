@@ -29,10 +29,10 @@ const steps = [
   { title: "Documents", component: DocumentsStep },
 ];
 
-export function RegisterForm() {
+export function ComplateRegistrationForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const { signUp } = useAuth();
+  const { updateUser } = useAuth();
   const { toast } = useToast();
   const router = useRouter();
 
@@ -43,7 +43,6 @@ export function RegisterForm() {
       taxId: "",
       tradeRegisterNumber: "",
       mersisNumber: "",
-      ownerName: "",
       nationalId: "",
       email: "",
       countryCode: "+90",
@@ -56,8 +55,6 @@ export function RegisterForm() {
       qualityCertificates: [],
       exportDocuments: [],
       productionPermits: [],
-      password: "",
-      confirmPassword: "",
     },
     mode: "onChange", // Enable real-time validation
   });
@@ -85,11 +82,11 @@ export function RegisterForm() {
             throw new Error(response.message || "Registration failed");
           }
 
-          // Create Supabase user
-          await signUp(formData.email, formData.password, {
-            full_name: formData.ownerName,
-            company_id: response.registrationId,
-            role: "manufacturer",
+          // Associate Supabase user with company
+          await updateUser({
+            data: {
+              company_id: response.registrationId,
+            },
           });
 
           setIsSubmitted(true);

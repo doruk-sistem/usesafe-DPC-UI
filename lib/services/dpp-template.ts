@@ -1,12 +1,12 @@
-import { supabase } from '@/lib/supabase';
-import type { DPPTemplate, NewDPPTemplate } from '@/lib/types/dpp';
+import { supabase } from "@/lib/supabase/client";
+import type { DPPTemplate, NewDPPTemplate } from "@/lib/types/dpp";
 
 export class DPPTemplateService {
   static async getTemplates(): Promise<DPPTemplate[]> {
     const { data, error } = await supabase
-      .from('dpp_templates')
-      .select('*')
-      .order('created_at', { ascending: false });
+      .from("dpp_templates")
+      .select("*")
+      .order("created_at", { ascending: false });
 
     if (error) throw error;
     return data;
@@ -14,9 +14,9 @@ export class DPPTemplateService {
 
   static async getTemplate(id: string): Promise<DPPTemplate | null> {
     const { data, error } = await supabase
-      .from('dpp_templates')
-      .select('*')
-      .eq('id', id)
+      .from("dpp_templates")
+      .select("*")
+      .eq("id", id)
       .single();
 
     if (error) return null;
@@ -25,7 +25,7 @@ export class DPPTemplateService {
 
   static async createTemplate(template: NewDPPTemplate): Promise<DPPTemplate> {
     const { data, error } = await supabase
-      .from('dpp_templates')
+      .from("dpp_templates")
       .insert([template])
       .select()
       .single();
@@ -34,11 +34,14 @@ export class DPPTemplateService {
     return data;
   }
 
-  static async updateTemplate(id: string, template: Partial<DPPTemplate>): Promise<DPPTemplate> {
+  static async updateTemplate(
+    id: string,
+    template: Partial<DPPTemplate>
+  ): Promise<DPPTemplate> {
     const { data, error } = await supabase
-      .from('dpp_templates')
+      .from("dpp_templates")
       .update(template)
-      .eq('id', id)
+      .eq("id", id)
       .select()
       .single();
 
@@ -48,9 +51,9 @@ export class DPPTemplateService {
 
   static async deleteTemplate(id: string): Promise<void> {
     const { error } = await supabase
-      .from('dpp_templates')
+      .from("dpp_templates")
       .delete()
-      .eq('id', id);
+      .eq("id", id);
 
     if (error) throw error;
   }

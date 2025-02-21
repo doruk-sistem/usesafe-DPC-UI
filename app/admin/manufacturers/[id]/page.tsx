@@ -16,7 +16,8 @@ export function generateStaticParams() {
   }));
 }
 
-export default function ManufacturerPage({ params }: { params: { id: string } }) {
+export default async function ManufacturerPage(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   return (
     <div className="space-y-6">
       <ManufacturerDetails manufacturerId={params.id} />

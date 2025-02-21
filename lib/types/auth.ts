@@ -2,10 +2,15 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  role: 'admin' | 'manufacturer';
+  role: any;
   user_metadata?: {
     company_id?: string;
     full_name?: string;
+    role?: "admin" | "manufacturer";
+    email_verified: boolean;
+    email?: string;
+    phone_verified?: boolean;
+    sub?: any;
   };
 }
 

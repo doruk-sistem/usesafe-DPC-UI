@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
 import { Navbar } from "@/components/layout/navbar";
-import { AuthProvider } from "@/components/providers/auth-provider";
 import ReactQueryProvider from "@/components/providers/react-query-provider";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
@@ -33,15 +32,13 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <AuthProvider>
-            <ReactQueryProvider>
-              <div className="relative min-h-screen bg-background">
-                <Navbar />
-                <main className="relative">{children}</main>
-              </div>
-              <Toaster />
-            </ReactQueryProvider>
-          </AuthProvider>
+          <ReactQueryProvider>
+            <div className="relative min-h-screen bg-background">
+              <Navbar />
+              <main className="relative">{children}</main>
+            </div>
+            <Toaster />
+          </ReactQueryProvider>
         </ThemeProvider>
       </body>
     </html>

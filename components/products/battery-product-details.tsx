@@ -29,63 +29,90 @@ export function BatteryProductDetails({ product }: BatteryProductDetailsProps) {
   // Extract data from DPP config
   const getFieldValue = (sectionId: string, fieldId: string) => {
     if (!product?.dpp_config?.sections) return undefined;
-    
-    const section = product.dpp_config.sections.find(s => s.id === sectionId);
+
+    const section = product.dpp_config.sections.find((s) => s.id === sectionId);
     if (!section?.fields) return undefined;
-    
-    const field = section.fields.find(f => f.id === fieldId);
+
+    const field = section.fields.find((f) => f.id === fieldId);
     return field?.value;
   };
 
   const getFieldsByType = (sectionId: string, fieldType: string) => {
     if (!product?.dpp_config?.sections) return [];
-    
-    const section = product.dpp_config.sections.find(s => s.id === sectionId);
+
+    const section = product.dpp_config.sections.find((s) => s.id === sectionId);
     if (!section?.fields) return [];
-    
-    return section.fields.filter(f => f.type === fieldType) || [];
+
+    return section.fields.filter((f) => f.type === fieldType) || [];
   };
 
   // Get manufacturer and category from basic info section
-  const manufacturer = getFieldValue("basic-info", "manufacturer") as string || "";
-  const category = getFieldValue("basic-info", "category") as string || "";
+  const manufacturer =
+    (getFieldValue("basic-info", "manufacturer") as string) || "";
+  const category = (getFieldValue("basic-info", "category") as string) || "";
 
   // Get materials from materials section
-  const materials = getFieldsByType("materials", "material").map(field => ({
+  const materials = getFieldsByType("materials", "material").map((field) => ({
     name: field.name,
     percentage: (field.value as any)?.percentage || 0,
     recyclable: (field.value as any)?.recyclable || false,
-    description: (field.value as any)?.description || ""
+    description: (field.value as any)?.description || "",
   }));
 
   // Get certifications from certifications section
-  const certifications = getFieldsByType("certifications", "certification").map(field => ({
-    name: field.name,
-    issuedBy: (field.value as any)?.issuedBy || "",
-    validUntil: (field.value as any)?.validUntil || "",
-    status: (field.value as any)?.status || "unknown",
-    documentUrl: (field.value as any)?.documentUrl || ""
-  }));
+  const certifications = getFieldsByType("certifications", "certification").map(
+    (field) => ({
+      name: field.name,
+      issuedBy: (field.value as any)?.issuedBy || "",
+      validUntil: (field.value as any)?.validUntil || "",
+      status: (field.value as any)?.status || "unknown",
+      documentUrl: (field.value as any)?.documentUrl || "",
+    })
+  );
 
   // Get technical specs from key_features
   const features = product.key_features;
 
   // Get environmental metrics
-  const environmentalFields = product.dpp_config?.sections
-    .find(s => s.id === "environmental")
-    ?.fields?.map(field => ({
-      id: field.id,
-      name: field.name,
-      value: typeof field.value === 'object' ? JSON.stringify(field.value) : field.value
-    })) || [];
+  const environmentalFields =
+    product.dpp_config?.sections
+      .find((s) => s.id === "environmental")
+      ?.fields?.map((field) => ({
+        id: field.id,
+        name: field.name,
+        value:
+          typeof field.value === "object"
+            ? JSON.stringify(field.value)
+            : field.value,
+      })) || [];
 
   // Predefined arrays for specific sections
   const hazardPictograms = [
-    { src: "/images/hazard-health.gif", alt: "Health Hazard", description: "May cause respiratory irritation" },
-    { src: "/images/hazard-explosive.gif", alt: "Corrosive", description: "Contains corrosive materials" },
-    { src: "/images/hazard-warning.png", alt: "Warning", description: "General safety warning" },
-    { src: "/images/hazard-explosive.jpeg", alt: "Explosive", description: "Risk of explosion under specific conditions" },
-    { src: "/images/hazard-environmental.png", alt: "Environmental Hazard", description: "May pollute water sources" },
+    {
+      src: "/images/hazard-health.gif",
+      alt: "Health Hazard",
+      description: "May cause respiratory irritation",
+    },
+    {
+      src: "/images/hazard-explosive.gif",
+      alt: "Corrosive",
+      description: "Contains corrosive materials",
+    },
+    {
+      src: "/images/hazard-warning.png",
+      alt: "Warning",
+      description: "General safety warning",
+    },
+    {
+      src: "/images/hazard-explosive.jpeg",
+      alt: "Explosive",
+      description: "Risk of explosion under specific conditions",
+    },
+    {
+      src: "/images/hazard-environmental.png",
+      alt: "Environmental Hazard",
+      description: "May pollute water sources",
+    },
   ];
 
   const safetyMeasures = [
@@ -114,7 +141,7 @@ export function BatteryProductDetails({ product }: BatteryProductDetailsProps) {
       items: [
         "Always store in a dry and cool place in the upright position. (10°C to 25°C).",
         "Place batteries on a wood pallet for avoiding direct contact with concrete ground.",
-      ]
+      ],
     },
     {
       title: "Charge Level Monitoring",
@@ -122,7 +149,7 @@ export function BatteryProductDetails({ product }: BatteryProductDetailsProps) {
         "Charge level of the battery must be greater than 12.6V before sale.",
         "During storage, the minimum voltage must be 12.4V.",
         "For preventing permanent damage, unpack and charge at 16.1V and 1/20Cn current if voltage is low.",
-      ]
+      ],
     },
     {
       title: "Installation Steps",
@@ -134,8 +161,8 @@ export function BatteryProductDetails({ product }: BatteryProductDetailsProps) {
         "Clean battery compartment and terminals",
         "Install new battery (connect positive cable first)",
         "Check charge current compatibility",
-      ]
-    }
+      ],
+    },
   ];
 
   // Enhanced Framer Motion Variants
@@ -145,16 +172,16 @@ export function BatteryProductDetails({ product }: BatteryProductDetailsProps) {
       opacity: 1,
       transition: {
         delayChildren: 0.3,
-        staggerChildren: 0.2
-      }
-    }
+        staggerChildren: 0.2,
+      },
+    },
   };
 
   const itemVariants = {
-    hidden: { 
-      y: 50, 
+    hidden: {
+      y: 50,
       opacity: 0,
-      scale: 0.9
+      scale: 0.9,
     },
     visible: {
       y: 0,
@@ -163,64 +190,58 @@ export function BatteryProductDetails({ product }: BatteryProductDetailsProps) {
       transition: {
         type: "spring",
         damping: 12,
-        stiffness: 100
-      }
+        stiffness: 100,
+      },
     },
     hover: {
       scale: 1.03,
-      transition: { 
-        type: "spring", 
-        stiffness: 300 
-      }
-    }
+      transition: {
+        type: "spring",
+        stiffness: 300,
+      },
+    },
   };
 
   const cardVariants = {
-    hidden: { 
-      opacity: 0, 
+    hidden: {
+      opacity: 0,
       y: 30,
-      scale: 0.95
+      scale: 0.95,
     },
     visible: {
-      opacity: 1, 
+      opacity: 1,
       y: 0,
       scale: 1,
       transition: {
         type: "spring",
         damping: 10,
-        stiffness: 100
-      }
+        stiffness: 100,
+      },
     },
     hover: {
       scale: 1.02,
       boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
-      transition: { 
-        type: "spring", 
-        stiffness: 300 
-      }
-    }
+      transition: {
+        type: "spring",
+        stiffness: 300,
+      },
+    },
   };
 
   return (
-    <motion.div 
+    <motion.div
       initial="hidden"
       animate="visible"
       variants={containerVariants}
       className="container mx-auto space-y-16 px-4 py-12 max-w-7xl"
     >
       {/* Back Button */}
-      <motion.div 
-        variants={itemVariants}
-        className="flex items-center gap-4"
-      >
+      <motion.div variants={itemVariants} className="flex items-center gap-4">
         <Link href="/products">
-          <motion.div
-            whileHover="hover"
-            variants={itemVariants}
-          >
-            <Button 
-              variant="ghost" 
-              size="sm" 
+          <motion.div whileHover="hover" variants={itemVariants}>
+            <Button
+              variant="ghost"
+              size="sm"
               className="gradient-hover group flex items-center"
             >
               <ArrowLeft className="mr-2 h-4 w-4 group-hover:-translate-x-1 transition-transform" />
@@ -231,64 +252,55 @@ export function BatteryProductDetails({ product }: BatteryProductDetailsProps) {
       </motion.div>
 
       {/* Product Overview */}
-      <motion.div 
+      <motion.div
         variants={itemVariants}
         className="grid gap-12 lg:grid-cols-2 items-start max-w-[1400px] mx-auto"
       >
         {/* Image Gallery */}
-        <ProductImageGallery 
-          images={product.images} 
-          name={product.name} 
-          itemVariants={itemVariants} 
+        <ProductImageGallery
+          images={product.images}
+          name={product.name}
+          itemVariants={itemVariants}
         />
 
         {/* Product Details */}
-        <motion.div 
-          variants={itemVariants}
-          className="space-y-8"
-        >
+        <motion.div variants={itemVariants} className="space-y-8">
           {/* Product Title and Description */}
-          <ProductHeader 
-            name={product.name} 
-            description={product.description} 
-            itemVariants={itemVariants} 
+          <ProductHeader
+            name={product.name}
+            description={product.description}
+            itemVariants={itemVariants}
           />
 
           {/* Quick Info Cards */}
-          <ProductQuickInfo 
+          <ProductQuickInfo
             model={product.model}
             manufacturer={manufacturer}
-            cardVariants={cardVariants} 
+            cardVariants={cardVariants}
           />
 
           {/* Key Features */}
-          <ProductKeyFeatures 
-            features={features}
-            itemVariants={itemVariants} 
-          />
+          <ProductKeyFeatures features={features} itemVariants={itemVariants} />
         </motion.div>
       </motion.div>
 
-      <div className="grid gap-8 lg:grid-cols-2 mt-16 max-w-[1400px] mx-auto">
+      <div className="space-y-8 mt-16">
         {/* Basic Information */}
-        <BasicInformationCard 
+        <BasicInformationCard
           manufacturer={manufacturer}
           category={category}
           model={product.model}
-          cardVariants={cardVariants} 
+          cardVariants={cardVariants}
         />
 
         {/* Hazard Pictograms */}
-        <HazardPictogramsCard 
-          hazardPictograms={hazardPictograms} 
-          itemVariants={itemVariants} 
+        <HazardPictogramsCard
+          hazardPictograms={hazardPictograms}
+          itemVariants={itemVariants}
         />
 
         {/* Materials */}
-        <MaterialsCard 
-          materials={materials} 
-          itemVariants={itemVariants} 
-        />
+        <MaterialsCard materials={materials} itemVariants={itemVariants} />
 
         {/* Health and Safety Section */}
         <Card className="lg:col-span-2">
@@ -310,9 +322,9 @@ export function BatteryProductDetails({ product }: BatteryProductDetailsProps) {
         </Card>
 
         {/* Emergency Procedures */}
-        <EmergencyProceduresCard 
-          emergencyProcedures={emergencyProcedures} 
-          itemVariants={itemVariants} 
+        <EmergencyProceduresCard
+          emergencyProcedures={emergencyProcedures}
+          itemVariants={itemVariants}
         />
 
         {/* Storage and Installation */}
@@ -342,15 +354,15 @@ export function BatteryProductDetails({ product }: BatteryProductDetailsProps) {
         </Card>
 
         {/* Certifications */}
-        <CertificationsCard 
-          certifications={certifications} 
-          itemVariants={itemVariants} 
+        <CertificationsCard
+          certifications={certifications}
+          itemVariants={itemVariants}
         />
 
         {/* Sustainability Metrics */}
-        <SustainabilityMetricsCard 
+        <SustainabilityMetricsCard
           environmentalFields={environmentalFields}
-          cardVariants={cardVariants} 
+          cardVariants={cardVariants}
         />
 
         {/* QR Code */}
