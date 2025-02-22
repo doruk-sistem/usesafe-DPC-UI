@@ -1,51 +1,30 @@
-import { useEffect, useState } from 'react';
+import { productService } from "@/lib/services/product";
 
-import { ProductService } from '@/lib/services/product';
-import type { Product } from '@/lib/types/product';
+import { createApiHooks } from "../create-api-hooks";
 
-import { useAuth } from './use-auth';
+import { useAuth } from "./use-auth";
+
+export const productsApiHooks = createApiHooks(productService);
 
 export function useProducts() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const { company } = useAuth();
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      if (!company?.id) return;
-      
-      try {
-        setIsLoading(true);
-        const data = await ProductService.getProducts(company.id);
-        setProducts(data);
-        setError(null);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch products');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, [company?.id]);
-
-  const refreshProducts = async () => {
-    if (!company?.id) return;
-    
-    try {
-      const data = await ProductService.getProducts(company.id);
-      setProducts(data);
-      setError(null);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch products');
+  const {
+    data: products = [],
+    isLoading,
+    error,
+  } = productsApiHooks.useGetProductsQuery(
+    {
+      companyId: company?.id,
+    },
+    {
+      enabled: !!company?.id,
     }
-  };
+  );
 
   return {
     products,
     isLoading,
     error,
-    refreshProducts
   };
 }

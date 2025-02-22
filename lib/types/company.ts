@@ -1,33 +1,33 @@
 export enum AddressType {
-  HEADQUARTERS = 'headquarters',
-  BRANCH = 'branch',
-  FACTORY = 'factory',
-  WAREHOUSE = 'warehouse',
-  OFFICE = 'office'
+  HEADQUARTERS = "headquarters",
+  BRANCH = "branch",
+  FACTORY = "factory",
+  WAREHOUSE = "warehouse",
+  OFFICE = "office",
 }
 
 export enum CompanyType {
-  MANUFACTURER = 'manufacturer',
-  BRAND_OWNER = 'brand_owner',
-  MATERIAL_SUPPLIER = 'material_supplier',
-  FACTORY = 'factory'
+  MANUFACTURER = "manufacturer",
+  BRAND_OWNER = "brand_owner",
+  MATERIAL_SUPPLIER = "material_supplier",
+  FACTORY = "factory",
 }
 
 export enum DocumentType {
-  SIGNATURE_CIRCULAR = 'signature_circular',
-  TRADE_REGISTRY_GAZETTE = 'trade_registry_gazette',
-  TAX_PLATE = 'tax_plate',
-  ACTIVITY_CERTIFICATE = 'activity_certificate',
-  ISO_CERTIFICATE = 'iso_certificate',
-  QUALITY_CERTIFICATE = 'quality_certificate',
-  EXPORT_CERTIFICATE = 'export_certificate',
-  PRODUCTION_PERMIT = 'production_permit'
+  SIGNATURE_CIRCULAR = "signature_circular",
+  TRADE_REGISTRY_GAZETTE = "trade_registry_gazette",
+  TAX_PLATE = "tax_plate",
+  ACTIVITY_CERTIFICATE = "activity_certificate",
+  ISO_CERTIFICATE = "iso_certificate",
+  QUALITY_CERTIFICATE = "quality_certificate",
+  EXPORT_CERTIFICATE = "export_certificate",
+  PRODUCTION_PERMIT = "production_permit",
 }
 
 export enum DocumentStatus {
-  PENDING = 'pending',
-  APPROVED = 'approved',
-  REJECTED = 'rejected'
+  PENDING = "pending",
+  APPROVED = "approved",
+  REJECTED = "rejected",
 }
 
 export interface Company {
@@ -65,4 +65,4 @@ export interface CompanyDocument {
   rejectionReason?: string;
   createdAt: Date;
   updatedAt: Date;
-} 
+}

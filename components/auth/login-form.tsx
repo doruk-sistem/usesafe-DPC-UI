@@ -1,11 +1,10 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import Link from "next/link"; 
+import Link from "next/link";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
 
-import { useAuth } from "@/lib/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -17,6 +16,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
+import { useAuth } from "@/lib/hooks/use-auth";
 import { loginSchema } from "@/lib/schemas/auth";
 
 type FormData = z.infer<typeof loginSchema>;
@@ -40,7 +40,7 @@ export function LoginForm({ from }: LoginFormProps) {
   const onSubmit = async (data: FormData) => {
     try {
       await signIn(data.email, data.password);
-      
+
       toast({
         title: "Success",
         description: "Logged in successfully",
@@ -48,13 +48,13 @@ export function LoginForm({ from }: LoginFormProps) {
     } catch (error) {
       // Check if error is AuthError from Supabase
       if (error instanceof Error) {
-        if (error.message.includes('Email not confirmed')) {
+        if (error.message.includes("Email not confirmed")) {
           toast({
             title: "Login Failed",
             description: "Please confirm your email address before logging in",
             variant: "destructive",
           });
-        } else if (error.message.includes('Invalid login credentials')) {
+        } else if (error.message.includes("Invalid login credentials")) {
           toast({
             title: "Login Failed",
             description: "Invalid email or password",
@@ -112,14 +112,20 @@ export function LoginForm({ from }: LoginFormProps) {
           <Button type="submit" className="w-full">
             Sign In
           </Button>
-          
+
           <div className="text-center space-y-2">
-            <Link href="/auth/forgot-password" className="text-sm text-primary hover:underline">
+            <Link
+              href="/auth/forgot-password"
+              className="text-sm text-primary hover:underline"
+            >
               Forgot password?
             </Link>
             <div className="text-sm text-muted-foreground">
-              Don't have an account?{" "}
-              <Link href="/auth/register" className="text-primary hover:underline">
+              Don&apos;t have an account?{" "}
+              <Link
+                href="/auth/register"
+                className="text-primary hover:underline"
+              >
                 Register here
               </Link>
             </div>

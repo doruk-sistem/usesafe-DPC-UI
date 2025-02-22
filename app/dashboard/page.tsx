@@ -1,7 +1,5 @@
 "use client";
 
-import { Box, FileText, ShieldCheck, AlertTriangle } from "lucide-react";
-
 import { DashboardHeader } from "@/components/dashboard/header";
 import { DashboardMetrics } from "@/components/dashboard/metrics";
 import { PendingApplications } from "@/components/dashboard/pending-applications";

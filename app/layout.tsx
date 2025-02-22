@@ -1,17 +1,18 @@
-import './globals.css';
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import "./globals.css";
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 
 import { Navbar } from "@/components/layout/navbar";
-import { AuthProvider } from "@/components/providers/auth-provider";
+import ReactQueryProvider from "@/components/providers/react-query-provider";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'UseSafe - Digital Product Certification',
-  description: 'Secure and sustainable product certification for the digital age',
+  title: "UseSafe - Digital Product Certification",
+  description:
+    "Secure and sustainable product certification for the digital age",
 };
 
 export default function RootLayout({
@@ -31,13 +32,13 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <AuthProvider>
+          <ReactQueryProvider>
             <div className="relative min-h-screen bg-background">
               <Navbar />
               <main className="relative">{children}</main>
             </div>
             <Toaster />
-          </AuthProvider>
+          </ReactQueryProvider>
         </ThemeProvider>
       </body>
     </html>

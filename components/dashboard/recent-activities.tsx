@@ -1,19 +1,20 @@
 "use client";
 
+import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 import { motion } from "framer-motion";
 import { Box, CheckCircle2, XCircle } from "lucide-react";
+
 import { useProducts } from "@/lib/hooks/use-products";
 import { getRecentActivities } from "@/lib/utils/metrics";
-import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1
-    }
-  }
+      staggerChildren: 0.1,
+    },
+  },
 };
 
 export function RecentActivities() {
@@ -46,32 +47,45 @@ export function RecentActivities() {
               hover:bg-muted/50 rounded-lg 
               transition-colors duration-200 group"
           >
-            <div className={`
+            <div
+              className={`
               p-3 rounded-full 
-              ${activity.status === 'NEW'
-                ? 'bg-green-100 text-green-600'
-                : activity.status === 'DRAFT'
-                ? 'bg-blue-100 text-blue-600'
-                : 'bg-red-100 text-red-600'}
-            `}>
-              {activity.status === 'NEW' && <CheckCircle2 className="h-5 w-5" />}
-              {activity.status === 'DRAFT' && <Box className="h-5 w-5" />}
-              {activity.status === 'DELETED' && <XCircle className="h-5 w-5" />}
+              ${
+                activity.status === "NEW"
+                  ? "bg-green-100 text-green-600"
+                  : activity.status === "DRAFT"
+                  ? "bg-blue-100 text-blue-600"
+                  : "bg-red-100 text-red-600"
+              }
+            `}
+            >
+              {activity.status === "NEW" && (
+                <CheckCircle2 className="h-5 w-5" />
+              )}
+              {activity.status === "DRAFT" && <Box className="h-5 w-5" />}
+              {activity.status === "DELETED" && <XCircle className="h-5 w-5" />}
             </div>
             <div className="flex-1">
               <h3 className="font-medium">{activity.name}</h3>
               <p className="text-sm text-muted-foreground">
-                {activity.id} · {formatDistanceToNow(new Date(activity.timestamp), { addSuffix: true })}
+                {activity.id} ·{" "}
+                {formatDistanceToNow(new Date(activity.timestamp), {
+                  addSuffix: true,
+                })}
               </p>
             </div>
-            <div className={`
+            <div
+              className={`
               px-3 py-1 rounded-full text-xs font-medium
-              ${activity.status === 'NEW'
-                ? 'bg-green-50 text-green-600'
-                : activity.status === 'DRAFT'
-                ? 'bg-blue-50 text-blue-600'
-                : 'bg-red-50 text-red-600'}
-            `}>
+              ${
+                activity.status === "NEW"
+                  ? "bg-green-50 text-green-600"
+                  : activity.status === "DRAFT"
+                  ? "bg-blue-50 text-blue-600"
+                  : "bg-red-50 text-red-600"
+              }
+            `}
+            >
               {activity.status}
             </div>
           </motion.div>

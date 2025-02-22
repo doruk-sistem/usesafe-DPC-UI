@@ -1,14 +1,16 @@
-'use client';
+'use client';;
+import { use } from "react";
 
 import { ProductBlockchainHistory } from '@/components/dashboard/products/product-blockchain-history';
 
 interface ProductDetailPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
-export default function ProductDetailPage({ params }: ProductDetailPageProps) {
+export default function ProductDetailPage(props: ProductDetailPageProps) {
+  const params = use(props.params);
   return (
     <div className="py-6">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 md:px-8">

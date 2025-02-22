@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
 import Image from "next/image";
+
 import { ProductImage } from "@/lib/types/product";
 
 interface ProductImageGalleryProps {
@@ -11,8 +12,12 @@ interface ProductImageGalleryProps {
   itemVariants: any;
 }
 
-export function ProductImageGallery({ images, name, itemVariants }: ProductImageGalleryProps) {
-  const primaryImage = images.find(img => img.is_primary) || images[0];
+export function ProductImageGallery({
+  images,
+  name,
+  itemVariants,
+}: ProductImageGalleryProps) {
+  const primaryImage = images.find((img) => img.is_primary) || images[0];
 
   return (
     <motion.div
@@ -23,10 +28,10 @@ export function ProductImageGallery({ images, name, itemVariants }: ProductImage
       {/* Main Product Image */}
       <div className="aspect-square relative rounded-3xl overflow-hidden bg-gradient-to-br from-background to-muted/30 shadow-2xl group perspective-1000">
         <motion.div
-          whileHover={{ 
-            rotateY: 5, 
+          whileHover={{
+            rotateY: 5,
             scale: 1.05,
-            boxShadow: "0 25px 50px rgba(0,0,0,0.1)"
+            boxShadow: "0 25px 50px rgba(0,0,0,0.1)",
           }}
           transition={{ type: "spring", stiffness: 300 }}
           className="w-full h-full"
@@ -35,19 +40,19 @@ export function ProductImageGallery({ images, name, itemVariants }: ProductImage
             src={primaryImage.url}
             alt={name}
             fill
-            className="object-cover group-hover:scale-105 transition-transform duration-300"
+            className="object-contain group-hover:scale-105 transition-transform duration-300"
           />
           {/* Sparkle Effect */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
-            animate={{ 
+            animate={{
               opacity: [0, 1, 0],
-              rotate: [0, 360]
+              rotate: [0, 360],
             }}
             transition={{
               duration: 2,
               repeat: Infinity,
-              repeatType: "loop"
+              repeatType: "loop",
             }}
             className="absolute top-4 right-4 text-yellow-400"
           >
@@ -55,11 +60,11 @@ export function ProductImageGallery({ images, name, itemVariants }: ProductImage
           </motion.div>
         </motion.div>
       </div>
-      
+
       {/* Thumbnail Gallery */}
       <div className="grid grid-cols-4 gap-4">
         {images.map((image, i) => (
-          <motion.div 
+          <motion.div
             key={i}
             variants={itemVariants}
             whileHover="hover"
@@ -76,4 +81,4 @@ export function ProductImageGallery({ images, name, itemVariants }: ProductImage
       </div>
     </motion.div>
   );
-} 
+}

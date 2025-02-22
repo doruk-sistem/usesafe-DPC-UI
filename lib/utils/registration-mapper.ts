@@ -6,8 +6,9 @@ import { formatPhoneNumber } from "@/lib/utils/form";
 
 type FormData = z.infer<typeof registerSchema>;
 
-export const prepareRegistrationData = (data: FormData): RegistrationRequest => {
-  
+export const prepareRegistrationData = (
+  data: FormData
+): RegistrationRequest => {
   return {
     companyName: data.companyName,
     companyType: data.companyType,
@@ -26,7 +27,7 @@ export const prepareRegistrationData = (data: FormData): RegistrationRequest => 
     },
     addresses: [
       {
-        type: 'headquarters',
+        type: "headquarters",
         street: data.address,
         city: data.city,
         district: data.district,
@@ -35,37 +36,37 @@ export const prepareRegistrationData = (data: FormData): RegistrationRequest => 
     ],
     documents: [
       {
-        type: 'signature_circular',
-        filePath: data.signatureCircular || '',
+        type: "signature_circular",
+        filePath: data.signatureCircular || "",
       },
       {
-        type: 'trade_registry_gazette',
-        filePath: data.tradeRegistry || '',
+        type: "trade_registry_gazette",
+        filePath: data.tradeRegistry || "",
       },
       {
-        type: 'tax_plate',
-        filePath: data.taxPlate || '',
+        type: "tax_plate",
+        filePath: data.taxPlate || "",
       },
       {
-        type: 'activity_certificate',
-        filePath: data.activityCertificate || '',
+        type: "activity_certificate",
+        filePath: data.activityCertificate || "",
       },
-      ...(data.isoCertificates || []).map(file => ({
-        type: 'iso_certificate',
-        filePath: file || '',
+      ...(data.isoCertificates || []).map((file) => ({
+        type: "iso_certificate",
+        filePath: file || "",
       })),
-      ...(data.qualityCertificates || []).map(file => ({
-        type: 'quality_certificate',
-        filePath: file || '',
+      ...(data.qualityCertificates || []).map((file) => ({
+        type: "quality_certificate",
+        filePath: file || "",
       })),
-      ...(data.exportDocuments || []).map(file => ({
-        type: 'export_certificate',
-        filePath: file || '',
+      ...(data.exportDocuments || []).map((file) => ({
+        type: "export_certificate",
+        filePath: file || "",
       })),
-      ...(data.productionPermits || []).map(file => ({
-        type: 'production_permit',
-        filePath: file || '',
+      ...(data.productionPermits || []).map((file) => ({
+        type: "production_permit",
+        filePath: file || "",
       })),
     ],
   };
-}; 
+};

@@ -16,7 +16,8 @@ export function generateStaticParams() {
   }));
 }
 
-export default function CertificationPage({ params }: { params: { id: string } }) {
+export default async function CertificationPage(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   return (
     <div className="space-y-6">
       <CertificationDetails certificationId={params.id} />

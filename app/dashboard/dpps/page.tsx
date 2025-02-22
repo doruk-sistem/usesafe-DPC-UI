@@ -1,7 +1,7 @@
 "use client";
 
-import { DPPList } from "@/components/dashboard/dpps/dpp-list";
 import { DPPHeader } from "@/components/dashboard/dpps/dpp-header";
+import { DPPList } from "@/components/dashboard/dpps/dpp-list";
 
 export default function DPPsPage() {
   return (

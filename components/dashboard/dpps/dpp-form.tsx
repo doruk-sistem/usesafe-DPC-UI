@@ -31,7 +31,9 @@ const formSchema = z.object({
   product_id: z.string().min(1, "Product is required"),
   serial_number: z.string().min(1, "Serial number is required"),
   manufacturing_date: z.string().min(1, "Manufacturing date is required"),
-  manufacturing_facility: z.string().min(1, "Manufacturing facility is required")
+  manufacturing_facility: z
+    .string()
+    .min(1, "Manufacturing facility is required"),
 });
 
 export function DPPForm() {
@@ -45,25 +47,30 @@ export function DPPForm() {
     defaultValues: {
       product_id: "",
       serial_number: "",
-      manufacturing_date: new Date().toISOString().split('T')[0],
-      manufacturing_facility: ""
+      manufacturing_date: new Date().toISOString().split("T")[0],
+      manufacturing_facility: "",
     },
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       if (!values.product_id) {
-        throw new Error('Please select a product');
+        throw new Error("Please select a product");
       }
 
-      const { product_id, serial_number, manufacturing_date, manufacturing_facility } = values;
+      const {
+        product_id,
+        serial_number,
+        manufacturing_date,
+        manufacturing_facility,
+      } = values;
       await DPPService.createDPP({
         product_id,
         serial_number,
         manufacturing_date,
-        manufacturing_facility
+        manufacturing_facility,
       });
-      
+
       toast({
         title: "Success",
         description: "DPP created successfully",
@@ -73,10 +80,11 @@ export function DPPForm() {
     } catch (error) {
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to create DPP",
-        variant: "destructive"
+        description:
+          error instanceof Error ? error.message : "Failed to create DPP",
+        variant: "destructive",
       });
-      console.error('DPP creation error:', error);
+      console.error("DPP creation error:", error);
     }
   };
 

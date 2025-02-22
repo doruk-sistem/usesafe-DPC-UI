@@ -12,18 +12,15 @@ export interface BasicInformationCardProps {
   cardVariants: any;
 }
 
-export function BasicInformationCard({ 
-  manufacturer, 
-  category, 
+export function BasicInformationCard({
+  manufacturer,
+  category,
   model,
-  cardVariants 
+  cardVariants,
 }: BasicInformationCardProps) {
   return (
-    <motion.div
-      variants={cardVariants}
-      whileHover="hover"
-    >
-      <Card>
+    <motion.div variants={cardVariants} whileHover="hover">
+      <Card className="w-full">
         <CardHeader>
           <div className="flex items-center gap-2">
             <Info className="w-5 h-5 text-primary" />
@@ -49,4 +46,4 @@ export function BasicInformationCard({
       </Card>
     </motion.div>
   );
-} 
+}

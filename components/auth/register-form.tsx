@@ -1,13 +1,13 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
 
-import { useAuth } from "@/lib/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { Progress } from "@/components/ui/progress";
+import { useAuth } from "@/lib/hooks/use-auth";
 import { useRegistrationSteps } from "@/lib/hooks/use-registration-steps";
 import { useToast } from "@/lib/hooks/use-toast";
 import { registerSchema } from "@/lib/schemas/auth";
@@ -62,40 +62,34 @@ export function RegisterForm() {
     mode: "onChange", // Enable real-time validation
   });
 
-  const { 
-    currentStep, 
-    totalSteps, 
-    nextStep, 
-    prevStep, 
-    isLastStep, 
-    progress 
-  } = useRegistrationSteps(form);
+  const { currentStep, totalSteps, nextStep, prevStep, isLastStep, progress } =
+    useRegistrationSteps(form);
 
   const onNextStep = async () => {
     try {
       // Always try to progress to the next step
       const stepValidated = await nextStep();
-      
+
       // If this is the last step and validation passes, submit the full registration
       if (isLastStep && stepValidated) {
         setIsSubmitting(true);
-        
+
         try {
           const formData = form.getValues();
 
           // Prepare and submit manufacturer data
           const registrationData = prepareRegistrationData(formData);
           const response = await ManufacturerService.register(registrationData);
-          
+
           if (!response.success) {
-            throw new Error(response.message || 'Registration failed');
+            throw new Error(response.message || "Registration failed");
           }
 
-           // Create Supabase user
-           await signUp(formData.email, formData.password, {
+          // Create Supabase user
+          await signUp(formData.email, formData.password, {
             full_name: formData.ownerName,
             company_id: response.registrationId,
-            role: 'manufacturer',
+            role: "manufacturer",
           });
 
           setIsSubmitted(true);
@@ -111,7 +105,10 @@ export function RegisterForm() {
         } catch (error) {
           toast({
             title: "Registration Failed",
-            description: error instanceof Error ? error.message : "There was an error submitting your registration. Please try again.",
+            description:
+              error instanceof Error
+                ? error.message
+                : "There was an error submitting your registration. Please try again.",
             variant: "destructive",
           });
           throw error;
@@ -120,7 +117,10 @@ export function RegisterForm() {
     } catch (error) {
       toast({
         title: "Registration Failed",
-        description: error instanceof Error ? error.message : "There was an error submitting your registration. Please try again.",
+        description:
+          error instanceof Error
+            ? error.message
+            : "There was an error submitting your registration. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -139,38 +139,46 @@ export function RegisterForm() {
       <div className="space-y-2">
         <Progress value={progress} className="h-2" />
         <div className="flex justify-between text-sm text-muted-foreground">
-          <span>Step {currentStep + 1} of {totalSteps}</span>
+          <span>
+            Step {currentStep + 1} of {totalSteps}
+          </span>
           <span>{steps[currentStep].title}</span>
         </div>
       </div>
 
       <Form {...form}>
-        <form className="space-y-8"  // Add these for debugging
+        <form
+          className="space-y-8" // Add these for debugging
           onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              console.log('Enter key pressed');
+            if (e.key === "Enter") {
+              console.log("Enter key pressed");
             }
-          }}>
+          }}
+        >
           <CurrentStepComponent form={form} />
 
           <div className="flex justify-between pt-4">
             {currentStep > 0 && (
-              <Button 
-                type="button" 
-                variant="outline" 
+              <Button
+                type="button"
+                variant="outline"
                 onClick={prevStep}
                 disabled={isSubmitting}
               >
                 Previous
               </Button>
             )}
-            <Button 
+            <Button
               type="button"
               className="ml-auto"
               disabled={isSubmitting}
               onClick={() => onNextStep()}
             >
-              {isSubmitting ? "Submitting..." : isLastStep ? "Submit Registration" : "Next"}
+              {isSubmitting
+                ? "Submitting..."
+                : isLastStep
+                ? "Submit Registration"
+                : "Next"}
             </Button>
           </div>
         </form>
