@@ -113,14 +113,45 @@ export class ProductService {
   }
 
   static async deleteProduct(id: string): Promise<boolean> {
-    const { error } = await supabase.from("products").delete().eq("id", id);
+    try {
+      // First, get the product to access its images
+      const { data: product, error: getError } = await supabase
+        .from("products")
+        .select("images")
+        .eq("id", id)
+        .single();
 
-    if (error) {
-      console.error("Error deleting product:", error);
-      throw new Error("Failed to delete product");
+      if (getError) {
+        console.error("Error fetching product for deletion:", getError);
+        throw new Error("Failed to fetch product for deletion");
+      }
+
+      // Delete associated images if they exist
+      if (product?.images && Array.isArray(product.images) && product.images.length > 0) {
+        const { StorageService } = await import("./storage");
+        
+        // Delete each product image from storage
+        for (const image of product.images) {
+          if (image?.url) {
+            console.log(`Attempting to delete product image: ${image.url}`);
+            await StorageService.deleteProductImage(image.url);
+          }
+        }
+      }
+
+      // Now delete the product from the database
+      const { error } = await supabase.from("products").delete().eq("id", id);
+
+      if (error) {
+        console.error("Error deleting product:", error);
+        throw new Error("Failed to delete product");
+      }
+
+      return true;
+    } catch (error) {
+      console.error("Error in deleteProduct:", error);
+      throw error;
     }
-
-    return true;
   }
 }
 

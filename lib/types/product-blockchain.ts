@@ -5,9 +5,12 @@ export interface ProductBlockchainRecord {
   name: string;
   manufacturer: string;
   description: string;
+  productType?: string;
+  model?: string;
   action: ProductBlockchainAction;
   timestamp?: string;
   sequenceNumber?: number;
+  error?: string;
 }
 
 export interface ProductBlockchainResponse {

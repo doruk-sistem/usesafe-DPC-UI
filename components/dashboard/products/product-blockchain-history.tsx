@@ -18,12 +18,6 @@ export function ProductBlockchainHistory({ productId }: ProductBlockchainHistory
   useEffect(() => {
     const fetchHistory = async () => {
       try {
-        if (!productId) {
-          setError('Product ID is required');
-          setLoading(false);
-          return;
-        }
-
         setLoading(true);
         const history = await productBlockchainService.getProductHistory(productId);
 

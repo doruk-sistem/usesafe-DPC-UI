@@ -6,6 +6,7 @@ import {
   AccountId,
   PrivateKey,
   ContractId,
+  Hbar,
 } from "@hashgraph/sdk";
 
 class ProductBlockchainContractService {
@@ -144,7 +145,19 @@ class ProductBlockchainContractService {
           new ContractFunctionParameters().addString(productId)
         );
 
-      const result = await query.execute(this.client);
+      // Set a default max payment for the query
+      query.setMaxQueryPayment(new Hbar(2));
+
+      let result;
+      try {
+        // Try to get the cost estimate and set query payment
+        const cost = await query.getCost(this.client);
+        result = await query.setQueryPayment(cost).execute(this.client);
+      } catch (costError) {
+        console.warn("Failed to get cost estimate, using default payment:", costError);
+        // If cost calculation fails, set a fixed payment amount and execute
+        result = await query.setQueryPayment(new Hbar(1)).execute(this.client);
+      }
       
       // Get individual values using the correct indices
       const createdAtTimestamp = result.getUint256(5);

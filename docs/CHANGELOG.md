@@ -12,12 +12,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improved Hedera SDK configuration with better error handling and browser compatibility
 - Added environment variables for Hedera configuration
 - Added retry and timeout settings for blockchain API calls
+- Added fallback mechanism for blockchain queries to provide graceful error handling
+- Added error field to blockchain record type for better debugging
+- Added automatic image deletion when deleting products to prevent orphaned storage files
 
 ### Fixed
 - Fixed Content Security Policy violation when connecting to Hedera testnet nodes
 - Fixed blockchain transaction failures in browser environment
 - Moved hardcoded credentials to environment variables for better security
 - Reduced failed transaction attempts by optimizing client configuration
+- Fixed "CostQuery has not been loaded yet" error in Hedera SDK by properly setting query payment
+- Improved error handling in blockchain product history retrieval
+- Enhanced ProductBlockchainRecord type to include productType and model properties
+- Added better error messages for blockchain query failures
+- Implemented robust fallback for failed contract queries to prevent UI errors
 
 ## [Previous Unreleased Features]
 - Added support for product subcategories based on selected product type
