@@ -143,6 +143,7 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
                             url: URL.createObjectURL(file),
                             alt: file.name,
                             is_primary: field.value.length === 0,
+                            fileObject: file
                           };
                           field.onChange([...field.value, newImage]);
                         }
