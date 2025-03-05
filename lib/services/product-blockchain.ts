@@ -1,4 +1,5 @@
 import { ProductBlockchainRecord, ProductBlockchainAction } from '../types/product-blockchain';
+
 import { productBlockchainContractService } from './product-blockchain-contract';
 
 class ProductBlockchainService {

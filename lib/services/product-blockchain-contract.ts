@@ -14,16 +14,30 @@ class ProductBlockchainContractService {
   private contractId: ContractId;
 
   private constructor() {
-    // Initialize Hedera client
-    this.client = Client.forTestnet().setOperator(
-      AccountId.fromString("0.0.5442115"),
-      PrivateKey.fromStringECDSA("1b41eadf206073acb0a1c789402b760e26ffcba2240fd57f0ac28552fc87327e")
-    );
+    // Get operator credentials from environment variables
+    const operatorId = process.env.HEDERA_ACCOUNT_ID || "0.0.5442115";
+    const operatorKey = process.env.HEDERA_PRIVATE_KEY || 
+      "1b41eadf206073acb0a1c789402b760e26ffcba2240fd57f0ac28552fc87327e";
 
-    // Convert Ethereum address to Hedera Contract ID
-    const contractAddress = process.env.NEXT_PUBLIC_PRODUCT_REGISTRY_CONTRACT!;
-    const contractIdString = contractAddress.replace("0x", "0.0.");
-    this.contractId = ContractId.fromString(contractIdString);
+    try {
+      // Initialize Hedera client
+      this.client = Client.forTestnet().setOperator(
+        AccountId.fromString(operatorId),
+        PrivateKey.fromStringECDSA(operatorKey)
+      );
+
+      // Set max retry/timeout parameters to help with browser environment limitations
+      this.client.setMaxNodeAttempts(5);
+      this.client.setRequestTimeout(15000); // 15 seconds timeout
+
+      // Convert Ethereum address to Hedera Contract ID
+      const contractAddress = process.env.NEXT_PUBLIC_PRODUCT_REGISTRY_CONTRACT!;
+      const contractIdString = contractAddress.replace("0x", "0.0.");
+      this.contractId = ContractId.fromString(contractIdString);
+    } catch (error) {
+      console.error("Error initializing Hedera client:", error);
+      throw error;
+    }
   }
 
   public static getInstance(): ProductBlockchainContractService {
@@ -43,6 +57,11 @@ class ProductBlockchainContractService {
     model: string
   ): Promise<string> {
     try {
+      // Add more robust error handling and input validation
+      if (!productId || !name || !manufacturer) {
+        throw new Error("Required product fields are missing");
+      }
+
       const transaction = new ContractExecuteTransaction()
         .setContractId(this.contractId)
         .setGas(1000000)
@@ -60,28 +79,21 @@ class ProductBlockchainContractService {
       const txResponse = await transaction.execute(this.client);
       const receipt = await txResponse.getReceipt(this.client);
 
-      //Get the status of the transaction
-      const statusContractCreateFlow = receipt.status;
-
       //Get the Transaction ID
       const txContractCreateId = txResponse.transactionId.toString();
-
-      //Get the new contract ID
-      const newContractId = receipt.contractId;
 
       console.log(
         "--------------------------------- Create Contract Flow ---------------------------------"
       );
       console.log(
         "Consensus status           :",
-        statusContractCreateFlow.toString()
+        receipt.status.toString()
       );
       console.log("Transaction ID             :", txContractCreateId);
       console.log(
         "Hashscan URL               :",
         "https://hashscan.io/testnet/tx/" + txContractCreateId
       );
-      console.log("Contract ID                :", newContractId);
 
       return txResponse.transactionId.toString();
     } catch (error) {

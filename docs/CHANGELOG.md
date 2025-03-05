@@ -8,6 +8,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Added Content Security Policy (CSP) headers to allow Hedera blockchain API connections
+- Improved Hedera SDK configuration with better error handling and browser compatibility
+- Added environment variables for Hedera configuration
+- Added retry and timeout settings for blockchain API calls
+
+### Fixed
+- Fixed Content Security Policy violation when connecting to Hedera testnet nodes
+- Fixed blockchain transaction failures in browser environment
+- Moved hardcoded credentials to environment variables for better security
+- Reduced failed transaction attempts by optimizing client configuration
+
+## [Previous Unreleased Features]
 - Added support for product subcategories based on selected product type
 - Implemented dynamic subcategory dropdown in product form
 - Added comprehensive subcategories for childcare products, footwear, detergents, other consumer products, toothbrushes, electrical equipment, food products, food contact materials, prepackaging, paper products, stationery, chemical and organic fertilizers, personal protective equipment, cosmetics, toys, batteries and accumulators, textile products, and telecommunications equipment
