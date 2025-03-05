@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- Added support for product subcategories based on selected product type
+- Implemented dynamic subcategory dropdown in product form
+- Added comprehensive subcategories for childcare products, footwear, detergents, other consumer products, toothbrushes, electrical equipment, food products, food contact materials, prepackaging, paper products, stationery, chemical and organic fertilizers, personal protective equipment, cosmetics, toys, batteries and accumulators, textile products, and telecommunications equipment
+- Updated product type select options with comprehensive list of product categories
+- Extracted product type options to a constants file for better maintainability
+- Improved product type values with descriptive English identifiers instead of numeric IDs
+- Enhanced database schema to include product subcategory field
+
 ## [0.1.10] - 2024-03-21
 
 ### Added
@@ -240,7 +251,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - QR code generation
 - Responsive UI components
 - Tailwind CSS styling
-- shadcn/ui components integration## [Unreleased]
+- shadcn/ui components integration
 
 ### Changed
 - Converted template detail and preview pages to client components

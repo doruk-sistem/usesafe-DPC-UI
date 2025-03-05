@@ -1,7 +1,10 @@
 "use client";
 
+import clsx from "clsx";
 import { Plus, Upload, X } from "lucide-react";
+import { useEffect, useState } from "react";
 import type { UseFormReturn } from "react-hook-form";
+import Select from "react-select";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,22 +17,63 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import type { NewProduct, KeyFeature } from "@/lib/types/product";
+import { PRODUCT_TYPE_OPTIONS, type SubcategoryOption } from "@/lib/constants/product-types";
+import type { KeyFeature, NewProduct } from "@/lib/types/product";
 import type { Json } from "@/lib/types/supabase";
 
 interface BasicInfoStepProps {
   form: UseFormReturn<NewProduct>;
 }
 
+type OptionType = {
+  value: string;
+  label: string;
+};
+
+// Ortak stil tanımı
+const selectClassNames = {
+  control: ({ isFocused }: { isFocused: boolean }) =>
+    clsx(
+      "border rounded-md shadow-sm px-2 py-1",
+      isFocused ? "border-primary ring-2 ring-primary" : "border-input"
+    ),
+  menu: () => "border border-input rounded-md shadow-lg",
+  option: ({ isFocused, isSelected }: { isFocused: boolean; isSelected: boolean }) =>
+    clsx(
+      "px-3 py-2 cursor-pointer",
+      (isFocused || isSelected) && "bg-primary text-white"
+    ),
+};
+
 export function BasicInfoStep({ form }: BasicInfoStepProps) {
+  const [subcategories, setSubcategories] = useState<SubcategoryOption[]>([]);
+  
+  const productType = form.watch("product_type");
+  
+  useEffect(() => {
+    // Find the selected product type and get its subcategories
+    const selectedProductType = PRODUCT_TYPE_OPTIONS.find(
+      (option) => option.value === productType
+    );
+    
+    if (selectedProductType) {
+      setSubcategories(selectedProductType.subcategories);
+      
+      // Clear subcategory selection if the product type changes and there's no matching subcategory
+      const currentSubcategory = form.getValues("product_subcategory");
+      const subcategoryExists = selectedProductType.subcategories.some(
+        (sub) => sub.value === currentSubcategory
+      );
+      
+      if (!subcategoryExists && currentSubcategory) {
+        form.setValue("product_subcategory", "");
+      }
+    } else {
+      setSubcategories([]);
+    }
+  }, [productType, form]);
+
   const convertToKeyFeature = (json: Json): KeyFeature => {
     if (typeof json === "object" && json !== null && !Array.isArray(json)) {
       const obj = json as Record<string, Json>;
@@ -136,18 +180,16 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
               <FormLabel>Product Type</FormLabel>
               <FormControl>
                 <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select product type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="battery">Battery</SelectItem>
-                    <SelectItem value="textile">Textile</SelectItem>
-                    <SelectItem value="electronics">Electronics</SelectItem>
-                  </SelectContent>
-                </Select>
+                  options={PRODUCT_TYPE_OPTIONS}
+                  value={PRODUCT_TYPE_OPTIONS.find(option => option.value === field.value)}
+                  onChange={(selectedOption: OptionType | null) => {
+                    const newValue = selectedOption?.value || "";
+                    field.onChange(newValue);
+                    form.setValue("product_subcategory", "");
+                  }}
+                  placeholder="Select Product Type"
+                  classNames={selectClassNames}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -156,15 +198,21 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
 
         <FormField
           control={form.control}
-          name="description"
+          name="product_subcategory"
           render={({ field }) => (
-            <FormItem className="col-span-2">
-              <FormLabel>Description</FormLabel>
+            <FormItem>
+              <FormLabel>Product Subcategory</FormLabel>
               <FormControl>
-                <Textarea
-                  placeholder="Enter product description"
-                  className="min-h-[100px]"
-                  {...field}
+                <Select
+                  options={subcategories}
+                  value={subcategories.find((option) => option.value === field.value)}
+                  onChange={(selectedOption: OptionType | null) => {
+                    field.onChange(selectedOption?.value || "");
+                  }}
+                  placeholder="Select Subcategory"
+                  className="w-full"
+                  classNames={selectClassNames}
+                  isDisabled={subcategories.length === 0}
                 />
               </FormControl>
               <FormMessage />
@@ -180,6 +228,24 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
               <FormLabel>Model</FormLabel>
               <FormControl>
                 <Input placeholder="Enter product model" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem className={subcategories.length > 0 ? "md:col-span-1" : "col-span-2"}>
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Enter product description"
+                  className="min-h-[100px]"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
