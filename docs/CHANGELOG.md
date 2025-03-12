@@ -5,6 +5,42 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- Added Supabase email confirmation security page at `/auth/approval` to safely handle confirmation URLs
+- Added enhanced user onboarding flow at `/auth/callback` for invited suppliers to set passwords
+- Added Content Security Policy (CSP) headers to allow Hedera blockchain API connections
+- Improved Hedera SDK configuration with better error handling and browser compatibility
+- Added environment variables for Hedera configuration
+- Added retry and timeout settings for blockchain API calls
+- Added fallback mechanism for blockchain queries to provide graceful error handling
+- Added error field to blockchain record type for better debugging
+- Added automatic image deletion when deleting products to prevent orphaned storage files
+- Added hash fragment parameter extraction utilities to handle authentication URLs with hash fragments
+- Updated callback page to handle both traditional query parameters and hash fragment parameters for authentication
+- Improved authentication flow to work seamlessly with Supabase's redirect-based authentication
+
+### Fixed
+- Fixed Content Security Policy violation when connecting to Hedera testnet nodes
+- Fixed blockchain transaction failures in browser environment
+- Moved hardcoded credentials to environment variables for better security
+- Reduced failed transaction attempts by optimizing client configuration
+- Fixed "CostQuery has not been loaded yet" error in Hedera SDK by properly setting query payment
+- Improved error handling in blockchain product history retrieval
+- Enhanced ProductBlockchainRecord type to include productType and model properties
+- Added better error messages for blockchain query failures
+- Implemented robust fallback for failed contract queries to prevent UI errors
+
+## [Previous Unreleased Features]
+- Added support for product subcategories based on selected product type
+- Implemented dynamic subcategory dropdown in product form
+- Added comprehensive subcategories for childcare products, footwear, detergents, other consumer products, toothbrushes, electrical equipment, food products, food contact materials, prepackaging, paper products, stationery, chemical and organic fertilizers, personal protective equipment, cosmetics, toys, batteries and accumulators, textile products, and telecommunications equipment
+- Updated product type select options with comprehensive list of product categories
+- Extracted product type options to a constants file for better maintainability
+- Improved product type values with descriptive English identifiers instead of numeric IDs
+- Enhanced database schema to include product subcategory field
+
 ## [0.1.10] - 2024-03-21
 
 ### Added
@@ -240,7 +276,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - QR code generation
 - Responsive UI components
 - Tailwind CSS styling
-- shadcn/ui components integration## [Unreleased]
+- shadcn/ui components integration
 
 ### Changed
 - Converted template detail and preview pages to client components

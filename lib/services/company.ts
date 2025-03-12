@@ -43,17 +43,20 @@ export class CompanyService {
     return data.map((item) => item.supplier);
   }
 
-  static async createManufacturer(data: {
-    name: string;
-    taxInfo: {
-      taxNumber: string;
-    };
-    companyType: string;
-    contact: {
+  static async createManufacturer(
+    data: {
       name: string;
-      email: string;
-    };
-  }): Promise<{ success: boolean; message?: string; companyId?: string }> {
+      taxInfo: {
+        taxNumber: string;
+      };
+      companyType: string;
+      contact: {
+        name: string;
+        email: string;
+      };
+    },
+    mainCompany: Company
+  ): Promise<{ success: boolean; message?: string; companyId?: string }> {
     try {
       // Create company record
       const { data: company, error: companyError } = await supabase
@@ -70,20 +73,28 @@ export class CompanyService {
 
       if (companyError) throw companyError;
 
-      // Create user for contact person
-      const { data: auth, error: authError } = await supabase.auth.signUp({
-        email: data.contact.email,
-        password: Math.random().toString(36).slice(-8), // Generate random password
-        options: {
-          data: {
+      try {
+        const response = await fetch('/api/invite', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ 
+            email:data.contact.email, 
+            company_name: mainCompany?.name,
             full_name: data.contact.name,
             company_id: company.id,
-            role: "manufacturer",
-          },
-        },
-      });
-
-      if (authError) throw authError;
+          }),
+        });
+        
+        const result = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(result.error);
+        }
+      } catch (error) {
+        throw error;
+      }
 
       return {
         success: true,

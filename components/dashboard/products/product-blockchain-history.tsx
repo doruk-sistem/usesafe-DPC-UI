@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { ProductBlockchainRecord } from '@/lib/types/product-blockchain';
-import { productBlockchainService } from '@/lib/services/product-blockchain';
 import { format } from 'date-fns';
+import { useEffect, useState } from 'react';
+
+import { productBlockchainService } from '@/lib/services/product-blockchain';
+import { ProductBlockchainRecord } from '@/lib/types/product-blockchain';
 
 interface ProductBlockchainHistoryProps {
   productId?: string;
