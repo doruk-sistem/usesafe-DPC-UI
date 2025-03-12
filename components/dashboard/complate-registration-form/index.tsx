@@ -44,7 +44,6 @@ export function ComplateRegistrationForm() {
       tradeRegisterNumber: "",
       mersisNumber: "",
       nationalId: "",
-      email: "",
       countryCode: "+90",
       phone: "",
       address: "",

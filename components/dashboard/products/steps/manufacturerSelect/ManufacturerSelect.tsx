@@ -13,7 +13,6 @@ import { ManufacturerSearch } from "./manufacturerSearch/ManufacturerSearch";
 
 interface ManufacturerSelectProps {
   form: any;
-  companyType: string | null;
 }
 
 export function ManufacturerSelect({

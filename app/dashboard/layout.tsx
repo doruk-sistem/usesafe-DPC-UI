@@ -71,11 +71,11 @@ interface DashboardLayoutProps {
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const pathname = usePathname();
-  const { company, isCompanyFetched } = useAuth();
+  const { company } = useAuth();
 
   return (
     <>
-      {isCompanyFetched && !company && (
+      {!company && (
         <Dialog open={!company} modal={true}>
           <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>

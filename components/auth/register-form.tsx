@@ -98,10 +98,10 @@ export function RegisterForm() {
             description: "Please check your email to verify your account.",
           });
 
-          // Redirect after showing success message
-          setTimeout(() => {
-            router.push("/auth/pending-approval");
-          }, 5000);
+          // // Redirect after showing success message
+          // setTimeout(() => {
+          //   router.push("/auth/pending-approval");
+          // }, 5000);
         } catch (error) {
           toast({
             title: "Registration Failed",
