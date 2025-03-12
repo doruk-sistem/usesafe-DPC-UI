@@ -1,4 +1,5 @@
 import { ProductBlockchainRecord, ProductBlockchainAction } from '../types/product-blockchain';
+
 import { productBlockchainContractService } from './product-blockchain-contract';
 
 class ProductBlockchainService {
@@ -75,19 +76,66 @@ class ProductBlockchainService {
         throw new Error('Product ID is required');
       }
 
-      const product = await productBlockchainContractService.getProduct(productId);
+      // First try to get the product data with improved error handling
+      let product;
+      try {
+        product = await productBlockchainContractService.getProduct(productId);
+      } catch (error) {
+        console.error('Error fetching product from blockchain:', error);
+        // Return a placeholder history record with error information
+        return [{
+          id: productId,
+          name: 'Product information unavailable',
+          manufacturer: 'Unknown',
+          description: 'Unable to retrieve product data from blockchain',
+          action: 'CREATE',
+          timestamp: new Date().toISOString(),
+          error: error instanceof Error ? error.message : 'Unknown error'
+        }];
+      }
       
-      return [{
+      // Create history records including creation and update events
+      const history: ProductBlockchainRecord[] = [];
+      
+      // Add creation record
+      history.push({
         id: productId,
         name: product.name,
         manufacturer: product.manufacturer,
         description: product.description,
+        productType: product.productType,
+        model: product.model,
         action: 'CREATE',
         timestamp: product.createdAt.toISOString(),
-      }];
+      });
+      
+      // Add update record if created and updated timestamps are different
+      if (product.createdAt.getTime() !== product.updatedAt.getTime()) {
+        history.push({
+          id: productId,
+          name: product.name,
+          manufacturer: product.manufacturer,
+          description: product.description,
+          productType: product.productType,
+          model: product.model,
+          action: 'UPDATE',
+          timestamp: product.updatedAt.toISOString(),
+        });
+      }
+      
+      return history;
     } catch (error) {
       console.error('Error fetching product history:', error);
-      throw error;
+      // Return a placeholder history with error info
+      return [{
+        id: productId || 'unknown',
+        name: 'Error retrieving history',
+        manufacturer: 'Error',
+        description: `Failed to retrieve product history: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        action: 'CREATE',
+        timestamp: new Date().toISOString(),
+        error: error instanceof Error ? error.message : 'Unknown error'
+      }];
     }
   }
 }

@@ -41,6 +41,7 @@ const productSchema = z.object({
         url: z.string().optional(),
         alt: z.string(),
         is_primary: z.boolean(),
+        fileObject: z.any().optional(),
       })
     )
     .default([]),
@@ -104,6 +105,7 @@ export function ProductForm({
           url: img.url || "",
           alt: img.alt || "",
           is_primary: img.is_primary || false,
+          fileObject: img.fileObject || undefined,
         })),
         key_features: data.key_features.map((feature) => ({
           name: feature.name || "",

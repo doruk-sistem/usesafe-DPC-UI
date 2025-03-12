@@ -10,7 +10,7 @@ import { ProductService } from "@/lib/services/product";
 import { productBlockchainService } from "@/lib/services/product-blockchain";
 import { ProductStatusService } from "@/lib/services/product-status";
 import { StorageService } from "@/lib/services/storage";
-import type { NewProduct } from "@/lib/types/product";
+import type { NewProduct, ProductImage } from "@/lib/types/product";
 
 export default function NewProductPageClient() {
   const { user, company } = useAuth();
@@ -21,12 +21,13 @@ export default function NewProductPageClient() {
     if (!user?.id || !company?.id) return;
 
     try {
-      // Upload images if provided
       const uploadedImages = await Promise.all(
         data.images.map(async (image) => {
-          if (image.url.startsWith("blob:")) {
+          // Use type assertion to access fileObject
+          const typedImage = image as ProductImage;
+          if (image.url.startsWith("blob:") && typedImage.fileObject) {
             const uploadedUrl = await StorageService.uploadProductImage(
-              image.url,
+              typedImage.fileObject,
               company.id
             );
 

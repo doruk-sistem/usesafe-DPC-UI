@@ -18,6 +18,7 @@ export interface Database {
           description: string
           company_id: string
           product_type: string
+          product_subcategory: string
           model: string
           status: "DRAFT" | "NEW" | "DELETED" | "ARCHIVED"
           status_history: StatusTransition[]
@@ -34,6 +35,7 @@ export interface Database {
           description: string | null
           company_id: string
           product_type: string
+          product_subcategory?: string
           model: string
           status?: 'DRAFT' | 'NEW' | 'DELETED' | 'ARCHIVED'
           status_history?: StatusTransition[]
@@ -64,6 +66,7 @@ export interface Database {
           created_at?: string
           updated_at?: string
           product_type?: string
+          product_subcategory?: string
           model?: string
           documents?: Json
           manufacturer_id?: string

@@ -68,6 +68,7 @@ export interface ProductImage {
   url: string;
   alt: string;
   is_primary: boolean;
+  fileObject?: File;
 }
 
 export type ProductImageJson = {
