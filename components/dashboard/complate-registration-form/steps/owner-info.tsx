@@ -62,30 +62,6 @@ export function OwnerInfoStep({ form }: OwnerInfoStepProps) {
         )}
       />
 
-      <FormField
-        control={form.control}
-        name="email"
-        render={({ field, fieldState }) => (
-          <FormItem>
-            <FormLabel>Corporate Email *</FormLabel>
-            <FormControl>
-              <Input
-                type="email"
-                {...field}
-                className={cn(
-                  fieldState.error &&
-                    "border-red-500 focus-visible:ring-red-500"
-                )}
-              />
-            </FormControl>
-            <FormDescription>
-              Please use your company email address, not a personal email
-            </FormDescription>
-            <FormMessage className="text-red-500" />
-          </FormItem>
-        )}
-      />
-
       <div className="grid grid-cols-3 gap-4">
         <FormField
           control={form.control}

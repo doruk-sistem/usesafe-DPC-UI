@@ -13,7 +13,6 @@ export interface RegistrationRequest {
   authorizedPerson: {
     fullName: string;
     identificationNumber: string;
-    email: string;
     phoneNumber: string;
     countryCode: string;
   };

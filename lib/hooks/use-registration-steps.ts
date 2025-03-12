@@ -17,9 +17,9 @@ const stepValidations: StepValidation[] = [
     },
   },
   {
-    fields: ["nationalId", "email", "countryCode", "phone"],
+    fields: ["nationalId", "countryCode", "phone"],
     isValid: async (form) => {
-      const result = await form.trigger(["nationalId", "email", "phone"]);
+      const result = await form.trigger(["nationalId", "phone"]);
       return result;
     },
   },

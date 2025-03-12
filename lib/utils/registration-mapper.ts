@@ -4,6 +4,8 @@ import type { RegistrationRequest } from "@/lib/data/manufacturer";
 import { registerSchema } from "@/lib/schemas/auth";
 import { formatPhoneNumber } from "@/lib/utils/form";
 
+import { CompanyType } from "../types/company";
+
 type FormData = z.infer<typeof registerSchema>;
 
 export const prepareRegistrationData = (
@@ -11,7 +13,7 @@ export const prepareRegistrationData = (
 ): RegistrationRequest => {
   return {
     companyName: data.companyName,
-    companyType: data.companyType,
+    companyType: CompanyType.MANUFACTURER,
     password: data.password,
     taxInfo: {
       taxNumber: data.taxId,
@@ -21,7 +23,6 @@ export const prepareRegistrationData = (
     authorizedPerson: {
       fullName: data.ownerName,
       identificationNumber: data.nationalId,
-      email: data.email,
       phoneNumber: formatPhoneNumber(data.phone, data.countryCode),
       countryCode: data.countryCode,
     },
