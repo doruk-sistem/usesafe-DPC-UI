@@ -1,10 +1,3 @@
-import { clsx, type ClassValue } from 'clsx';
-import { twMerge } from 'tailwind-merge';
-
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
-
 /**
  * Parse URL hash fragment into an object with key-value pairs
  * @param hash - Hash string from window.location.hash (with or without # character)
@@ -36,4 +29,4 @@ export function getHashParams(): Record<string, string> {
   if (typeof window === 'undefined') return {};
   
   return parseHashParams(window.location.hash);
-}
+} 

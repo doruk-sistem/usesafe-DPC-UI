@@ -15,9 +15,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
+import { useAuth } from "@/lib/hooks/use-auth";
 import { CompanyService } from "@/lib/services/company";
 import { Company, CompanyType } from "@/lib/types/company";
-import { MouseEvent } from "react";
 
 const formSchema = z.object({
   name: z.string().min(2, "Company name must be at least 2 characters"),
@@ -45,6 +45,7 @@ interface QuickManufacturerFormProps {
 
 export function QuickManufacturerForm({ onSuccess, onCancel }: QuickManufacturerFormProps) {
   const { toast } = useToast();
+  const {company: mainCompany} = useAuth()
   
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -75,7 +76,7 @@ export function QuickManufacturerForm({ onSuccess, onCancel }: QuickManufacturer
         status: false,
       }
 
-      const response = await CompanyService.createManufacturer(company);
+      const response = await CompanyService.createManufacturer(company, mainCompany);
 
       if (response.success) {
         toast({
