@@ -163,7 +163,6 @@ export default function NewProductPageClient() {
       <Card className="p-6">
         <ProductForm
           onSubmit={handleSubmit}
-          companyType={company?.companyType || null}
         />
       </Card>
     </div>

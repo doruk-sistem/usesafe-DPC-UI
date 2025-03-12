@@ -63,13 +63,11 @@ type FormData = z.infer<typeof productSchema>;
 interface ProductFormProps {
   onSubmit: (data: NewProduct) => Promise<void>;
   defaultValues?: Partial<FormData>;
-  companyType?: string | null;
 }
 
 export function ProductForm({
   onSubmit,
   defaultValues,
-  companyType,
 }: ProductFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [step, setStep] = useState(1);
@@ -136,7 +134,7 @@ export function ProductForm({
         {step === 1 && <BasicInfoStep form={form as any} />}
         {step === 2 && <DocumentUploadStep form={form as any} />}
         {step === 3 && (
-          <ManufacturerSelect form={form as any} companyType={companyType} />
+          <ManufacturerSelect form={form as any} />
         )}
 
         <div className="flex justify-end gap-4">
