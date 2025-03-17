@@ -13,6 +13,7 @@ export interface Database {
     Tables: {
       products: {
         Row: {
+          dpp_config: any
           id: string
           name: string
           description: string

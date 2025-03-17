@@ -244,7 +244,9 @@ export const textileProducts: Product[] = [
           ]
         }
       ]
-    }
+    },
+    product_subcategory: "",
+    manufacturer_id: ""
   },
   {
     id: "koton-002",
@@ -514,6 +516,8 @@ export const textileProducts: Product[] = [
           ]
         }
       ]
-    }
+    },
+    product_subcategory: "",
+    manufacturer_id: ""
   }
 ]; 
