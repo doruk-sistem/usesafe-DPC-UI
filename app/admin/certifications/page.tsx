@@ -1,5 +1,5 @@
-import { CertificationList } from "@/components/admin/certifications/certification-list";
 import { CertificationHeader } from "@/components/admin/certifications/certification-header";
+import { CertificationList } from "@/components/admin/certifications/certification-list";
 
 export default function CertificationsPage() {
   return (

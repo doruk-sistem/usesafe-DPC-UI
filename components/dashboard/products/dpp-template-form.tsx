@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -15,8 +16,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Card } from "@/components/ui/card";
-import { DPPTemplate } from "@/lib/types/database";
+import { DPPTemplate } from "@/lib/types/dpp";
 
 const templateSchema = z.object({
   hazard_pictograms: z.array(z.object({

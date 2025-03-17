@@ -1,6 +1,7 @@
 "use client";
 
 import { CheckCircle2, Mail } from "lucide-react";
+
 import { Card, CardContent } from "@/components/ui/card";
 
 export function RegistrationSuccess() {
@@ -13,7 +14,7 @@ export function RegistrationSuccess() {
           
           <div className="space-y-2 text-muted-foreground">
             <p>Thank you for registering with UseSafe.</p>
-            <p>We've sent a verification email to your registered email address.</p>
+            <p>We&apos;ve sent a verification email to your registered email address.</p>
           </div>
 
           <div className="flex items-center gap-2 text-sm bg-muted p-4 rounded-lg mt-4">

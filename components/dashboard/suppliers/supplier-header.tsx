@@ -17,7 +17,7 @@ export function SupplierHeader() {
       <div>
         <h1 className="text-2xl font-semibold">Suppliers</h1>
         <p className="text-sm text-muted-foreground">
-          View and manage your company's suppliers
+          View and manage your company&apos;s suppliers
         </p>
       </div>
       <div className="flex items-center gap-2">

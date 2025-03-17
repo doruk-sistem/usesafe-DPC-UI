@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+
 import { testHederaConnection } from '@/lib/tests/hedera-test';
 
 export async function GET() {

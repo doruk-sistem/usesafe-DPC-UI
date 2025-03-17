@@ -1,7 +1,7 @@
 "use client";
 
-import { SupplierList } from "@/components/dashboard/suppliers/supplier-list";
 import { SupplierHeader } from "@/components/dashboard/suppliers/supplier-header";
+import { SupplierList } from "@/components/dashboard/suppliers/supplier-list";
 
 export default function SuppliersPage() {
   return (
