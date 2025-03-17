@@ -11,10 +11,28 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "UseSafe - Digital Product Certification",
-  description:
-    "Secure and sustainable product certification for the digital age",
+  description: "Secure and sustainable product certification for the digital age",
+  icons: {
+    icon: [
+      { url: '/favicon-96x96.png', sizes: '96x96', type: 'image/png' },
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon.ico' },
+    ],
+    apple: [
+      { url: '/apple-touch-icon.png', sizes: '180x180' },
+    ],
+  },
+  manifest: '/site.webmanifest',
+  appleWebApp: {
+    title: 'UseSafe',
+    capable: true,
+    statusBarStyle: 'default',
+  },
+  other: {
+    'msapplication-TileColor': '#ffffff',
+    'theme-color': '#ffffff',
+  },
 };
-
 export default function RootLayout({
   children,
 }: {
