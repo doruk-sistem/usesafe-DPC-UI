@@ -52,7 +52,7 @@
     "@types/react-dom": "19.0.4",
     "@types/react-select": "^5.0.1",
     "autoprefixer": "10.4.15",
-    "axios": "^1.7.7",
+    "axios": "^1.8.2",
     "bufferutil": "^4.0.8",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
