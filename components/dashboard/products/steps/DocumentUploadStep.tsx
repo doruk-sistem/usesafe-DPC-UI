@@ -37,9 +37,11 @@ interface DocumentUploadStepProps {
 export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
   const { user } = useAuth();
   const { toast } = useToast();
+
   const companyId =
     user?.user_metadata?.company_id || "7d26ed35-49ca-4c0d-932e-52254fb0e5b8";
 
+  // ✅ Dosya yükleme işlemi
   const handleDocumentUpload = useCallback(
     async (
       files: FileList,
@@ -57,7 +59,7 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
       const newDocs = [...existingDocs];
       const errors: string[] = [];
 
-      // Validate file types and sizes before upload
+      // ✅ Dosya formatı ve boyut kontrolü
       const invalidFiles = Array.from(files).filter((file) => {
         const isValidType = ACCEPTED_DOCUMENT_FORMATS.split(",").some(
           (format) => file.name.toLowerCase().endsWith(format.replace(".", ""))
@@ -80,6 +82,7 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
       if (invalidFiles.length > 0) {
         return { success: false, documents: existingDocs, errors };
       }
+
       await Promise.all(
         Array.from(files).map(async (file) => {
           try {
@@ -114,6 +117,7 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
     [companyId]
   );
 
+  // ✅ Dosya yükleme fonksiyonu
   const handleFileChange = useCallback(
     async (
       e: React.ChangeEvent<HTMLInputElement>,
@@ -147,11 +151,11 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
       <div>
         <h3 className="text-lg font-semibold">Product Documents</h3>
         <p className="text-sm text-muted-foreground">
-          Upload relevant documents for your product. All documents are
-          optional.
+          Upload relevant documents for your product. All documents are optional.
         </p>
       </div>
 
+      {/* ✅ Tüm belge türleri için alan oluştur */}
       {DOCUMENT_TYPES.map((docType) => (
         <FormField
           key={docType.id}
@@ -162,6 +166,7 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
               <FormLabel>{docType.label}</FormLabel>
               <FormControl>
                 <div className="space-y-2">
+                  {/* ✅ Yüklenen dosyaları göster */}
                   {field.value?.map((file: any, index: number) => (
                     <div key={index} className="flex items-center gap-2">
                       <Input
@@ -184,22 +189,39 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
                       </Button>
                     </div>
                   ))}
+
+                  {/* ✅ Dosya yükleme alanı */}
                   <div className="flex items-center gap-2">
-                    <Input
+                    {/* Gizli input */}
+                    <input
+                      id={`file-upload-${docType.id}`}
                       type="file"
                       accept={ACCEPTED_DOCUMENT_FORMATS}
+                      className="hidden"
                       onChange={(e) => handleFileChange(e, field, docType.id)}
-                      className="flex-1"
                     />
+
+                    {/* Görünür input */}
+                    <Input
+                      type="text"
+                      value={field.value?.[0]?.name || ""}
+                      readOnly
+                      placeholder="No file selected"
+                      onClick={() =>
+                        document
+                          .getElementById(`file-upload-${docType.id}`)
+                          ?.click()
+                      }
+                    />
+
+                    {/* + Butonu ile dosya seçtir */}
                     <Button
                       type="button"
                       variant="outline"
                       size="icon"
                       onClick={() =>
                         document
-                          .querySelector<HTMLInputElement>(
-                            `input[name="documents.${docType.id}"]`
-                          )
+                          .getElementById(`file-upload-${docType.id}`)
                           ?.click()
                       }
                     >

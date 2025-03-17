@@ -31,7 +31,7 @@ type OptionType = {
   label: string;
 };
 
-// Ortak stil tanımı
+// ✅ Ortak stil tanımı
 const selectClassNames = {
   control: ({ isFocused }: { isFocused: boolean }) =>
     clsx(
@@ -48,24 +48,23 @@ const selectClassNames = {
 
 export function BasicInfoStep({ form }: BasicInfoStepProps) {
   const [subcategories, setSubcategories] = useState<SubcategoryOption[]>([]);
-  
+
   const productType = form.watch("product_type");
-  
+
   useEffect(() => {
-    // Find the selected product type and get its subcategories
+    // ✅ Seçilen ürün tipine göre alt kategorileri güncelle
     const selectedProductType = PRODUCT_TYPE_OPTIONS.find(
       (option) => option.value === productType
     );
-    
+
     if (selectedProductType) {
       setSubcategories(selectedProductType.subcategories);
-      
-      // Clear subcategory selection if the product type changes and there's no matching subcategory
+
       const currentSubcategory = form.getValues("product_subcategory");
       const subcategoryExists = selectedProductType.subcategories.some(
         (sub) => sub.value === currentSubcategory
       );
-      
+
       if (!subcategoryExists && currentSubcategory) {
         form.setValue("product_subcategory", "");
       }
@@ -74,90 +73,9 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
     }
   }, [productType, form]);
 
-  const convertToKeyFeature = (json: Json): KeyFeature => {
-    if (typeof json === "object" && json !== null && !Array.isArray(json)) {
-      const obj = json as Record<string, Json>;
-      return {
-        name: typeof obj.name === "string" ? obj.name : "",
-        value: typeof obj.value === "string" ? obj.value : "",
-        unit: typeof obj.unit === "string" ? obj.unit : undefined,
-      };
-    }
-    return { name: "", value: "", unit: undefined };
-  };
-
   return (
     <div className="space-y-8">
-      <Card className="p-4">
-        <FormField
-          control={form.control}
-          name="images"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Product Images</FormLabel>
-              <FormControl>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {field.value.map((image, index) => (
-                    <div key={index} className="relative group">
-                      <img
-                        src={image.url}
-                        alt={image.alt}
-                        className="w-full aspect-square object-cover rounded-lg"
-                      />
-                      <Button
-                        type="button"
-                        variant="destructive"
-                        size="icon"
-                        className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
-                        onClick={() => {
-                          const newImages = [...field.value];
-                          newImages.splice(index, 1);
-                          field.onChange(newImages);
-                        }}
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
-                      {image.is_primary && (
-                        <Badge
-                          variant="secondary"
-                          className="absolute bottom-2 left-2"
-                        >
-                          Primary
-                        </Badge>
-                      )}
-                    </div>
-                  ))}
-                  <label className="flex flex-col items-center justify-center gap-2 cursor-pointer aspect-square rounded-lg border-2 border-dashed hover:border-primary transition-colors">
-                    <Upload className="h-8 w-8 text-muted-foreground" />
-                    <span className="text-sm text-muted-foreground">
-                      Upload Image
-                    </span>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={async (e) => {
-                        const file = e.target.files?.[0];
-                        if (file) {
-                          const newImage = {
-                            url: URL.createObjectURL(file),
-                            alt: file.name,
-                            is_primary: field.value.length === 0,
-                            fileObject: file
-                          };
-                          field.onChange([...field.value, newImage]);
-                        }
-                      }}
-                    />
-                  </label>
-                </div>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      </Card>
-
+      {/* ✅ Temel Bilgiler */}
       <div className="grid gap-4 md:grid-cols-2">
         <FormField
           control={form.control}
@@ -182,7 +100,7 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
               <FormControl>
                 <Select
                   options={PRODUCT_TYPE_OPTIONS}
-                  value={PRODUCT_TYPE_OPTIONS.find(option => option.value === field.value)}
+                  value={PRODUCT_TYPE_OPTIONS.find((option) => option.value === field.value)}
                   onChange={(selectedOption: OptionType | null) => {
                     const newValue = selectedOption?.value || "";
                     field.onChange(newValue);
@@ -239,7 +157,7 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
           control={form.control}
           name="description"
           render={({ field }) => (
-            <FormItem className={subcategories.length > 0 ? "md:col-span-1" : "col-span-2"}>
+            <FormItem className="md:col-span-2">
               <FormLabel>Description</FormLabel>
               <FormControl>
                 <Textarea
@@ -252,96 +170,78 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
             </FormItem>
           )}
         />
-
-        <Card className="p-4 col-span-2">
-          <FormField
-            control={form.control}
-            name="key_features"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Key Features</FormLabel>
-                <FormControl>
-                  <div className="space-y-4">
-                    {(Array.isArray(field.value) ? field.value : []).map(
-                      (feature: KeyFeature, index: number) => (
-                        <div key={index} className="flex gap-4">
-                          <Input
-                            placeholder="Feature name"
-                            value={feature.name}
-                            onChange={(e) => {
-                              const newFeatures = [...field.value];
-                              newFeatures[index] = {
-                                ...feature,
-                                name: e.target.value,
-                              };
-                              field.onChange(newFeatures);
-                            }}
-                          />
-                          <Input
-                            placeholder="Value"
-                            value={feature.value}
-                            onChange={(e) => {
-                              const newFeatures = [...field.value];
-                              newFeatures[index] = {
-                                ...feature,
-                                value: e.target.value,
-                              };
-                              field.onChange(newFeatures);
-                            }}
-                          />
-                          <Input
-                            placeholder="Unit (optional)"
-                            value={feature.unit || ""}
-                            onChange={(e) => {
-                              const newFeatures = [...field.value];
-                              newFeatures[index] = {
-                                ...feature,
-                                unit: e.target.value || undefined,
-                              };
-                              field.onChange(newFeatures);
-                            }}
-                          />
-                          <Button
-                            type="button"
-                            variant="destructive"
-                            size="icon"
-                            onClick={() => {
-                              const newFeatures = [...field.value];
-                              newFeatures.splice(index, 1);
-                              field.onChange(newFeatures);
-                            }}
-                          >
-                            <X className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      )
-                    )}
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => {
-                        const newFeature: KeyFeature = {
-                          name: "",
-                          value: "",
-                          unit: undefined,
-                        };
-                        field.onChange([
-                          ...(Array.isArray(field.value) ? field.value : []),
-                          newFeature,
-                        ]);
-                      }}
-                    >
-                      <Plus className="h-4 w-4 mr-2" />
-                      Add Feature
-                    </Button>
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </Card>
       </div>
+
+      {/* ✅ Key Features (Tekrarlama kaldırıldı) */}
+      <Card className="p-4">
+        <FormField
+          control={form.control}
+          name="key_features"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Key Features</FormLabel>
+              <FormControl>
+                <div className="space-y-4">
+                  {field.value.map((feature: KeyFeature, index: number) => (
+                    <div key={index} className="grid grid-cols-[1fr_1fr_1fr_auto] gap-2">
+                      <Input
+                        placeholder="Feature name"
+                        value={feature.name}
+                        onChange={(e) => {
+                          const newFeatures = [...field.value];
+                          newFeatures[index].name = e.target.value;
+                          field.onChange(newFeatures);
+                        }}
+                      />
+                      <Input
+                        placeholder="Value"
+                        value={feature.value}
+                        onChange={(e) => {
+                          const newFeatures = [...field.value];
+                          newFeatures[index].value = e.target.value;
+                          field.onChange(newFeatures);
+                        }}
+                      />
+                      <Input
+                        placeholder="Unit (optional)"
+                        value={feature.unit || ""}
+                        onChange={(e) => {
+                          const newFeatures = [...field.value];
+                          newFeatures[index].unit = e.target.value || undefined;
+                          field.onChange(newFeatures);
+                        }}
+                      />
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="icon"
+                        onClick={() => {
+                          const newFeatures = [...field.value];
+                          newFeatures.splice(index, 1);
+                          field.onChange(newFeatures);
+                        }}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => {
+                      field.onChange([...field.value, { name: "", value: "", unit: undefined }]);
+                    }}
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Feature
+                  </Button>
+                </div>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </Card>
     </div>
   );
 }
