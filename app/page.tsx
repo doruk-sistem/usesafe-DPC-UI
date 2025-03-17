@@ -204,7 +204,7 @@ export default function Home() {
           >
             <h2 className="text-3xl font-bold mb-4">End-to-End Traceability</h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Track every step of your product's journey with complete transparency and verification
+              Track every step of your product&apos;s journey with complete transparency and verification
             </p>
           </motion.div>
           

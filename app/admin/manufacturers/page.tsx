@@ -1,5 +1,5 @@
-import { ManufacturerList } from "@/components/admin/manufacturers/manufacturer-list";
 import { ManufacturerHeader } from "@/components/admin/manufacturers/manufacturer-header";
+import { ManufacturerList } from "@/components/admin/manufacturers/manufacturer-list";
 
 export default function ManufacturersPage() {
   return (

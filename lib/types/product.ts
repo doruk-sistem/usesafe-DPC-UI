@@ -51,10 +51,17 @@ export type DPPConfig = {
   lastUpdated: string;
 };
 
-export type Product = Database["public"]["Tables"]["products"]["Row"];
+export type BaseProduct = Database["public"]["Tables"]["products"]["Row"];
 export type NewProduct = Database["public"]["Tables"]["products"]["Insert"];
 export type UpdateProduct = Database["public"]["Tables"]["products"]["Update"];
 export type ProductStatus = "DRAFT" | "NEW" | "DELETED" | "ARCHIVED";
+
+export interface Product extends BaseProduct {
+  dpp_config?: DPPConfig;
+  images: ProductImage[];
+  key_features: KeyFeature[];
+  status_history: StatusTransition[];
+}
 
 export interface StatusTransition {
   from: ProductStatus;

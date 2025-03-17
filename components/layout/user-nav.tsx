@@ -3,7 +3,6 @@
 import { LogOut, Settings, LayoutDashboard } from "lucide-react";
 import Link from "next/link";
 
-import { useAuth } from "@/lib/hooks/use-auth";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,6 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useAuth } from "@/lib/hooks/use-auth";
 
 export function UserNav() {
   const { user, signOut, isAdmin } = useAuth();

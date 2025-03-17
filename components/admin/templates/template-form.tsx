@@ -7,7 +7,6 @@ import { useEffect } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import * as z from "zod";
 
-import { defaultBatteryTemplate } from "@/lib/data/default-templates";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -28,6 +27,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
+import { defaultBatteryTemplate } from "@/lib/data/default-templates";
 import { DPPTemplateService } from "@/lib/services/dpp-template";
 
 const formSchema = z.object({
