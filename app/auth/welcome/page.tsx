@@ -23,7 +23,8 @@ const steps = [
     content: (
       <div className="space-y-4">
         <p>
-          Welcome to UseSafe! We're excited to have you on board. Our platform helps you:
+          Welcome to UseSafe! We&apos;re excited to have you on board. Our
+          platform helps you:
         </p>
         <ul className="list-disc list-inside space-y-2 text-muted-foreground">
           <li>Certify your products digitally</li>
@@ -40,7 +41,7 @@ const steps = [
     description: "Set up your manufacturer profile",
     content: (
       <div className="space-y-4">
-        <p>Let's start by completing your manufacturer profile:</p>
+        <p>Let&apos;s start by completing your manufacturer profile:</p>
         <ul className="list-disc list-inside space-y-2 text-muted-foreground">
           <li>Add your company logo</li>
           <li>Update company description</li>
@@ -106,14 +107,20 @@ export default function WelcomePage() {
           <div className="space-y-6">
             <div className="flex flex-col items-center text-center space-y-4">
               <CurrentIcon className="w-12 h-12 text-primary" />
-              <h1 className="text-2xl font-semibold">{steps[currentStep].title}</h1>
-              <p className="text-muted-foreground">{steps[currentStep].description}</p>
+              <h1 className="text-2xl font-semibold">
+                {steps[currentStep].title}
+              </h1>
+              <p className="text-muted-foreground">
+                {steps[currentStep].description}
+              </p>
             </div>
 
             <div className="space-y-2">
               <Progress value={progress} className="h-2" />
               <div className="flex justify-between text-sm text-muted-foreground">
-                <span>Step {currentStep + 1} of {steps.length}</span>
+                <span>
+                  Step {currentStep + 1} of {steps.length}
+                </span>
                 <span>{Math.round(progress)}% Complete</span>
               </div>
             </div>

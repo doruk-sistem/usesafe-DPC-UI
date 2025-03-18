@@ -1,5 +1,5 @@
-import { DocumentList } from "@/components/admin/documents/document-list";
 import { DocumentHeader } from "@/components/admin/documents/document-header";
+import { DocumentList } from "@/components/admin/documents/document-list";
 
 export default function DocumentsPage() {
   return (

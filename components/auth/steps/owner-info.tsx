@@ -1,5 +1,7 @@
 "use client";
 
+import type { UseFormReturn } from "react-hook-form";
+
 import {
   FormControl,
   FormField,
@@ -16,7 +18,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { UseFormReturn } from "react-hook-form";
 import { cn } from "@/lib/utils";
 
 interface OwnerInfoStepProps {

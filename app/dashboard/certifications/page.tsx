@@ -1,7 +1,7 @@
 "use client";
 
-import { CertificationList } from "@/components/dashboard/certifications/certification-list";
 import { CertificationHeader } from "@/components/dashboard/certifications/certification-header";
+import { CertificationList } from "@/components/dashboard/certifications/certification-list";
 
 export default function CertificationsPage() {
   return (

@@ -1,7 +1,7 @@
 "use client";
 
-import { DocumentList } from "@/components/dashboard/documents/document-list";
 import { DocumentHeader } from "@/components/dashboard/documents/document-header";
+import { DocumentList } from "@/components/dashboard/documents/document-list";
 
 export default function DocumentsPage() {
   return (

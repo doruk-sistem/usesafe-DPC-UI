@@ -1,8 +1,10 @@
 "use client";
 
-import { DPPConfigurator } from "../dpp-configurator";
-import type { DPPSection } from "@/lib/types/product";
 import { useState } from "react";
+
+import type { DPPSection } from "@/lib/types/product";
+
+import { DPPConfigurator } from "../dpp-configurator";
 
 // Default available DPP sections
 const defaultAvailableSections: DPPSection[] = [
@@ -168,7 +170,7 @@ export function DPPConfigStep() {
           </h3>
           <p className="text-sm text-muted-foreground">
             Configure the sections and fields that will be included in your
-            product's DPP
+            product&apos;s DPP
           </p>
         </div>
 
