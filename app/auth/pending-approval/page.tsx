@@ -31,7 +31,7 @@ export default function PendingApprovalPage() {
                 <div className="text-left">
                   <h3 className="font-medium">Next Steps</h3>
                   <p className="text-sm text-muted-foreground">
-                    You'll receive an email notification once your application is approved
+                  You&apos;ll receive an email notification once your application is approved
                   </p>
                 </div>
               </div>

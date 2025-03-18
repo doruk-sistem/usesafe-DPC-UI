@@ -1,17 +1,17 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { 
-  Leaf, 
-  Factory, 
-  TreePine, 
-  Sparkles 
-} from "lucide-react";
+import { Leaf, Factory, TreePine, Sparkles } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
 import { Badge } from "@/components/ui/badge";
-import { CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import {
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "@/components/ui/card";
 import { EnhancedCard } from "@/components/ui/enhanced-card";
 import { products } from "@/lib/data/products";
 import { textileProducts } from "@/lib/data/textile-products";
@@ -24,9 +24,9 @@ export function ProductList() {
       opacity: 1,
       transition: {
         delayChildren: 0.3,
-        staggerChildren: 0.2
-      }
-    }
+        staggerChildren: 0.2,
+      },
+    },
   };
 
   const itemVariants = {
@@ -36,49 +36,67 @@ export function ProductList() {
       opacity: 1,
       transition: {
         type: "spring",
-        stiffness: 100
-      }
-    }
+        stiffness: 100,
+      },
+    },
   };
 
   const allProducts = [...textileProducts, ...products];
 
   const getSustainabilityScore = (product: Product) => {
     if (!product?.dpp_config?.sections) return 0;
-    
-    const environmentalSection = product.dpp_config.sections.find(s => s.id === "environmental");
+
+    const environmentalSection = product.dpp_config.sections.find(
+      (s) => s.id === "environmental"
+    );
     if (!environmentalSection?.fields) return 0;
-    
-    const score = environmentalSection.fields.find(f => f.id === "sustainability-score")?.value;
-    return typeof score === 'number' ? score : 0;
+
+    const score = environmentalSection.fields.find(
+      (f) => f.id === "sustainability-score"
+    )?.value;
+    return typeof score === "number" ? score : 0;
   };
 
   const getCarbonFootprint = (product: Product) => {
     if (!product?.dpp_config?.sections) return "0 kg CO2e";
-    
-    const environmentalSection = product.dpp_config.sections.find(s => s.id === "environmental");
+
+    const environmentalSection = product.dpp_config.sections.find(
+      (s) => s.id === "environmental"
+    );
     if (!environmentalSection?.fields) return "0 kg CO2e";
-    
-    const footprint = environmentalSection.fields.find(f => f.id === "carbon-footprint")?.value;
-    return typeof footprint === 'string' ? footprint : "0 kg CO2e";
+
+    const footprint = environmentalSection.fields.find(
+      (f) => f.id === "carbon-footprint"
+    )?.value;
+    return typeof footprint === "string" ? footprint : "0 kg CO2e";
   };
 
   const getManufacturer = (product: Product) => {
     if (!product?.dpp_config?.sections) return "Unknown";
-    
-    const basicInfoSection = product.dpp_config.sections.find(s => s.id === "basic-info");
+
+    const basicInfoSection = product.dpp_config.sections.find(
+      (s) => s.id === "basic-info"
+    );
     if (!basicInfoSection?.fields) return "Unknown";
-    
-    return basicInfoSection.fields.find(f => f.id === "manufacturer")?.value as string || "Unknown";
+
+    return (
+      (basicInfoSection.fields.find((f) => f.id === "manufacturer")
+        ?.value as string) || "Unknown"
+    );
   };
 
   const getCategory = (product: Product) => {
     if (!product?.dpp_config?.sections) return product.product_type;
-    
-    const basicInfoSection = product.dpp_config.sections.find(s => s.id === "basic-info");
+
+    const basicInfoSection = product.dpp_config.sections.find(
+      (s) => s.id === "basic-info"
+    );
     if (!basicInfoSection?.fields) return product.product_type;
-    
-    return basicInfoSection.fields.find(f => f.id === "category")?.value as string || product.product_type;
+
+    return (
+      (basicInfoSection.fields.find((f) => f.id === "category")
+        ?.value as string) || product.product_type
+    );
   };
 
   const getSustainabilityIcon = (score: number) => {
@@ -95,11 +113,11 @@ export function ProductList() {
   };
 
   const parseCarbonFootprint = (footprint: string): number => {
-    return parseFloat(footprint.replace(' kg CO2e', ''));
+    return parseFloat(footprint.replace(" kg CO2e", ""));
   };
 
   return (
-    <motion.div 
+    <motion.div
       initial="hidden"
       animate="visible"
       variants={containerVariants}
@@ -110,7 +128,8 @@ export function ProductList() {
         const carbonFootprint = getCarbonFootprint(product);
         const manufacturer = getManufacturer(product);
         const category = getCategory(product);
-        const primaryImage = product.images.find(img => img.is_primary) || product.images[0];
+        const primaryImage =
+          product.images.find((img) => img.is_primary) || product.images[0];
 
         return (
           <motion.div
@@ -120,22 +139,25 @@ export function ProductList() {
             className="group"
           >
             <Link href={`/products/${product.id}`}>
-              <EnhancedCard 
+              <EnhancedCard
                 hoverEffect={true}
                 className="overflow-hidden h-full"
               >
-                <div className="aspect-video relative group">
+                <div className="relative group h-[300px]">
+                  {" "}
                   <Image
                     src={primaryImage.url}
                     alt={primaryImage.alt}
                     fill
-                    className="object-cover transition-transform duration-300 group-hover:scale-110"
+                    className="object-contain bg-white"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    priority={true} 
                   />
                   <div className="absolute top-2 right-2 bg-background/70 rounded-full p-1">
                     {getSustainabilityIcon(sustainabilityScore)}
                   </div>
                 </div>
-                
+
                 <CardHeader>
                   <div className="space-y-1">
                     <CardTitle className="text-lg flex items-center justify-between">
@@ -150,14 +172,14 @@ export function ProductList() {
                     </CardDescription>
                   </div>
                 </CardHeader>
-                
+
                 <CardContent>
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-muted-foreground">
                         Sustainability Score
                       </span>
-                      <Badge 
+                      <Badge
                         variant={getSustainabilityVariant(sustainabilityScore)}
                         className="flex items-center gap-1"
                       >
@@ -165,29 +187,29 @@ export function ProductList() {
                         {sustainabilityScore}%
                       </Badge>
                     </div>
-                    
+
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-muted-foreground">
                         Carbon Footprint
                       </span>
-                      <span 
+                      <span
                         className={`text-sm font-medium ${
-                          parseCarbonFootprint(carbonFootprint) <= 50 
-                            ? 'text-green-600' 
-                            : parseCarbonFootprint(carbonFootprint) <= 100 
-                              ? 'text-yellow-600' 
-                              : 'text-red-600'
+                          parseCarbonFootprint(carbonFootprint) <= 50
+                            ? "text-green-600"
+                            : parseCarbonFootprint(carbonFootprint) <= 100
+                            ? "text-yellow-600"
+                            : "text-red-600"
                         }`}
                       >
                         {carbonFootprint}
                       </span>
                     </div>
-                    
+
                     <motion.div
                       whileHover={{ scale: 1.05 }}
                       className="w-full bg-muted rounded-full h-2 mt-4"
                     >
-                      <motion.div 
+                      <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: `${sustainabilityScore}%` }}
                         transition={{ duration: 1 }}

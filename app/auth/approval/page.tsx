@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -12,7 +13,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 
 function ApprovalContent() {

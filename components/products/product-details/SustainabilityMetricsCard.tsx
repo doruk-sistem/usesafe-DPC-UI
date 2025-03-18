@@ -3,8 +3,8 @@
 import { motion } from "framer-motion";
 import { Leaf, Droplets, Zap, Recycle, Beaker, Sprout } from "lucide-react";
 
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 export interface SustainabilityMetricsCardProps {
   environmentalFields: Array<{

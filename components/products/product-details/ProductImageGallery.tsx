@@ -68,13 +68,15 @@ export function ProductImageGallery({
             key={i}
             variants={itemVariants}
             whileHover="hover"
-            className="aspect-square relative rounded-xl overflow-hidden bg-white shadow-md cursor-pointer hover:ring-4 ring-primary/50 transition-all duration-200"
+            className="aspect-square relative rounded-xl overflow-hidden bg-white shadow-md cursor-pointer hover:ring-2 ring-primary/50 transition-all duration-200"
           >
             <Image
               src={image.url}
               alt={image.alt}
               fill
-              className="object-cover"
+              className="object-contain p-1" // object-cover yerine object-contain kullanıyoruz ve padding ekliyoruz
+              sizes="(max-width: 768px) 25vw, 15vw"
+              quality={80} // Thumbnail'lar için yeterli kalite
             />
           </motion.div>
         ))}

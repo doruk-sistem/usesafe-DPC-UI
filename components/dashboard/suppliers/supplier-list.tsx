@@ -82,7 +82,7 @@ export function SupplierList() {
           <Factory className="h-12 w-12 text-muted-foreground mb-4" />
           <h2 className="text-xl font-semibold mb-2">No Suppliers Found</h2>
           <p className="text-muted-foreground mb-4 text-center max-w-sm">
-            You don't have any suppliers yet. They will appear here when you add products from manufacturers or material suppliers.
+            You don&apos;t have any suppliers yet. They will appear here when you add products from manufacturers or material suppliers.
           </p>
         </CardContent>
       </Card>
@@ -94,7 +94,7 @@ export function SupplierList() {
       <CardHeader>
         <CardTitle>Supplier List</CardTitle>
         <CardDescription>
-          View and manage your company's suppliers
+          View and manage your company&apos;s suppliers
         </CardDescription>
       </CardHeader>
       <CardContent>
