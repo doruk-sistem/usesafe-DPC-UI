@@ -95,6 +95,22 @@ export function useAuth() {
     return user?.user_metadata?.role === "admin";
   };
 
+  const verifyOtp = async (token: string, type: string) => {
+    const { error } = await supabase.auth.verifyOtp({
+      token_hash: token,
+      type: type as any, // 'signup', 'email' veya 'recovery' olabilir
+    });
+    
+    if (error) throw error;
+    
+    // Get session after verification
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    
+    return { session };
+  };
+
   return {
     user,
     company,
@@ -106,5 +122,6 @@ export function useAuth() {
     signOut,
     isAdmin,
     updateUser,
+    verifyOtp,
   };
 }

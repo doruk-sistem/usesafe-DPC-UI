@@ -14,11 +14,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
+import { useAuth } from "@/lib/hooks/use-auth";
 
 function ApprovalContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
+  const { verifyOtp } = useAuth();
   const [loading, setLoading] = useState(false);
   
   // URL'den confirmation_url parametresini al
@@ -29,12 +31,12 @@ function ApprovalContent() {
       <Card>
         <CardHeader className="text-center">
           <CardTitle className="flex items-center justify-center gap-2 text-xl">
-            Geçersiz Doğrulama Bağlantısı
+            Invalid Verification Link
           </CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-center text-muted-foreground">
-            Bu bağlantı geçersiz veya eksik görünüyor. Lütfen e-postanızdaki orijinal bağlantıyı kullanın.
+            This link appears to be invalid or incomplete. Please use the original link from your email.
           </p>
         </CardContent>
         <CardFooter className="flex justify-center">
@@ -42,38 +44,74 @@ function ApprovalContent() {
             onClick={() => router.push("/")} 
             variant="outline"
             tabIndex={0}
-            aria-label="Ana sayfaya dön"
+            aria-label="Return to Home"
           >
-            Ana Sayfaya Dön
+            Return to Home
           </Button>
         </CardFooter>
       </Card>
     );
   }
   
-  const handleConfirmation = () => {
+  const handleConfirmation = async () => {
     setLoading(true);
     
     try {
-      // Güvenlik önlemi: doğrulama URL'si Supabase domain'inden gelmiyor mu kontrolü
+      // Security measure: check if verification URL is from Supabase domain
       const url = new URL(decodeURIComponent(confirmationURL));
       
       if (!url.hostname.includes("supabase.co")) {
         toast({
-          title: "Güvenlik Uyarısı",
-          description: "Geçersiz doğrulama bağlantısı.",
+          title: "Security Warning",
+          description: "Invalid verification link.",
           variant: "destructive"
         });
         setLoading(false);
         return;
       }
       
-      // Kullanıcıyı gerçek doğrulama URL'sine yönlendir
-      window.location.href = decodeURIComponent(confirmationURL);
+      // Extract token and type parameters from URL
+      const urlParams = new URLSearchParams(url.search);
+      const token = urlParams.get('token');
+      const type = urlParams.get('type');
+      const redirect_to = urlParams.get('redirect_to');
+      
+      if (token && type) {
+        try {
+          // Perform token verification with use-auth hook
+          await verifyOtp(token, type);
+        } catch (error) {
+          toast({
+            title: "Verification Error",
+            description: "An error occurred during email verification.",
+            variant: "destructive"
+          });
+          setLoading(false);
+          return;
+        }
+        
+        // Show toast after successful verification
+        toast({
+          title: "Success",
+          description: "Your email has been successfully verified.",
+          variant: "default"
+        });
+        
+        // Redirect to the redirect_to parameter if it exists, otherwise to the home page
+        if (redirect_to) {
+          window.location.href = redirect_to;
+        } else {
+          router.push("/");
+        }
+      } else {
+        // If parameters are not found, redirect directly to the URL
+        window.location.href = decodeURIComponent(confirmationURL);
+      }
     } catch (error) {
+      console.error("Verification error:", error);
       toast({
-        title: "Hata",
-        description: "Doğrulama işlemi sırasında bir hata oluştu.",
+        title: "Error",
+        description: "An error occurred during the verification process.",
         variant: "destructive"
       });
       setLoading(false);
@@ -83,14 +121,14 @@ function ApprovalContent() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>E-posta Doğrulama</CardTitle>
+        <CardTitle>Email Verification</CardTitle>
         <CardDescription>
-          Hesabınızı aktifleştirmek için e-posta adresinizi doğrulayın
+          Verify your email address to activate your account
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <p className="text-muted-foreground">
-          UseSafe platformuna hoş geldiniz. Hesabınızı aktifleştirmek için e-posta adresinizi doğrulamanız gerekmektedir.
+          Welcome to the UseSafe platform. You need to verify your email address to activate your account.
         </p>
         
         <Button 
@@ -98,16 +136,16 @@ function ApprovalContent() {
           disabled={loading}
           className="w-full"
           tabIndex={0}
-          aria-label="E-postamı doğrula"
+          aria-label="Verify my email"
         >
-          {loading ? "İşleniyor..." : "E-postamı Doğrula"}
+          {loading ? "Processing..." : "Verify My Email"}
         </Button>
       </CardContent>
       <CardFooter className="flex justify-between">
         <div className="text-sm text-muted-foreground">
-          Zaten bir hesabınız var mı?{" "}
+          Already have an account?{" "}
           <Link href="/auth/login" className="text-primary hover:underline">
-            Giriş Yap
+            Sign In
           </Link>
         </div>
       </CardFooter>
@@ -119,7 +157,7 @@ export default function ApprovalPage() {
   return (
     <div className="flex h-screen items-center justify-center p-4 bg-gray-50">
       <div className="w-full max-w-md">
-        <Suspense fallback={<div>Yükleniyor...</div>}>
+        <Suspense fallback={<div>Loading...</div>}>
           <ApprovalContent />
         </Suspense>
       </div>
