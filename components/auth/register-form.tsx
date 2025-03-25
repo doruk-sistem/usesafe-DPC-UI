@@ -86,11 +86,11 @@ export function RegisterForm() {
           }
 
           // Create Supabase user
-          await signUp(formData.email, formData.password, {
-            full_name: formData.ownerName,
-            company_id: response.registrationId,
-            role: "manufacturer",
-          });
+          // await signUp(formData.email, formData.password, {
+          //   full_name: formData.ownerName,
+          //   company_id: response.registrationId,
+          //   role: "manufacturer",
+          // });
 
           setIsSubmitted(true);
           toast({

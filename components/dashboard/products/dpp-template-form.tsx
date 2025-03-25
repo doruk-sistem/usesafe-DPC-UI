@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { JSX } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import * as z from "zod";
 
@@ -16,8 +17,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { DPPTemplate } from "@/lib/types/dpp";
-import { JSX } from "react";
 
 // ✅ Zod Validasyon Şeması (Tam Tanımlı)
 const templateSchema = z.object({

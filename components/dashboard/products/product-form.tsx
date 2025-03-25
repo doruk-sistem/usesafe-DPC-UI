@@ -9,48 +9,12 @@ import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { Progress } from "@/components/ui/progress";
+import type { NewProduct } from "@/lib/types/product";
 
 import { BasicInfoStep } from "./steps/BasicInfoStep";
 import { DocumentUploadStep } from "./steps/DocumentUploadStep";
 import { ManufacturerSelect } from "./steps/manufacturerSelect/ManufacturerSelect";
 
-// ✅ NewProduct Tipi
-export type NewProduct = {
-  company_id?: string | null; // ✅ Opsiyonel ve nullable hale getirildi
-  name?: string;
-  description?: string;
-  product_type?: string;
-  model?: string;
-  images: {
-    url?: string;
-    alt?: string; // ✅ Opsiyonel yapıldı
-    is_primary: boolean;
-    fileObject?: any;
-  }[];
-  key_features: {
-    name: string;
-    value: string;
-    unit?: string;
-  }[];
-  documents?: {
-    quality_cert?: string[];
-    safety_cert?: string[];
-    test_reports?: string[];
-    technical_docs?: string[];
-    compliance_docs?: string[];
-  };
-  manufacturer_id?: string;
-};
-
-// ✅ Sertifika Şeması
-const certificationValueSchema = z.object({
-  issuedBy: z.string(),
-  validUntil: z.string(),
-  status: z.enum(["valid", "expired"]),
-  documentUrl: z.string().optional(),
-});
-
-// ✅ Belge Şeması
 const documentSchema = z.object({
   quality_cert: z.array(z.string()).optional(),
   safety_cert: z.array(z.string()).optional(),
@@ -59,23 +23,21 @@ const documentSchema = z.object({
   compliance_docs: z.array(z.string()).optional(),
 });
 
-// ✅ Ürün Şeması (company_id nullable yapıldı)
 const productSchema = z.object({
-  company_id: z.string().nullable().optional(), // ✅ Nullable ve opsiyonel yapıldı
-  name: z.string().min(2, "Name must be at least 2 characters").optional(),
-  description: z.string().min(5, "Product description is required").optional(),
-  product_type: z.string().min(1, "Product type is required").optional(),
-  model: z.string().min(1, "Product model is required").optional(),
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  description: z.string().min(5, "Product description is required"),
+  product_type: z.string().min(1, "Product type is required"),
+  model: z.string().min(1, "Product model is required"),
   images: z
     .array(
       z.object({
         url: z.string().optional(),
-        alt: z.string().optional(), // ✅ Opsiyonel yapıldı
+        alt: z.string().optional(),
         is_primary: z.boolean(),
         fileObject: z.any().optional(),
       })
     )
-    .default([]), // ✅ Varsayılan değer boş dizi
+    .default([]),
   key_features: z
     .array(
       z.object({
@@ -107,11 +69,9 @@ export function ProductForm({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [step, setStep] = useState(1);
 
-  // ✅ `useForm` içinde tipler eşleşti
   const form = useForm<FormData>({
     resolver: zodResolver(productSchema),
     defaultValues: defaultValues || {
-      company_id: null, // ✅ Null olarak başlatıldı
       name: "",
       description: "",
       product_type: "",
@@ -125,21 +85,27 @@ export function ProductForm({
 
   const progress = (step / TOTAL_STEPS) * 100;
 
-  // ✅ Gönderim Fonksiyonu
   const handleSubmit = async (data: FormData) => {
     try {
       setIsSubmitting(true);
       await onSubmit({
         ...data,
-        company_id: data.company_id || undefined,
-        images: data.images.map(image => ({
-          ...image,
-          is_primary: image.is_primary ?? false,
+        name: data.name || "",
+        description: data.description || "",
+        product_type: data.product_type || "",
+        model: data.model || "",
+        company_id: "",
+        manufacturer_id: data.manufacturer_id || "",
+        images: data.images.map((img) => ({
+          url: img.url || "",
+          alt: img.alt || "",
+          is_primary: img.is_primary || false,
+          fileObject: img.fileObject || undefined,
         })),
         key_features: data.key_features.map(feature => ({
-          ...feature,
-          name: feature.name || "", // Ensure name is set
-          value: feature.value || "", // Ensure value is set
+          name: feature.name || "",
+          value: feature.value || "",
+          unit: feature.unit,
         })),
       });
     } finally {
@@ -147,10 +113,13 @@ export function ProductForm({
     }
   };
 
-  // ✅ Adım Değişim Kontrolü
-  const handleStepChange = async (nextStep: number) => {
-    const isValid = await form.trigger(); // ✅ Doğrulama yapıldı
-    if (isValid) setStep(nextStep);
+  const handleNextStep = (e: React.MouseEvent) => {
+    e.preventDefault();
+    form.trigger().then((isValid) => {
+      if (isValid) {
+        setStep(step + 1);
+      }
+    });
   };
 
   return (
@@ -182,7 +151,7 @@ export function ProductForm({
           {step < TOTAL_STEPS ? (
             <Button
               type="button"
-              onClick={() => handleStepChange(step + 1)}
+              onClick={handleNextStep}
               disabled={isSubmitting}
             >
               Next
@@ -190,7 +159,8 @@ export function ProductForm({
             </Button>
           ) : (
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Saving..." : defaultValues ? "Update Product" : "Create Product"}
+              {isSubmitting && <span className="mr-2">Saving...</span>}
+              {defaultValues ? "Update Product" : "Create Product"}
             </Button>
           )}
         </div>
