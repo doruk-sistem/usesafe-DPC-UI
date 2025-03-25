@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { JSX } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import * as z from "zod";
 
@@ -16,9 +17,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Card } from "@/components/ui/card";
-import { DPPTemplate } from "@/lib/types/dpp";
-import { JSX } from "react";
 
 // ✅ Zod Validasyon Şeması (Tam Tanımlı)
 const templateSchema = z.object({
@@ -88,7 +86,6 @@ export function DPPTemplateForm({ onSubmit, defaultValues }: DPPTemplateFormProp
     name: "hazard_pictograms", 
   });
 
-  
   const renderFieldArray = (
     name: keyof FormData,
     label: string,
@@ -127,8 +124,6 @@ export function DPPTemplateForm({ onSubmit, defaultValues }: DPPTemplateFormProp
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-
-        
         {renderFieldArray("hazard_pictograms", "Hazard Pictograms", (index) => (
           <>
             <FormField
@@ -160,7 +155,6 @@ export function DPPTemplateForm({ onSubmit, defaultValues }: DPPTemplateFormProp
           </>
         ))}
 
-        
         {renderFieldArray("materials", "Materials", (index) => (
           <>
             <FormField
@@ -179,7 +173,6 @@ export function DPPTemplateForm({ onSubmit, defaultValues }: DPPTemplateFormProp
           </>
         ))}
 
-      
         <Card className="p-6">
           <h3 className="text-lg font-semibold mb-4">Required Certifications</h3>
           <FormField
@@ -196,7 +189,6 @@ export function DPPTemplateForm({ onSubmit, defaultValues }: DPPTemplateFormProp
           />
         </Card>
 
-      
         <Card className="p-6">
           <h3 className="text-lg font-semibold mb-4">Optional Certifications</h3>
           <FormField
@@ -213,7 +205,6 @@ export function DPPTemplateForm({ onSubmit, defaultValues }: DPPTemplateFormProp
           />
         </Card>
 
-      
         <div className="flex justify-end gap-4">
           <Button type="button" variant="outline">
             Cancel
