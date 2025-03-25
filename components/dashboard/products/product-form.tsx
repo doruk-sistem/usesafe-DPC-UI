@@ -9,7 +9,7 @@ import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { Progress } from "@/components/ui/progress";
-import { NewProduct } from "@/lib/types/product";
+import type { NewProduct } from "@/lib/types/product";
 
 import { BasicInfoStep } from "./steps/BasicInfoStep";
 import { DocumentUploadStep } from "./steps/DocumentUploadStep";
@@ -24,10 +24,10 @@ const documentSchema = z.object({
 });
 
 const productSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters").optional(),
-  description: z.string().min(5, "Product description is required").optional(),
-  product_type: z.string().min(1, "Product type is required").optional(),
-  model: z.string().min(1, "Product model is required").optional(),
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  description: z.string().min(5, "Product description is required"),
+  product_type: z.string().min(1, "Product type is required"),
+  model: z.string().min(1, "Product model is required"),
   images: z
     .array(
       z.object({
