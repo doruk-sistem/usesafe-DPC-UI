@@ -19,6 +19,11 @@ export function DashboardMetrics() {
   const { products } = useProducts();
   const productGrowth = calculateProductGrowth(products);
 
+  // Dummy values for demonstration; replace with actual data fetching logic
+  const pendingCertifications = 7; // Replace with actual value if available
+  const approvedDocuments = 128; // Replace with actual value if available
+  const complianceRate = 94; // Replace with actual value if available
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -32,33 +37,34 @@ export function DashboardMetrics() {
   const metricCards = [
     {
       title: "Total Products",
-      value: products?.length.toString() || "0",
+      value: products?.length ? products.length.toString() : "0",
       icon: Box,
       gradient: "from-blue-500 to-blue-700",
       trend: `${productGrowth > 0 ? "+" : ""}${productGrowth}%`,
     },
     {
       title: "Pending Certifications",
-      value: "7",
+      value: pendingCertifications ? pendingCertifications.toString() : "0",
       icon: AlertTriangle,
       gradient: "from-yellow-500 to-yellow-700",
       trend: "+3.2%",
     },
     {
       title: "Approved Documents",
-      value: "128",
+      value: approvedDocuments ? approvedDocuments.toString() : "0",
       icon: FileText,
       gradient: "from-green-500 to-green-700",
       trend: "+22.1%",
     },
     {
       title: "Compliance Rate",
-      value: "94%",
+      value: complianceRate ? `${complianceRate}%` : "0%",
       icon: ShieldCheck,
       gradient: "from-purple-500 to-purple-700",
       trend: "+5.6%",
     },
   ];
+
   return (
     <motion.div
       variants={containerVariants}

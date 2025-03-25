@@ -1,5 +1,4 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
@@ -34,7 +33,6 @@ export function ComplateRegistrationForm() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const { updateUser } = useAuth();
   const { toast } = useToast();
-  const router = useRouter();
 
   const form = useForm<FormData>({
     resolver: zodResolver(registerSchema),
@@ -95,9 +93,9 @@ export function ComplateRegistrationForm() {
           });
 
           // Redirect after showing success message
-          setTimeout(() => {
-            router.push("/auth/pending-approval");
-          }, 5000);
+          // setTimeout(() => {
+          //   router.push("/auth/pending-approval");
+          // }, 5000);
         } catch (error) {
           toast({
             title: "Registration Failed",

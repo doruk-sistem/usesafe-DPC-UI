@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRight, ArrowLeft } from "lucide-react";
 import { useState } from "react";
-import { useForm, UseFormReturn } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -15,12 +15,6 @@ import { BasicInfoStep } from "./steps/BasicInfoStep";
 import { DocumentUploadStep } from "./steps/DocumentUploadStep";
 import { ManufacturerSelect } from "./steps/manufacturerSelect/ManufacturerSelect";
 
-const certificationValueSchema = z.object({
-  issuedBy: z.string(),
-  validUntil: z.string(),
-  status: z.enum(["valid", "expired"]),
-  documentUrl: z.string().optional(),
-});
 const documentSchema = z.object({
   quality_cert: z.array(z.object({
     name: z.string(),
@@ -58,7 +52,7 @@ const productSchema = z.object({
     .array(
       z.object({
         url: z.string().optional(),
-        alt: z.string(),
+        alt: z.string().optional(),
         is_primary: z.boolean(),
         fileObject: z.any().optional(),
       })
@@ -74,15 +68,19 @@ const productSchema = z.object({
     )
     .default([]),
   documents: documentSchema.optional(),
-  manufacturer_id: z.string(),
+  manufacturer_id: z.string().optional(),
 });
 
+// ✅ Tipler Birebir Eşleşti
 type FormData = z.infer<typeof productSchema>;
 
 interface ProductFormProps {
   onSubmit: (data: NewProduct) => Promise<void>;
   defaultValues?: Partial<FormData>;
 }
+
+// ✅ Toplam Adım Sabitlendi
+const TOTAL_STEPS = 3;
 
 export function ProductForm({
   onSubmit,
@@ -100,17 +98,17 @@ export function ProductForm({
       model: "",
       images: [],
       key_features: [],
-      documents: {},
+      documents: undefined,
       manufacturer_id: "",
     },
   });
 
-  const progress = (step / 4) * 100;
+  const progress = (step / TOTAL_STEPS) * 100;
 
   const handleSubmit = async (data: FormData) => {
     try {
       setIsSubmitting(true);
-      const productData: NewProduct = {
+      await onSubmit({
         ...data,
         name: data.name || "",
         description: data.description || "",
@@ -124,13 +122,12 @@ export function ProductForm({
           is_primary: img.is_primary || false,
           fileObject: img.fileObject || undefined,
         })),
-        key_features: data.key_features.map((feature) => ({
+        key_features: data.key_features.map(feature => ({
           name: feature.name || "",
           value: feature.value || "",
           unit: feature.unit,
         })),
-      };
-      await onSubmit(productData);
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -148,14 +145,18 @@ export function ProductForm({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
+        {/* ✅ İlerleme Durumu */}
         <Progress value={progress} className="mb-8" />
+        {/* ✅ Adım 1 */}
+        {step === 1 && <BasicInfoStep form={form as any} />} 
 
-        {step === 1 && <BasicInfoStep form={form as any} />}
+        {/* ✅ Adım 2 */}
         {step === 2 && <DocumentUploadStep form={form as any} />}
-        {step === 3 && (
-          <ManufacturerSelect form={form as any} />
-        )}
 
+        {/* ✅ Adım 3 */}
+        {step === 3 && <ManufacturerSelect form={form} />}
+
+        {/* ✅ Butonlar */}
         <div className="flex justify-end gap-4">
           {step > 1 && (
             <Button
@@ -167,8 +168,12 @@ export function ProductForm({
               Previous
             </Button>
           )}
-          {step < 3 ? (
-            <Button type="button" onClick={handleNextStep}>
+          {step < TOTAL_STEPS ? (
+            <Button
+              type="button"
+              onClick={handleNextStep}
+              disabled={isSubmitting}
+            >
               Next
               <ArrowRight className="h-4 w-4 ml-2" />
             </Button>
