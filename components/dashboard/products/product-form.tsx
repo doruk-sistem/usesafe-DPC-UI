@@ -21,13 +21,32 @@ const certificationValueSchema = z.object({
   status: z.enum(["valid", "expired"]),
   documentUrl: z.string().optional(),
 });
-
 const documentSchema = z.object({
-  quality_cert: z.array(z.string()).optional(),
-  safety_cert: z.array(z.string()).optional(),
-  test_reports: z.array(z.string()).optional(),
-  technical_docs: z.array(z.string()).optional(),
-  compliance_docs: z.array(z.string()).optional(),
+  quality_cert: z.array(z.object({
+    name: z.string(),
+    url: z.string(),
+    type: z.string()
+  })).optional(),
+  safety_cert: z.array(z.object({
+    name: z.string(),
+    url: z.string(),
+    type: z.string()
+  })).optional(),
+  test_reports: z.array(z.object({
+    name: z.string(),
+    url: z.string(),
+    type: z.string()
+  })).optional(),
+  technical_docs: z.array(z.object({
+    name: z.string(),
+    url: z.string(),
+    type: z.string()
+  })).optional(),
+  compliance_docs: z.array(z.object({
+    name: z.string(),
+    url: z.string(),
+    type: z.string()
+  })).optional(),
 });
 
 const productSchema = z.object({

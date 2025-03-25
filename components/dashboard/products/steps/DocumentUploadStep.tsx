@@ -57,8 +57,7 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
       const newDocs = [...existingDocs];
       const errors: string[] = [];
 
-      // Validate file types and sizes before upload
-      const invalidFiles = Array.from(files).filter((file) => {
+      const validFiles = Array.from(files).filter((file) => {
         const isValidType = ACCEPTED_DOCUMENT_FORMATS.split(",").some(
           (format) => file.name.toLowerCase().endsWith(format.replace(".", ""))
         );
@@ -74,14 +73,15 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
           errors.push(`${file.name}: File size exceeds limit`);
         }
 
-        return !isValidType || !isValidSize;
+        return isValidType && isValidSize;
       });
 
-      if (invalidFiles.length > 0) {
+      if (validFiles.length === 0) {
         return { success: false, documents: existingDocs, errors };
       }
+
       await Promise.all(
-        Array.from(files).map(async (file) => {
+        validFiles.map(async (file) => {
           try {
             const url = await DocumentService.uploadDocument(file, {
               companyId,
@@ -129,8 +129,6 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
         field.value || []
       );
 
-      field.onChange(result.documents);
-
       if (result.errors.length > 0) {
         toast({
           title: "Upload Issues",
@@ -138,8 +136,11 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
           variant: "destructive",
         });
       }
+      
+      field.onChange([...result.documents]);
+      form.setValue(`documents.${docType}`, result.documents || []);
     },
-    [handleDocumentUpload, toast]
+    [handleDocumentUpload, toast, form]
   );
 
   return (
@@ -175,9 +176,9 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
                         variant="ghost"
                         size="icon"
                         onClick={() => {
-                          const newFiles = [...field.value];
-                          newFiles.splice(index, 1);
+                          const newFiles = field.value.filter((_: any, i: number) => i !== index);
                           field.onChange(newFiles);
+                          form.setValue(`documents.${docType.id}`, newFiles);
                         }}
                       >
                         <X className="h-4 w-4" />
@@ -191,18 +192,7 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
                       onChange={(e) => handleFileChange(e, field, docType.id)}
                       className="flex-1"
                     />
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="icon"
-                      onClick={() =>
-                        document
-                          .querySelector<HTMLInputElement>(
-                            `input[name="documents.${docType.id}"]`
-                          )
-                          ?.click()
-                      }
-                    >
+                    <Button type="button" variant="outline" size="icon">
                       <Plus className="h-4 w-4" />
                     </Button>
                   </div>
