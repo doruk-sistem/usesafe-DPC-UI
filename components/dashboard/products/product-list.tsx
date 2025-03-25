@@ -1,7 +1,8 @@
 "use client";
 
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
 import { useQueryClient } from "@tanstack/react-query";
-import { Battery, MoreHorizontal, FileText, ImageOff, Trash } from "lucide-react";
+import { Battery, FileText, ImageOff, MoreHorizontal, Trash } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -10,13 +11,11 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/components/ui/use-toast";
 import { productsApiHooks } from "@/lib/hooks/use-products";
 import type { Product } from "@/lib/types/product";
-import { StorageHelper } from '@/lib/utils/storage';
+import { StorageHelper } from "@/lib/utils/storage";
 
 interface ProductListProps {
   products: Product[];
@@ -28,21 +27,21 @@ export function ProductList({ products, isLoading }: ProductListProps) {
   const queryClient = useQueryClient();
   const [productToDelete, setProductToDelete] = useState<Product | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  
+
   const { mutate: deleteProduct } = productsApiHooks.useDeleteProductMutation({
     onSuccess: () => {
       toast({
         title: "Product deleted",
         description: "The product has been successfully deleted.",
       });
-      queryClient.invalidateQueries({ queryKey: ['getProducts'] });
+      queryClient.invalidateQueries({ queryKey: ["getProducts"] });
       setIsDeleteDialogOpen(false);
       setProductToDelete(null);
     },
     onError: (error) => {
       toast({
         title: "Error",
-        description: "Failed to delete product. Please try again.",
+        description: error instanceof Error ? error.message : "Failed to delete product. Please try again.",
         variant: "destructive",
       });
       setIsDeleteDialogOpen(false);
@@ -61,20 +60,18 @@ export function ProductList({ products, isLoading }: ProductListProps) {
     }
   };
 
-  const getImageUrl = (url: string): string => {
-    if (!url) return '/images/placeholder-product.png';
-    
-    // If it's already a full URL, return it
-    if (url.startsWith('http')) return url;
-    
-    // Otherwise, get the public URL from storage
+  // ✅ getImageUrl için güvenli fallback eklendi
+  const getImageUrl = (url?: string): string => {
+    if (!url) return "/images/placeholder-product.png";
+    if (url.startsWith("http")) return url;
+
     try {
       return StorageHelper.getPublicUrl(url, {
-        bucketName: process.env.PRODUCT_IMAGES_BUCKET
+        bucketName: process.env.NEXT_PUBLIC_PRODUCT_IMAGES_BUCKET || "",
       });
     } catch (error) {
-      console.error('Error getting public URL:', error);
-      return null;
+      console.error("Error getting public URL:", error);
+      return "/images/placeholder-product.png";
     }
   };
 
@@ -86,29 +83,29 @@ export function ProductList({ products, isLoading }: ProductListProps) {
           <CardDescription>Loading your products...</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="flex items-center space-x-4">
-                <Skeleton className="h-12 w-12" />
-                <div className="space-y-2">
-                  <Skeleton className="h-4 w-[250px]" />
-                  <Skeleton className="h-4 w-[200px]" />
-                </div>
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="flex items-center space-x-4">
+              <div className="w-12 h-12 bg-gray-200 animate-pulse" />
+              <div className="space-y-2">
+                <div className="w-48 h-4 bg-gray-200 animate-pulse" />
+                <div className="w-36 h-4 bg-gray-200 animate-pulse" />
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </CardContent>
       </Card>
     );
   }
 
-  if (products.length === 0) {
+  if (!products || products.length === 0) {
     return (
       <Card>
         <CardContent className="flex flex-col items-center justify-center py-12">
           <Battery className="h-12 w-12 text-muted-foreground mb-4" />
           <h2 className="text-xl font-semibold mb-2">No Products Found</h2>
-          <p className="text-muted-foreground mb-4">Start by adding your first product.</p>
+          <p className="text-muted-foreground mb-4">
+            Start by adding your first product.
+          </p>
           <Button asChild>
             <Link href="/dashboard/products/new">Add Product</Link>
           </Button>

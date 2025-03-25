@@ -37,9 +37,11 @@ interface DocumentUploadStepProps {
 export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
   const { user } = useAuth();
   const { toast } = useToast();
+
   const companyId =
     user?.user_metadata?.company_id || "7d26ed35-49ca-4c0d-932e-52254fb0e5b8";
 
+  // ✅ Dosya yükleme işlemi
   const handleDocumentUpload = useCallback(
     async (
       files: FileList,
@@ -57,8 +59,7 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
       const newDocs = [...existingDocs];
       const errors: string[] = [];
 
-      // Validate file types and sizes before upload
-      const invalidFiles = Array.from(files).filter((file) => {
+      const validFiles = Array.from(files).filter((file) => {
         const isValidType = ACCEPTED_DOCUMENT_FORMATS.split(",").some(
           (format) => file.name.toLowerCase().endsWith(format.replace(".", ""))
         );
@@ -74,14 +75,15 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
           errors.push(`${file.name}: File size exceeds limit`);
         }
 
-        return !isValidType || !isValidSize;
+        return isValidType && isValidSize;
       });
 
-      if (invalidFiles.length > 0) {
+      if (validFiles.length === 0) {
         return { success: false, documents: existingDocs, errors };
       }
+
       await Promise.all(
-        Array.from(files).map(async (file) => {
+        validFiles.map(async (file) => {
           try {
             const url = await DocumentService.uploadDocument(file, {
               companyId,
@@ -114,6 +116,7 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
     [companyId]
   );
 
+  // ✅ Dosya yükleme fonksiyonu
   const handleFileChange = useCallback(
     async (
       e: React.ChangeEvent<HTMLInputElement>,
@@ -129,8 +132,6 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
         field.value || []
       );
 
-      field.onChange(result.documents);
-
       if (result.errors.length > 0) {
         toast({
           title: "Upload Issues",
@@ -138,8 +139,11 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
           variant: "destructive",
         });
       }
+      
+      field.onChange([...result.documents]);
+      form.setValue(`documents.${docType}`, result.documents || []);
     },
-    [handleDocumentUpload, toast]
+    [handleDocumentUpload, toast, form]
   );
 
   return (
@@ -147,11 +151,11 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
       <div>
         <h3 className="text-lg font-semibold">Product Documents</h3>
         <p className="text-sm text-muted-foreground">
-          Upload relevant documents for your product. All documents are
-          optional.
+          Upload relevant documents for your product. All documents are optional.
         </p>
       </div>
 
+      {/* ✅ Tüm belge türleri için alan oluştur */}
       {DOCUMENT_TYPES.map((docType) => (
         <FormField
           key={docType.id}
@@ -162,6 +166,7 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
               <FormLabel>{docType.label}</FormLabel>
               <FormControl>
                 <div className="space-y-2">
+                  {/* ✅ Yüklenen dosyaları göster */}
                   {field.value?.map((file: any, index: number) => (
                     <div key={index} className="flex items-center gap-2">
                       <Input
@@ -175,34 +180,27 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
                         variant="ghost"
                         size="icon"
                         onClick={() => {
-                          const newFiles = [...field.value];
-                          newFiles.splice(index, 1);
+                          const newFiles = field.value.filter((_: any, i: number) => i !== index);
                           field.onChange(newFiles);
+                          form.setValue(`documents.${docType.id}`, newFiles);
                         }}
                       >
                         <X className="h-4 w-4" />
                       </Button>
                     </div>
                   ))}
+
+                  {/* ✅ Dosya yükleme alanı */}
                   <div className="flex items-center gap-2">
-                    <Input
+                    {/* Gizli input */}
+                    <input
+                      id={`file-upload-${docType.id}`}
                       type="file"
                       accept={ACCEPTED_DOCUMENT_FORMATS}
+                      className="hidden"
                       onChange={(e) => handleFileChange(e, field, docType.id)}
-                      className="flex-1"
                     />
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="icon"
-                      onClick={() =>
-                        document
-                          .querySelector<HTMLInputElement>(
-                            `input[name="documents.${docType.id}"]`
-                          )
-                          ?.click()
-                      }
-                    >
+                    <Button type="button" variant="outline" size="icon">
                       <Plus className="h-4 w-4" />
                     </Button>
                   </div>
