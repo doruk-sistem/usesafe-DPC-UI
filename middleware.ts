@@ -2,8 +2,17 @@ import createMiddleware from 'next-intl/middleware';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
+const locales = ['tr', 'en'];
+const defaultLocale = 'tr';
+
+export default createMiddleware({
+  locales,
+  defaultLocale,
+  localePrefix: 'as-needed'
+});
+
 export function middleware(request: NextRequest) {
-  const locale = request.cookies.get('NEXT_LOCALE')?.value || 'tr';
+  const locale = request.cookies.get('NEXT_LOCALE')?.value || defaultLocale;
   
   // Update request headers
   const requestHeaders = new Headers(request.headers);
@@ -18,5 +27,5 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   // Skip all paths that should not be internationalized
-  matcher: ['/((?!api|_next|_vercel|.*\\..*).*)']
+  matcher: ['/((?!api|_next|.*\\..*).*)']
 };

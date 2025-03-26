@@ -11,7 +11,11 @@ const inter = Inter({ subsets: ["latin"] });
 
 // Can be imported from a shared config
 const locales = ['en', 'tr'];
- 
+
+export function generateStaticParams() {
+  return [{ locale: 'tr' }, { locale: 'en' }];
+}
+
 export default async function LocaleLayout({
   children,
   params: {locale}
@@ -24,7 +28,7 @@ export default async function LocaleLayout({
  
   let messages;
   try {
-    messages = (await import(`../../i18n/locales/${locale}.json`)).default;
+    messages = (await import(`../../locales/${locale}.json`)).default;
   } catch (error) {
     notFound();
   }
@@ -41,7 +45,7 @@ export default async function LocaleLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <NextIntlClientProvider messages={messages} locale={locale}>
+          <NextIntlClientProvider locale={locale} messages={messages}>
             <ReactQueryProvider>
               <div className="relative min-h-screen bg-background">
                 <Navbar />

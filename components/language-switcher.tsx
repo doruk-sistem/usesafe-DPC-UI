@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import Cookies from "js-cookie";
 import { Globe } from "lucide-react";
 
@@ -19,11 +19,12 @@ const languages = [
 
 export function LanguageSwitcher() {
   const router = useRouter();
+  const pathname = usePathname();
   const currentLocale = Cookies.get("NEXT_LOCALE") || "tr";
 
   const handleLanguageChange = (locale: string) => {
-    Cookies.set("NEXT_LOCALE", locale);
-    router.refresh();
+    Cookies.set("NEXT_LOCALE", locale, { path: '/' });
+    window.location.reload();
   };
 
   const currentLanguage = languages.find((lang) => lang.code === currentLocale);
