@@ -1,0 +1,49 @@
+{
+  "navbar": {
+    "dashboard": "Panel",
+    "products": "Ürünler",
+    "profile": "Profil",
+    "settings": "Ayarlar",
+    "logout": "Çıkış Yap",
+    "companyRegistration": "Firma Kaydı",
+    "verifyProducts": "Ürün Doğrula",
+    "signIn": "Giriş Yap"
+  },
+  "dashboard": {
+    "title": "Kontrol Paneli",
+    "welcome": "Hoş Geldiniz",
+    "overview": "Panel Genel Bakış",
+    "description": "Ürünlerinizi, sertifikalarınızı ve belgelerinizi takip edin",
+    "period": {
+      "select": "Dönem seçin",
+      "today": "Bugün",
+      "thisWeek": "Bu Hafta",
+      "thisMonth": "Bu Ay",
+      "thisQuarter": "Bu Çeyrek"
+    },
+    "metrics": {
+      "totalProducts": "Toplam Ürün",
+      "pendingCertifications": "Bekleyen Sertifikalar",
+      "approvedDocuments": "Onaylı Belgeler",
+      "complianceRate": "Uyumluluk Oranı"
+    },
+    "applications": {
+      "title": "Bekleyen Başvurular",
+      "submitted": "Gönderildi",
+      "status": {
+        "pending": "Beklemede",
+        "review": "İncelemede",
+        "rejected": "Reddedildi"
+      }
+    },
+    "activities": {
+      "title": "Son Aktiviteler",
+      "noActivities": "Son aktivite bulunamadı",
+      "status": {
+        "NEW": "Yeni",
+        "DRAFT": "Taslak",
+        "DELETED": "Silindi"
+      }
+    }
+  }
+}

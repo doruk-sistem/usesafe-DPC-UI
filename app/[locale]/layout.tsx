@@ -1,8 +1,6 @@
-import "./globals.css";
-import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { NextIntlClientProvider } from 'next-intl';
-import { headers } from 'next/headers';
+import { notFound } from "next/navigation";
 
 import { Navbar } from "@/components/layout/navbar";
 import ReactQueryProvider from "@/components/providers/react-query-provider";
@@ -11,45 +9,24 @@ import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export const metadata: Metadata = {
-  title: "UseSafe - Digital Product Certification",
-  description: "Secure and sustainable product certification for the digital age",
-  icons: {
-    icon: [
-      { url: '/favicon-96x96.png', sizes: '96x96', type: 'image/png' },
-      { url: '/favicon.svg', type: 'image/svg+xml' },
-      { url: '/favicon.ico' },
-    ],
-    apple: [
-      { url: '/apple-touch-icon.png', sizes: '180x180' },
-    ],
-  },
-  manifest: '/site.webmanifest',
-  appleWebApp: {
-    title: 'UseSafe',
-    capable: true,
-    statusBarStyle: 'default',
-  },
-  other: {
-    'msapplication-TileColor': '#ffffff',
-    'theme-color': '#ffffff',
-  },
-};
-
-export default async function RootLayout({
+// Can be imported from a shared config
+const locales = ['en', 'tr'];
+ 
+export default async function LocaleLayout({
   children,
+  params: {locale}
 }: {
   children: React.ReactNode;
+  params: {locale: string};
 }) {
-  const headersList = headers();
-  const locale = (await headersList).get('x-next-locale') || 'tr';
-  
+  // Validate that the incoming `locale` parameter is valid
+  if (!locales.includes(locale)) notFound();
+ 
   let messages;
   try {
-    messages = (await import(`./i18n/locales/${locale}.json`)).default;
+    messages = (await import(`../../i18n/locales/${locale}.json`)).default;
   } catch (error) {
-    console.error('Failed to load messages:', error);
-    messages = {};
+    notFound();
   }
  
   return (
@@ -77,4 +54,4 @@ export default async function RootLayout({
       </body>
     </html>
   );
-}
+} 
