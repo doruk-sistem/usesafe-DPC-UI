@@ -1,7 +1,7 @@
 "use client";
 
 import { Plus, Minus } from "lucide-react";
-import { v4 as uuidv4 } from 'uuid';
+
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -26,7 +26,7 @@ export function DPPConfigurator({
 
   
   const handleAdd = (section: DPPSection) => {
-    const newSection = { ...section, id: section.id || uuidv4() }; // id varsa onu kullan, yoksa UUID üret
+    const newSection = { ...section, id: section.id}; 
     onSectionsChange([...selectedSections, newSection]);
   };
 

@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+
 import { ProductContainer } from "@/components/products/product-container";
 import { products } from "@/lib/data/products";
 import { textileProducts } from "@/lib/data/textile-products";
