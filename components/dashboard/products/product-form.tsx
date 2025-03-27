@@ -2,13 +2,15 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRight, ArrowLeft } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { Progress } from "@/components/ui/progress";
+import { useToast } from "@/components/ui/use-toast";
+import { DOCUMENT_TYPES, REQUIRED_DOCUMENTS } from "@/lib/constants/documents";
 import type { NewProduct } from "@/lib/types/product";
 
 import { BasicInfoStep } from "./steps/BasicInfoStep";
@@ -16,31 +18,51 @@ import { DocumentUploadStep } from "./steps/DocumentUploadStep";
 import { ManufacturerSelect } from "./steps/manufacturerSelect/ManufacturerSelect";
 
 const documentSchema = z.object({
-  quality_cert: z.array(z.object({
-    name: z.string(),
-    url: z.string(),
-    type: z.string()
-  })).optional(),
-  safety_cert: z.array(z.object({
-    name: z.string(),
-    url: z.string(),
-    type: z.string()
-  })).optional(),
-  test_reports: z.array(z.object({
-    name: z.string(),
-    url: z.string(),
-    type: z.string()
-  })).optional(),
-  technical_docs: z.array(z.object({
-    name: z.string(),
-    url: z.string(),
-    type: z.string()
-  })).optional(),
-  compliance_docs: z.array(z.object({
-    name: z.string(),
-    url: z.string(),
-    type: z.string()
-  })).optional(),
+  quality_cert: z
+    .array(
+      z.object({
+        name: z.string(),
+        url: z.string(),
+        type: z.string(),
+      })
+    )
+    .optional(),
+  safety_cert: z
+    .array(
+      z.object({
+        name: z.string(),
+        url: z.string(),
+        type: z.string(),
+      })
+    )
+    .optional(),
+  test_reports: z
+    .array(
+      z.object({
+        name: z.string(),
+        url: z.string(),
+        type: z.string(),
+      })
+    )
+    .optional(),
+  technical_docs: z
+    .array(
+      z.object({
+        name: z.string(),
+        url: z.string(),
+        type: z.string(),
+      })
+    )
+    .optional(),
+  compliance_docs: z
+    .array(
+      z.object({
+        name: z.string(),
+        url: z.string(),
+        type: z.string(),
+      })
+    )
+    .optional(),
 });
 
 const productSchema = z.object({
@@ -71,23 +93,25 @@ const productSchema = z.object({
   manufacturer_id: z.string().optional(),
 });
 
-// ✅ Tipler Birebir Eşleşti
-type FormData = z.infer<typeof productSchema>;
+type FormData = z.infer<typeof productSchema> & {
+  documents_confirmed?: boolean;
+};
 
 interface ProductFormProps {
   onSubmit: (data: NewProduct) => Promise<void>;
   defaultValues?: Partial<FormData>;
 }
 
-// ✅ Toplam Adım Sabitlendi
 const TOTAL_STEPS = 3;
 
-export function ProductForm({
-  onSubmit,
-  defaultValues,
-}: ProductFormProps) {
+export function ProductForm({ onSubmit, defaultValues }: ProductFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [step, setStep] = useState(1);
+  const { toast } = useToast();
+  const [validateDocuments, setValidateDocuments] = useState<() => boolean>(
+    () => true
+  );
+  const [missingDocuments, setMissingDocuments] = useState<string[]>([]);
 
   const form = useForm<FormData>({
     resolver: zodResolver(productSchema),
@@ -105,24 +129,54 @@ export function ProductForm({
 
   const progress = (step / TOTAL_STEPS) * 100;
 
+  const validateRequiredDocuments = useCallback(() => {
+    const productType = form.getValues("product_type");
+    if (!productType) return true;
+
+    const normalizedType = productType.toLowerCase().replace(/\s+|-/g, "_");
+
+    const requiredDocs =
+      REQUIRED_DOCUMENTS[normalizedType] ||
+      REQUIRED_DOCUMENTS[productType.toUpperCase()] ||
+      REQUIRED_DOCUMENTS[productType];
+
+    if (!requiredDocs) {
+      return true;
+    }
+
+    const formDocs = form.getValues("documents") || {};
+    const missingDocs = DOCUMENT_TYPES.filter((doc) => requiredDocs[doc.id])
+      .filter((doc) => !formDocs[doc.id]?.length)
+      .map((doc) => doc.label);
+
+    if (missingDocs.length > 0) {
+      setMissingDocuments(missingDocs);
+      return false;
+    }
+
+    setMissingDocuments([]);
+    return true;
+  }, [form, setMissingDocuments]);
+
   const handleSubmit = async (data: FormData) => {
     try {
       setIsSubmitting(true);
+      const { documents_confirmed, ...submitData } = data;
       await onSubmit({
-        ...data,
-        name: data.name || "",
-        description: data.description || "",
-        product_type: data.product_type || "",
-        model: data.model || "",
+        ...submitData,
+        name: submitData.name || "",
+        description: submitData.description || "",
+        product_type: submitData.product_type || "",
+        model: submitData.model || "",
         company_id: "",
-        manufacturer_id: data.manufacturer_id || "",
-        images: data.images.map((img) => ({
+        manufacturer_id: submitData.manufacturer_id || "",
+        images: submitData.images.map((img) => ({
           url: img.url || "",
           alt: img.alt || "",
           is_primary: img.is_primary || false,
           fileObject: img.fileObject || undefined,
         })),
-        key_features: data.key_features.map(feature => ({
+        key_features: submitData.key_features.map((feature) => ({
           name: feature.name || "",
           value: feature.value || "",
           unit: feature.unit,
@@ -133,30 +187,101 @@ export function ProductForm({
     }
   };
 
-  const handleNextStep = (e: React.MouseEvent) => {
+  const handleNextStep = async (e: React.MouseEvent) => {
     e.preventDefault();
-    form.trigger().then((isValid) => {
-      if (isValid) {
-        setStep(step + 1);
+
+    if (step !== 2) {
+      const isValid = await form.trigger();
+      if (!isValid) {
+        toast({
+          title: "Validation Error",
+          description: "Please fill in all required fields correctly",
+          variant: "destructive",
+        });
+        return;
       }
-    });
+      setStep(step + 1);
+      return;
+    }
+
+    try {
+      const isValid = await form.trigger();
+      if (!isValid) {
+        toast({
+          title: "Validation Error",
+          description: "Please fill in all required fields correctly",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const productType = form.getValues("product_type");
+
+      const normalizedType = productType?.toLowerCase().replace(/\s+|-/g, "_");
+
+      const requiredConfig =
+        REQUIRED_DOCUMENTS[normalizedType] ||
+        REQUIRED_DOCUMENTS[productType?.toUpperCase()] ||
+        REQUIRED_DOCUMENTS[productType];
+
+      if (requiredConfig) {
+        const uploadedDocs = form.getValues("documents") || {};
+
+        const missingDocs = DOCUMENT_TYPES.filter((docType) => {
+          const isRequired = requiredConfig[docType.id];
+          const hasDoc = uploadedDocs[docType.id]?.length > 0;
+
+          return isRequired && !hasDoc;
+        }).map((doc) => doc.label);
+
+        if (missingDocs.length > 0) {
+          toast({
+            title: "Required Documents Missing",
+            description: `Please upload: ${missingDocs.join(", ")}`,
+            variant: "destructive",
+          });
+          return;
+        }
+      }
+
+      const documentsConfirmed = form.getValues("documents_confirmed");
+      if (!documentsConfirmed) {
+        toast({
+          title: "Document Confirmation Required",
+          description: "Please confirm the accuracy of the uploaded documents",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      setStep(step + 1);
+    } catch (error) {
+      console.error("Error in handleNextStep:", error);
+      toast({
+        title: "Error",
+        description: "An error occurred while validating documents",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
-        {/* ✅ İlerleme Durumu */}
         <Progress value={progress} className="mb-8" />
-        {/* ✅ Adım 1 */}
-        {step === 1 && <BasicInfoStep form={form as any} />} 
 
-        {/* ✅ Adım 2 */}
-        {step === 2 && <DocumentUploadStep form={form as any} />}
+        {step === 1 && <BasicInfoStep form={form as any} />}
 
-        {/* ✅ Adım 3 */}
+        {step === 2 && (
+          <DocumentUploadStep
+            form={form}
+            setValidationFunction={setValidateDocuments}
+            onNext={() => setStep(step + 1)}
+          />
+        )}
+
         {step === 3 && <ManufacturerSelect form={form} />}
 
-        {/* ✅ Butonlar */}
         <div className="flex justify-end gap-4">
           {step > 1 && (
             <Button
@@ -168,6 +293,7 @@ export function ProductForm({
               Previous
             </Button>
           )}
+
           {step < TOTAL_STEPS ? (
             <Button
               type="button"
