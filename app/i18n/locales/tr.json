@@ -1,0 +1,191 @@
+{
+  "navbar": {
+    "dashboard": "Panel",
+    "products": "Ürünler",
+    "profile": "Profil",
+    "settings": "Ayarlar",
+    "logout": "Çıkış Yap",
+    "companyRegistration": "Firma Kaydı",
+    "verifyProducts": "Ürün Doğrula",
+    "signIn": "Giriş Yap"
+  },
+  "error": {
+    "404": {
+      "title": "404",
+      "description": "Sayfa bulunamadı.",
+      "backHome": "Ana Sayfaya Dön"
+    }
+  },
+  "dashboard": {
+    "title": "Kontrol Paneli",
+    "welcome": "Hoş Geldiniz",
+    "overview": "Panel Genel Bakış",
+    "description": "Ürünlerinizi, sertifikalarınızı ve belgelerinizi takip edin",
+    "period": {
+      "select": "Dönem seçin",
+      "today": "Bugün",
+      "thisWeek": "Bu Hafta",
+      "thisMonth": "Bu Ay",
+      "thisQuarter": "Bu Çeyrek"
+    },
+    "metrics": {
+      "totalProducts": "Toplam Ürün",
+      "pendingCertifications": "Bekleyen Sertifikalar",
+      "approvedDocuments": "Onaylı Belgeler",
+      "complianceRate": "Uyumluluk Oranı"
+    },
+    "applications": {
+      "title": "Bekleyen Başvurular",
+      "submitted": "Gönderildi",
+      "status": {
+        "pending": "Beklemede",
+        "review": "İncelemede",
+        "rejected": "Reddedildi"
+      }
+    },
+    "activities": {
+      "title": "Son Aktiviteler",
+      "noActivities": "Son aktivite bulunamadı",
+      "status": {
+        "NEW": "Yeni",
+        "DRAFT": "Taslak",
+        "DELETED": "Silindi"
+      }
+    }
+  },
+  "home": {
+    "hero": {
+      "title": "Dijital Ürün Sertifikasyonu ve İzlenebilirlik Sistemi",
+      "description": "Blockchain destekli sertifikasyon ve tedarik zinciri izlenebilirliği ile ürünlerinizi takip edin, doğrulayın ve orijinalliğini garanti altına alın",
+      "getStarted": "Başlayın",
+      "verifyProduct": "Ürün Doğrula"
+    },
+    "features": {
+      "manufacturers": {
+        "title": "Üreticiler İçin",
+        "description": "Şirketinizi kaydedin ve ürünlerinizi dijital sertifikasyon sistemimizle belgelendirin.",
+        "buttonText": "Şimdi Kaydol"
+      },
+      "traceability": {
+        "title": "Ürün İzlenebilirliği",
+        "description": "Blockchain doğrulaması ile hammadde tedarikinden perakendeye kadar ürün yolculuğunu takip edin.",
+        "buttonText": "Ürünleri Keşfet"
+      },
+      "history": {
+        "title": "Tedarik Zinciri Geçmişi",
+        "description": "Anında tam tedarik zinciri geçmişine erişin ve ürün orijinalliğini doğrulayın.",
+        "buttonText": "Şimdi Doğrula"
+      },
+      "connectedData": {
+        "title": "Bağlantılı Veri",
+        "description": "Ürün verilerini, sertifikaları ve sürdürülebilirlik metriklerini tek bir yerde birleştirin.",
+        "buttonText": "Daha Fazla Bilgi"
+      }
+    },
+    "traceability": {
+      "title": "Uçtan Uca İzlenebilirlik",
+      "description": "Her adımı tam şeffaflık ve doğrulama ile takip edin",
+      "steps": {
+        "rawMaterials": {
+          "title": "Hammadde",
+          "description": "Doğrulanmış sürdürülebilirlik bilgileriyle malzeme tedarikini ve kökenini takip edin"
+        },
+        "manufacturing": {
+          "title": "Üretim",
+          "description": "Üretim süreçlerini ve sürdürülebilirlik metriklerini gerçek zamanlı izleyin"
+        },
+        "certification": {
+          "title": "Sertifikasyon",
+          "description": "Blockchain destekli dijital sertifikasyon ile orijinalliği doğrulayın"
+        }
+      }
+    }
+  },
+  "product": {
+    "details": {
+      "notAvailable": "DPP düzeni bu ürün tipi için mevcut değil",
+      "basicInfo": {
+        "title": "Temel Bilgiler",
+        "manufacturer": "Üretici",
+        "category": "Kategori"
+      },
+      "materials": {
+        "title": "Malzemeler",
+        "recyclable": "Geri Dönüştürülebilir",
+        "percentage": "Yüzde"
+      },
+      "certifications": {
+        "title": "Sertifikalar",
+        "issuedBy": "Veren Kurum",
+        "validUntil": "Geçerlilik Tarihi",
+        "status": {
+          "valid": "Geçerli",
+          "expired": "Süresi Dolmuş",
+          "unknown": "Bilinmiyor"
+        }
+      },
+      "keyFeatures": {
+        "title": "Önemli Özellikler"
+      },
+      "sustainability": {
+        "title": "Sürdürülebilirlik Metrikleri"
+      },
+      "hazards": {
+        "title": "Tehlike Piktogramları",
+        "health": "Sağlık Tehlikesi",
+        "corrosive": "Aşındırıcı",
+        "warning": "Uyarı",
+        "explosive": "Patlayıcı",
+        "environmental": "Çevresel Tehlike"
+      },
+      "safety": {
+        "title": "Güvenlik Önlemleri",
+        "measures": {
+          "careful": "Pilleri her zaman dikkatli taşıyın.",
+          "upright": "Her zaman dik konumda tutun.",
+          "ventilation": "İyi havalandırılan bir yerde şarj edin.",
+          "water": "Saf su eklemeyin. (Saf su seviyesi plakaların 1.5 cm üzerinde olmamalıdır.)",
+          "goggles": "Pil bakımı sırasında (su ekleme, temizlik, şarj) mutlaka çalışma koşullarına uygun koruyucu gözlük takın.",
+          "clothing": "Asit sıçrama riski durumunda koruyucu giysi giyin."
+        }
+      },
+      "emergency": {
+        "title": "Acil Durum Prosedürleri",
+        "procedures": {
+          "contact": "Göz veya cilt teması durumunda bol su ile yıkayın.",
+          "clothing": "Kirlenmiş giysileri hemen çıkarın.",
+          "ingestion": "Yutma: Bol su ve süt için. Doktora başvurun.",
+          "spill": "Döküntü: Küçük döküntüleri su ile yıkayın.",
+          "gases": "Çalışan piller yüksek derecede yanıcı hidrojen ve oksijen gazları yayar.",
+          "spark": "Şarj olan, araçta çalışan veya uzun süre çalıştıktan sonra duran pillerin yakınında sigara içmeyin veya kıvılcım çıkarabilecek kaynaklardan ve hareketlerden kaçının.",
+          "fire": "Ateşten uzak tutun.",
+          "devices": "Tüm cihazları büyük dikkatle kullanın."
+        }
+      },
+      "storage": {
+        "title": "Depolama Kılavuzu",
+        "general": {
+          "title": "Genel Depolama",
+          "dry": "Her zaman kuru ve serin bir yerde dik konumda saklayın. (10°C - 25°C)",
+          "pallet": "Beton zeminle doğrudan temas etmemesi için pilleri ahşap palet üzerine yerleştirin."
+        },
+        "charge": {
+          "title": "Şarj Seviyesi İzleme",
+          "sale": "Satış öncesi pil şarj seviyesi 12.6V'dan yüksek olmalıdır.",
+          "minimum": "Depolama sırasında minimum voltaj 12.4V olmalıdır.",
+          "damage": "Kalıcı hasarı önlemek için voltaj düşükse, paketi açın ve 16.1V ve 1/20Cn akımda şarj edin."
+        },
+        "installation": {
+          "title": "Kurulum Adımları",
+          "verify": "Pil uyumluluğunu araç kılavuzundan doğrulayın",
+          "engine": "Motorun kapalı olduğundan emin olun",
+          "remove": "Eski pili çıkarın (önce negatif terminal)",
+          "control": "Kısa devre kontrolü yapın",
+          "clean": "Pil bölmesini ve terminalleri temizleyin",
+          "install": "Yeni pili takın (önce pozitif kabloyu bağlayın)",
+          "check": "Şarj akımı uyumluluğunu kontrol edin"
+        }
+      }
+    }
+  }
+}

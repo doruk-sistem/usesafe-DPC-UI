@@ -1,0 +1,191 @@
+{
+  "navbar": {
+    "dashboard": "Dashboard",
+    "products": "Products",
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Logout",
+    "companyRegistration": "Company Registration",
+    "verifyProducts": "Verify Products",
+    "signIn": "Sign In"
+  },
+  "error": {
+    "404": {
+      "title": "404",
+      "description": "This page could not be found.",
+      "backHome": "Back to Home"
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome",
+    "overview": "Dashboard Overview",
+    "description": "Track your products, certifications and documents",
+    "period": {
+      "select": "Select period",
+      "today": "Today",
+      "thisWeek": "This Week",
+      "thisMonth": "This Month",
+      "thisQuarter": "This Quarter"
+    },
+    "metrics": {
+      "totalProducts": "Total Products",
+      "pendingCertifications": "Pending Certifications",
+      "approvedDocuments": "Approved Documents",
+      "complianceRate": "Compliance Rate"
+    },
+    "applications": {
+      "title": "Pending Applications",
+      "submitted": "Submitted",
+      "status": {
+        "pending": "Pending",
+        "review": "In Review",
+        "rejected": "Rejected"
+      }
+    },
+    "activities": {
+      "title": "Recent Activities",
+      "noActivities": "No recent activities found",
+      "status": {
+        "NEW": "New",
+        "DRAFT": "Draft",
+        "DELETED": "Deleted"
+      }
+    }
+  },
+  "home": {
+    "hero": {
+      "title": "Digital Product Certification & Traceability System",
+      "description": "Track, verify, and ensure product authenticity through blockchain-powered certification and end-to-end supply chain traceability",
+      "getStarted": "Get Started",
+      "verifyProduct": "Verify Product"
+    },
+    "features": {
+      "manufacturers": {
+        "title": "For Manufacturers",
+        "description": "Register your company and certify your products with our digital certification system.",
+        "buttonText": "Register Now"
+      },
+      "traceability": {
+        "title": "Product Traceability",
+        "description": "Track complete product journey from raw materials to retail with blockchain verification.",
+        "buttonText": "Explore Products"
+      },
+      "history": {
+        "title": "Supply Chain History",
+        "description": "Access complete supply chain history and verify product authenticity instantly.",
+        "buttonText": "Verify Now"
+      },
+      "connectedData": {
+        "title": "Connected Data",
+        "description": "Link product data, certifications, and sustainability metrics in one place.",
+        "buttonText": "Learn More"
+      }
+    },
+    "traceability": {
+      "title": "End-to-End Traceability",
+      "description": "Track every step of your product's journey with complete transparency and verification",
+      "steps": {
+        "rawMaterials": {
+          "title": "Raw Materials",
+          "description": "Track sourcing and origin of materials with verified sustainability credentials"
+        },
+        "manufacturing": {
+          "title": "Manufacturing",
+          "description": "Monitor production processes and sustainability metrics in real-time"
+        },
+        "certification": {
+          "title": "Certification",
+          "description": "Verify authenticity with blockchain-backed digital certification"
+        }
+      }
+    }
+  },
+  "product": {
+    "details": {
+      "notAvailable": "DPP layout not available for this product type",
+      "basicInfo": {
+        "title": "Basic Information",
+        "manufacturer": "Manufacturer",
+        "category": "Category"
+      },
+      "materials": {
+        "title": "Materials",
+        "recyclable": "Recyclable",
+        "percentage": "Percentage"
+      },
+      "certifications": {
+        "title": "Certifications",
+        "issuedBy": "Issued By",
+        "validUntil": "Valid Until",
+        "status": {
+          "valid": "Valid",
+          "expired": "Expired",
+          "unknown": "Unknown"
+        }
+      },
+      "keyFeatures": {
+        "title": "Key Features"
+      },
+      "sustainability": {
+        "title": "Sustainability Metrics"
+      },
+      "hazards": {
+        "title": "Hazard Pictograms",
+        "health": "Health Hazard",
+        "corrosive": "Corrosive",
+        "warning": "Warning",
+        "explosive": "Explosive",
+        "environmental": "Environmental Hazard"
+      },
+      "safety": {
+        "title": "Safety Measures",
+        "measures": {
+          "careful": "Always carry the batteries carefully.",
+          "upright": "Always keep in the upright position.",
+          "ventilation": "Charge in a well-ventilated place.",
+          "water": "Do not add extra quantities of pure water. (Pure water level must not be more than 1.5 cm above the plates.)",
+          "goggles": "During battery maintenance (addition of water, cleaning, battery charge), absolutely wear protective goggles suitable with working conditions.",
+          "clothing": "In case of any possible acid splash risk, wear protective clothing."
+        }
+      },
+      "emergency": {
+        "title": "Emergency Procedures",
+        "procedures": {
+          "contact": "In case of contact with eyes or skin wash with plenty of water.",
+          "clothing": "Immediately remove contaminated clothing.",
+          "ingestion": "Ingestion: Drink plenty of water and milk. Consult a physician.",
+          "spill": "Spill: Wash small-spills with water.",
+          "gases": "Operating batteries emit highly flammable hydrogen and oxygen gases.",
+          "spark": "Do not smoke or avoid any sources and acts which may cause sparks near batteries which are being charged, operating on the vehicle, or stopped after a long operation period.",
+          "fire": "Keep fire away.",
+          "devices": "Use all devices with great care."
+        }
+      },
+      "storage": {
+        "title": "Storage Guidelines",
+        "general": {
+          "title": "General Storage",
+          "dry": "Always store in a dry and cool place in the upright position. (10°C to 25°C).",
+          "pallet": "Place batteries on a wood pallet for avoiding direct contact with concrete ground."
+        },
+        "charge": {
+          "title": "Charge Level Monitoring",
+          "sale": "Charge level of the battery must be greater than 12.6V before sale.",
+          "minimum": "During storage, the minimum voltage must be 12.4V.",
+          "damage": "For preventing permanent damage, unpack and charge at 16.1V and 1/20Cn current if voltage is low."
+        },
+        "installation": {
+          "title": "Installation Steps",
+          "verify": "Verify battery compatibility with vehicle manual",
+          "engine": "Ensure engine is switched off",
+          "remove": "Remove old battery (negative terminal first)",
+          "control": "Conduct short-circuit control",
+          "clean": "Clean battery compartment and terminals",
+          "install": "Install new battery (connect positive cable first)",
+          "check": "Check charge current compatibility"
+        }
+      }
+    }
+  }
+}

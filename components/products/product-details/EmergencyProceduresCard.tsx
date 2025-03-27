@@ -6,33 +6,30 @@ import { AlertTriangle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface EmergencyProceduresCardProps {
-  emergencyProcedures: string[];
-  itemVariants: any;
+  title: string;
+  procedures: string[];
 }
 
 export function EmergencyProceduresCard({ 
-  emergencyProcedures, 
-  itemVariants 
+  title,
+  procedures
 }: EmergencyProceduresCardProps) {
   return (
     <Card className="lg:col-span-2">
       <CardHeader>
         <div className="flex items-center gap-2">
           <AlertTriangle className="h-5 w-5 text-destructive" />
-          <CardTitle>Emergency Procedures</CardTitle>
+          <CardTitle>{title}</CardTitle>
         </div>
       </CardHeader>
       <CardContent>
-        <motion.ul 
-          variants={itemVariants}
-          className="space-y-3 list-disc pl-6"
-        >
-          {emergencyProcedures.map((procedure, index) => (
+        <ul className="space-y-3 list-disc pl-6">
+          {procedures.map((procedure, index) => (
             <li key={index} className="text-muted-foreground">
               {procedure}
             </li>
           ))}
-        </motion.ul>
+        </ul>
       </CardContent>
     </Card>
   );

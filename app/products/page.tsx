@@ -10,6 +10,7 @@ import {
   Globe, 
   Zap 
 } from "lucide-react";
+import { useTranslations } from 'next-intl';
 import Link from "next/link";
 
 import { ProductList } from "@/components/products/product-list";
@@ -17,6 +18,8 @@ import { Button } from "@/components/ui/button";
 import { EnhancedCard } from "@/components/ui/enhanced-card";
 
 export default function ProductsPage() {
+  const t = useTranslations('products');
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -43,22 +46,22 @@ export default function ProductsPage() {
   const featureItems = [
     {
       icon: QrCode,
-      title: "Product Traceability",
-      description: "Track product journey from source to store",
+      title: t('cards.traceability.title'),
+      description: t('cards.traceability.description'),
       gradient: "from-blue-500 to-blue-700",
       backgroundIcon: Globe
     },
     {
       icon: History,
-      title: "Supply Chain History",
-      description: "Complete transparency of product lifecycle",
+      title: t('cards.history.title'),
+      description: t('cards.history.description'),
       gradient: "from-green-500 to-green-700",
       backgroundIcon: Leaf
     },
     {
       icon: ShieldCheck,
-      title: "Verified Certifications",
-      description: "Authenticated sustainability credentials",
+      title: t('cards.certifications.title'),
+      description: t('cards.certifications.description'),
       gradient: "from-purple-500 to-purple-700",
       backgroundIcon: Zap
     }
@@ -105,7 +108,7 @@ export default function ProductsPage() {
             variants={itemVariants}
             className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent relative"
           >
-            Certified Products
+            {t('title')}
             <motion.span
               initial={{ width: 0 }}
               animate={{ width: '100%' }}
@@ -118,7 +121,7 @@ export default function ProductsPage() {
             variants={itemVariants}
             className="text-xl text-muted-foreground max-w-3xl mb-8"
           >
-            Explore our collection of certified sustainable products with verified Digital Product Passports.
+            {t('description')}
           </motion.p>
           
           <motion.div 
@@ -169,14 +172,14 @@ export default function ProductsPage() {
           className="space-y-4 mb-8 flex items-center justify-between"
         >
           <div>
-            <h2 className="text-2xl font-semibold">Featured Products</h2>
+            <h2 className="text-2xl font-semibold">{t('featured.title')}</h2>
             <p className="text-muted-foreground">
-              Browse our selection of certified sustainable products from e-bebek
+              {t('featured.description')}
             </p>
           </div>
           <Link href="/verify">
             <Button variant="outline" className="group">
-              Verify Product
+              {t('verify')}
               <ShieldCheck className="ml-2 h-4 w-4 group-hover:text-green-500 transition-colors" />
             </Button>
           </Link>

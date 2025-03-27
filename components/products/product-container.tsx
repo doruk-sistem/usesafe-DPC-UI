@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from 'next-intl';
 import { Product } from "@/lib/types/product";
 
 import { BatteryProductDetails } from "./battery-product-details";
@@ -10,6 +11,8 @@ interface ProductContainerProps {
 }
 
 export function ProductContainer({ product }: ProductContainerProps) {
+  const t = useTranslations('product');
+
   if (product.product_type === "battery") {
     return <BatteryProductDetails product={product} />;
   }
@@ -21,7 +24,7 @@ export function ProductContainer({ product }: ProductContainerProps) {
   return (
     <div className="text-center p-8">
       <p className="text-muted-foreground">
-        DPP layout not available for product type: {product.product_type}
+        {t('details.notAvailable')}
       </p>
     </div>
   );

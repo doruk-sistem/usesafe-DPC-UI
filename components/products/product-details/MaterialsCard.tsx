@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useTranslations } from 'next-intl';
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -21,46 +22,46 @@ interface Material {
 }
 
 interface MaterialsCardProps {
+  title: string;
   materials: Material[];
-  itemVariants: any;
 }
 
 export function MaterialsCard({ 
-  materials, 
-  itemVariants 
+  title,
+  materials
 }: MaterialsCardProps) {
+  const t = useTranslations('product.details');
+
   return (
     <Card className="lg:col-span-2">
       <CardHeader>
-        <CardTitle>Materials</CardTitle>
+        <CardTitle>{title}</CardTitle>
       </CardHeader>
       <CardContent>
-        <motion.div variants={itemVariants}>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Material</TableHead>
-                <TableHead>Percentage</TableHead>
-                <TableHead>Recyclable</TableHead>
-                <TableHead>Description</TableHead>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>{t('materials.title')}</TableHead>
+              <TableHead>{t('materials.percentage')}</TableHead>
+              <TableHead>{t('materials.recyclable')}</TableHead>
+              <TableHead>Description</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {materials.map((material, index) => (
+              <TableRow key={index}>
+                <TableCell>{material.name}</TableCell>
+                <TableCell>{material.percentage}%</TableCell>
+                <TableCell>
+                  <Badge variant={material.recyclable ? "success" : "secondary"}>
+                    {material.recyclable ? "Yes" : "No"}
+                  </Badge>
+                </TableCell>
+                <TableCell>{material.description}</TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {materials.map((material, index) => (
-                <TableRow key={index}>
-                  <TableCell>{material.name}</TableCell>
-                  <TableCell>{material.percentage}%</TableCell>
-                  <TableCell>
-                    <Badge variant={material.recyclable ? "success" : "secondary"}>
-                      {material.recyclable ? "Yes" : "No"}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>{material.description}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </motion.div>
+            ))}
+          </TableBody>
+        </Table>
       </CardContent>
     </Card>
   );
