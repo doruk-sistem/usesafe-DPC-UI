@@ -41,8 +41,8 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const headersList = headers();
-  const locale = (await headersList).get('x-next-locale') || 'tr';
+  const headersList = await headers();
+  const locale = headersList.get('x-next-locale') || 'tr';
   
   let messages;
   try {

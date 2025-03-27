@@ -1,58 +1,4 @@
 {
-  "navbar": {
-    "dashboard": "Dashboard",
-    "products": "Products",
-    "profile": "Profile",
-    "settings": "Settings",
-    "logout": "Logout",
-    "companyRegistration": "Company Registration",
-    "verifyProducts": "Verify Products",
-    "signIn": "Sign In"
-  },
-  "error": {
-    "404": {
-      "title": "404",
-      "description": "This page could not be found.",
-      "backHome": "Back to Home"
-    }
-  },
-  "dashboard": {
-    "title": "Dashboard",
-    "welcome": "Welcome",
-    "overview": "Dashboard Overview",
-    "description": "Track your products, certifications and documents",
-    "period": {
-      "select": "Select period",
-      "today": "Today",
-      "thisWeek": "This Week",
-      "thisMonth": "This Month",
-      "thisQuarter": "This Quarter"
-    },
-    "metrics": {
-      "totalProducts": "Total Products",
-      "pendingCertifications": "Pending Certifications",
-      "approvedDocuments": "Approved Documents",
-      "complianceRate": "Compliance Rate"
-    },
-    "applications": {
-      "title": "Pending Applications",
-      "submitted": "Submitted",
-      "status": {
-        "pending": "Pending",
-        "review": "In Review",
-        "rejected": "Rejected"
-      }
-    },
-    "activities": {
-      "title": "Recent Activities",
-      "noActivities": "No recent activities found",
-      "status": {
-        "NEW": "New",
-        "DRAFT": "Draft",
-        "DELETED": "Deleted"
-      }
-    }
-  },
   "home": {
     "hero": {
       "title": "Digital Product Certification & Traceability System",
@@ -101,4 +47,4 @@
       }
     }
   }
-}
+} 
