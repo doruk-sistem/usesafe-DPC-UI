@@ -7,18 +7,20 @@ interface ManualInputProps {
   value: string;
   onChange: (value: string) => void;
   onSubmit: (e: React.FormEvent) => void;
+  placeholder: string;
+  buttonText: string;
 }
 
-export function ManualInput({ value, onChange, onSubmit }: ManualInputProps) {
+export function ManualInput({ value, onChange, onSubmit, placeholder, buttonText }: ManualInputProps) {
   return (
     <form onSubmit={onSubmit} className="space-y-4">
       <div className="flex gap-2">
         <Input
-          placeholder="Enter Product ID (e.g., PROD-2024-001)"
+          placeholder={placeholder}
           value={value}
           onChange={(e) => onChange(e.target.value)}
         />
-        <Button type="submit">Verify</Button>
+        <Button type="submit">{buttonText}</Button>
       </div>
     </form>
   );

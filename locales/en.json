@@ -378,5 +378,41 @@
       "title": "Complete Registration",
       "description": "Please complete your company registration before starting to use UseSafe."
     }
+  },
+  "verify": {
+    "title": "Verify Product",
+    "description": "Enter a product ID or scan a QR code to verify its authenticity and view its Digital Product Passport.",
+    "card": {
+      "title": "Product Verification",
+      "description": "Verify product authenticity using a product code or QR code"
+    },
+    "input": {
+      "placeholder": "Enter Product ID (e.g., PROD-2024-001)",
+      "button": "Verify",
+      "or": "or scan QR code"
+    },
+    "status": {
+      "validating": {
+        "title": "Validating Product",
+        "description": "Please wait while we verify the product authenticity..."
+      },
+      "valid": {
+        "title": "Product Verified",
+        "description": "Redirecting to product details..."
+      },
+      "invalid": {
+        "title": "Validation Failed",
+        "description": "The product code could not be verified. Please try again or contact support.",
+        "notFound": "Product not found in our database",
+        "error": "Failed to validate product code",
+        "button": "Try Again"
+      }
+    },
+    "toast": {
+      "error": {
+        "title": "Invalid Product Code",
+        "description": "Please enter a valid product code or scan a valid QR code."
+      }
+    }
   }
 } 

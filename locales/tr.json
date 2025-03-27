@@ -377,5 +377,41 @@
       "title": "Kayıt Tamamlama",
       "description": "UseSafe'i kullanmaya başlamadan önce lütfen şirket kaydınızı tamamlayın."
     }
+  },
+  "verify": {
+    "title": "Ürün Doğrulama",
+    "description": "Ürünün orijinalliğini doğrulamak ve Dijital Ürün Pasaportunu görüntülemek için bir ürün kimliği girin veya QR kodu tarayın.",
+    "card": {
+      "title": "Ürün Doğrulama",
+      "description": "Ürün kodu veya QR kod kullanarak ürün orijinalliğini doğrulayın"
+    },
+    "input": {
+      "placeholder": "Ürün Kimliği Girin (örn. PROD-2024-001)",
+      "button": "Doğrula",
+      "or": "veya QR kodu tara"
+    },
+    "status": {
+      "validating": {
+        "title": "Ürün Doğrulanıyor",
+        "description": "Ürün orijinalliği doğrulanırken lütfen bekleyin..."
+      },
+      "valid": {
+        "title": "Ürün Doğrulandı",
+        "description": "Ürün detaylarına yönlendiriliyorsunuz..."
+      },
+      "invalid": {
+        "title": "Doğrulama Başarısız",
+        "description": "Ürün kodu doğrulanamadı. Lütfen tekrar deneyin veya destek ekibiyle iletişime geçin.",
+        "notFound": "Ürün veritabanımızda bulunamadı",
+        "error": "Ürün kodu doğrulanamadı",
+        "button": "Tekrar Dene"
+      }
+    },
+    "toast": {
+      "error": {
+        "title": "Geçersiz Ürün Kodu",
+        "description": "Lütfen geçerli bir ürün kodu girin veya geçerli bir QR kod tarayın."
+      }
+    }
   }
 } 
