@@ -1,8 +1,9 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { NextIntlClientProvider } from 'next-intl';
 import { headers } from 'next/headers';
+import { notFound } from "next/navigation";
+import { NextIntlClientProvider } from 'next-intl';
 
 import { Navbar } from "@/components/layout/navbar";
 import ReactQueryProvider from "@/components/providers/react-query-provider";
@@ -36,6 +37,13 @@ export const metadata: Metadata = {
   },
 };
 
+// Can be imported from a shared config
+const locales = ['en', 'tr'];
+
+export function generateStaticParams() {
+  return [{ locale: 'tr' }, { locale: 'en' }];
+}
+
 export default async function RootLayout({
   children,
 }: {
@@ -44,12 +52,15 @@ export default async function RootLayout({
   const headersList = await headers();
   const locale = headersList.get('x-next-locale') || 'tr';
   
+  // Validate that the incoming locale is valid
+  if (!locales.includes(locale as string)) notFound();
+  
   let messages;
   try {
     messages = (await import(`./i18n/locales/${locale}.json`)).default;
   } catch (error) {
     console.error('Failed to load messages:', error);
-    messages = {};
+    notFound();
   }
  
   return (
