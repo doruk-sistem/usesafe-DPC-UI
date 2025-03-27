@@ -1,0 +1,104 @@
+{
+  "navbar": {
+    "dashboard": "Dashboard",
+    "products": "Products",
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Logout",
+    "companyRegistration": "Company Registration",
+    "verifyProducts": "Verify Products",
+    "signIn": "Sign In"
+  },
+  "error": {
+    "404": {
+      "title": "404",
+      "description": "This page could not be found.",
+      "backHome": "Back to Home"
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome",
+    "overview": "Dashboard Overview",
+    "description": "Track your products, certifications and documents",
+    "period": {
+      "select": "Select period",
+      "today": "Today",
+      "thisWeek": "This Week",
+      "thisMonth": "This Month",
+      "thisQuarter": "This Quarter"
+    },
+    "metrics": {
+      "totalProducts": "Total Products",
+      "pendingCertifications": "Pending Certifications",
+      "approvedDocuments": "Approved Documents",
+      "complianceRate": "Compliance Rate"
+    },
+    "applications": {
+      "title": "Pending Applications",
+      "submitted": "Submitted",
+      "status": {
+        "pending": "Pending",
+        "review": "In Review",
+        "rejected": "Rejected"
+      }
+    },
+    "activities": {
+      "title": "Recent Activities",
+      "noActivities": "No recent activities found",
+      "status": {
+        "NEW": "New",
+        "DRAFT": "Draft",
+        "DELETED": "Deleted"
+      }
+    }
+  },
+  "home": {
+    "hero": {
+      "title": "Digital Product Certification & Traceability System",
+      "description": "Track, verify, and ensure product authenticity through blockchain-powered certification and end-to-end supply chain traceability",
+      "getStarted": "Get Started",
+      "verifyProduct": "Verify Product"
+    },
+    "features": {
+      "manufacturers": {
+        "title": "For Manufacturers",
+        "description": "Register your company and certify your products with our digital certification system.",
+        "buttonText": "Register Now"
+      },
+      "traceability": {
+        "title": "Product Traceability",
+        "description": "Track complete product journey from raw materials to retail with blockchain verification.",
+        "buttonText": "Explore Products"
+      },
+      "history": {
+        "title": "Supply Chain History",
+        "description": "Access complete supply chain history and verify product authenticity instantly.",
+        "buttonText": "Verify Now"
+      },
+      "connectedData": {
+        "title": "Connected Data",
+        "description": "Link product data, certifications, and sustainability metrics in one place.",
+        "buttonText": "Learn More"
+      }
+    },
+    "traceability": {
+      "title": "End-to-End Traceability",
+      "description": "Track every step of your product's journey with complete transparency and verification",
+      "steps": {
+        "rawMaterials": {
+          "title": "Raw Materials",
+          "description": "Track sourcing and origin of materials with verified sustainability credentials"
+        },
+        "manufacturing": {
+          "title": "Manufacturing",
+          "description": "Monitor production processes and sustainability metrics in real-time"
+        },
+        "certification": {
+          "title": "Certification",
+          "description": "Verify authenticity with blockchain-backed digital certification"
+        }
+      }
+    }
+  }
+}

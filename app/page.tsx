@@ -13,11 +13,14 @@ import {
   Rocket,
 } from "lucide-react";
 import Link from "next/link";
+import { useTranslations } from 'next-intl';
 
 import { Button } from "@/components/ui/button";
 import { EnhancedCard } from "@/components/ui/enhanced-card";
 
 export default function Home() {
+  const t = useTranslations('home');
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -44,34 +47,34 @@ export default function Home() {
   const featureCards = [
     {
       icon: Factory,
-      title: "For Manufacturers",
-      description: "Register your company and certify your products with our digital certification system.",
+      title: t('features.manufacturers.title'),
+      description: t('features.manufacturers.description'),
       link: "/auth/register",
-      buttonText: "Register Now",
+      buttonText: t('features.manufacturers.buttonText'),
       bgGradient: "from-blue-500 to-blue-700"
     },
     {
       icon: QrCode,
-      title: "Product Traceability",
-      description: "Track complete product journey from raw materials to retail with blockchain verification.",
+      title: t('features.traceability.title'),
+      description: t('features.traceability.description'),
       link: "/products",
-      buttonText: "Explore Products",
+      buttonText: t('features.traceability.buttonText'),
       bgGradient: "from-green-500 to-green-700"
     },
     {
       icon: History,
-      title: "Supply Chain History",
-      description: "Access complete supply chain history and verify product authenticity instantly.",
+      title: t('features.history.title'),
+      description: t('features.history.description'),
       link: "/verify",
-      buttonText: "Verify Now",
+      buttonText: t('features.history.buttonText'),
       bgGradient: "from-purple-500 to-purple-700"
     },
     {
       icon: LinkIcon,
-      title: "Connected Data",
-      description: "Link product data, certifications, and sustainability metrics in one place.",
+      title: t('features.connectedData.title'),
+      description: t('features.connectedData.description'),
       link: "/products",
-      buttonText: "Learn More",
+      buttonText: t('features.connectedData.buttonText'),
       bgGradient: "from-orange-500 to-orange-700"
     }
   ];
@@ -79,18 +82,18 @@ export default function Home() {
   const traceabilitySteps = [
     {
       icon: Box,
-      title: "Raw Materials",
-      description: "Track sourcing and origin of materials with verified sustainability credentials"
+      title: t('traceability.steps.rawMaterials.title'),
+      description: t('traceability.steps.rawMaterials.description')
     },
     {
       icon: Factory,
-      title: "Manufacturing",
-      description: "Monitor production processes and sustainability metrics in real-time"
+      title: t('traceability.steps.manufacturing.title'),
+      description: t('traceability.steps.manufacturing.description')
     },
     {
       icon: ShieldCheck,
-      title: "Certification",
-      description: "Verify authenticity with blockchain-backed digital certification"
+      title: t('traceability.steps.certification.title'),
+      description: t('traceability.steps.certification.description')
     }
   ];
 
@@ -122,14 +125,14 @@ export default function Home() {
               variants={itemVariants}
               className="text-5xl font-bold tracking-tight bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"
             >
-              Digital Product Certification & Traceability System
+              {t('hero.title')}
             </motion.h1>
             
             <motion.p 
               variants={itemVariants}
               className="text-xl text-muted-foreground"
             >
-              Track, verify, and ensure product authenticity through blockchain-powered certification and end-to-end supply chain traceability
+              {t('hero.description')}
             </motion.p>
             
             <motion.div 
@@ -138,13 +141,13 @@ export default function Home() {
             >
               <Link href="/auth/register">
                 <Button size="lg" className="group">
-                  Get Started
+                  {t('hero.getStarted')}
                   <Rocket className="ml-2 h-4 w-4 group-hover:animate-bounce" />
                 </Button>
               </Link>
               <Link href="/verify">
                 <Button variant="outline" size="lg" className="group">
-                  Verify Product
+                  {t('hero.verifyProduct')}
                   <CheckCircle className="ml-2 h-4 w-4 group-hover:text-green-500 transition-colors" />
                 </Button>
               </Link>
@@ -202,9 +205,9 @@ export default function Home() {
             variants={itemVariants}
             className="text-center mb-12"
           >
-            <h2 className="text-3xl font-bold mb-4">End-to-End Traceability</h2>
+            <h2 className="text-3xl font-bold mb-4">{t('traceability.title')}</h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Track every step of your product&apos;s journey with complete transparency and verification
+              {t('traceability.description')}
             </p>
           </motion.div>
           

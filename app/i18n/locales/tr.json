@@ -1,0 +1,104 @@
+{
+  "navbar": {
+    "dashboard": "Panel",
+    "products": "Ürünler",
+    "profile": "Profil",
+    "settings": "Ayarlar",
+    "logout": "Çıkış Yap",
+    "companyRegistration": "Firma Kaydı",
+    "verifyProducts": "Ürün Doğrula",
+    "signIn": "Giriş Yap"
+  },
+  "error": {
+    "404": {
+      "title": "404",
+      "description": "Sayfa bulunamadı.",
+      "backHome": "Ana Sayfaya Dön"
+    }
+  },
+  "dashboard": {
+    "title": "Kontrol Paneli",
+    "welcome": "Hoş Geldiniz",
+    "overview": "Panel Genel Bakış",
+    "description": "Ürünlerinizi, sertifikalarınızı ve belgelerinizi takip edin",
+    "period": {
+      "select": "Dönem seçin",
+      "today": "Bugün",
+      "thisWeek": "Bu Hafta",
+      "thisMonth": "Bu Ay",
+      "thisQuarter": "Bu Çeyrek"
+    },
+    "metrics": {
+      "totalProducts": "Toplam Ürün",
+      "pendingCertifications": "Bekleyen Sertifikalar",
+      "approvedDocuments": "Onaylı Belgeler",
+      "complianceRate": "Uyumluluk Oranı"
+    },
+    "applications": {
+      "title": "Bekleyen Başvurular",
+      "submitted": "Gönderildi",
+      "status": {
+        "pending": "Beklemede",
+        "review": "İncelemede",
+        "rejected": "Reddedildi"
+      }
+    },
+    "activities": {
+      "title": "Son Aktiviteler",
+      "noActivities": "Son aktivite bulunamadı",
+      "status": {
+        "NEW": "Yeni",
+        "DRAFT": "Taslak",
+        "DELETED": "Silindi"
+      }
+    }
+  },
+  "home": {
+    "hero": {
+      "title": "Dijital Ürün Sertifikasyonu ve İzlenebilirlik Sistemi",
+      "description": "Blockchain destekli sertifikasyon ve tedarik zinciri izlenebilirliği ile ürünlerinizi takip edin, doğrulayın ve orijinalliğini garanti altına alın",
+      "getStarted": "Başlayın",
+      "verifyProduct": "Ürün Doğrula"
+    },
+    "features": {
+      "manufacturers": {
+        "title": "Üreticiler İçin",
+        "description": "Şirketinizi kaydedin ve ürünlerinizi dijital sertifikasyon sistemimizle belgelendirin.",
+        "buttonText": "Şimdi Kaydol"
+      },
+      "traceability": {
+        "title": "Ürün İzlenebilirliği",
+        "description": "Blockchain doğrulaması ile hammadde tedarikinden perakendeye kadar ürün yolculuğunu takip edin.",
+        "buttonText": "Ürünleri Keşfet"
+      },
+      "history": {
+        "title": "Tedarik Zinciri Geçmişi",
+        "description": "Anında tam tedarik zinciri geçmişine erişin ve ürün orijinalliğini doğrulayın.",
+        "buttonText": "Şimdi Doğrula"
+      },
+      "connectedData": {
+        "title": "Bağlantılı Veri",
+        "description": "Ürün verilerini, sertifikaları ve sürdürülebilirlik metriklerini tek bir yerde birleştirin.",
+        "buttonText": "Daha Fazla Bilgi"
+      }
+    },
+    "traceability": {
+      "title": "Uçtan Uca İzlenebilirlik",
+      "description": "Her adımı tam şeffaflık ve doğrulama ile takip edin",
+      "steps": {
+        "rawMaterials": {
+          "title": "Hammadde",
+          "description": "Doğrulanmış sürdürülebilirlik bilgileriyle malzeme tedarikini ve kökenini takip edin"
+        },
+        "manufacturing": {
+          "title": "Üretim",
+          "description": "Üretim süreçlerini ve sürdürülebilirlik metriklerini gerçek zamanlı izleyin"
+        },
+        "certification": {
+          "title": "Sertifikasyon",
+          "description": "Blockchain destekli dijital sertifikasyon ile orijinalliği doğrulayın"
+        }
+      }
+    }
+  }
+}
