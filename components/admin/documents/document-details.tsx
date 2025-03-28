@@ -1,9 +1,15 @@
+"use client";
+
 import { ArrowLeft, Download, FileText } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { toast, useToast } from "@/components/ui/use-toast";
 
 // Mock data - In a real app, this would come from an API
 const documentsData = {
@@ -32,8 +38,53 @@ interface DocumentDetailsProps {
   documentId: string;
 }
 
+
 export function DocumentDetails({ documentId }: DocumentDetailsProps) {
+  const { toast } = useToast();
+  const [comment, setComment] = useState("");
   const document = documentsData[documentId];
+
+  const handleApprove = async () => {
+    try {
+      // TODO: API çağrısı eklenecek
+      toast({
+        title: "Document Approved",
+        description: "The document has been approved successfully.",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to approve document. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleReject = async () => {
+    if (!comment.trim()) {
+      toast({
+        title: "Comment Required",
+        description: "Please provide a reason for rejection.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      // TODO: API çağrısı eklenecek
+      toast({
+        title: "Document Rejected",
+        description: "The document has been rejected.",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to reject document. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
 
   if (!document) {
     return <div>Document not found</div>;
@@ -63,13 +114,42 @@ export function DocumentDetails({ documentId }: DocumentDetailsProps) {
           </Badge>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline">
-            <Download className="mr-2 h-4 w-4" />
-            Download
-          </Button>
-          <Button variant="outline">Reject</Button>
-          <Button>Approve</Button>
+  <Button variant="outline">
+    <Download className="mr-2 h-4 w-4" />
+    Download
+  </Button>
+  {document.status === "pending" && (
+    <>
+      <Button variant="outline" onClick={handleReject}>
+        Reject
+      </Button>
+      <Button onClick={handleApprove}>
+        Approve
+      </Button>
+    </>
+  )}
+</div>
+{document.status === "pending" && (
+  <Card className="md:col-span-2">
+    <CardHeader>
+      <CardTitle>Admin Review</CardTitle>
+    </CardHeader>
+    <CardContent>
+      <div className="space-y-4">
+        <div className="space-y-2">
+          <Label htmlFor="comment">Admin Comment</Label>
+          <Textarea
+            id="comment"
+            placeholder="Add your comments here..."
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+            className="min-h-[100px]"
+          />
         </div>
+      </div>
+    </CardContent>
+  </Card>
+)}
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
@@ -136,7 +216,7 @@ export function DocumentDetails({ documentId }: DocumentDetailsProps) {
                         : "warning"
                     }
                   >
-                    {value}
+                    {value as string}
                   </Badge>
                 </div>
               ))}
