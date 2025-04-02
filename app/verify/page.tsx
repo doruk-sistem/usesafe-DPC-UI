@@ -1,7 +1,7 @@
 "use client";
 
 import { Search } from "lucide-react";
-import { useTranslations } from 'next-intl';
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -13,7 +13,7 @@ import { QRScanner } from "@/components/verify/qr-scanner";
 export default function VerifyPage() {
   const router = useRouter();
   const { toast } = useToast();
-  const t = useTranslations('verify');
+  const t = useTranslations("verify");
   const [manualInput, setManualInput] = useState("");
 
   const handleProductCode = (code: string) => {
@@ -38,8 +38,8 @@ export default function VerifyPage() {
       }
     } catch (error) {
       toast({
-        title: t('toast.error.title'),
-        description: t('toast.error.description'),
+        title: t("error.invalidCode.title"),
+        description: t("error.invalidCode.description"),
         variant: "destructive",
       });
     }
@@ -54,17 +54,17 @@ export default function VerifyPage() {
     <div className="container max-w-2xl mx-auto py-10 px-4">
       <div className="flex flex-col items-center text-center mb-10">
         <Search className="h-12 w-12 text-primary mb-4" />
-        <h1 className="text-3xl font-bold mb-2">{t('title')}</h1>
+        <h1 className="text-3xl font-bold mb-2">{t("title")}</h1>
         <p className="text-muted-foreground">
-          {t('description')}
+          {t("description")}
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>{t('card.title')}</CardTitle>
+          <CardTitle>{t("verification.title")}</CardTitle>
           <CardDescription>
-            {t('card.description')}
+            {t("verification.description")}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -72,8 +72,8 @@ export default function VerifyPage() {
             value={manualInput}
             onChange={setManualInput}
             onSubmit={handleManualSubmit}
-            placeholder={t('input.placeholder')}
-            buttonText={t('input.button')}
+            placeholder={t("verification.manualInput.placeholder")}
+            buttonText={t("verification.manualInput.verify")}
           />
 
           <div className="relative">
@@ -82,7 +82,7 @@ export default function VerifyPage() {
             </div>
             <div className="relative flex justify-center text-xs uppercase">
               <span className="bg-background px-2 text-muted-foreground">
-                {t('input.or')}
+                {t("verification.orScanQR")}
               </span>
             </div>
           </div>

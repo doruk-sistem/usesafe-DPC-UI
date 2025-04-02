@@ -10,7 +10,7 @@ import { ProductService } from "@/lib/services/product";
 import { productBlockchainService } from "@/lib/services/product-blockchain";
 import { ProductStatusService } from "@/lib/services/product-status";
 import { StorageService } from "@/lib/services/storage";
-import type { NewProduct, ProductImage } from "@/lib/types/product";
+import type { NewProduct, ProductImage, ProductStatus } from "@/lib/types/product";
 
 export default function NewProductPageClient() {
   const { user, company } = useAuth();
@@ -62,16 +62,18 @@ export default function NewProductPageClient() {
         return;
       }
 
+      const initialStatus: ProductStatus = "DRAFT";
+
       // Continue with product creation using validImages
       const response = await ProductService.createProduct({
         ...data,
         images: validImages,
         company_id: company.id,
-        status: "DRAFT",
+        status: initialStatus,
         status_history: [
           {
-            from: null,
-            to: "DRAFT",
+            from: null as any,
+            to: initialStatus,
             timestamp: new Date().toISOString(),
             userId: user.id,
           },
@@ -97,15 +99,10 @@ export default function NewProductPageClient() {
           await productBlockchainService.recordProductAction(
             response.data.id,
             data.name,
-            data.manufacturer_id,
-            data.description,
+            data.manufacturer_id || "",
+            data.description || "",
             "CREATE"
           );
-
-        // Update the product with contract address
-        // await ProductService.updateProduct(response.data.id, {
-        //   contract_address: blockchainResult.contractAddress,
-        // });
 
         toast({
           title: "Success",
@@ -124,10 +121,11 @@ export default function NewProductPageClient() {
       }
 
       // Validate if product can be moved to NEW status
-      if (ProductStatusService.validateStatus(response.data)) {
+      if (response.data && ProductStatusService.validateStatus(response.data)) {
+        const newStatus: ProductStatus = "NEW";
         await ProductStatusService.updateStatus(
           response.data.id,
-          "NEW",
+          newStatus,
           user.id,
           "Auto-transition: All required fields present"
         );
@@ -161,9 +159,7 @@ export default function NewProductPageClient() {
       </div>
 
       <Card className="p-6">
-        <ProductForm
-          onSubmit={handleSubmit as any} // TODO: Fix type mismatch between NewProduct and handleSubmit
-        />
+        <ProductForm onSubmit={handleSubmit} />
       </Card>
     </div>
   );

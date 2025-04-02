@@ -187,5 +187,286 @@
         }
       }
     }
+  },
+  "products": {
+    "title": "Sertifikalı Ürünler",
+    "description": "Dijital Ürün Pasaportu ile doğrulanmış sertifikalı sürdürülebilir ürünlerimizi keşfedin.",
+    "list": {
+      "categories": {
+        "textile": "Tekstil",
+        "battery": "Akü",
+        "automotive": "Otomotiv",
+        "electronics": "Elektronik",
+        "clothing": "Giyim",
+        "women's clothing": "Kadın Giyim",
+        "automotive batteries": "Otomotiv Aküleri",
+        "marine batteries": "Deniz Aküleri"
+      },
+      "sustainability": {
+        "score": "Sürdürülebilirlik Puanı",
+        "carbonFootprint": "Karbon Ayak İzi"
+      }
+    },
+    "featured": {
+      "title": "Öne Çıkan Ürünler",
+      "description": "e-bebek'ten seçilmiş sertifikalı sürdürülebilir ürünlerimize göz atın"
+    },
+    "verify": {
+      "button": "Ürün Doğrula"
+    },
+    "features": {
+      "traceability": {
+        "title": "Ürün İzlenebilirliği",
+        "description": "Kaynaktan mağazaya ürün yolculuğunu takip edin"
+      },
+      "supplyChain": {
+        "title": "Tedarik Zinciri Geçmişi",
+        "description": "Ürün yaşam döngüsünün tam şeffaflığı"
+      },
+      "certifications": {
+        "title": "Doğrulanmış Sertifikalar",
+        "description": "Onaylanmış sürdürülebilirlik belgeleri"
+      }
+    },
+    "details": {
+      "backToProducts": "Ürünlere Geri Dön",
+      "battery": {
+        "features": {
+          "0": "Optimum performans için gelişmiş lityum-iyon teknolojisi",
+          "1": "Dahili güvenlik özellikleri ve koruma devreleri",
+          "2": "Uzun döngü ömrü ve güvenilir güç çıkışı"
+        },
+        "healthAndSafety": {
+          "title": "Sağlık ve Güvenlik Önlemleri",
+          "measures": {
+            "0": "Aküleri her zaman dikkatli taşıyın",
+            "1": "Her zaman dik konumda tutun",
+            "2": "İyi havalandırılan bir yerde şarj edin",
+            "3": "Saf su eklemeyin (Saf su seviyesi plakaların 1.5 cm üzerinde olmamalıdır)",
+            "4": "Akü bakımı sırasında (su ekleme, temizlik, şarj) mutlaka çalışma koşullarına uygun koruyucu gözlük takın",
+            "5": "Asit sıçrama riski varsa koruyucu giysi giyin"
+          }
+        },
+        "storage": {
+          "title": "Depolama ve Kurulum Kılavuzu",
+          "sections": {
+            "general": "Genel Depolama",
+            "chargeLevel": "Şarj Seviyesi İzleme",
+            "installation": "Kurulum Adımları"
+          }
+        }
+      },
+      "textile": {
+        "careInstructions": "Bakım Talimatları"
+      },
+      "layoutNotAvailable": "DPP düzeni bu ürün tipi için mevcut değil:",
+      "quickInfo": {
+        "title": "Hızlı Bilgi",
+        "model": "Model",
+        "manufacturer": "Üretici",
+        "category": "Kategori"
+      },
+      "keyFeatures": {
+        "title": "Önemli Özellikler"
+      },
+      "materials": {
+        "title": "Malzemeler",
+        "table": {
+          "material": "Malzeme",
+          "percentage": "Yüzde",
+          "recyclable": "Geri Dönüştürülebilir",
+          "description": "Açıklama"
+        },
+        "recyclable": {
+          "yes": "Evet",
+          "no": "Hayır"
+        }
+      },
+      "healthAndSafety": {
+        "title": "Sağlık ve Güvenlik",
+        "measures": {
+          "0": "Her zaman uygun taşıma ve depolama kılavuzlarını takip edin",
+          "1": "Aşırı sıcaklık ve nemden uzak tutun",
+          "2": "Kullanırken uygun kişisel koruyucu ekipman kullanın",
+          "3": "Düzenli bakım ve kontrol gereklidir"
+        }
+      },
+      "emergencyProcedures": {
+        "title": "Acil Durum Prosedürleri",
+        "0": "Hasar durumunda hemen bağlantıyı kesin ve izole edin",
+        "1": "Sızıntı veya yangın durumunda acil servisleri arayın",
+        "2": "Hasar görmüş ürünler için uygun imha prosedürlerini takip edin",
+        "3": "Güvenlik olaylarını belgeleyin ve raporlayın"
+      },
+      "certifications": {
+        "title": "Sertifikalar",
+        "table": {
+          "name": "Sertifika",
+          "issuedBy": "Veren Kurum",
+          "validUntil": "Geçerlilik Tarihi",
+          "status": "Durum",
+          "document": "Belge"
+        },
+        "status": {
+          "active": "Aktif",
+          "expired": "Süresi Dolmuş",
+          "pending": "Beklemede",
+          "unknown": "Bilinmiyor"
+        },
+        "actions": {
+          "download": "İndir"
+        }
+      },
+      "sustainability": {
+        "title": "Sürdürülebilirlik Metrikleri",
+        "carbonFootprint": "Karbon Ayak İzi",
+        "waterUsage": "Su Kullanımı",
+        "energyEfficiency": "Enerji Verimliliği",
+        "recycledContent": "Geri Dönüştürülmüş İçerik",
+        "metrics": {
+          "low": "Düşük",
+          "medium": "Orta",
+          "high": "Yüksek"
+        }
+      },
+      "qr": {
+        "title": "Ürün QR Kodu",
+        "description": "Ürün orijinalliğini doğrulamak ve detaylı bilgilere erişmek için bu QR kodu tarayın",
+        "instructions": "Taramak için akıllı telefon kamerası veya QR kod okuyucu uygulaması kullanın"
+      }
+    }
+  },
+  "auth": {
+    "createAccount": {
+      "title": "Hesap Oluştur",
+      "name": "Ad Soyad",
+      "email": "E-posta",
+      "password": "Şifre",
+      "register": "Kayıt Ol",
+      "alreadyHaveAccount": "Zaten hesabınız var mı?",
+      "login": "Giriş Yap",
+      "validation": {
+        "nameMin": "İsim en az 2 karakter olmalıdır",
+        "emailInvalid": "Lütfen geçerli bir e-posta adresi girin",
+        "passwordMin": "Şifre en az 6 karakter olmalıdır"
+      },
+      "placeholders": {
+        "name": "Ahmet Yılmaz",
+        "email": "ornek@sirket.com",
+        "password": "******"
+      },
+      "success": {
+        "title": "Hesap başarıyla oluşturuldu",
+        "description": "Lütfen e-posta adresinizi doğrulayın"
+      },
+      "error": {
+        "title": "Hesap oluşturma hatası",
+        "description": "Lütfen tekrar deneyin"
+      }
+    }
+  },
+  "verify": {
+    "title": "Ürün Doğrula",
+    "description": "Ürünün orijinalliğini doğrulamak ve Dijital Ürün Pasaportunu görüntülemek için bir ürün kodu girin veya QR kodu tarayın.",
+    "verification": {
+      "title": "Ürün Doğrulama",
+      "description": "Ürün kodu veya QR kod kullanarak ürün orijinalliğini doğrulayın",
+      "orScanQR": "veya QR kodu tarayın",
+      "manualInput": {
+        "placeholder": "Ürün kodunu girin (örn: PROD-2024-001)",
+        "verify": "Doğrula"
+      },
+      "scanner": {
+        "start": "Taramayı Başlat",
+        "stop": "Taramayı Durdur",
+        "positioning": "QR kodu çerçeve içine yerleştirin",
+        "error": {
+          "title": "Kamera Hatası",
+          "description": "Kameraya erişilemedi. Lütfen izinleri kontrol edin ve tekrar deneyin."
+        }
+      }
+    },
+    "error": {
+      "invalidCode": {
+        "title": "Geçersiz Ürün Kodu",
+        "description": "Lütfen geçerli bir ürün kodu girin veya geçerli bir QR kodu tarayın."
+      }
+    }
+  },
+  "settings": {
+    "title": "Ayarlar",
+    "description": "Şirket profilinizi ve tercihlerinizi yönetin",
+    "saveChanges": "Değişiklikleri Kaydet",
+    "tabs": {
+      "company": "Şirket",
+      "contact": "İletişim",
+      "notifications": "Bildirimler",
+      "security": "Güvenlik"
+    },
+    "company": {
+      "title": "Şirket Bilgileri",
+      "name": {
+        "label": "Şirket Adı",
+        "description": "Şirket adını güncellemek için destek ile iletişime geçin"
+      },
+      "taxId": {
+        "label": "Vergi Numarası",
+        "description": "Vergi numarasını güncellemek için destek ile iletişime geçin"
+      },
+      "tradeRegisterNumber": {
+        "label": "Ticaret Sicil Numarası"
+      },
+      "mersisNumber": {
+        "label": "MERSIS Numarası"
+      }
+    },
+    "contact": {
+      "title": "İletişim Bilgileri",
+      "email": "E-posta",
+      "phone": "Telefon",
+      "fax": "Faks",
+      "website": "Web Sitesi",
+      "address": {
+        "title": "Adres Bilgileri",
+        "headquarters": "Merkez Adresi",
+        "factory": "Fabrika Adresi",
+        "branches": "Şube Adresleri"
+      },
+      "authorized": {
+        "title": "Yetkili Kişi",
+        "name": "Ad Soyad",
+        "position": "Ünvan",
+        "department": "Departman",
+        "email": "E-posta",
+        "phone": "Telefon"
+      }
+    },
+    "notifications": {
+      "title": "Bildirim Tercihleri",
+      "email": {
+        "label": "E-posta Bildirimleri",
+        "description": "Önemli güncellemeler ve hatırlatmalar için e-posta bildirimleri alın"
+      },
+      "sms": {
+        "label": "SMS Bildirimleri",
+        "description": "Acil durumlar ve önemli hatırlatmalar için SMS bildirimleri alın"
+      },
+      "system": {
+        "label": "Sistem Uyarıları",
+        "description": "Platform içi bildirimler ve uyarılar alın"
+      },
+      "documents": {
+        "label": "Belge Hatırlatmaları",
+        "description": "Belge yüklemeleri ve güncellemeleri için hatırlatmalar alın"
+      },
+      "certifications": {
+        "label": "Sertifika Uyarıları",
+        "description": "Sertifika yenilemeleri ve son kullanma tarihleri için bildirimler alın"
+      }
+    },
+    "success": {
+      "title": "Ayarlar güncellendi",
+      "description": "Ayarlarınız başarıyla kaydedildi."
+    }
   }
 }

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -25,18 +26,19 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/lib/hooks/use-auth";
 
-const registerSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Please enter a valid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters long"),
-});
-
-type RegisterForm = z.infer<typeof registerSchema>;
-
 export default function RegisterPage() {
   const { signUp } = useAuth();
   const { toast } = useToast();
   const router = useRouter();
+  const t = useTranslations("auth.createAccount");
+
+  const registerSchema = z.object({
+    name: z.string().min(2, t("validation.nameMin")),
+    email: z.string().email(t("validation.emailInvalid")),
+    password: z.string().min(6, t("validation.passwordMin")),
+  });
+
+  type RegisterForm = z.infer<typeof registerSchema>;
 
   const form = useForm<RegisterForm>({
     resolver: zodResolver(registerSchema),
@@ -52,18 +54,19 @@ export default function RegisterPage() {
       await signUp(data.email, data.password, {
         role: "manufacturer",
         full_name: data.name,
+        company_id: "default"
       });
       toast({
-        title: "Account created successfully",
-        description: "Please verify your email address",
+        title: t("success.title"),
+        description: t("success.description"),
       });
 
       router.push("/auth/login");
     } catch (error) {
       console.error(error);
       toast({
-        title: "Error creating account",
-        description: "Please try again",
+        title: t("error.title"),
+        description: t("error.description"),
       });
     }
   };
@@ -72,7 +75,7 @@ export default function RegisterPage() {
     <div className="container max-w-4xl mx-auto py-10 px-4">
       <Card className="max-w-md mx-auto">
         <CardHeader>
-          <h1 className="text-2xl font-bold text-center">Create an account</h1>
+          <h1 className="text-2xl font-bold text-center">{t("title")}</h1>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -82,9 +85,9 @@ export default function RegisterPage() {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Name</FormLabel>
+                    <FormLabel>{t("name")}</FormLabel>
                     <FormControl>
-                      <Input placeholder="John Doe" {...field} />
+                      <Input placeholder={t("placeholders.name")} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -96,11 +99,11 @@ export default function RegisterPage() {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>{t("email")}</FormLabel>
                     <FormControl>
                       <Input
                         type="email"
-                        placeholder="example@company.com"
+                        placeholder={t("placeholders.email")}
                         {...field}
                       />
                     </FormControl>
@@ -114,9 +117,13 @@ export default function RegisterPage() {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel>{t("password")}</FormLabel>
                     <FormControl>
-                      <Input type="password" placeholder="******" {...field} />
+                      <Input 
+                        type="password" 
+                        placeholder={t("placeholders.password")} 
+                        {...field} 
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -124,16 +131,16 @@ export default function RegisterPage() {
               />
 
               <Button type="submit" className="w-full">
-                Register
+                {t("register")}
               </Button>
             </form>
           </Form>
         </CardContent>
         <CardFooter className="flex justify-center">
           <p className="text-sm text-gray-600">
-            Do you already have an account?{" "}
+            {t("alreadyHaveAccount")}{" "}
             <Link href="/auth/login" className="text-primary hover:underline">
-              Login
+              {t("login")}
             </Link>
           </p>
         </CardFooter>

@@ -16,9 +16,15 @@ export function DashboardHeader() {
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
+<<<<<<< HEAD
         <h1 className="text-2xl font-semibold">{t("overview.title")}</h1>
         <p className="text-sm text-muted-foreground">
           {t("overview.description")}
+=======
+        <h1 className="text-2xl font-semibold">{t("overview")}</h1>
+        <p className="text-sm text-muted-foreground">
+          {t("description")}
+>>>>>>> feature/settings-translations
         </p>
       </div>
       <div className="flex items-center gap-2">

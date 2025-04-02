@@ -187,5 +187,271 @@
         }
       }
     }
+  },
+  "products": {
+    "title": "Certified Products",
+    "description": "Explore our collection of certified sustainable products with verified Digital Product Passports.",
+    "list": {
+      "categories": {
+        "textile": "Textile",
+        "battery": "Battery",
+        "automotive": "Automotive",
+        "electronics": "Electronics",
+        "clothing": "Clothing",
+        "women's clothing": "Women's Clothing",
+        "automotive batteries": "Automotive Batteries",
+        "marine batteries": "Marine Batteries"
+      },
+      "sustainability": {
+        "score": "Sustainability Score",
+        "carbonFootprint": "Carbon Footprint"
+      }
+    },
+    "featured": {
+      "traceability": {
+        "title": "Product Traceability",
+        "description": "Track product journey from source to store"
+      },
+      "supplyChain": {
+        "title": "Supply Chain History",
+        "description": "Complete transparency of product lifecycle"
+      },
+      "certifications": {
+        "title": "Verified Certifications",
+        "description": "Authenticated sustainability credentials"
+      }
+    },
+    "details": {
+      "backToProducts": "Back to Products",
+      "battery": {
+        "features": {
+          "0": "Advanced lithium-ion technology for optimal performance",
+          "1": "Built-in safety features and protection circuits",
+          "2": "Extended cycle life and reliable power output"
+        },
+        "healthAndSafety": {
+          "title": "Health and Safety Measures"
+        },
+        "storage": {
+          "title": "Storage and Installation Guidelines",
+          "sections": {
+            "general": "General Storage",
+            "chargeLevel": "Charge Level Monitoring",
+            "installation": "Installation Steps"
+          }
+        }
+      },
+      "textile": {
+        "careInstructions": "Care Instructions"
+      },
+      "layoutNotAvailable": "DPP layout not available for product type:",
+      "quickInfo": {
+        "title": "Quick Information",
+        "model": "Model",
+        "manufacturer": "Manufacturer",
+        "category": "Category"
+      },
+      "keyFeatures": {
+        "title": "Key Features"
+      },
+      "materials": {
+        "title": "Materials",
+        "table": {
+          "material": "Material",
+          "percentage": "Percentage",
+          "recyclable": "Recyclable",
+          "description": "Description"
+        },
+        "recyclable": {
+          "yes": "Yes",
+          "no": "No"
+        }
+      },
+      "healthAndSafety": {
+        "title": "Health and Safety",
+        "measures": {
+          "0": "Always follow proper handling and storage guidelines",
+          "1": "Keep away from extreme temperatures and moisture",
+          "2": "Use appropriate personal protective equipment when handling",
+          "3": "Regular maintenance and inspection required"
+        }
+      },
+      "emergencyProcedures": {
+        "title": "Emergency Procedures",
+        "0": "In case of damage, immediately disconnect and isolate",
+        "1": "Contact emergency services if leakage or fire occurs",
+        "2": "Follow proper disposal procedures for damaged items",
+        "3": "Document and report any safety incidents"
+      },
+      "certifications": {
+        "title": "Certifications",
+        "table": {
+          "name": "Certificate",
+          "issuedBy": "Issued By",
+          "validUntil": "Valid Until",
+          "status": "Status",
+          "document": "Document"
+        },
+        "status": {
+          "active": "Active",
+          "expired": "Expired",
+          "pending": "Pending",
+          "unknown": "Unknown"
+        },
+        "actions": {
+          "download": "Download"
+        }
+      },
+      "sustainability": {
+        "title": "Sustainability Metrics",
+        "carbonFootprint": "Carbon Footprint",
+        "waterUsage": "Water Usage",
+        "energyEfficiency": "Energy Efficiency",
+        "recycledContent": "Recycled Content",
+        "metrics": {
+          "low": "Low",
+          "medium": "Medium",
+          "high": "High"
+        }
+      },
+      "qr": {
+        "title": "Product QR Code",
+        "description": "Scan this QR code to verify product authenticity and access detailed information",
+        "instructions": "Use your smartphone camera or QR code reader app to scan"
+      }
+    }
+  },
+  "auth": {
+    "createAccount": {
+      "title": "Create an Account",
+      "name": "Full Name",
+      "email": "Email",
+      "password": "Password",
+      "register": "Register",
+      "alreadyHaveAccount": "Do you already have an account?",
+      "login": "Login",
+      "validation": {
+        "nameMin": "Name must be at least 2 characters",
+        "emailInvalid": "Please enter a valid email address",
+        "passwordMin": "Password must be at least 6 characters long"
+      },
+      "placeholders": {
+        "name": "John Doe",
+        "email": "example@company.com",
+        "password": "******"
+      },
+      "success": {
+        "title": "Account created successfully",
+        "description": "Please verify your email address"
+      },
+      "error": {
+        "title": "Error creating account",
+        "description": "Please try again"
+      }
+    }
+  },
+  "verify": {
+    "title": "Verify Product",
+    "description": "Enter a product ID or scan a QR code to verify its authenticity and view its Digital Product Passport.",
+    "verification": {
+      "title": "Product Verification",
+      "description": "Verify product authenticity using a product code or QR code",
+      "orScanQR": "or scan QR code",
+      "manualInput": {
+        "placeholder": "Enter product code (e.g., PROD-2024-001)",
+        "verify": "Verify"
+      },
+      "scanner": {
+        "start": "Start Scanner",
+        "stop": "Stop Scanner",
+        "positioning": "Position the QR code within the frame to scan",
+        "error": {
+          "title": "Camera Error",
+          "description": "Failed to access camera. Please check permissions and try again."
+        }
+      }
+    },
+    "error": {
+      "invalidCode": {
+        "title": "Invalid Product Code",
+        "description": "Please enter a valid product code or scan a valid QR code."
+      }
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "description": "Manage your company profile and preferences",
+    "saveChanges": "Save Changes",
+    "tabs": {
+      "company": "Company",
+      "contact": "Contact",
+      "notifications": "Notifications",
+      "security": "Security"
+    },
+    "company": {
+      "title": "Company Information",
+      "name": {
+        "label": "Company Name",
+        "description": "Contact support to update company name"
+      },
+      "taxId": {
+        "label": "Tax ID",
+        "description": "Contact support to update tax ID"
+      },
+      "tradeRegisterNumber": {
+        "label": "Trade Register Number"
+      },
+      "mersisNumber": {
+        "label": "MERSIS Number"
+      }
+    },
+    "contact": {
+      "title": "Contact Information",
+      "email": "Email",
+      "phone": "Phone",
+      "fax": "Fax",
+      "website": "Website",
+      "address": {
+        "title": "Address Information",
+        "headquarters": "Headquarters Address",
+        "factory": "Factory Address",
+        "branches": "Branch Addresses"
+      },
+      "authorized": {
+        "title": "Authorized Person",
+        "name": "Full Name",
+        "position": "Title",
+        "department": "Department",
+        "email": "Email",
+        "phone": "Phone"
+      }
+    },
+    "notifications": {
+      "title": "Notification Preferences",
+      "email": {
+        "label": "Email Notifications",
+        "description": "Receive email notifications for important updates and reminders"
+      },
+      "sms": {
+        "label": "SMS Notifications",
+        "description": "Receive SMS notifications for urgent matters and important reminders"
+      },
+      "system": {
+        "label": "System Alerts",
+        "description": "Receive in-platform notifications and alerts"
+      },
+      "documents": {
+        "label": "Document Reminders",
+        "description": "Receive reminders for document uploads and updates"
+      },
+      "certifications": {
+        "label": "Certification Alerts",
+        "description": "Receive notifications for certification renewals and expiration dates"
+      }
+    },
+    "success": {
+      "title": "Settings updated",
+      "description": "Your settings have been saved successfully."
+    }
   }
 }
