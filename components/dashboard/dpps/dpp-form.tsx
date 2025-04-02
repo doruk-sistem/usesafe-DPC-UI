@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -41,6 +42,7 @@ export function DPPForm() {
   const { toast } = useToast();
   const { user } = useAuth();
   const { products } = useProducts();
+  const t = useTranslations();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -55,7 +57,7 @@ export function DPPForm() {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       if (!values.product_id) {
-        throw new Error("Please select a product");
+        throw new Error(t("dpp.create.validation.productRequired"));
       }
 
       const {
@@ -72,16 +74,16 @@ export function DPPForm() {
       });
 
       toast({
-        title: "Success",
-        description: "DPP created successfully",
+        title: t("dpp.create.success.title"),
+        description: t("dpp.create.success.description"),
       });
 
       router.push("/dashboard/dpps");
     } catch (error) {
       toast({
-        title: "Error",
+        title: t("dpp.create.error.title"),
         description:
-          error instanceof Error ? error.message : "Failed to create DPP",
+          error instanceof Error ? error.message : t("dpp.create.error.description"),
         variant: "destructive",
       });
       console.error("DPP creation error:", error);
@@ -96,11 +98,11 @@ export function DPPForm() {
           name="product_id"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Product</FormLabel>
+              <FormLabel>{t("dpp.create.form.product.label")}</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select product" />
+                    <SelectValue placeholder={t("dpp.create.form.product.placeholder")} />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -121,9 +123,9 @@ export function DPPForm() {
           name="serial_number"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Serial Number</FormLabel>
+              <FormLabel>{t("dpp.create.form.serialNumber.label")}</FormLabel>
               <FormControl>
-                <Input placeholder="Enter serial number" {...field} />
+                <Input placeholder={t("dpp.create.form.serialNumber.placeholder")} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -135,7 +137,7 @@ export function DPPForm() {
           name="manufacturing_date"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Manufacturing Date</FormLabel>
+              <FormLabel>{t("dpp.create.form.manufacturingDate.label")}</FormLabel>
               <FormControl>
                 <Input type="date" {...field} />
               </FormControl>
@@ -149,9 +151,9 @@ export function DPPForm() {
           name="manufacturing_facility"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Manufacturing Facility</FormLabel>
+              <FormLabel>{t("dpp.create.form.manufacturingFacility.label")}</FormLabel>
               <FormControl>
-                <Input placeholder="Enter facility name" {...field} />
+                <Input placeholder={t("dpp.create.form.manufacturingFacility.placeholder")} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -160,9 +162,9 @@ export function DPPForm() {
 
         <div className="flex justify-end gap-4">
           <Button type="button" variant="outline" onClick={() => router.back()}>
-            Cancel
+            {t("dpp.create.buttons.cancel")}
           </Button>
-          <Button type="submit">Create DPP</Button>
+          <Button type="submit">{t("dpp.create.buttons.create")}</Button>
         </div>
       </form>
     </Form>
