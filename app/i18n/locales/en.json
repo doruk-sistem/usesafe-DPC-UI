@@ -262,5 +262,33 @@
         "description": "Please try again"
       }
     }
+  },
+  "verify": {
+    "title": "Verify Product",
+    "description": "Enter a product ID or scan a QR code to verify its authenticity and view its Digital Product Passport.",
+    "verification": {
+      "title": "Product Verification",
+      "description": "Verify product authenticity using a product code or QR code",
+      "orScanQR": "or scan QR code",
+      "manualInput": {
+        "placeholder": "Enter product code (e.g., PROD-2024-001)",
+        "verify": "Verify"
+      },
+      "scanner": {
+        "start": "Start Scanner",
+        "stop": "Stop Scanner",
+        "positioning": "Position the QR code within the frame to scan",
+        "error": {
+          "title": "Camera Error",
+          "description": "Failed to access camera. Please check permissions and try again."
+        }
+      }
+    },
+    "error": {
+      "invalidCode": {
+        "title": "Invalid Product Code",
+        "description": "Please enter a valid product code or scan a valid QR code."
+      }
+    }
   }
 }

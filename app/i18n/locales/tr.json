@@ -311,5 +311,33 @@
         "description": "Lütfen tekrar deneyin"
       }
     }
+  },
+  "verify": {
+    "title": "Ürün Doğrula",
+    "description": "Ürünün orijinalliğini doğrulamak ve Dijital Ürün Pasaportunu görüntülemek için bir ürün ID girin veya QR kodu tarayın.",
+    "verification": {
+      "title": "Ürün Doğrulama",
+      "description": "Ürün kodu veya QR kod kullanarak ürün orijinalliğini doğrulayın",
+      "orScanQR": "veya QR kodu tarayın",
+      "manualInput": {
+        "placeholder": "Ürün kodunu girin (örn. PROD-2024-001)",
+        "verify": "Doğrula"
+      },
+      "scanner": {
+        "start": "Tarayıcıyı Başlat",
+        "stop": "Tarayıcıyı Durdur",
+        "positioning": "QR kodu çerçeve içine yerleştirin",
+        "error": {
+          "title": "Kamera Hatası",
+          "description": "Kameraya erişilemedi. Lütfen izinleri kontrol edin ve tekrar deneyin."
+        }
+      }
+    },
+    "error": {
+      "invalidCode": {
+        "title": "Geçersiz Ürün Kodu",
+        "description": "Lütfen geçerli bir ürün kodu girin veya geçerli bir QR kod tarayın."
+      }
+    }
   }
 }

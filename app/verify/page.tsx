@@ -3,6 +3,7 @@
 import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
@@ -13,6 +14,7 @@ export default function VerifyPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [manualInput, setManualInput] = useState("");
+  const t = useTranslations("verify");
 
   const handleProductCode = (code: string) => {
     try {
@@ -36,8 +38,8 @@ export default function VerifyPage() {
       }
     } catch (error) {
       toast({
-        title: "Invalid Product Code",
-        description: "Please enter a valid product code or scan a valid QR code.",
+        title: t("error.invalidCode.title"),
+        description: t("error.invalidCode.description"),
         variant: "destructive",
       });
     }
@@ -52,17 +54,17 @@ export default function VerifyPage() {
     <div className="container max-w-2xl mx-auto py-10 px-4">
       <div className="flex flex-col items-center text-center mb-10">
         <Search className="h-12 w-12 text-primary mb-4" />
-        <h1 className="text-3xl font-bold mb-2">Verify Product</h1>
+        <h1 className="text-3xl font-bold mb-2">{t("title")}</h1>
         <p className="text-muted-foreground">
-          Enter a product ID or scan a QR code to verify its authenticity and view its Digital Product Passport.
+          {t("description")}
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Product Verification</CardTitle>
+          <CardTitle>{t("verification.title")}</CardTitle>
           <CardDescription>
-            Verify product authenticity using a product code or QR code
+            {t("verification.description")}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -70,6 +72,8 @@ export default function VerifyPage() {
             value={manualInput}
             onChange={setManualInput}
             onSubmit={handleManualSubmit}
+            placeholder={t("verification.manualInput.placeholder")}
+            buttonText={t("verification.manualInput.verify")}
           />
 
           <div className="relative">
@@ -78,7 +82,7 @@ export default function VerifyPage() {
             </div>
             <div className="relative flex justify-center text-xs uppercase">
               <span className="bg-background px-2 text-muted-foreground">
-                or scan QR code
+                {t("verification.orScanQR")}
               </span>
             </div>
           </div>
