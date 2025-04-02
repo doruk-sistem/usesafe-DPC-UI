@@ -292,23 +292,68 @@
       "register": "Kayıt Ol",
       "alreadyHaveAccount": "Zaten hesabınız var mı?",
       "login": "Giriş Yap",
+      "placeholders": {
+        "name": "Adınızı ve soyadınızı girin",
+        "email": "E-posta adresinizi girin",
+        "password": "Şifrenizi girin"
+      },
       "validation": {
-        "nameMin": "Ad Soyad en az 2 karakter olmalıdır",
+        "nameMin": "İsim en az 2 karakter olmalıdır",
         "emailInvalid": "Lütfen geçerli bir e-posta adresi girin",
         "passwordMin": "Şifre en az 6 karakter olmalıdır"
       },
-      "placeholders": {
-        "name": "Ad Soyad",
-        "email": "ornek@firma.com",
-        "password": "******"
-      },
       "success": {
-        "title": "Hesap başarıyla oluşturuldu",
-        "description": "Lütfen e-posta adresinizi doğrulayın"
+        "title": "Başarılı!",
+        "description": "Hesabınız başarıyla oluşturuldu. Devam etmek için lütfen giriş yapın."
       },
       "error": {
-        "title": "Hesap oluşturulurken hata oluştu",
-        "description": "Lütfen tekrar deneyin"
+        "title": "Hata",
+        "description": "Hesap oluşturulurken bir hata oluştu. Lütfen tekrar deneyin."
+      }
+    }
+  },
+  "company": {
+    "registration": {
+      "title": "Firma Kaydı",
+      "description": "Dijital sertifikasyon sistemimizi kullanmaya başlamak için firmanızı kaydedin",
+      "form": {
+        "companyName": "Firma Adı",
+        "companyType": "Firma Türü",
+        "taxId": "Vergi Numarası",
+        "address": "Adres",
+        "city": "Şehir",
+        "country": "Ülke",
+        "phone": "Telefon",
+        "website": "Web Sitesi",
+        "submit": "Kaydı Tamamla"
+      },
+      "placeholders": {
+        "companyName": "Firma adını girin",
+        "companyType": "Firma türünü seçin",
+        "taxId": "Vergi numarasını girin",
+        "address": "Firma adresini girin",
+        "city": "Şehir seçin",
+        "country": "Ülke seçin",
+        "phone": "Telefon numarasını girin",
+        "website": "Web sitesi URL'sini girin"
+      },
+      "validation": {
+        "companyNameRequired": "Firma adı zorunludur",
+        "companyTypeRequired": "Firma türü zorunludur",
+        "taxIdRequired": "Vergi numarası zorunludur",
+        "addressRequired": "Adres zorunludur",
+        "cityRequired": "Şehir zorunludur",
+        "countryRequired": "Ülke zorunludur",
+        "phoneRequired": "Telefon numarası zorunludur",
+        "websiteInvalid": "Lütfen geçerli bir web sitesi URL'si girin"
+      },
+      "success": {
+        "title": "Kayıt Başarılı",
+        "description": "Firma kaydınız başarıyla gönderildi"
+      },
+      "error": {
+        "title": "Kayıt Başarısız",
+        "description": "Kaydınız gönderilirken bir hata oluştu"
       }
     }
   }

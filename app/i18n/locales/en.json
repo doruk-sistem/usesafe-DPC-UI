@@ -236,30 +236,75 @@
   },
   "auth": {
     "createAccount": {
-      "title": "Create an Account",
+      "title": "Create Account",
       "name": "Full Name",
       "email": "Email",
       "password": "Password",
       "register": "Register",
-      "alreadyHaveAccount": "Do you already have an account?",
+      "alreadyHaveAccount": "Already have an account?",
       "login": "Login",
+      "placeholders": {
+        "name": "Enter your full name",
+        "email": "Enter your email",
+        "password": "Enter your password"
+      },
       "validation": {
         "nameMin": "Name must be at least 2 characters",
-        "emailInvalid": "Please enter a valid email address",
-        "passwordMin": "Password must be at least 6 characters long"
-      },
-      "placeholders": {
-        "name": "John Doe",
-        "email": "example@company.com",
-        "password": "******"
+        "emailInvalid": "Please enter a valid email",
+        "passwordMin": "Password must be at least 6 characters"
       },
       "success": {
-        "title": "Account created successfully",
-        "description": "Please verify your email address"
+        "title": "Success!",
+        "description": "Your account has been created successfully. Please login to continue."
       },
       "error": {
-        "title": "Error creating account",
-        "description": "Please try again"
+        "title": "Error",
+        "description": "There was an error creating your account. Please try again."
+      }
+    }
+  },
+  "company": {
+    "registration": {
+      "title": "Company Registration",
+      "description": "Register your company to start using our digital certification system",
+      "form": {
+        "companyName": "Company Name",
+        "companyType": "Company Type",
+        "taxId": "Tax ID",
+        "address": "Address",
+        "city": "City",
+        "country": "Country",
+        "phone": "Phone",
+        "website": "Website",
+        "submit": "Submit Registration"
+      },
+      "placeholders": {
+        "companyName": "Enter company name",
+        "companyType": "Select company type",
+        "taxId": "Enter tax ID",
+        "address": "Enter company address",
+        "city": "Enter city",
+        "country": "Select country",
+        "phone": "Enter phone number",
+        "website": "Enter website URL"
+      },
+      "validation": {
+        "companyNameRequired": "Company name is required",
+        "companyTypeRequired": "Company type is required",
+        "taxIdRequired": "Tax ID is required",
+        "addressRequired": "Address is required",
+        "cityRequired": "City is required",
+        "countryRequired": "Country is required",
+        "phoneRequired": "Phone number is required",
+        "websiteInvalid": "Please enter a valid website URL"
+      },
+      "success": {
+        "title": "Registration Successful",
+        "description": "Your company registration has been submitted successfully"
+      },
+      "error": {
+        "title": "Registration Failed",
+        "description": "There was an error submitting your registration"
       }
     }
   }
