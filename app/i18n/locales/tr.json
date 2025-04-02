@@ -122,7 +122,21 @@
     },
     "featured": {
       "title": "Öne Çıkan Ürünler",
-      "description": "e-bebek'ten seçilmiş sertifikalı sürdürülebilir ürünlerimize göz atın"
+      "description": "Seçilmiş sertifikalı sürdürülebilir ürünlerimize göz atın",
+      "sections": {
+        "traceability": {
+          "title": "Ürün İzlenebilirliği",
+          "description": "Kaynaktan mağazaya ürün yolculuğunu takip edin"
+        },
+        "supplyChain": {
+          "title": "Tedarik Zinciri Geçmişi",
+          "description": "Ürün yaşam döngüsünün tam şeffaflığı"
+        },
+        "certifications": {
+          "title": "Doğrulanmış Sertifikalar",
+          "description": "Onaylanmış sürdürülebilirlik belgeleri"
+        }
+      }
     },
     "verify": {
       "button": "Ürün Doğrula"
@@ -381,8 +395,8 @@
       },
       "authorized": {
         "title": "Yetkili Kişi",
-        "name": "Ad Soyad",
-        "title": "Ünvan",
+        "fullName": "Ad Soyad",
+        "position": "Ünvan",
         "department": "Departman",
         "email": "E-posta",
         "phone": "Telefon"
@@ -475,6 +489,94 @@
       "error": {
         "title": "Hata",
         "description": "Ürün silinirken hata oluştu. Lütfen tekrar deneyin."
+      }
+    },
+    "addProduct": {
+      "title": "Yeni Ürün Ekle",
+      "description": "Yeni bir ürün oluşturun ve Dijital Ürün Pasaportunu yapılandırın",
+      "form": {
+        "validation": {
+          "error": "Lütfen tüm zorunlu alanları doğru şekilde doldurun"
+        },
+        "steps": {
+          "manufacturer": "Üretici Seç",
+          "basicInfo": "Temel Bilgiler",
+          "documents": "Belgeler"
+        },
+        "fields": {
+          "name": {
+            "label": "Ürün Adı",
+            "placeholder": "Ürün adını girin",
+            "error": "Ad en az 2 karakter olmalıdır"
+          },
+          "description": {
+            "label": "Açıklama",
+            "placeholder": "Ürün açıklamasını girin",
+            "error": "Ürün açıklaması gereklidir"
+          },
+          "type": {
+            "label": "Ürün Tipi",
+            "placeholder": "Ürün tipini seçin",
+            "error": "Ürün tipi gereklidir"
+          },
+          "model": {
+            "label": "Model",
+            "placeholder": "Ürün modelini girin",
+            "error": "Ürün modeli gereklidir"
+          },
+          "manufacturer": {
+            "label": "Üretici",
+            "placeholder": "Üretici adı veya vergi numarası ile ara...",
+            "description": "Bu ürün için üretici arayın ve seçin",
+            "error": "Üretici gereklidir",
+            "searching": "Aranıyor...",
+            "noResults": "Üretici bulunamadı",
+            "addNew": "Yeni üretici ekle:"
+          }
+        },
+        "images": {
+          "title": "Ürün Görselleri",
+          "upload": "Görsel Yükle",
+          "error": {
+            "title": "Görsel Yükleme Hatası",
+            "description": "Bir veya daha fazla görsel yüklenirken hata oluştu. Lütfen tekrar deneyin.",
+            "noImages": "Hiçbir görsel yüklenemedi"
+          }
+        },
+        "features": {
+          "title": "Temel Özellikler",
+          "name": "Özellik Adı",
+          "value": "Değer",
+          "unit": "Birim (opsiyonel)",
+          "add": "Özellik Ekle"
+        },
+        "documents": {
+          "title": "Gerekli Belgeler",
+          "description": "Ürününüz için gerekli tüm belgeleri yükleyin",
+          "types": {
+            "quality": "Kalite Sertifikaları",
+            "safety": "Güvenlik Sertifikaları",
+            "test": "Test Raporları",
+            "technical": "Teknik Belgeler",
+            "compliance": "Uygunluk Belgeleri"
+          },
+          "missing": "Eksik gerekli belgeler: {documents}"
+        },
+        "navigation": {
+          "next": "Sonraki Adım",
+          "previous": "Önceki Adım",
+          "submit": "Ürün Oluştur"
+        }
+      },
+      "success": {
+        "title": "Başarılı",
+        "description": "Ürün başarıyla oluşturuldu",
+        "blockchain": "Ürün oluşturuldu ve blok zincirine kaydedildi. Sözleşme Adresi: {address}"
+      },
+      "error": {
+        "title": "Hata",
+        "description": "Ürün oluşturulurken beklenmeyen bir hata oluştu",
+        "blockchain": "Ürün oluşturuldu ancak blok zinciri kaydı başarısız oldu: {error}"
       }
     }
   }

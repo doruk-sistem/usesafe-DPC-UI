@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
@@ -17,13 +18,16 @@ import { ManufacturerSearchResults } from "./ManufacturerSearchResults";
 interface ManufacturerSearchProps {
   value: string | null;
   onChange: (manufacturerId: string | null) => void;
+  placeholder?: string;
 }
 
 export function ManufacturerSearch({
   value,
   onChange,
+  placeholder,
 }: ManufacturerSearchProps) {
   const { toast } = useToast();
+  const t = useTranslations("productManagement.addProduct");
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [manufacturers, setManufacturers] = useState<Company[]>([]);
@@ -86,13 +90,14 @@ export function ManufacturerSearch({
       <ManufacturerSearchInput
         searchQuery={searchQuery}
         onSearchQueryChange={setSearchQuery}
+        placeholder={placeholder}
       />
       {isSearching ? (
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center justify-center">
               <span className="text-sm text-muted-foreground">
-                Searching...
+                {t("form.fields.manufacturer.searching")}
               </span>
             </div>
           </CardContent>
@@ -109,10 +114,10 @@ export function ManufacturerSearch({
             <div className="space-y-4">
               <div className="flex flex-col items-center justify-center">
                 <span className="text-sm text-muted-foreground">
-                  No manufacturers found
+                  {t("form.fields.manufacturer.noResults")}
                 </span>
                 <p className="text-sm text-muted-foreground mt-2">
-                  Add a new manufacturer:
+                  {t("form.fields.manufacturer.addNew")}
                 </p>
               </div>
               <QuickManufacturerForm

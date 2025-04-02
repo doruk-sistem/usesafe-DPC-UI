@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 import { ProductForm } from "@/components/dashboard/products/product-form";
 import { Card } from "@/components/ui/card";
@@ -16,6 +17,7 @@ export default function NewProductPageClient() {
   const { user, company } = useAuth();
   const { toast } = useToast();
   const router = useRouter();
+  const t = useTranslations("productManagement.addProduct");
 
   const handleSubmit = async (data: NewProduct) => {
     if (!user?.id || !company?.id) return;
@@ -33,9 +35,8 @@ export default function NewProductPageClient() {
 
             if (!uploadedUrl) {
               toast({
-                title: "Image Upload Error",
-                description:
-                  "Failed to upload one or more images. Please try again.",
+                title: t("form.images.error.title"),
+                description: t("form.images.error.description"),
                 variant: "destructive",
               });
               return null;
@@ -55,8 +56,8 @@ export default function NewProductPageClient() {
 
       if (validImages.length === 0) {
         toast({
-          title: "Error",
-          description: "No images could be uploaded",
+          title: t("error.title"),
+          description: t("form.images.error.noImages"),
           variant: "destructive",
         });
         return;
@@ -70,7 +71,7 @@ export default function NewProductPageClient() {
         status: "DRAFT",
         status_history: [
           {
-            from: null,
+            from: "DRAFT",
             to: "DRAFT",
             timestamp: new Date().toISOString(),
             userId: user.id,
@@ -80,7 +81,7 @@ export default function NewProductPageClient() {
 
       if (response.error) {
         toast({
-          title: "Error",
+          title: t("error.title"),
           description: response.error.message,
           variant: "destructive",
         });
@@ -98,7 +99,7 @@ export default function NewProductPageClient() {
             response.data.id,
             data.name,
             data.manufacturer_id,
-            data.description,
+            data.description || "",
             "CREATE"
           );
 
@@ -108,17 +109,19 @@ export default function NewProductPageClient() {
         // });
 
         toast({
-          title: "Success",
-          description: `Product created and recorded to blockchain. Contract Address: ${blockchainResult.contractAddress}`,
+          title: t("success.title"),
+          description: t("success.blockchain", {
+            address: blockchainResult.contractAddress
+          }),
         });
       } catch (blockchainError) {
         toast({
-          title: "Warning",
-          description:
-            "Product created but blockchain record failed: " +
-            (blockchainError instanceof Error
+          title: t("error.title"),
+          description: t("error.blockchain", {
+            error: blockchainError instanceof Error
               ? blockchainError.message
-              : "Unknown error"),
+              : "Unknown error"
+          }),
           variant: "destructive",
         });
       }
@@ -134,8 +137,8 @@ export default function NewProductPageClient() {
       }
 
       toast({
-        title: "Success",
-        description: "Product created successfully",
+        title: t("success.title"),
+        description: t("success.description"),
       });
 
       // Başarılı kayıt sonrası detay sayfasına yönlendir
@@ -143,8 +146,8 @@ export default function NewProductPageClient() {
     } catch (error) {
       console.error("Error creating product:", error);
       toast({
-        title: "Error",
-        description: "An unexpected error occurred while creating the product",
+        title: t("error.title"),
+        description: t("error.description"),
         variant: "destructive",
       });
       throw error;
@@ -154,15 +157,15 @@ export default function NewProductPageClient() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold">Add New Product</h1>
+        <h1 className="text-2xl font-semibold">{t("title")}</h1>
         <p className="text-sm text-muted-foreground">
-          Create a new product and configure its Digital Product Passport
+          {t("description")}
         </p>
       </div>
 
       <Card className="p-6">
         <ProductForm
-          onSubmit={handleSubmit as any} // TODO: Fix type mismatch between NewProduct and handleSubmit
+          onSubmit={handleSubmit}
         />
       </Card>
     </div>

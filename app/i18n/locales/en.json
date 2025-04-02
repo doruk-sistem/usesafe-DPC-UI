@@ -121,17 +121,21 @@
       }
     },
     "featured": {
-      "traceability": {
-        "title": "Product Traceability",
-        "description": "Track product journey from source to store"
-      },
-      "supplyChain": {
-        "title": "Supply Chain History",
-        "description": "Complete transparency of product lifecycle"
-      },
-      "certifications": {
-        "title": "Verified Certifications",
-        "description": "Authenticated sustainability credentials"
+      "title": "Featured Products",
+      "description": "Browse our curated selection of certified sustainable products",
+      "sections": {
+        "traceability": {
+          "title": "Product Traceability",
+          "description": "Track product journey from source to store"
+        },
+        "supplyChain": {
+          "title": "Supply Chain History",
+          "description": "Complete transparency of product lifecycle"
+        },
+        "certifications": {
+          "title": "Verified Certifications",
+          "description": "Authenticated sustainability credentials"
+        }
       }
     },
     "details": {
@@ -332,8 +336,8 @@
       },
       "authorized": {
         "title": "Authorized Person",
-        "name": "Full Name",
-        "title": "Title",
+        "fullName": "Full Name",
+        "position": "Title",
         "department": "Department",
         "email": "Email",
         "phone": "Phone"
@@ -426,6 +430,94 @@
       "error": {
         "title": "Error",
         "description": "Failed to delete product. Please try again."
+      }
+    },
+    "addProduct": {
+      "title": "Add New Product",
+      "description": "Create a new product and configure its Digital Product Passport",
+      "form": {
+        "validation": {
+          "error": "Please fill in all required fields correctly"
+        },
+        "steps": {
+          "manufacturer": "Select Manufacturer",
+          "basicInfo": "Basic Information",
+          "documents": "Documents"
+        },
+        "fields": {
+          "name": {
+            "label": "Product Name",
+            "placeholder": "Enter product name",
+            "error": "Name must be at least 2 characters"
+          },
+          "description": {
+            "label": "Description",
+            "placeholder": "Enter product description",
+            "error": "Product description is required"
+          },
+          "type": {
+            "label": "Product Type",
+            "placeholder": "Select Product Type",
+            "error": "Product type is required"
+          },
+          "model": {
+            "label": "Model",
+            "placeholder": "Enter product model",
+            "error": "Product model is required"
+          },
+          "manufacturer": {
+            "label": "Manufacturer",
+            "placeholder": "Search manufacturers by name or tax ID...",
+            "description": "Search and select the manufacturer for this product",
+            "error": "Manufacturer is required",
+            "searching": "Searching...",
+            "noResults": "No manufacturers found",
+            "addNew": "Add a new manufacturer:"
+          }
+        },
+        "images": {
+          "title": "Product Images",
+          "upload": "Upload Image",
+          "error": {
+            "title": "Image Upload Error",
+            "description": "Failed to upload one or more images. Please try again.",
+            "noImages": "No images could be uploaded"
+          }
+        },
+        "features": {
+          "title": "Key Features",
+          "name": "Feature Name",
+          "value": "Value",
+          "unit": "Unit (optional)",
+          "add": "Add Feature"
+        },
+        "documents": {
+          "title": "Required Documents",
+          "description": "Upload all required documents for your product",
+          "types": {
+            "quality": "Quality Certificates",
+            "safety": "Safety Certificates",
+            "test": "Test Reports",
+            "technical": "Technical Documents",
+            "compliance": "Compliance Documents"
+          },
+          "missing": "Missing required documents: {documents}"
+        },
+        "navigation": {
+          "next": "Next Step",
+          "previous": "Previous Step",
+          "submit": "Create Product"
+        }
+      },
+      "success": {
+        "title": "Success",
+        "description": "Product created successfully",
+        "blockchain": "Product created and recorded to blockchain. Contract Address: {address}"
+      },
+      "error": {
+        "title": "Error",
+        "description": "An unexpected error occurred while creating the product",
+        "blockchain": "Product created but blockchain record failed: {error}"
       }
     }
   }
