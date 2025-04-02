@@ -1,8 +1,8 @@
 "use client";
 
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel,DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
 import { useQueryClient } from "@tanstack/react-query";
-import { Battery, FileText, ImageOff, MoreHorizontal, Trash } from "lucide-react";
+import { Battery, FileText, ImageOff, MoreHorizontal, Trash, Pencil, ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -15,7 +15,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useToast } from "@/components/ui/use-toast";
 import { productsApiHooks } from "@/lib/hooks/use-products";
 import type { Product } from "@/lib/types/product";
-import { StorageHelper } from "@/lib/utils/storage";
+import { StorageHelper } from "@/lib/utils/storage";  
+
 
 interface ProductListProps {
   products: Product[];
@@ -27,6 +28,12 @@ export function ProductList({ products, isLoading }: ProductListProps) {
   const queryClient = useQueryClient();
   const [productToDelete, setProductToDelete] = useState<Product | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 10;
+  const totalPages = Math.ceil(products.length / productsPerPage);
+  const startIndex = (currentPage - 1) * productsPerPage;
+  const endIndex = startIndex + productsPerPage;
+  const paginatedProducts = products.slice(startIndex, endIndex);
 
   const { mutate: deleteProduct } = productsApiHooks.useDeleteProductMutation({
     onSuccess: () => {
@@ -60,7 +67,6 @@ export function ProductList({ products, isLoading }: ProductListProps) {
     }
   };
 
-  // ✅ getImageUrl için güvenli fallback eklendi
   const getImageUrl = (url?: string): string => {
     if (!url) return "/images/placeholder-product.png";
     if (url.startsWith("http")) return url;
@@ -131,11 +137,11 @@ export function ProductList({ products, isLoading }: ProductListProps) {
                 <TableHead>Category</TableHead>
                 <TableHead>Basic Info</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead></TableHead>
+                <TableHead className="w-[100px] text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {products.map((product) => (
+              {paginatedProducts.map((product) => (
                 <TableRow key={product.id}>
                   <TableCell>
                     <div className="flex items-center gap-4">
@@ -197,42 +203,55 @@ export function ProductList({ products, isLoading }: ProductListProps) {
                       {product.status.toLowerCase()}
                     </Badge>
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="text-right">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon">
+                        <Button 
+                          variant="ghost" 
+                          size="icon"
+                          className="h-8 w-8 p-0 hover:bg-muted"
+                        >
                           <MoreHorizontal className="h-4 w-4" />
                           <span className="sr-only">Open menu</span>
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem asChild>
-                          <Link href={`/dashboard/products/${product.id}`}>
-                            <Battery className="h-4 w-4 mr-2" />
-                            View Details
-                          </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem asChild>
-                          <Link href={`/dashboard/products/${product.id}/edit`}>
-                            Edit Product
-                          </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem asChild>
-                          <Link href={`/dashboard/products/${product.id}/documents`}>
-                            <FileText className="h-4 w-4 mr-2" />
-                            View Documents
-                          </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem 
-                          className="text-destructive focus:text-destructive"
-                          onClick={() => handleDeleteClick(product)}
-                        >
-                          <Trash className="h-4 w-4 mr-2" />
-                          Delete Product
-                        </DropdownMenuItem>
+                      <DropdownMenuContent 
+                        align="end" 
+                        className="w-[180px] bg-white border shadow-lg rounded-md"
+                        sideOffset={5}
+                      >
+                        <DropdownMenuLabel className="font-medium text-sm px-2 py-1.5 bg-gray-50 border-b">
+                          Actions
+                        </DropdownMenuLabel>
+                        <div className="py-1">
+                          <DropdownMenuItem asChild>
+                            <Link href={`/dashboard/products/${product.id}`} className="flex items-center px-2 py-1.5 hover:bg-gray-50 cursor-pointer">
+                              <Battery className="h-4 w-4 mr-2 text-gray-500" />
+                              <span className="text-sm">View Details</span>
+                            </Link>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem asChild>
+                            <Link href={`/dashboard/products/${product.id}/edit`} className="flex items-center px-2 py-1.5 hover:bg-gray-50 cursor-pointer">
+                              <Pencil className="h-4 w-4 mr-2 text-gray-500" />
+                              <span className="text-sm">Edit Product</span>
+                            </Link>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem asChild>
+                            <Link href={`/dashboard/products/${product.id}/documents`} className="flex items-center px-2 py-1.5 hover:bg-gray-50 cursor-pointer">
+                              <FileText className="h-4 w-4 mr-2 text-gray-500" />
+                              <span className="text-sm">View Documents</span>
+                            </Link>
+                          </DropdownMenuItem>
+                        </div>
+                        <div className="border-t py-1">
+                          <DropdownMenuItem 
+                            className="flex items-center px-2 py-1.5 hover:bg-gray-50 cursor-pointer text-red-600 focus:text-red-600"
+                            onClick={() => handleDeleteClick(product)}
+                          >
+                            <Trash className="h-4 w-4 mr-2" />
+                            <span className="text-sm">Delete Product</span>
+                          </DropdownMenuItem>
+                        </div>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
@@ -240,6 +259,33 @@ export function ProductList({ products, isLoading }: ProductListProps) {
               ))}
             </TableBody>
           </Table>
+
+          {/* Pagination */}
+          <div className="mt-4 flex items-center justify-between">
+            <p className="text-sm text-muted-foreground">
+              Showing {startIndex + 1} to {Math.min(endIndex, products.length)} of {products.length} products
+            </p>
+            <div className="flex items-center space-x-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                disabled={currentPage === 1}
+              >
+                <ChevronLeft className="h-4 w-4" />
+                Previous
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                disabled={currentPage === totalPages}
+              >
+                Next
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
         </CardContent>
       </Card>
 
