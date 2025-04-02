@@ -101,6 +101,170 @@
       }
     }
   },
+  "products": {
+    "title": "Certified Products",
+    "description": "Explore our collection of certified sustainable products with verified Digital Product Passports.",
+    "list": {
+      "categories": {
+        "textile": "Textile",
+        "battery": "Battery",
+        "automotive": "Automotive",
+        "electronics": "Electronics",
+        "clothing": "Clothing",
+        "women's clothing": "Women's Clothing",
+        "automotive batteries": "Automotive Batteries",
+        "marine batteries": "Marine Batteries"
+      },
+      "sustainability": {
+        "score": "Sustainability Score",
+        "carbonFootprint": "Carbon Footprint"
+      }
+    },
+    "featured": {
+      "traceability": {
+        "title": "Product Traceability",
+        "description": "Track product journey from source to store"
+      },
+      "supplyChain": {
+        "title": "Supply Chain History",
+        "description": "Complete transparency of product lifecycle"
+      },
+      "certifications": {
+        "title": "Verified Certifications",
+        "description": "Authenticated sustainability credentials"
+      }
+    },
+    "details": {
+      "backToProducts": "Back to Products",
+      "battery": {
+        "features": {
+          "0": "Advanced lithium-ion technology for optimal performance",
+          "1": "Built-in safety features and protection circuits",
+          "2": "Extended cycle life and reliable power output"
+        },
+        "description": {
+          "0": "Detailed safety guidelines and proper handling instructions",
+          "1": "Environmental impact and recycling information",
+          "2": "Technical specifications and performance metrics"
+        }
+      },
+      "textile": {
+        "features": {
+          "0": "High-quality sustainable materials",
+          "1": "Eco-friendly manufacturing process",
+          "2": "Certified organic components"
+        },
+        "description": {
+          "0": "Material composition and care instructions",
+          "1": "Environmental impact assessment",
+          "2": "Sustainability certifications"
+        }
+      },
+      "quickInfo": {
+        "title": "Quick Information",
+        "model": "Model",
+        "manufacturer": "Manufacturer",
+        "category": "Category"
+      },
+      "keyFeatures": {
+        "title": "Key Features"
+      },
+      "materials": {
+        "title": "Materials",
+        "table": {
+          "material": "Material",
+          "percentage": "Percentage",
+          "recyclable": "Recyclable",
+          "description": "Description"
+        },
+        "recyclable": {
+          "yes": "Yes",
+          "no": "No"
+        }
+      },
+      "healthAndSafety": {
+        "title": "Health and Safety",
+        "measures": {
+          "0": "Always follow proper handling and storage guidelines",
+          "1": "Keep away from extreme temperatures and moisture",
+          "2": "Use appropriate personal protective equipment when handling",
+          "3": "Regular maintenance and inspection required"
+        }
+      },
+      "emergencyProcedures": {
+        "title": "Emergency Procedures",
+        "0": "In case of damage, immediately disconnect and isolate",
+        "1": "Contact emergency services if leakage or fire occurs",
+        "2": "Follow proper disposal procedures for damaged items",
+        "3": "Document and report any safety incidents"
+      },
+      "storageAndInstallation": {
+        "title": "Storage and Installation",
+        "sections": {
+          "generalStorage": {
+            "title": "General Storage Guidelines",
+            "items": {
+              "0": "Store in a cool, dry place",
+              "1": "Avoid direct sunlight and heat sources",
+              "2": "Maintain proper ventilation"
+            }
+          },
+          "chargeLevel": {
+            "title": "Charge Level Management",
+            "items": {
+              "0": "Maintain recommended charge levels",
+              "1": "Regular charging cycles for optimal performance",
+              "2": "Avoid complete discharge"
+            }
+          },
+          "installation": {
+            "title": "Installation Requirements",
+            "items": {
+              "0": "Follow manufacturer specifications",
+              "1": "Professional installation recommended",
+              "2": "Regular maintenance checks required"
+            }
+          }
+        }
+      },
+      "certifications": {
+        "title": "Certifications",
+        "table": {
+          "name": "Certificate",
+          "issuedBy": "Issued By",
+          "validUntil": "Valid Until",
+          "status": "Status",
+          "document": "Document"
+        },
+        "status": {
+          "active": "Active",
+          "expired": "Expired",
+          "pending": "Pending",
+          "unknown": "Unknown"
+        },
+        "actions": {
+          "download": "Download"
+        }
+      },
+      "sustainability": {
+        "title": "Sustainability Metrics",
+        "carbonFootprint": "Carbon Footprint",
+        "waterUsage": "Water Usage",
+        "energyEfficiency": "Energy Efficiency",
+        "recycledContent": "Recycled Content",
+        "metrics": {
+          "low": "Low",
+          "medium": "Medium",
+          "high": "High"
+        }
+      },
+      "qr": {
+        "title": "Product QR Code",
+        "description": "Scan this QR code to verify product authenticity and access detailed information",
+        "instructions": "Use your smartphone camera or QR code reader app to scan"
+      }
+    }
+  },
   "registration": {
     "title": "Company Registration",
     "description": "Join UseSafe's digital certification platform to verify and showcase your company's products and materials.",

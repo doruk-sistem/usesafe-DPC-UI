@@ -101,6 +101,177 @@
       }
     }
   },
+  "products": {
+    "title": "Sertifikalı Ürünler",
+    "description": "Dijital Ürün Pasaportu ile doğrulanmış sertifikalı sürdürülebilir ürünlerimizi keşfedin.",
+    "list": {
+      "categories": {
+        "textile": "Tekstil",
+        "battery": "Akü",
+        "automotive": "Otomotiv",
+        "electronics": "Elektronik",
+        "clothing": "Giyim",
+        "women's clothing": "Kadın Giyim",
+        "automotive batteries": "Otomotiv Aküleri",
+        "marine batteries": "Deniz Aküleri"
+      },
+      "sustainability": {
+        "score": "Sürdürülebilirlik Puanı",
+        "carbonFootprint": "Karbon Ayak İzi"
+      }
+    },
+    "featured": {
+      "title": "Öne Çıkan Ürünler",
+      "description": "e-bebek'ten seçilmiş sertifikalı sürdürülebilir ürünlerimize göz atın"
+    },
+    "verify": {
+      "button": "Ürün Doğrula"
+    },
+    "features": {
+      "traceability": {
+        "title": "Ürün İzlenebilirliği",
+        "description": "Kaynaktan mağazaya ürün yolculuğunu takip edin"
+      },
+      "supplyChain": {
+        "title": "Tedarik Zinciri Geçmişi",
+        "description": "Ürün yaşam döngüsünün tam şeffaflığı"
+      },
+      "certifications": {
+        "title": "Doğrulanmış Sertifikalar",
+        "description": "Onaylanmış sürdürülebilirlik belgeleri"
+      }
+    },
+    "details": {
+      "backToProducts": "Ürünlere Geri Dön",
+      "battery": {
+        "features": {
+          "0": "Optimum performans için gelişmiş lityum-iyon teknolojisi",
+          "1": "Dahili güvenlik özellikleri ve koruma devreleri",
+          "2": "Uzun döngü ömrü ve güvenilir güç çıkışı"
+        },
+        "description": {
+          "0": "Detaylı güvenlik kılavuzları ve doğru kullanım talimatları",
+          "1": "Çevresel etki ve geri dönüşüm bilgileri",
+          "2": "Teknik özellikler ve performans metrikleri"
+        }
+      },
+      "textile": {
+        "features": {
+          "0": "Yüksek kaliteli sürdürülebilir malzemeler",
+          "1": "Çevre dostu üretim süreci",
+          "2": "Sertifikalı organik bileşenler"
+        },
+        "description": {
+          "0": "Malzeme kompozisyonu ve bakım talimatları",
+          "1": "Çevresel etki değerlendirmesi",
+          "2": "Sürdürülebilirlik sertifikaları"
+        }
+      },
+      "quickInfo": {
+        "title": "Hızlı Bilgi",
+        "model": "Model",
+        "manufacturer": "Üretici",
+        "category": "Kategori"
+      },
+      "keyFeatures": {
+        "title": "Temel Özellikler"
+      },
+      "materials": {
+        "title": "Malzemeler",
+        "table": {
+          "material": "Malzeme",
+          "percentage": "Yüzde",
+          "recyclable": "Geri Dönüştürülebilir",
+          "description": "Açıklama"
+        },
+        "recyclable": {
+          "yes": "Evet",
+          "no": "Hayır"
+        }
+      },
+      "healthAndSafety": {
+        "title": "Sağlık ve Güvenlik",
+        "measures": {
+          "0": "Her zaman uygun kullanım ve depolama kılavuzlarını takip edin",
+          "1": "Aşırı sıcaklıklardan ve nemden uzak tutun",
+          "2": "Kullanım sırasında uygun kişisel koruyucu ekipman kullanın",
+          "3": "Düzenli bakım ve kontrol gereklidir"
+        }
+      },
+      "emergencyProcedures": {
+        "title": "Acil Durum Prosedürleri",
+        "0": "Hasar durumunda hemen bağlantıyı kesin ve izole edin",
+        "1": "Sızıntı veya yangın durumunda acil servisleri arayın",
+        "2": "Hasarlı ürünler için uygun imha prosedürlerini uygulayın",
+        "3": "Güvenlik olaylarını belgeleyin ve raporlayın"
+      },
+      "storageAndInstallation": {
+        "title": "Depolama ve Kurulum",
+        "sections": {
+          "generalStorage": {
+            "title": "Genel Depolama Kılavuzu",
+            "items": {
+              "0": "Serin ve kuru bir yerde saklayın",
+              "1": "Doğrudan güneş ışığından ve ısı kaynaklarından kaçının",
+              "2": "Uygun havalandırmayı sağlayın"
+            }
+          },
+          "chargeLevel": {
+            "title": "Şarj Seviyesi Yönetimi",
+            "items": {
+              "0": "Önerilen şarj seviyelerini koruyun",
+              "1": "Optimum performans için düzenli şarj döngüleri uygulayın",
+              "2": "Tam deşarjdan kaçının"
+            }
+          },
+          "installation": {
+            "title": "Kurulum Gereksinimleri",
+            "items": {
+              "0": "Üretici özelliklerini takip edin",
+              "1": "Profesyonel kurulum önerilir",
+              "2": "Düzenli bakım kontrolleri gereklidir"
+            }
+          }
+        }
+      },
+      "certifications": {
+        "title": "Sertifikalar",
+        "table": {
+          "name": "Sertifika",
+          "issuedBy": "Veren Kurum",
+          "validUntil": "Geçerlilik Tarihi",
+          "status": "Durum",
+          "document": "Belge"
+        },
+        "status": {
+          "active": "Aktif",
+          "expired": "Süresi Dolmuş",
+          "pending": "Beklemede",
+          "unknown": "Bilinmiyor"
+        },
+        "actions": {
+          "download": "İndir"
+        }
+      },
+      "sustainability": {
+        "title": "Sürdürülebilirlik Metrikleri",
+        "carbonFootprint": "Karbon Ayak İzi",
+        "waterUsage": "Su Kullanımı",
+        "energyEfficiency": "Enerji Verimliliği",
+        "recycledContent": "Geri Dönüştürülmüş İçerik",
+        "metrics": {
+          "low": "Düşük",
+          "medium": "Orta",
+          "high": "Yüksek"
+        }
+      },
+      "qr": {
+        "title": "Ürün QR Kodu",
+        "description": "Ürün orijinalliğini doğrulamak ve detaylı bilgiye erişmek için bu QR kodu tarayın",
+        "instructions": "Akıllı telefonunuzun kamerasını veya QR kod okuyucu uygulamasını kullanın"
+      }
+    }
+  },
   "registration": {
     "title": "Firma Kaydı",
     "description": "UseSafe'in dijital sertifikasyon platformuna katılarak firmanızın ürünlerini ve malzemelerini doğrulayın ve sergileyin.",
