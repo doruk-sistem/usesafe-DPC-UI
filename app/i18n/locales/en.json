@@ -142,24 +142,22 @@
           "1": "Built-in safety features and protection circuits",
           "2": "Extended cycle life and reliable power output"
         },
-        "description": {
-          "0": "Detailed safety guidelines and proper handling instructions",
-          "1": "Environmental impact and recycling information",
-          "2": "Technical specifications and performance metrics"
+        "healthAndSafety": {
+          "title": "Health and Safety Measures"
+        },
+        "storage": {
+          "title": "Storage and Installation Guidelines",
+          "sections": {
+            "general": "General Storage",
+            "chargeLevel": "Charge Level Monitoring",
+            "installation": "Installation Steps"
+          }
         }
       },
       "textile": {
-        "features": {
-          "0": "High-quality sustainable materials",
-          "1": "Eco-friendly manufacturing process",
-          "2": "Certified organic components"
-        },
-        "description": {
-          "0": "Material composition and care instructions",
-          "1": "Environmental impact assessment",
-          "2": "Sustainability certifications"
-        }
+        "careInstructions": "Care Instructions"
       },
+      "layoutNotAvailable": "DPP layout not available for product type:",
       "quickInfo": {
         "title": "Quick Information",
         "model": "Model",
@@ -198,35 +196,6 @@
         "2": "Follow proper disposal procedures for damaged items",
         "3": "Document and report any safety incidents"
       },
-      "storageAndInstallation": {
-        "title": "Storage and Installation",
-        "sections": {
-          "generalStorage": {
-            "title": "General Storage Guidelines",
-            "items": {
-              "0": "Store in a cool, dry place",
-              "1": "Avoid direct sunlight and heat sources",
-              "2": "Maintain proper ventilation"
-            }
-          },
-          "chargeLevel": {
-            "title": "Charge Level Management",
-            "items": {
-              "0": "Maintain recommended charge levels",
-              "1": "Regular charging cycles for optimal performance",
-              "2": "Avoid complete discharge"
-            }
-          },
-          "installation": {
-            "title": "Installation Requirements",
-            "items": {
-              "0": "Follow manufacturer specifications",
-              "1": "Professional installation recommended",
-              "2": "Regular maintenance checks required"
-            }
-          }
-        }
-      },
       "certifications": {
         "title": "Certifications",
         "table": {
@@ -262,6 +231,35 @@
         "title": "Product QR Code",
         "description": "Scan this QR code to verify product authenticity and access detailed information",
         "instructions": "Use your smartphone camera or QR code reader app to scan"
+      }
+    }
+  },
+  "auth": {
+    "createAccount": {
+      "title": "Create an Account",
+      "name": "Full Name",
+      "email": "Email",
+      "password": "Password",
+      "register": "Register",
+      "alreadyHaveAccount": "Do you already have an account?",
+      "login": "Login",
+      "validation": {
+        "nameMin": "Name must be at least 2 characters",
+        "emailInvalid": "Please enter a valid email address",
+        "passwordMin": "Password must be at least 6 characters long"
+      },
+      "placeholders": {
+        "name": "John Doe",
+        "email": "example@company.com",
+        "password": "******"
+      },
+      "success": {
+        "title": "Account created successfully",
+        "description": "Please verify your email address"
+      },
+      "error": {
+        "title": "Error creating account",
+        "description": "Please try again"
       }
     }
   }
