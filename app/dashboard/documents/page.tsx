@@ -1,3 +1,5 @@
+"use client";
+
 import { DocumentHeader } from "@/components/dashboard/documents/document-header";
 import { DocumentList } from "@/components/dashboard/documents/document-list";
 
