@@ -100,5 +100,100 @@
         }
       }
     }
+  },
+  "registration": {
+    "title": "Company Registration",
+    "description": "Join UseSafe's digital certification platform to verify and showcase your company's products and materials.",
+    "form": {
+      "description": "Please fill in your company details to begin the certification process. All fields marked with (*) are required.",
+      "step": "Step {current} of {total}",
+      "companyInfo": {
+        "title": "Company Information",
+        "companyName": "Company Name",
+        "companyType": "Company Type",
+        "taxId": "Tax ID",
+        "taxIdDescription": "Must be exactly 10 digits",
+        "tradeRegisterNumber": "Trade Register Number",
+        "mersisNumber": "MERSIS Number",
+        "companyTypes": {
+          "brandOwner": "Brand Owner",
+          "factory": "Factory",
+          "manufacturer": "Manufacturer",
+          "materialSupplier": "Material Supplier"
+        },
+        "typeDescription": "Select your company's primary business type"
+      },
+      "ownerInfo": {
+        "title": "Owner Information",
+        "fullName": "Full Name",
+        "nationalId": "National ID",
+        "email": "Corporate Email",
+        "emailDescription": "Please use your company email address, not a personal email",
+        "countryCode": "Country Code",
+        "selectCountry": "Select country",
+        "phone": "Phone Number",
+        "phoneDescription": "Enter 10 digits without leading zero",
+        "password": "Password",
+        "confirmPassword": "Confirm Password"
+      },
+      "address": {
+        "title": "Address",
+        "street": "Street Address",
+        "city": "City",
+        "district": "District",
+        "postalCode": "Postal Code"
+      },
+      "documents": {
+        "title": "Documents",
+        "required": {
+          "title": "Required Documents",
+          "signatureCircular": "Signature Circular",
+          "tradeRegistry": "Trade Registry Gazette",
+          "taxPlate": "Tax Plate",
+          "activityCertificate": "Activity Certificate"
+        },
+        "optional": {
+          "title": "Optional Documents",
+          "isoCertificates": "ISO Certificates",
+          "qualityCertificates": "Quality Certificates",
+          "exportDocuments": "Export Documents",
+          "productionPermits": "Production Permits"
+        }
+      },
+      "buttons": {
+        "next": "Next",
+        "previous": "Previous",
+        "submit": "Submit Registration",
+        "submitting": "Submitting..."
+      },
+      "success": {
+        "title": "Registration Submitted Successfully",
+        "description": "Please check your email to verify your account.",
+        "thankYou": "Thank you for registering with UseSafe.",
+        "emailSent": "We've sent a verification email to your registered email address.",
+        "checkEmail": "Please check your email to verify your account",
+        "nextSteps": {
+          "title": "Next steps:",
+          "verifyEmail": "Verify your email address",
+          "waitForReview": "Wait for admin review (typically 1-2 business days)",
+          "receiveApproval": "Receive approval notification",
+          "completeOnboarding": "Complete platform onboarding"
+        }
+      },
+      "error": {
+        "title": "Registration Failed",
+        "description": "There was an error submitting your registration. Please try again.",
+        "registrationFailed": "Registration failed"
+      },
+      "login": {
+        "haveAccount": "Do you already have an account?",
+        "loginLink": "Login"
+      },
+      "placeholders": {
+        "fullName": "John Doe",
+        "email": "example@company.com",
+        "password": "••••••"
+      }
+    }
   }
 }
