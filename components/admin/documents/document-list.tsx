@@ -1,8 +1,17 @@
 "use client";
 
-import { Eye, MoreHorizontal, FileText, AlertTriangle, CheckCircle, XCircle, Clock } from "lucide-react";
+import {
+  Eye,
+  MoreHorizontal,
+  FileText,
+  AlertTriangle,
+  CheckCircle,
+  XCircle,
+  Clock,
+} from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -22,6 +31,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Table,
   TableBody,
   TableCell,
@@ -29,6 +45,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useToast } from "@/components/ui/use-toast";
 
 const documents = [
   {
@@ -82,12 +99,18 @@ const documents = [
 ];
 
 export function DocumentList() {
+  const { toast } = useToast();
   const searchParams = useSearchParams();
-  const manufacturerId = searchParams.get('manufacturer');
+  const manufacturerId = searchParams.get("manufacturer");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
 
-  const filteredDocuments = manufacturerId
-    ? documents.filter(doc => doc.manufacturerId === manufacturerId)
-    : documents;
+  const filteredDocuments = documents
+    .filter((doc) =>
+      manufacturerId ? doc.manufacturerId === manufacturerId : true
+    )
+    .filter((doc) =>
+      statusFilter === "all" ? true : doc.status === statusFilter
+    );
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -99,6 +122,38 @@ export function DocumentList() {
         return <AlertTriangle className="h-4 w-4" />;
       default:
         return <Clock className="h-4 w-4" />;
+    }
+  };
+
+  const handleApprove = async (docId: string) => {
+    try {
+      // TODO: API çağrısı eklenecek
+      toast({
+        title: "Document Approved",
+        description: "The document has been approved successfully.",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to approve document. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleReject = async (docId: string) => {
+    try {
+      // TODO: API çağrısı eklenecek
+      toast({
+        title: "Document Rejected",
+        description: "The document has been rejected.",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to reject document. Please try again.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -118,10 +173,28 @@ export function DocumentList() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Document Repository</CardTitle>
-        <CardDescription>
-          View and manage all uploaded documents
-        </CardDescription>
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle>Document Repository</CardTitle>
+            <CardDescription>
+              View and manage all uploaded documents
+            </CardDescription>
+          </div>
+          <div className="flex items-center gap-2">
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Filter by status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Statuses</SelectItem>
+                <SelectItem value="pending">Pending Review</SelectItem>
+                <SelectItem value="approved">Approved</SelectItem>
+                <SelectItem value="rejected">Rejected</SelectItem>
+                <SelectItem value="expired">Expired</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
       </CardHeader>
       <CardContent>
         <Table>
@@ -161,7 +234,9 @@ export function DocumentList() {
                     {doc.status}
                   </Badge>
                 </TableCell>
-                <TableCell>{new Date(doc.validUntil).toLocaleDateString()}</TableCell>
+                <TableCell>
+                  {new Date(doc.validUntil).toLocaleDateString()}
+                </TableCell>
                 <TableCell>v{doc.version}</TableCell>
                 <TableCell>
                   <DropdownMenu>
@@ -185,10 +260,16 @@ export function DocumentList() {
                       {doc.status === "pending" && (
                         <>
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem className="text-green-600">
+                          <DropdownMenuItem
+                            className="text-green-600"
+                            onClick={() => handleApprove(doc.id)}
+                          >
                             Approve
                           </DropdownMenuItem>
-                          <DropdownMenuItem className="text-red-600">
+                          <DropdownMenuItem
+                            className="text-red-600"
+                            onClick={() => handleReject(doc.id)}
+                          >
                             Reject
                           </DropdownMenuItem>
                         </>
