@@ -271,5 +271,100 @@
         "instructions": "Akıllı telefonunuzun kamerasını veya QR kod okuyucu uygulamasını kullanın"
       }
     }
+  },
+  "registration": {
+    "title": "Firma Kaydı",
+    "description": "UseSafe'in dijital sertifikasyon platformuna katılarak firmanızın ürünlerini ve malzemelerini doğrulayın ve sergileyin.",
+    "form": {
+      "description": "Sertifikasyon sürecini başlatmak için lütfen firma bilgilerinizi doldurun. (*) ile işaretli alanlar zorunludur.",
+      "step": "Adım {current} / {total}",
+      "companyInfo": {
+        "title": "Firma Bilgileri",
+        "companyName": "Firma Adı",
+        "companyType": "Firma Tipi",
+        "taxId": "Vergi Numarası",
+        "taxIdDescription": "10 haneli olmalıdır",
+        "tradeRegisterNumber": "Ticaret Sicil Numarası",
+        "mersisNumber": "MERSİS Numarası",
+        "companyTypes": {
+          "brandOwner": "Marka Sahibi",
+          "factory": "Fabrika",
+          "manufacturer": "Üretici",
+          "materialSupplier": "Malzeme Tedarikçisi"
+        },
+        "typeDescription": "Firmanızın ana faaliyet alanını seçin"
+      },
+      "ownerInfo": {
+        "title": "Yetkili Bilgileri",
+        "fullName": "Ad Soyad",
+        "nationalId": "T.C. Kimlik No",
+        "email": "Kurumsal E-posta",
+        "emailDescription": "Lütfen kişisel e-posta değil, şirket e-postanızı kullanın",
+        "countryCode": "Ülke Kodu",
+        "selectCountry": "Ülke seçin",
+        "phone": "Telefon Numarası",
+        "phoneDescription": "Başında 0 olmadan 10 haneli numara girin",
+        "password": "Şifre",
+        "confirmPassword": "Şifre Tekrar"
+      },
+      "address": {
+        "title": "Adres",
+        "street": "Cadde/Sokak",
+        "city": "İl",
+        "district": "İlçe",
+        "postalCode": "Posta Kodu"
+      },
+      "documents": {
+        "title": "Belgeler",
+        "required": {
+          "title": "Zorunlu Belgeler",
+          "signatureCircular": "İmza Sirküleri",
+          "tradeRegistry": "Ticaret Sicil Gazetesi",
+          "taxPlate": "Vergi Levhası",
+          "activityCertificate": "Faaliyet Belgesi"
+        },
+        "optional": {
+          "title": "İsteğe Bağlı Belgeler",
+          "isoCertificates": "ISO Sertifikaları",
+          "qualityCertificates": "Kalite Sertifikaları",
+          "exportDocuments": "İhracat Belgeleri",
+          "productionPermits": "Üretim İzinleri"
+        }
+      },
+      "buttons": {
+        "next": "İleri",
+        "previous": "Geri",
+        "submit": "Kaydı Tamamla",
+        "submitting": "Gönderiliyor..."
+      },
+      "success": {
+        "title": "Kayıt Başarıyla Gönderildi",
+        "description": "Lütfen hesabınızı doğrulamak için e-postanızı kontrol edin.",
+        "thankYou": "UseSafe'e kayıt olduğunuz için teşekkür ederiz.",
+        "emailSent": "Kayıtlı e-posta adresinize bir doğrulama e-postası gönderdik.",
+        "checkEmail": "Lütfen hesabınızı doğrulamak için e-postanızı kontrol edin",
+        "nextSteps": {
+          "title": "Sonraki adımlar:",
+          "verifyEmail": "E-posta adresinizi doğrulayın",
+          "waitForReview": "Yönetici incelemesini bekleyin (genellikle 1-2 iş günü)",
+          "receiveApproval": "Onay bildirimini alın",
+          "completeOnboarding": "Platform oryantasyonunu tamamlayın"
+        }
+      },
+      "error": {
+        "title": "Kayıt Başarısız",
+        "description": "Kaydınız gönderilirken bir hata oluştu. Lütfen tekrar deneyin.",
+        "registrationFailed": "Kayıt başarısız oldu"
+      },
+      "login": {
+        "haveAccount": "Zaten bir hesabınız var mı?",
+        "loginLink": "Giriş Yap"
+      },
+      "placeholders": {
+        "fullName": "Ad Soyad",
+        "email": "ornek@sirket.com",
+        "password": "••••••"
+      }
+    }
   }
 }

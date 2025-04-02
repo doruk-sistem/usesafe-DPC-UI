@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -34,6 +35,7 @@ const registerSchema = z.object({
 type RegisterForm = z.infer<typeof registerSchema>;
 
 export default function RegisterPage() {
+  const t = useTranslations("registration");
   const { signUp } = useAuth();
   const { toast } = useToast();
   const router = useRouter();
@@ -52,18 +54,19 @@ export default function RegisterPage() {
       await signUp(data.email, data.password, {
         role: "manufacturer",
         full_name: data.name,
+        company_id: "temp"
       });
       toast({
-        title: "Account created successfully",
-        description: "Please verify your email address",
+        title: t("form.success.title"),
+        description: t("form.success.description"),
       });
 
       router.push("/auth/login");
     } catch (error) {
       console.error(error);
       toast({
-        title: "Error creating account",
-        description: "Please try again",
+        title: t("form.error.title"),
+        description: t("form.error.description"),
       });
     }
   };
@@ -72,7 +75,7 @@ export default function RegisterPage() {
     <div className="container max-w-4xl mx-auto py-10 px-4">
       <Card className="max-w-md mx-auto">
         <CardHeader>
-          <h1 className="text-2xl font-bold text-center">Create an account</h1>
+          <h1 className="text-2xl font-bold text-center">{t("title")}</h1>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -82,9 +85,9 @@ export default function RegisterPage() {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Name</FormLabel>
+                    <FormLabel>{t("form.ownerInfo.fullName")}</FormLabel>
                     <FormControl>
-                      <Input placeholder="John Doe" {...field} />
+                      <Input placeholder={t("form.placeholders.fullName")} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -96,11 +99,11 @@ export default function RegisterPage() {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>{t("form.ownerInfo.email")}</FormLabel>
                     <FormControl>
                       <Input
                         type="email"
-                        placeholder="example@company.com"
+                        placeholder={t("form.placeholders.email")}
                         {...field}
                       />
                     </FormControl>
@@ -114,9 +117,9 @@ export default function RegisterPage() {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel>{t("form.ownerInfo.password")}</FormLabel>
                     <FormControl>
-                      <Input type="password" placeholder="******" {...field} />
+                      <Input type="password" placeholder={t("form.placeholders.password")} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -124,16 +127,16 @@ export default function RegisterPage() {
               />
 
               <Button type="submit" className="w-full">
-                Register
+                {t("form.buttons.submit")}
               </Button>
             </form>
           </Form>
         </CardContent>
         <CardFooter className="flex justify-center">
           <p className="text-sm text-gray-600">
-            Do you already have an account?{" "}
+            {t("form.login.haveAccount")}{" "}
             <Link href="/auth/login" className="text-primary hover:underline">
-              Login
+              {t("form.login.loginLink")}
             </Link>
           </p>
         </CardFooter>
