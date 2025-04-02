@@ -163,20 +163,20 @@
         "storage": {
           "title": "Depolama ve Kurulum Kılavuzu",
           "sections": {
-            "generalStorage": "Genel Depolama",
-            "chargeLevelMonitoring": "Şarj Seviyesi İzleme",
-            "installationSteps": "Kurulum Adımları",
+            "general": "Genel Depolama",
+            "chargeLevel": "Şarj Seviyesi İzleme",
+            "installation": "Kurulum Adımları",
             "items": {
-              "generalStorage": {
+              "general": {
                 "0": "Her zaman kuru ve serin bir yerde dik konumda saklayın (10°C - 25°C)",
                 "1": "Beton zeminle doğrudan temas etmemesi için aküleri ahşap palet üzerine yerleştirin"
               },
-              "chargeLevelMonitoring": {
+              "chargeLevel": {
                 "0": "Satış öncesi akü şarj seviyesi 12.6V'dan yüksek olmalıdır",
                 "1": "Depolama sırasında minimum voltaj 12.4V olmalıdır",
                 "2": "Kalıcı hasarı önlemek için voltaj düşükse, paketi açın ve 16.1V ve 1/20Cn akımda şarj edin"
               },
-              "installationSteps": {
+              "installation": {
                 "0": "Araç kılavuzundan akü uyumluluğunu doğrulayın",
                 "1": "Motorun kapalı olduğundan emin olun",
                 "2": "Eski aküyü çıkarın (önce negatif terminal)",
@@ -191,14 +191,14 @@
         "emergencyProcedures": {
           "title": "Acil Durum Prosedürleri",
           "procedures": {
-            "0": "Göz veya cilt teması durumunda bol su ile yıkayın",
-            "1": "Kirlenmiş giysileri hemen çıkarın",
-            "2": "Yutma: Bol su ve süt için. Bir doktora danışın",
-            "3": "Dökülme: Küçük dökülmeleri su ile yıkayın",
-            "4": "Çalışan aküler yüksek derecede yanıcı hidrojen ve oksijen gazları yayar",
-            "5": "Şarj olan, araç üzerinde çalışan veya uzun süreli çalışma sonrası duran akülerin yakınında sigara içmeyin veya kıvılcıma neden olabilecek kaynaklardan ve eylemlerden kaçının",
-            "6": "Ateşten uzak tutun",
-            "7": "Tüm cihazları büyük dikkatle kullanın"
+            "0": "Hasar durumunda hemen bağlantıyı kesin ve izole edin",
+            "1": "Sızıntı veya yangın durumunda acil servisleri arayın",
+            "2": "Hasarlı ürünler için uygun imha prosedürlerini uygulayın",
+            "3": "Güvenlik olaylarını belgeleyin ve raporlayın",
+            "4": "Göz veya cilt teması durumunda bol su ile yıkayın",
+            "5": "Kirlenmiş giysileri hemen çıkarın",
+            "6": "Yutma: Bol su ve süt için. Bir doktora danışın",
+            "7": "Dökülme: Küçük dökülmeleri su ile yıkayın"
           }
         }
       },
@@ -452,6 +452,124 @@
       "iso9001": "ISO 9001",
       "iso45001": "ISO 45001",
       "tsEn": "TS EN 50342-1"
+    }
+  },
+  "dpc": {
+    "title": "Dijital Ürün Sertifikaları",
+    "description": "DPC başvurularınızı ve sertifikalarınızı yönetin",
+    "applications": {
+      "title": "DPC Başvuruları",
+      "description": "Dijital Ürün Sertifikası başvurularınızı görüntüleyin ve yönetin",
+      "columns": {
+        "product": "Ürün",
+        "status": "Durum",
+        "submitted": "Başvuru Tarihi",
+        "validUntil": "Geçerlilik Tarihi",
+        "documents": "Dökümanlar",
+        "certifications": "Sertifikalar"
+      },
+      "status": {
+        "approved": "Onaylandı",
+        "pending": "Beklemede",
+        "rejected": "Reddedildi"
+      },
+      "filters": {
+        "allTypes": "Tüm Tipler",
+        "allStatus": "Tüm Durumlar"
+      },
+      "actions": {
+        "title": "İşlemler",
+        "newDPC": "Yeni DPC",
+        "download": "İndir",
+        "view": "Detayları Görüntüle",
+        "verify": "DPC Doğrula",
+        "resubmit": "Yeniden Gönder",
+        "delete": "Sil"
+      },
+      "documents": {
+        "reports": "Raporlar",
+        "documents": "Dökümanlar"
+      },
+      "types": {
+        "agm": "AGM Aküler",
+        "efb": "EFB Aküler",
+        "standard": "Standart Aküler",
+        "marine": "Deniz Aküleri"
+      }
+    }
+  },
+  "dpp": {
+    "list": {
+      "title": "Dijital Ürün Pasaportları",
+      "description": "Ürün DPP'lerinizi yönetin ve üretim bilgilerini takip edin",
+      "filters": {
+        "type": {
+          "placeholder": "Tipe göre filtrele",
+          "all": "Tüm Ürünler"
+        }
+      },
+      "actions": {
+        "create": "DPP Oluştur",
+        "download": "İndir",
+        "view": "Görüntüle",
+        "edit": "Düzenle",
+        "delete": "Sil"
+      },
+      "columns": {
+        "serialNumber": "Seri Numarası",
+        "product": "Ürün",
+        "manufacturingDate": "Üretim Tarihi",
+        "facility": "Tesis",
+        "actions": "İşlemler"
+      }
+    },
+    "create": {
+      "title": "Dijital Ürün Pasaportu Oluştur",
+      "description": "Mevcut bir ürün için yeni DPP oluşturun",
+      "form": {
+        "product": {
+          "label": "Ürün",
+          "placeholder": "Ürün seçin"
+        },
+        "serialNumber": {
+          "label": "Seri Numarası",
+          "placeholder": "Seri numarasını girin"
+        },
+        "manufacturingDate": {
+          "label": "Üretim Tarihi",
+          "placeholder": "Üretim tarihini seçin"
+        },
+        "manufacturingFacility": {
+          "label": "Üretim Tesisi",
+          "placeholder": "Tesis adını girin"
+        }
+      },
+      "buttons": {
+        "cancel": "İptal",
+        "create": "DPP Oluştur"
+      },
+      "validation": {
+        "productRequired": "Ürün seçimi zorunludur",
+        "serialNumberRequired": "Seri numarası zorunludur",
+        "manufacturingDateRequired": "Üretim tarihi zorunludur",
+        "manufacturingFacilityRequired": "Üretim tesisi zorunludur"
+      },
+      "success": {
+        "title": "Başarılı!",
+        "description": "Dijital Ürün Pasaportu başarıyla oluşturuldu"
+      },
+      "error": {
+        "title": "Hata",
+        "description": "DPP oluşturulurken bir hata oluştu"
+      }
+    },
+    "applications": {
+      "types": {
+        "agm": "AGM Aküler",
+        "efb": "EFB Aküler",
+        "standard": "Standart Aküler",
+        "marine": "Deniz Aküleri"
+      }
     }
   }
 }
