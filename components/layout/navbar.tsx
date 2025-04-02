@@ -3,14 +3,17 @@
 import { ShieldCheck, LogIn, Box, Factory, Search, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { useTranslations } from 'next-intl';
 
 import { UserNav } from "@/components/layout/user-nav";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/hooks/use-auth";
+import { LanguageSwitcher } from "@/components/language-switcher";
 
 export function Navbar() {
-  const { user, isLoading } = useAuth();
+  const t = useTranslations('navbar');
+  const { user, isLoading, signOut } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
@@ -29,21 +32,21 @@ export function Navbar() {
               <Link href="/auth/register">
                 <Button variant="ghost" className="gap-2">
                   <Factory className="h-4 w-4" />
-                  Company Registration
+                  {t('companyRegistration')}
                 </Button>
               </Link>
 
               <Link href="/products">
                 <Button variant="ghost" className="gap-2">
                   <Box className="h-4 w-4" />
-                  Products
+                  {t('products')}
                 </Button>
               </Link>
 
               <Link href="/verify">
                 <Button variant="ghost" className="gap-2">
                   <Search className="h-4 w-4" />
-                  Verify Products
+                  {t('verifyProducts')}
                 </Button>
               </Link>
             </nav>
@@ -61,13 +64,16 @@ export function Navbar() {
                     <Link href="/auth/login">
                       <Button variant="outline" size="sm" className="gap-2">
                         <LogIn className="h-4 w-4" />
-                        Sign In
+                        {t('signIn')}
                       </Button>
                     </Link>
                   )}
                 </>
               )}
-              <ModeToggle />
+              <div className="flex items-center space-x-1 border-l pl-2">
+                <LanguageSwitcher />
+                <ModeToggle />
+              </div>
             </div>
 
             {/* Mobile Menu Button */}
@@ -90,21 +96,21 @@ export function Navbar() {
             <Link href="/auth/register">
               <Button variant="ghost" className="w-full justify-start gap-2">
                 <Factory className="h-4 w-4" />
-                Company Registration
+                {t('companyRegistration')}
               </Button>
             </Link>
 
             <Link href="/products">
               <Button variant="ghost" className="w-full justify-start gap-2">
                 <Box className="h-4 w-4" />
-                Products
+                {t('products')}
               </Button>
             </Link>
 
             <Link href="/verify">
               <Button variant="ghost" className="w-full justify-start gap-2">
                 <Search className="h-4 w-4" />
-                Verify Products
+                {t('verifyProducts')}
               </Button>
             </Link>
 
@@ -119,14 +125,17 @@ export function Navbar() {
                     <Link href="/auth/login">
                       <Button variant="outline" className="w-full gap-2">
                         <LogIn className="h-4 w-4" />
-                        Sign In
+                        {t('signIn')}
                       </Button>
                     </Link>
                   )}
                 </>
               )}
-              <div className="mt-4 flex justify-end px-2">
-                <ModeToggle />
+              <div className="mt-4 flex items-center justify-end space-x-2 px-2">
+                <LanguageSwitcher />
+                <div className="border-l pl-2">
+                  <ModeToggle />
+                </div>
               </div>
             </div>
           </div>

@@ -1,0 +1,363 @@
+{
+  "navbar": {
+    "dashboard": "Dashboard",
+    "products": "Products",
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Logout",
+    "companyRegistration": "Company Registration",
+    "verifyProducts": "Verify Products",
+    "signIn": "Sign In"
+  },
+  "error": {
+    "404": {
+      "title": "404",
+      "description": "This page could not be found.",
+      "backHome": "Back to Home"
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome",
+    "overview": "Dashboard Overview",
+    "description": "Track your products, certifications and documents",
+    "period": {
+      "select": "Select period",
+      "today": "Today",
+      "thisWeek": "This Week",
+      "thisMonth": "This Month",
+      "thisQuarter": "This Quarter"
+    },
+    "metrics": {
+      "totalProducts": "Total Products",
+      "pendingCertifications": "Pending Certifications",
+      "approvedDocuments": "Approved Documents",
+      "complianceRate": "Compliance Rate"
+    },
+    "applications": {
+      "title": "Pending Applications",
+      "submitted": "Submitted",
+      "status": {
+        "pending": "Pending",
+        "review": "In Review",
+        "rejected": "Rejected"
+      }
+    },
+    "activities": {
+      "title": "Recent Activities",
+      "noActivities": "No recent activities found",
+      "status": {
+        "NEW": "New",
+        "DRAFT": "Draft",
+        "DELETED": "Deleted"
+      }
+    }
+  },
+  "home": {
+    "hero": {
+      "title": "Digital Product Certification & Traceability System",
+      "description": "Track, verify, and ensure product authenticity through blockchain-powered certification and end-to-end supply chain traceability",
+      "getStarted": "Get Started",
+      "verifyProduct": "Verify Product"
+    },
+    "features": {
+      "manufacturers": {
+        "title": "For Manufacturers",
+        "description": "Register your company and certify your products with our digital certification system.",
+        "buttonText": "Register Now"
+      },
+      "traceability": {
+        "title": "Product Traceability",
+        "description": "Track complete product journey from raw materials to retail with blockchain verification.",
+        "buttonText": "Explore Products"
+      },
+      "history": {
+        "title": "Supply Chain History",
+        "description": "Access complete supply chain history and verify product authenticity instantly.",
+        "buttonText": "Verify Now"
+      },
+      "connectedData": {
+        "title": "Connected Data",
+        "description": "Link product data, certifications, and sustainability metrics in one place.",
+        "buttonText": "Learn More"
+      }
+    },
+    "traceability": {
+      "title": "End-to-End Traceability",
+      "description": "Track every step of your product's journey with complete transparency and verification",
+      "steps": {
+        "rawMaterials": {
+          "title": "Raw Materials",
+          "description": "Track sourcing and origin of materials with verified sustainability credentials"
+        },
+        "manufacturing": {
+          "title": "Manufacturing",
+          "description": "Monitor production processes and sustainability metrics in real-time"
+        },
+        "certification": {
+          "title": "Certification",
+          "description": "Verify authenticity with blockchain-backed digital certification"
+        }
+      }
+    }
+  },
+  "products": {
+    "title": "Certified Products",
+    "description": "Explore our collection of certified sustainable products with verified Digital Product Passports.",
+    "list": {
+      "categories": {
+        "textile": "Textile",
+        "battery": "Battery",
+        "automotive": "Automotive",
+        "electronics": "Electronics",
+        "clothing": "Clothing",
+        "women's clothing": "Women's Clothing",
+        "automotive batteries": "Automotive Batteries",
+        "marine batteries": "Marine Batteries"
+      },
+      "sustainability": {
+        "score": "Sustainability Score",
+        "carbonFootprint": "Carbon Footprint"
+      }
+    },
+    "featured": {
+      "traceability": {
+        "title": "Product Traceability",
+        "description": "Track product journey from source to store"
+      },
+      "supplyChain": {
+        "title": "Supply Chain History",
+        "description": "Complete transparency of product lifecycle"
+      },
+      "certifications": {
+        "title": "Verified Certifications",
+        "description": "Authenticated sustainability credentials"
+      }
+    },
+    "details": {
+      "backToProducts": "Back to Products",
+      "battery": {
+        "features": {
+          "0": "Advanced lithium-ion technology for optimal performance",
+          "1": "Built-in safety features and protection circuits",
+          "2": "Extended cycle life and reliable power output"
+        },
+        "description": {
+          "0": "Detailed safety guidelines and proper handling instructions",
+          "1": "Environmental impact and recycling information",
+          "2": "Technical specifications and performance metrics"
+        }
+      },
+      "textile": {
+        "features": {
+          "0": "High-quality sustainable materials",
+          "1": "Eco-friendly manufacturing process",
+          "2": "Certified organic components"
+        },
+        "description": {
+          "0": "Material composition and care instructions",
+          "1": "Environmental impact assessment",
+          "2": "Sustainability certifications"
+        }
+      },
+      "quickInfo": {
+        "title": "Quick Information",
+        "model": "Model",
+        "manufacturer": "Manufacturer",
+        "category": "Category"
+      },
+      "keyFeatures": {
+        "title": "Key Features"
+      },
+      "materials": {
+        "title": "Materials",
+        "table": {
+          "material": "Material",
+          "percentage": "Percentage",
+          "recyclable": "Recyclable",
+          "description": "Description"
+        },
+        "recyclable": {
+          "yes": "Yes",
+          "no": "No"
+        }
+      },
+      "healthAndSafety": {
+        "title": "Health and Safety",
+        "measures": {
+          "0": "Always follow proper handling and storage guidelines",
+          "1": "Keep away from extreme temperatures and moisture",
+          "2": "Use appropriate personal protective equipment when handling",
+          "3": "Regular maintenance and inspection required"
+        }
+      },
+      "emergencyProcedures": {
+        "title": "Emergency Procedures",
+        "0": "In case of damage, immediately disconnect and isolate",
+        "1": "Contact emergency services if leakage or fire occurs",
+        "2": "Follow proper disposal procedures for damaged items",
+        "3": "Document and report any safety incidents"
+      },
+      "storageAndInstallation": {
+        "title": "Storage and Installation",
+        "sections": {
+          "generalStorage": {
+            "title": "General Storage Guidelines",
+            "items": {
+              "0": "Store in a cool, dry place",
+              "1": "Avoid direct sunlight and heat sources",
+              "2": "Maintain proper ventilation"
+            }
+          },
+          "chargeLevel": {
+            "title": "Charge Level Management",
+            "items": {
+              "0": "Maintain recommended charge levels",
+              "1": "Regular charging cycles for optimal performance",
+              "2": "Avoid complete discharge"
+            }
+          },
+          "installation": {
+            "title": "Installation Requirements",
+            "items": {
+              "0": "Follow manufacturer specifications",
+              "1": "Professional installation recommended",
+              "2": "Regular maintenance checks required"
+            }
+          }
+        }
+      },
+      "certifications": {
+        "title": "Certifications",
+        "table": {
+          "name": "Certificate",
+          "issuedBy": "Issued By",
+          "validUntil": "Valid Until",
+          "status": "Status",
+          "document": "Document"
+        },
+        "status": {
+          "active": "Active",
+          "expired": "Expired",
+          "pending": "Pending",
+          "unknown": "Unknown"
+        },
+        "actions": {
+          "download": "Download"
+        }
+      },
+      "sustainability": {
+        "title": "Sustainability Metrics",
+        "carbonFootprint": "Carbon Footprint",
+        "waterUsage": "Water Usage",
+        "energyEfficiency": "Energy Efficiency",
+        "recycledContent": "Recycled Content",
+        "metrics": {
+          "low": "Low",
+          "medium": "Medium",
+          "high": "High"
+        }
+      },
+      "qr": {
+        "title": "Product QR Code",
+        "description": "Scan this QR code to verify product authenticity and access detailed information",
+        "instructions": "Use your smartphone camera or QR code reader app to scan"
+      }
+    }
+  },
+  "registration": {
+    "title": "Company Registration",
+    "description": "Join UseSafe's digital certification platform to verify and showcase your company's products and materials.",
+    "form": {
+      "description": "Please fill in your company details to begin the certification process. All fields marked with (*) are required.",
+      "step": "Step {current} of {total}",
+      "companyInfo": {
+        "title": "Company Information",
+        "companyName": "Company Name",
+        "companyType": "Company Type",
+        "taxId": "Tax ID",
+        "taxIdDescription": "Must be exactly 10 digits",
+        "tradeRegisterNumber": "Trade Register Number",
+        "mersisNumber": "MERSIS Number",
+        "companyTypes": {
+          "brandOwner": "Brand Owner",
+          "factory": "Factory",
+          "manufacturer": "Manufacturer",
+          "materialSupplier": "Material Supplier"
+        },
+        "typeDescription": "Select your company's primary business type"
+      },
+      "ownerInfo": {
+        "title": "Owner Information",
+        "fullName": "Full Name",
+        "nationalId": "National ID",
+        "email": "Corporate Email",
+        "emailDescription": "Please use your company email address, not a personal email",
+        "countryCode": "Country Code",
+        "selectCountry": "Select country",
+        "phone": "Phone Number",
+        "phoneDescription": "Enter 10 digits without leading zero",
+        "password": "Password",
+        "confirmPassword": "Confirm Password"
+      },
+      "address": {
+        "title": "Address",
+        "street": "Street Address",
+        "city": "City",
+        "district": "District",
+        "postalCode": "Postal Code"
+      },
+      "documents": {
+        "title": "Documents",
+        "required": {
+          "title": "Required Documents",
+          "signatureCircular": "Signature Circular",
+          "tradeRegistry": "Trade Registry Gazette",
+          "taxPlate": "Tax Plate",
+          "activityCertificate": "Activity Certificate"
+        },
+        "optional": {
+          "title": "Optional Documents",
+          "isoCertificates": "ISO Certificates",
+          "qualityCertificates": "Quality Certificates",
+          "exportDocuments": "Export Documents",
+          "productionPermits": "Production Permits"
+        }
+      },
+      "buttons": {
+        "next": "Next",
+        "previous": "Previous",
+        "submit": "Submit Registration",
+        "submitting": "Submitting..."
+      },
+      "success": {
+        "title": "Registration Submitted Successfully",
+        "description": "Please check your email to verify your account.",
+        "thankYou": "Thank you for registering with UseSafe.",
+        "emailSent": "We've sent a verification email to your registered email address.",
+        "checkEmail": "Please check your email to verify your account",
+        "nextSteps": {
+          "title": "Next steps:",
+          "verifyEmail": "Verify your email address",
+          "waitForReview": "Wait for admin review (typically 1-2 business days)",
+          "receiveApproval": "Receive approval notification",
+          "completeOnboarding": "Complete platform onboarding"
+        }
+      },
+      "error": {
+        "title": "Registration Failed",
+        "description": "There was an error submitting your registration. Please try again.",
+        "registrationFailed": "Registration failed"
+      },
+      "login": {
+        "haveAccount": "Do you already have an account?",
+        "loginLink": "Login"
+      },
+      "placeholders": {
+        "fullName": "John Doe",
+        "email": "example@company.com",
+        "password": "••••••"
+      }
+    }
+  }
+}
