@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import {
   Box,
   FileText,
@@ -16,6 +17,7 @@ import { cn } from "@/lib/utils";
 import { calculateProductGrowth } from "@/lib/utils/metrics";
 
 export function DashboardMetrics() {
+  const t = useTranslations("dashboard.metrics");
   const { products } = useProducts();
   const productGrowth = calculateProductGrowth(products);
 
@@ -36,28 +38,28 @@ export function DashboardMetrics() {
 
   const metricCards = [
     {
-      title: "Total Products",
+      title: t("totalProducts"),
       value: products?.length ? products.length.toString() : "0",
       icon: Box,
       gradient: "from-blue-500 to-blue-700",
       trend: `${productGrowth > 0 ? "+" : ""}${productGrowth}%`,
     },
     {
-      title: "Pending Certifications",
+      title: t("pendingCertifications"),
       value: pendingCertifications ? pendingCertifications.toString() : "0",
       icon: AlertTriangle,
       gradient: "from-yellow-500 to-yellow-700",
       trend: "+3.2%",
     },
     {
-      title: "Approved Documents",
+      title: t("approvedDocuments"),
       value: approvedDocuments ? approvedDocuments.toString() : "0",
       icon: FileText,
       gradient: "from-green-500 to-green-700",
       trend: "+22.1%",
     },
     {
-      title: "Compliance Rate",
+      title: t("complianceRate"),
       value: complianceRate ? `${complianceRate}%` : "0%",
       icon: ShieldCheck,
       gradient: "from-purple-500 to-purple-700",

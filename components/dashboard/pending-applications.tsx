@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { 
   FileQuestion, 
   CheckCircle2, 
@@ -29,13 +30,15 @@ const pendingApplications = [
 ];
 
 export function PendingApplications() {
+  const t = useTranslations("dashboard.applications");
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       className="bg-white rounded-xl shadow-lg p-6 border"
     >
-      <h2 className="text-xl font-semibold mb-4">Pending Applications</h2>
+      <h2 className="text-xl font-semibold mb-4">{t("title")}</h2>
       <div className="space-y-4">
         {pendingApplications.map((app, index) => (
           <motion.div
@@ -62,7 +65,7 @@ export function PendingApplications() {
             <div className="flex-1">
               <h3 className="font-medium">{app.product}</h3>
               <p className="text-sm text-muted-foreground">
-                {app.id} · Submitted {app.submittedDate}
+                {app.id} · {t("submitted")} {app.submittedDate}
               </p>
             </div>
             <div className={`
@@ -73,7 +76,7 @@ export function PendingApplications() {
                 ? 'bg-yellow-50 text-yellow-600'
                 : 'bg-red-50 text-red-600'}
             `}>
-              {app.status.charAt(0).toUpperCase() + app.status.slice(1)}
+              {t(`status.${app.status}`)}
             </div>
           </motion.div>
         ))}

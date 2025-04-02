@@ -2,6 +2,7 @@
 
 import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { Box, CheckCircle2, XCircle } from "lucide-react";
 
 import { useProducts } from "@/lib/hooks/use-products";
@@ -18,6 +19,7 @@ const containerVariants = {
 };
 
 export function RecentActivities() {
+  const t = useTranslations("dashboard.activities");
   const { products } = useProducts();
   const activities = getRecentActivities(products);
 
@@ -29,10 +31,10 @@ export function RecentActivities() {
       className="bg-white rounded-xl shadow-lg p-6 border"
     >
       <h2 className="text-xl font-semibold mb-4">
-        Recent Activities
+        {t("title")}
         {activities.length === 0 && (
           <p className="text-sm text-muted-foreground mt-2">
-            No recent activities found
+            {t("noActivities")}
           </p>
         )}
       </h2>
@@ -86,7 +88,7 @@ export function RecentActivities() {
               }
             `}
             >
-              {activity.status}
+              {t(`status.${activity.status}`)}
             </div>
           </motion.div>
         ))}
