@@ -366,5 +366,67 @@
       "title": "Settings updated",
       "description": "Your settings have been saved successfully."
     }
+  },
+  "productManagement": {
+    "title": "Product Management",
+    "description": "Manage your battery products and DPPs",
+    "search": {
+      "placeholder": "Search products..."
+    },
+    "filters": {
+      "type": {
+        "label": "Filter by type",
+        "all": "All Types",
+        "agm": "AGM Batteries",
+        "efb": "EFB Batteries",
+        "standard": "Standard Batteries",
+        "marine": "Marine Batteries"
+      },
+      "status": {
+        "label": "Filter by status",
+        "all": "All Status",
+        "active": "Active",
+        "pending": "Pending DPC",
+        "draft": "Draft"
+      }
+    },
+    "actions": {
+      "download": "Download",
+      "addProduct": "Add Product",
+      "viewDetails": "View Details",
+      "editProduct": "Edit Product",
+      "viewDocuments": "View Documents",
+      "deleteProduct": "Delete Product",
+      "menu": "Actions"
+    },
+    "list": {
+      "title": "Products",
+      "description": "Manage your product catalog",
+      "loading": "Loading your products...",
+      "empty": {
+        "title": "No Products Found",
+        "description": "Start by adding your first product."
+      },
+      "columns": {
+        "product": "Product",
+        "category": "Category",
+        "basicInfo": "Basic Info",
+        "status": "Status"
+      }
+    },
+    "delete": {
+      "title": "Product deleted",
+      "description": "The product has been successfully deleted.",
+      "confirm": {
+        "title": "Are you sure you want to delete this product?",
+        "description": "This action cannot be undone. This will permanently delete the product \"{name}\" and remove its data from our servers.",
+        "cancel": "Cancel",
+        "confirm": "Delete"
+      },
+      "error": {
+        "title": "Error",
+        "description": "Failed to delete product. Please try again."
+      }
+    }
   }
 }

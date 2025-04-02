@@ -415,5 +415,67 @@
       "title": "Ayarlar güncellendi",
       "description": "Ayarlarınız başarıyla kaydedildi."
     }
+  },
+  "productManagement": {
+    "title": "Ürün Yönetimi",
+    "description": "Akü ürünlerinizi ve DPP'lerinizi yönetin",
+    "search": {
+      "placeholder": "Ürün ara..."
+    },
+    "filters": {
+      "type": {
+        "label": "Türe göre filtrele",
+        "all": "Tüm Türler",
+        "agm": "AGM Aküler",
+        "efb": "EFB Aküler",
+        "standard": "Standart Aküler",
+        "marine": "Deniz Aküleri"
+      },
+      "status": {
+        "label": "Duruma göre filtrele",
+        "all": "Tüm Durumlar",
+        "active": "Aktif",
+        "pending": "DPC Bekliyor",
+        "draft": "Taslak"
+      }
+    },
+    "actions": {
+      "download": "İndir",
+      "addProduct": "Ürün Ekle",
+      "viewDetails": "Detayları Görüntüle",
+      "editProduct": "Ürünü Düzenle",
+      "viewDocuments": "Belgeleri Görüntüle",
+      "deleteProduct": "Ürünü Sil",
+      "menu": "İşlemler"
+    },
+    "list": {
+      "title": "Ürünler",
+      "description": "Ürün kataloğunuzu yönetin",
+      "loading": "Ürünleriniz yükleniyor...",
+      "empty": {
+        "title": "Ürün Bulunamadı",
+        "description": "İlk ürününüzü ekleyerek başlayın."
+      },
+      "columns": {
+        "product": "Ürün",
+        "category": "Kategori",
+        "basicInfo": "Temel Bilgi",
+        "status": "Durum"
+      }
+    },
+    "delete": {
+      "title": "Ürün silindi",
+      "description": "Ürün başarıyla silindi.",
+      "confirm": {
+        "title": "Bu ürünü silmek istediğinizden emin misiniz?",
+        "description": "Bu işlem geri alınamaz. \"{name}\" ürünü kalıcı olarak silinecek ve tüm verileri sunucularımızdan kaldırılacak.",
+        "cancel": "İptal",
+        "confirm": "Sil"
+      },
+      "error": {
+        "title": "Hata",
+        "description": "Ürün silinirken hata oluştu. Lütfen tekrar deneyin."
+      }
+    }
   }
 }

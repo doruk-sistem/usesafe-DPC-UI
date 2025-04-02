@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { ArrowLeft, HardHat, Warehouse } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 
 import { ProductQR } from "@/components/products/product-qr";
@@ -24,6 +25,8 @@ interface TextileProductDetailsProps {
 }
 
 export function TextileProductDetails({ product }: TextileProductDetailsProps) {
+  const t = useTranslations("products.details");
+
   // Extract data from DPP config
   const getFieldValue = (sectionId: string, fieldId: string) => {
     const section = product.dpp_config?.sections.find(s => s.id === sectionId);
@@ -60,11 +63,16 @@ export function TextileProductDetails({ product }: TextileProductDetailsProps) {
   // Get environmental metrics
   const environmentalFields = product.dpp_config?.sections
     .find(s => s.id === "environmental")
-    ?.fields.map(field => ({
-      id: field.id,
-      name: field.name,
-      value: typeof field.value === 'object' ? JSON.stringify(field.value) : field.value
-    })) || [];
+    ?.fields.map(field => {
+      const fieldValue = typeof field.value === 'object'
+        ? JSON.stringify(field.value)
+        : field.value;
+      return {
+        id: field.id,
+        name: field.name,
+        value: fieldValue || ""
+      };
+    }) || [];
 
   // Get care instructions
   const careInstructions = product.dpp_config?.sections.find(s => s.id === "care-instructions")?.fields || [];
@@ -168,7 +176,7 @@ export function TextileProductDetails({ product }: TextileProductDetailsProps) {
               className="gradient-hover group flex items-center"
             >
               <ArrowLeft className="mr-2 h-4 w-4 group-hover:-translate-x-1 transition-transform" />
-              Back to Products
+              {t("backToProducts")}
             </Button>
           </motion.div>
         </Link>
@@ -231,7 +239,7 @@ export function TextileProductDetails({ product }: TextileProductDetailsProps) {
         {/* Care Instructions */}
         <Card className="lg:col-span-2">
           <CardHeader>
-            <CardTitle>Bakım Talimatları</CardTitle>
+            <CardTitle>{t("textile.careInstructions")}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid gap-4 md:grid-cols-2">
