@@ -429,6 +429,7 @@
         "allStatus": "All Status"
       },
       "actions": {
+        "title": "Actions",
         "newDPC": "New DPC",
         "download": "Download",
         "view": "View Details",
