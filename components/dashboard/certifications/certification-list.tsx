@@ -2,6 +2,7 @@
 
 import { Battery, MoreHorizontal, FileText, ExternalLink, CheckCircle, XCircle, Clock } from "lucide-react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -71,6 +72,8 @@ const certifications = [
 ];
 
 export function CertificationList() {
+  const t = useTranslations();
+
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "approved":
@@ -96,21 +99,21 @@ export function CertificationList() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>DPC Applications</CardTitle>
+        <CardTitle>{t("dpc.applications.title")}</CardTitle>
         <CardDescription>
-          View and manage your Digital Product Certification applications
+          {t("dpc.applications.description")}
         </CardDescription>
       </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Product</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Submitted</TableHead>
-              <TableHead>Valid Until</TableHead>
-              <TableHead>Documents</TableHead>
-              <TableHead>Certifications</TableHead>
+              <TableHead>{t("dpc.applications.columns.product")}</TableHead>
+              <TableHead>{t("dpc.applications.columns.status")}</TableHead>
+              <TableHead>{t("dpc.applications.columns.submitted")}</TableHead>
+              <TableHead>{t("dpc.applications.columns.validUntil")}</TableHead>
+              <TableHead>{t("dpc.applications.columns.documents")}</TableHead>
+              <TableHead>{t("dpc.applications.columns.certifications")}</TableHead>
               <TableHead></TableHead>
             </TableRow>
           </TableHeader>
@@ -134,7 +137,7 @@ export function CertificationList() {
                     className="flex w-fit items-center gap-1"
                   >
                     {getStatusIcon(cert.status)}
-                    {cert.status}
+                    {t(`dpc.applications.status.${cert.status}`)}
                   </Badge>
                 </TableCell>
                 <TableCell>
@@ -147,7 +150,7 @@ export function CertificationList() {
                 </TableCell>
                 <TableCell>
                   <span className="text-sm text-muted-foreground">
-                    {cert.testReports} Reports · {cert.documents} Documents
+                    {cert.testReports} {t("dpc.applications.documents.reports")} · {cert.documents} {t("dpc.applications.documents.documents")}
                   </span>
                 </TableCell>
                 <TableCell>
@@ -173,13 +176,13 @@ export function CertificationList() {
                       <DropdownMenuItem asChild>
                         <Link href={`/dashboard/certifications/${cert.id}`}>
                           <Battery className="h-4 w-4 mr-2" />
-                          View Details
+                          {t("dpc.applications.actions.view")}
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
                         <Link href={`/dashboard/certifications/${cert.id}/documents`}>
                           <FileText className="h-4 w-4 mr-2" />
-                          View Documents
+                          {t("dpc.applications.actions.download")}
                         </Link>
                       </DropdownMenuItem>
                       {cert.status === "approved" && (

@@ -404,5 +404,39 @@
       "iso45001": "ISO 45001",
       "tsEn": "TS EN 50342-1"
     }
+  },
+  "dpc": {
+    "title": "Digital Product Certifications",
+    "description": "Manage your DPC applications and certifications",
+    "applications": {
+      "title": "DPC Applications",
+      "description": "View and manage your Digital Product Certification applications",
+      "columns": {
+        "product": "Product",
+        "status": "Status",
+        "submitted": "Submitted",
+        "validUntil": "Valid Until",
+        "documents": "Documents",
+        "certifications": "Certifications"
+      },
+      "status": {
+        "approved": "Approved",
+        "pending": "Pending",
+        "rejected": "Rejected"
+      },
+      "filters": {
+        "allTypes": "All Types",
+        "allStatus": "All Status"
+      },
+      "actions": {
+        "newDPC": "New DPC",
+        "download": "Download",
+        "view": "View Details"
+      },
+      "documents": {
+        "reports": "Reports",
+        "documents": "Documents"
+      }
+    }
   }
 }

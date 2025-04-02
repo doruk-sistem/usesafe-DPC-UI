@@ -453,5 +453,39 @@
       "iso45001": "ISO 45001",
       "tsEn": "TS EN 50342-1"
     }
+  },
+  "dpc": {
+    "title": "Dijital Ürün Sertifikaları",
+    "description": "DPC başvurularınızı ve sertifikalarınızı yönetin",
+    "applications": {
+      "title": "DPC Başvuruları",
+      "description": "Dijital Ürün Sertifikası başvurularınızı görüntüleyin ve yönetin",
+      "columns": {
+        "product": "Ürün",
+        "status": "Durum",
+        "submitted": "Başvuru Tarihi",
+        "validUntil": "Geçerlilik Tarihi",
+        "documents": "Dökümanlar",
+        "certifications": "Sertifikalar"
+      },
+      "status": {
+        "approved": "Onaylandı",
+        "pending": "Beklemede",
+        "rejected": "Reddedildi"
+      },
+      "filters": {
+        "allTypes": "Tüm Tipler",
+        "allStatus": "Tüm Durumlar"
+      },
+      "actions": {
+        "newDPC": "Yeni DPC",
+        "download": "İndir",
+        "view": "Detayları Görüntüle"
+      },
+      "documents": {
+        "reports": "Raporlar",
+        "documents": "Dökümanlar"
+      }
+    }
   }
 }
