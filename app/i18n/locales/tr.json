@@ -407,5 +407,51 @@
       "deleteSupplier": "Tedarikçi Sil",
       "export": "Tedarikçileri Dışa Aktar"
     }
+  },
+  "documents": {
+    "title": "Döküman Yönetimi",
+    "description": "Şirket dökümanlarınızı ve sertifikalarınızı yönetin",
+    "repository": {
+      "title": "Döküman Deposu",
+      "description": "Şirket dökümanlarınızı ve sertifikalarınızı görüntüleyin ve yönetin",
+      "columns": {
+        "document": "Döküman",
+        "type": "Tür",
+        "category": "Kategori",
+        "status": "Durum",
+        "validUntil": "Geçerlilik Tarihi",
+        "issuer": "Düzenleyen"
+      },
+      "status": {
+        "approved": "Onaylandı",
+        "pending": "Beklemede",
+        "rejected": "Reddedildi",
+        "expired": "Süresi Doldu",
+        "expiring": "Süresi Doluyor"
+      },
+      "filters": {
+        "allDocuments": "Tüm Dökümanlar",
+        "allStatus": "Tüm Durumlar"
+      },
+      "actions": {
+        "title": "İşlemler",
+        "view": "Detayları Görüntüle",
+        "download": "İndir",
+        "history": "Geçmişi Görüntüle",
+        "reupload": "Yeniden Yükle",
+        "delete": "Sil",
+        "upload": "Yükle"
+      }
+    },
+    "types": {
+      "qualityManagement": "Kalite Yönetimi",
+      "safetyHealth": "İş Sağlığı ve Güvenliği",
+      "batteryStandards": "Akü Standartları"
+    },
+    "categories": {
+      "iso9001": "ISO 9001",
+      "iso45001": "ISO 45001",
+      "tsEn": "TS EN 50342-1"
+    }
   }
 }

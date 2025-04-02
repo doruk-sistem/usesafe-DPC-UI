@@ -358,5 +358,51 @@
       "deleteSupplier": "Delete Supplier",
       "export": "Export Suppliers"
     }
+  },
+  "documents": {
+    "title": "Document Management",
+    "description": "Manage your company documents and certifications",
+    "repository": {
+      "title": "Document Repository",
+      "description": "View and manage your company documents and certifications",
+      "columns": {
+        "document": "Document",
+        "type": "Type",
+        "category": "Category",
+        "status": "Status",
+        "validUntil": "Valid Until",
+        "issuer": "Issuer"
+      },
+      "status": {
+        "approved": "Approved",
+        "pending": "Pending",
+        "rejected": "Rejected",
+        "expired": "Expired",
+        "expiring": "Expiring"
+      },
+      "filters": {
+        "allDocuments": "All Documents",
+        "allStatus": "All Status"
+      },
+      "actions": {
+        "title": "Actions",
+        "view": "View Details",
+        "download": "Download",
+        "history": "View History",
+        "reupload": "Re-upload",
+        "delete": "Delete",
+        "upload": "Upload"
+      }
+    },
+    "types": {
+      "qualityManagement": "Quality Management",
+      "safetyHealth": "Safety & Health",
+      "batteryStandards": "Battery Standards"
+    },
+    "categories": {
+      "iso9001": "ISO 9001",
+      "iso45001": "ISO 45001",
+      "tsEn": "TS EN 50342-1"
+    }
   }
 }
