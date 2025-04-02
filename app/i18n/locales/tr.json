@@ -356,5 +356,56 @@
         "description": "Kaydınız gönderilirken bir hata oluştu"
       }
     }
+  },
+  "suppliers": {
+    "title": "Tedarikçiler",
+    "description": "Firmanızın tedarikçilerini görüntüleyin ve yönetin",
+    "error": {
+      "title": "Hata",
+      "description": "Tedarikçiler yüklenirken bir hata oluştu"
+    },
+    "list": {
+      "title": "Tedarikçi Listesi",
+      "description": "Firmanızın tedarikçilerini görüntüleyin ve yönetin",
+      "loading": "Tedarikçiler yükleniyor...",
+      "empty": {
+        "title": "Tedarikçi Bulunamadı",
+        "description": "Henüz hiç tedarikçiniz yok. Üreticilerden veya malzeme tedarikçilerinden ürün eklediğinizde burada görünecekler."
+      },
+      "columns": {
+        "company": "Firma",
+        "type": "Tür",
+        "taxId": "Vergi No",
+        "products": "Ürünler",
+        "status": "Durum"
+      },
+      "actions": {
+        "viewProducts": "Ürünleri Görüntüle",
+        "viewDocuments": "Belgeleri Görüntüle",
+        "viewCertifications": "Sertifikaları Görüntüle",
+        "more": "İşlemler",
+        "download": "Listeyi İndir"
+      },
+      "filters": {
+        "allTypes": "Tüm Türler",
+        "selectType": "Tür Seçin"
+      },
+      "status": {
+        "active": "Aktif",
+        "inactive": "Pasif",
+        "pending": "Beklemede"
+      },
+      "types": {
+        "manufacturer": "Üretici",
+        "distributor": "Distribütör",
+        "retailer": "Perakendeci"
+      }
+    },
+    "actions": {
+      "addSupplier": "Tedarikçi Ekle",
+      "editSupplier": "Tedarikçi Düzenle",
+      "deleteSupplier": "Tedarikçi Sil",
+      "export": "Tedarikçileri Dışa Aktar"
+    }
   }
 }

@@ -307,5 +307,56 @@
         "description": "There was an error submitting your registration"
       }
     }
+  },
+  "suppliers": {
+    "title": "Suppliers",
+    "description": "View and manage your company's suppliers",
+    "error": {
+      "title": "Error",
+      "description": "Failed to load suppliers"
+    },
+    "list": {
+      "title": "Supplier List",
+      "description": "View and manage your company's suppliers",
+      "loading": "Loading suppliers...",
+      "empty": {
+        "title": "No Suppliers Found",
+        "description": "You don't have any suppliers yet. They will appear here when you add products from manufacturers or material suppliers."
+      },
+      "columns": {
+        "company": "Company",
+        "type": "Type",
+        "taxId": "Tax ID",
+        "products": "Products",
+        "status": "Status"
+      },
+      "actions": {
+        "viewProducts": "View Products",
+        "viewDocuments": "View Documents",
+        "viewCertifications": "View Certifications",
+        "more": "Actions",
+        "download": "Download List"
+      },
+      "filters": {
+        "allTypes": "All Types",
+        "selectType": "Select Type"
+      },
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive",
+        "pending": "Pending"
+      },
+      "types": {
+        "manufacturer": "Manufacturer",
+        "distributor": "Distributor",
+        "retailer": "Retailer"
+      }
+    },
+    "actions": {
+      "addSupplier": "Add Supplier",
+      "editSupplier": "Edit Supplier",
+      "deleteSupplier": "Delete Supplier",
+      "export": "Export Suppliers"
+    }
   }
 }
