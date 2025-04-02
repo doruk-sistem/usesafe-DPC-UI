@@ -520,5 +520,103 @@
         "blockchain": "Product created but blockchain record failed: {error}"
       }
     }
+  },
+  "dpp": {
+    "title": "Digital Product Passports",
+    "description": "Manage product DPPs and track manufacturing information",
+    "list": {
+      "serialNumber": "Serial Number",
+      "product": "Product",
+      "manufacturingDate": "Manufacturing Date",
+      "facility": "Facility",
+      "actions": "Actions",
+      "noResults": "No DPPs found yet",
+      "filters": {
+        "all": "All Products",
+        "agm": "AGM Batteries",
+        "efb": "EFB Batteries",
+        "standard": "Standard Batteries",
+        "marine": "Marine Batteries"
+      }
+    },
+    "new": {
+      "title": "Create Digital Product Passport",
+      "description": "Create a new DPP for an existing product",
+      "form": {
+        "product": {
+          "label": "Product",
+          "placeholder": "Select a product",
+          "error": "Product selection is required"
+        },
+        "serialNumber": {
+          "label": "Serial Number",
+          "placeholder": "Enter serial number",
+          "error": "Serial number is required"
+        },
+        "manufacturingDate": {
+          "label": "Manufacturing Date",
+          "placeholder": "Select manufacturing date",
+          "error": "Manufacturing date is required"
+        },
+        "facility": {
+          "label": "Manufacturing Facility",
+          "placeholder": "Enter manufacturing facility",
+          "error": "Manufacturing facility is required"
+        }
+      },
+      "success": {
+        "title": "DPP Created",
+        "description": "Digital Product Passport has been created successfully"
+      },
+      "error": {
+        "title": "Error",
+        "description": "An error occurred while creating the DPP"
+      }
+    },
+    "details": {
+      "back": "Back to List",
+      "overview": {
+        "title": "Product Overview",
+        "manufacturer": "Manufacturer",
+        "serialNumber": "Serial Number",
+        "manufacturingDate": "Manufacturing Date"
+      },
+      "qr": {
+        "title": "Product QR Code",
+        "download": "Download QR Code",
+        "description": "Scan this code to verify the product"
+      }
+    },
+    "config": {
+      "title": "DPP Configuration",
+      "description": "Configure sections and fields to be included in your product's DPP",
+      "info": "Add or remove sections to customize your DPP. Required sections cannot be removed.",
+      "sections": {
+        "basicInfo": {
+          "title": "Basic Information",
+          "fields": {
+            "name": "Product Name",
+            "type": "Product Type",
+            "description": "Description"
+          }
+        },
+        "manufacturing": {
+          "title": "Manufacturing Details",
+          "fields": {
+            "serialNumber": "Serial Number",
+            "manufacturingDate": "Manufacturing Date",
+            "facility": "Manufacturing Facility"
+          }
+        },
+        "supplyChain": {
+          "title": "Supply Chain Information",
+          "fields": {
+            "supplier": "Supplier",
+            "origin": "Country of Origin",
+            "transportation": "Transportation Method"
+          }
+        }
+      }
+    }
   }
 }

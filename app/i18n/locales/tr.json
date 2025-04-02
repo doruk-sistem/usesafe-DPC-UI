@@ -579,5 +579,103 @@
         "blockchain": "Ürün oluşturuldu ancak blok zinciri kaydı başarısız oldu: {error}"
       }
     }
+  },
+  "dpp": {
+    "title": "Dijital Ürün Pasaportları",
+    "description": "Ürün DPP'lerini yönetin ve üretim bilgilerini takip edin",
+    "list": {
+      "serialNumber": "Seri Numarası",
+      "product": "Ürün",
+      "manufacturingDate": "Üretim Tarihi",
+      "facility": "Tesis",
+      "actions": "İşlemler",
+      "noResults": "Henüz DPP bulunamadı",
+      "filters": {
+        "all": "Tüm Ürünler",
+        "agm": "AGM Aküler",
+        "efb": "EFB Aküler",
+        "standard": "Standart Aküler",
+        "marine": "Deniz Aküleri"
+      }
+    },
+    "new": {
+      "title": "Dijital Ürün Pasaportu Oluştur",
+      "description": "Mevcut bir ürün için yeni bir DPP oluşturun",
+      "form": {
+        "product": {
+          "label": "Ürün",
+          "placeholder": "Ürün seçin",
+          "error": "Ürün seçimi zorunludur"
+        },
+        "serialNumber": {
+          "label": "Seri Numarası",
+          "placeholder": "Seri numarası girin",
+          "error": "Seri numarası zorunludur"
+        },
+        "manufacturingDate": {
+          "label": "Üretim Tarihi",
+          "placeholder": "Üretim tarihi seçin",
+          "error": "Üretim tarihi zorunludur"
+        },
+        "facility": {
+          "label": "Üretim Tesisi",
+          "placeholder": "Üretim tesisi girin",
+          "error": "Üretim tesisi zorunludur"
+        }
+      },
+      "success": {
+        "title": "DPP Oluşturuldu",
+        "description": "Dijital Ürün Pasaportu başarıyla oluşturuldu"
+      },
+      "error": {
+        "title": "Hata",
+        "description": "DPP oluşturulurken bir hata oluştu"
+      }
+    },
+    "details": {
+      "back": "Listeye Dön",
+      "overview": {
+        "title": "Ürün Genel Bakış",
+        "manufacturer": "Üretici",
+        "serialNumber": "Seri Numarası",
+        "manufacturingDate": "Üretim Tarihi"
+      },
+      "qr": {
+        "title": "Ürün QR Kodu",
+        "download": "QR Kodu İndir",
+        "description": "Ürünü doğrulamak için bu kodu tarayın"
+      }
+    },
+    "config": {
+      "title": "DPP Yapılandırması",
+      "description": "Ürününüzün DPP'sine dahil edilecek bölümleri ve alanları yapılandırın",
+      "info": "DPP'nizi özelleştirmek için bölüm ekleyin veya kaldırın. Zorunlu bölümler kaldırılamaz.",
+      "sections": {
+        "basicInfo": {
+          "title": "Temel Bilgiler",
+          "fields": {
+            "name": "Ürün Adı",
+            "type": "Ürün Tipi",
+            "description": "Açıklama"
+          }
+        },
+        "manufacturing": {
+          "title": "Üretim Detayları",
+          "fields": {
+            "serialNumber": "Seri Numarası",
+            "manufacturingDate": "Üretim Tarihi",
+            "facility": "Üretim Tesisi"
+          }
+        },
+        "supplyChain": {
+          "title": "Tedarik Zinciri Bilgileri",
+          "fields": {
+            "supplier": "Tedarikçi",
+            "origin": "Menşe Ülke",
+            "transportation": "Taşıma Yöntemi"
+          }
+        }
+      }
+    }
   }
 }

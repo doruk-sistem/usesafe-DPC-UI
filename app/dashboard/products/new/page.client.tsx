@@ -12,6 +12,8 @@ import { productBlockchainService } from "@/lib/services/product-blockchain";
 import { ProductStatusService } from "@/lib/services/product-status";
 import { StorageService } from "@/lib/services/storage";
 import type { NewProduct, ProductImage } from "@/lib/types/product";
+import type { ProductFormData } from "@/lib/types/forms";
+import type { Json } from "@/lib/types/supabase";
 
 export default function NewProductPageClient() {
   const { user, company } = useAuth();
@@ -19,65 +21,75 @@ export default function NewProductPageClient() {
   const router = useRouter();
   const t = useTranslations("productManagement.addProduct");
 
-  const handleSubmit = async (data: NewProduct) => {
+  const handleSubmit = async (data: ProductFormData) => {
     if (!user?.id || !company?.id) return;
 
     try {
       const uploadedImages = await Promise.all(
         data.images.map(async (image) => {
-          // Use type assertion to access fileObject
-          const typedImage = image as ProductImage;
-          if (image.url.startsWith("blob:") && typedImage.fileObject) {
+          if (image.url.startsWith("blob:") && "fileObject" in image) {
             const uploadedUrl = await StorageService.uploadProductImage(
-              typedImage.fileObject,
+              image.fileObject as File,
               company.id
             );
 
             if (!uploadedUrl) {
               toast({
-                title: t("form.images.error.title"),
-                description: t("form.images.error.description"),
+                title: t("error.title"),
+                description: t("error.imageUpload"),
                 variant: "destructive",
               });
               return null;
             }
 
             return {
-              ...image,
               url: uploadedUrl,
+              alt: image.alt,
+              is_primary: image.is_primary,
             };
           }
-          return image;
+          return {
+            url: image.url,
+            alt: image.alt,
+            is_primary: image.is_primary,
+          };
         })
       );
 
-      // Filter out any null images
-      const validImages = uploadedImages.filter((img) => img !== null);
+      const validImages = uploadedImages.filter((img): img is ProductImage => img !== null);
 
       if (validImages.length === 0) {
         toast({
           title: t("error.title"),
-          description: t("form.images.error.noImages"),
+          description: t("error.noImages"),
           variant: "destructive",
         });
         return;
       }
 
-      // Continue with product creation using validImages
-      const response = await ProductService.createProduct({
-        ...data,
+      const productData: NewProduct = {
+        name: data.name,
+        description: data.description,
+        product_type: data.product_type,
+        product_subcategory: data.product_subcategory || "",
+        model: data.model,
         images: validImages,
+        key_features: data.key_features,
+        documents: data.documents as unknown as Json,
+        manufacturer_id: data.manufacturer_id,
         company_id: company.id,
         status: "DRAFT",
         status_history: [
           {
-            from: "DRAFT",
+            from: "NEW",
             to: "DRAFT",
             timestamp: new Date().toISOString(),
             userId: user.id,
           },
         ],
-      });
+      };
+
+      const response = await ProductService.createProduct(productData);
 
       if (response.error) {
         toast({
@@ -92,7 +104,6 @@ export default function NewProductPageClient() {
         throw new Error("Product ID not received from server");
       }
 
-      // Blockchain kaydı oluştur
       try {
         const blockchainResult =
           await productBlockchainService.recordProductAction(
@@ -102,11 +113,6 @@ export default function NewProductPageClient() {
             data.description || "",
             "CREATE"
           );
-
-        // Update the product with contract address
-        // await ProductService.updateProduct(response.data.id, {
-        //   contract_address: blockchainResult.contractAddress,
-        // });
 
         toast({
           title: t("success.title"),
@@ -126,7 +132,6 @@ export default function NewProductPageClient() {
         });
       }
 
-      // Validate if product can be moved to NEW status
       if (ProductStatusService.validateStatus(response.data)) {
         await ProductStatusService.updateStatus(
           response.data.id,
@@ -141,7 +146,6 @@ export default function NewProductPageClient() {
         description: t("success.description"),
       });
 
-      // Başarılı kayıt sonrası detay sayfasına yönlendir
       router.push("/dashboard/products");
     } catch (error) {
       console.error("Error creating product:", error);

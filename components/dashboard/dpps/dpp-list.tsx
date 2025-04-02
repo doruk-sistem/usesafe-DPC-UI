@@ -2,6 +2,7 @@
 
 import { Eye, MoreHorizontal, QrCode } from "lucide-react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -28,75 +29,124 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useDPPs } from "@/lib/hooks/use-dpps";
+import { cn } from "@/lib/utils";
 
-export function DPPList() {
-  const { dpps, isLoading, error } = useDPPs();
+interface DPP {
+  id: string;
+  serial_number: string;
+  product_name: string;
+  manufacturing_date: string;
+  manufacturing_facility: string;
+}
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+interface DPPListProps {
+  dpps: DPP[];
+  isLoading?: boolean;
+  error?: string | null;
+}
+
+export function DPPList({ dpps = [], isLoading, error }: DPPListProps) {
+  const t = useTranslations("dpp");
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>{t("title")}</CardTitle>
+          <CardDescription className="text-destructive">
+            {error}
+          </CardDescription>
+        </CardHeader>
+      </Card>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>
+            <span className="block h-4 w-[200px] animate-pulse rounded-md bg-muted" />
+          </CardTitle>
+          <CardDescription>
+            <span className="block h-4 w-[300px] animate-pulse rounded-md bg-muted" />
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-2">
+            <div className="h-4 w-full animate-pulse rounded-md bg-muted" />
+            <div className="h-4 w-full animate-pulse rounded-md bg-muted" />
+            <div className="h-4 w-full animate-pulse rounded-md bg-muted" />
+          </div>
+        </CardContent>
+      </Card>
+    );
   }
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Digital Product Passports</CardTitle>
+        <CardTitle>{t("title")}</CardTitle>
         <CardDescription>
-          Manage your product DPPs and track manufacturing information
+          {t("description")}
         </CardDescription>
       </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Serial Number</TableHead>
-              <TableHead>Product</TableHead>
-              <TableHead>Manufacturing Date</TableHead>
-              <TableHead>Facility</TableHead>
-              <TableHead>Actions</TableHead>
+              <TableHead>{t("list.serialNumber")}</TableHead>
+              <TableHead>{t("list.product")}</TableHead>
+              <TableHead>{t("list.manufacturingDate")}</TableHead>
+              <TableHead>{t("list.facility")}</TableHead>
+              <TableHead>{t("list.actions")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {dpps.map((dpp) => (
-              <TableRow key={dpp.id}>
-                <TableCell>
-                  <div className="flex items-center gap-2">
-                    <QrCode className="h-4 w-4 text-muted-foreground" />
-                    <span>{dpp.serial_number}</span>
-                  </div>
-                </TableCell>
-                <TableCell>{dpp.product_name}</TableCell>
-                <TableCell>
-                  {new Date(dpp.manufacturing_date).toLocaleDateString()}
-                </TableCell>
-                <TableCell>{dpp.manufacturing_facility}</TableCell>
-                <TableCell>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon">
-                        <MoreHorizontal className="h-4 w-4" />
-                        <span className="sr-only">Open menu</span>
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem asChild>
-                        <Link href={`/dashboard/dpps/${dpp.id}`}>
-                          <Eye className="h-4 w-4 mr-2" />
-                          View Details
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>Download QR Code</DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+            {dpps.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={5} className="text-center">
+                  {t("list.noResults")}
                 </TableCell>
               </TableRow>
-            ))}
+            ) : (
+              dpps.map((dpp) => (
+                <TableRow key={dpp.id}>
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      <QrCode className="h-4 w-4 text-muted-foreground" />
+                      <span>{dpp.serial_number}</span>
+                    </div>
+                  </TableCell>
+                  <TableCell>{dpp.product_name}</TableCell>
+                  <TableCell>
+                    {new Date(dpp.manufacturing_date).toLocaleDateString()}
+                  </TableCell>
+                  <TableCell>{dpp.manufacturing_facility}</TableCell>
+                  <TableCell>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon">
+                          <MoreHorizontal className="h-4 w-4" />
+                          <span className="sr-only">Open menu</span>
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem asChild>
+                          <Link href={`/dashboard/dpps/${dpp.id}`}>
+                            <Eye className="h-4 w-4 mr-2" />
+                            View Details
+                          </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>Download QR Code</DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       </CardContent>

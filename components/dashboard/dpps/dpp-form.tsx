@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -36,55 +37,46 @@ const formSchema = z.object({
     .min(1, "Manufacturing facility is required"),
 });
 
-export function DPPForm() {
-  const router = useRouter();
-  const { toast } = useToast();
-  const { user } = useAuth();
-  const { products } = useProducts();
+type FormData = z.infer<typeof formSchema>;
 
-  const form = useForm<z.infer<typeof formSchema>>({
+export function DPPForm() {
+  const { user, company } = useAuth();
+  const { products } = useProducts();
+  const { toast } = useToast();
+  const router = useRouter();
+  const t = useTranslations("dpp.new");
+
+  const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       product_id: "",
       serial_number: "",
-      manufacturing_date: new Date().toISOString().split("T")[0],
+      manufacturing_date: "",
       manufacturing_facility: "",
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    try {
-      if (!values.product_id) {
-        throw new Error("Please select a product");
-      }
+  const onSubmit = async (data: FormData) => {
+    if (!user?.id || !company?.id) return;
 
-      const {
-        product_id,
-        serial_number,
-        manufacturing_date,
-        manufacturing_facility,
-      } = values;
+    try {
       await DPPService.createDPP({
-        product_id,
-        serial_number,
-        manufacturing_date,
-        manufacturing_facility,
+        ...data,
       });
 
       toast({
-        title: "Success",
-        description: "DPP created successfully",
+        title: t("success.title"),
+        description: t("success.description"),
       });
 
       router.push("/dashboard/dpps");
     } catch (error) {
+      console.error("Error creating DPP:", error);
       toast({
-        title: "Error",
-        description:
-          error instanceof Error ? error.message : "Failed to create DPP",
+        title: t("error.title"),
+        description: t("error.description"),
         variant: "destructive",
       });
-      console.error("DPP creation error:", error);
     }
   };
 
@@ -96,11 +88,11 @@ export function DPPForm() {
           name="product_id"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Product</FormLabel>
+              <FormLabel>{t("form.product.label")}</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select product" />
+                    <SelectValue placeholder={t("form.product.placeholder")} />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -121,9 +113,9 @@ export function DPPForm() {
           name="serial_number"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Serial Number</FormLabel>
+              <FormLabel>{t("form.serialNumber.label")}</FormLabel>
               <FormControl>
-                <Input placeholder="Enter serial number" {...field} />
+                <Input placeholder={t("form.serialNumber.placeholder")} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -135,7 +127,7 @@ export function DPPForm() {
           name="manufacturing_date"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Manufacturing Date</FormLabel>
+              <FormLabel>{t("form.manufacturingDate.label")}</FormLabel>
               <FormControl>
                 <Input type="date" {...field} />
               </FormControl>
@@ -149,21 +141,18 @@ export function DPPForm() {
           name="manufacturing_facility"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Manufacturing Facility</FormLabel>
+              <FormLabel>{t("form.facility.label")}</FormLabel>
               <FormControl>
-                <Input placeholder="Enter facility name" {...field} />
+                <Input placeholder={t("form.facility.placeholder")} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        <div className="flex justify-end gap-4">
-          <Button type="button" variant="outline" onClick={() => router.back()}>
-            Cancel
-          </Button>
-          <Button type="submit">Create DPP</Button>
-        </div>
+        <Button type="submit">
+          {t("new.title")}
+        </Button>
       </form>
     </Form>
   );
