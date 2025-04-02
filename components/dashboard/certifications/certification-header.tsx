@@ -29,10 +29,10 @@ export function CertificationHeader() {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">{t("dpc.applications.filters.allTypes")}</SelectItem>
-            <SelectItem value="agm">AGM Batteries</SelectItem>
-            <SelectItem value="efb">EFB Batteries</SelectItem>
-            <SelectItem value="standard">Standard Batteries</SelectItem>
-            <SelectItem value="marine">Marine Batteries</SelectItem>
+            <SelectItem value="agm">{t("dpc.applications.types.agm")}</SelectItem>
+            <SelectItem value="efb">{t("dpc.applications.types.efb")}</SelectItem>
+            <SelectItem value="standard">{t("dpc.applications.types.standard")}</SelectItem>
+            <SelectItem value="marine">{t("dpc.applications.types.marine")}</SelectItem>
           </SelectContent>
         </Select>
         <Select defaultValue="all-status">

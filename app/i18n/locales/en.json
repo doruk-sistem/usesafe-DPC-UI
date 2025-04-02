@@ -431,11 +431,20 @@
       "actions": {
         "newDPC": "New DPC",
         "download": "Download",
-        "view": "View Details"
+        "view": "View Details",
+        "verify": "Verify DPC",
+        "resubmit": "Resubmit",
+        "delete": "Delete"
       },
       "documents": {
         "reports": "Reports",
         "documents": "Documents"
+      },
+      "types": {
+        "agm": "AGM Batteries",
+        "efb": "EFB Batteries",
+        "standard": "Standard Batteries",
+        "marine": "Marine Batteries"
       }
     }
   }

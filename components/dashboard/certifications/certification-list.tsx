@@ -171,7 +171,7 @@ export function CertificationList() {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                      <DropdownMenuLabel>{t("dpc.applications.actions.title")}</DropdownMenuLabel>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem asChild>
                         <Link href={`/dashboard/certifications/${cert.id}`}>
@@ -189,7 +189,7 @@ export function CertificationList() {
                         <DropdownMenuItem asChild>
                           <Link href={`/dashboard/certifications/${cert.id}/verify`}>
                             <ExternalLink className="h-4 w-4 mr-2" />
-                            Verify DPC
+                            {t("dpc.applications.actions.verify")}
                           </Link>
                         </DropdownMenuItem>
                       )}
@@ -197,13 +197,13 @@ export function CertificationList() {
                         <DropdownMenuItem asChild>
                           <Link href={`/dashboard/certifications/${cert.id}/resubmit`}>
                             <ExternalLink className="h-4 w-4 mr-2" />
-                            Resubmit
+                            {t("dpc.applications.actions.resubmit")}
                           </Link>
                         </DropdownMenuItem>
                       )}
                       <DropdownMenuSeparator />
                       <DropdownMenuItem className="text-red-600">
-                        Delete
+                        {t("dpc.applications.actions.delete")}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>

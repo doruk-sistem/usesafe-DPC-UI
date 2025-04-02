@@ -480,11 +480,20 @@
       "actions": {
         "newDPC": "Yeni DPC",
         "download": "İndir",
-        "view": "Detayları Görüntüle"
+        "view": "Detayları Görüntüle",
+        "verify": "DPC Doğrula",
+        "resubmit": "Yeniden Gönder",
+        "delete": "Sil"
       },
       "documents": {
         "reports": "Raporlar",
         "documents": "Dökümanlar"
+      },
+      "types": {
+        "agm": "AGM Aküler",
+        "efb": "EFB Aküler",
+        "standard": "Standart Aküler",
+        "marine": "Deniz Aküleri"
       }
     }
   }
