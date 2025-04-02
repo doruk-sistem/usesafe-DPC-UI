@@ -2,6 +2,7 @@
 
 import { Eye, MoreHorizontal, QrCode } from "lucide-react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -32,6 +33,7 @@ import { useDPPs } from "@/lib/hooks/use-dpps";
 
 export function DPPList() {
   const { dpps, isLoading, error } = useDPPs();
+  const t = useTranslations();
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -44,20 +46,20 @@ export function DPPList() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Digital Product Passports</CardTitle>
+        <CardTitle>{t("dpp.list.title")}</CardTitle>
         <CardDescription>
-          Manage your product DPPs and track manufacturing information
+          {t("dpp.list.description")}
         </CardDescription>
       </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Serial Number</TableHead>
-              <TableHead>Product</TableHead>
-              <TableHead>Manufacturing Date</TableHead>
-              <TableHead>Facility</TableHead>
-              <TableHead>Actions</TableHead>
+              <TableHead>{t("dpp.list.columns.serialNumber")}</TableHead>
+              <TableHead>{t("dpp.list.columns.product")}</TableHead>
+              <TableHead>{t("dpp.list.columns.manufacturingDate")}</TableHead>
+              <TableHead>{t("dpp.list.columns.facility")}</TableHead>
+              <TableHead>{t("dpp.list.columns.actions")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

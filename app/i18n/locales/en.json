@@ -143,19 +143,68 @@
           "2": "Extended cycle life and reliable power output"
         },
         "healthAndSafety": {
-          "title": "Health and Safety Measures"
+          "title": "Health and Safety Measures",
+          "measures": {
+            "0": "Always handle batteries with care",
+            "1": "Keep in upright position at all times",
+            "2": "Charge in a well-ventilated area",
+            "3": "Do not add pure water (Pure water level should be 1.5 cm above plates)",
+            "4": "Always wear protective goggles suitable for working conditions during battery maintenance (adding water, cleaning, charging)",
+            "5": "Wear protective clothing if there is a risk of acid splashing"
+          }
         },
         "storage": {
           "title": "Storage and Installation Guidelines",
           "sections": {
             "general": "General Storage",
             "chargeLevel": "Charge Level Monitoring",
-            "installation": "Installation Steps"
+            "installation": "Installation Steps",
+            "items": {
+              "general": {
+                "0": "Always store upright in a dry and cool place (10°C - 25°C)",
+                "1": "Place batteries on wooden pallets to avoid direct contact with concrete floor"
+              },
+              "chargeLevel": {
+                "0": "Pre-sale battery charge level should be above 12.6V",
+                "1": "Minimum voltage during storage should be 12.4V",
+                "2": "If voltage is low, open package and charge at 16.1V and 1/20Cn current to prevent permanent damage"
+              },
+              "installation": {
+                "0": "Verify battery compatibility from vehicle manual",
+                "1": "Ensure engine is off",
+                "2": "Remove old battery (negative terminal first)",
+                "3": "Check for short circuits",
+                "4": "Clean battery compartment and terminals",
+                "5": "Install new battery (connect positive cable first)",
+                "6": "Check charging current compatibility"
+              }
+            }
+          }
+        },
+        "emergencyProcedures": {
+          "title": "Emergency Procedures",
+          "procedures": {
+            "0": "In case of damage, immediately disconnect and isolate",
+            "1": "Contact emergency services if leakage or fire occurs",
+            "2": "Follow proper disposal procedures for damaged items",
+            "3": "Document and report any safety incidents",
+            "4": "In case of eye or skin contact, rinse with plenty of water",
+            "5": "Remove contaminated clothing immediately",
+            "6": "If swallowed: Drink plenty of water and milk. Consult a doctor",
+            "7": "Spillage: Wash small spills with water"
           }
         }
       },
       "textile": {
-        "careInstructions": "Care Instructions"
+        "careInstructions": {
+          "title": "Care Instructions",
+          "washing": "Washing",
+          "drying": "Drying",
+          "ironing": "Ironing",
+          "bleaching": "Bleaching",
+          "dryClean": "Dry Clean",
+          "specialCare": "Special Care Notes"
+        }
       },
       "layoutNotAvailable": "DPP layout not available for product type:",
       "quickInfo": {
@@ -188,13 +237,6 @@
           "2": "Use appropriate personal protective equipment when handling",
           "3": "Regular maintenance and inspection required"
         }
-      },
-      "emergencyProcedures": {
-        "title": "Emergency Procedures",
-        "0": "In case of damage, immediately disconnect and isolate",
-        "1": "Contact emergency services if leakage or fire occurs",
-        "2": "Follow proper disposal procedures for damaged items",
-        "3": "Document and report any safety incidents"
       },
       "certifications": {
         "title": "Certifications",
@@ -446,6 +488,72 @@
         "efb": "EFB Batteries",
         "standard": "Standard Batteries",
         "marine": "Marine Batteries"
+      }
+    }
+  },
+  "dpp": {
+    "list": {
+      "title": "Digital Product Passports",
+      "description": "Manage your product DPPs and track manufacturing information",
+      "filters": {
+        "type": {
+          "placeholder": "Filter by type",
+          "all": "All Products"
+        }
+      },
+      "actions": {
+        "create": "Create DPP",
+        "download": "Download",
+        "view": "View",
+        "edit": "Edit",
+        "delete": "Delete"
+      },
+      "columns": {
+        "serialNumber": "Serial Number",
+        "product": "Product",
+        "manufacturingDate": "Manufacturing Date",
+        "facility": "Facility",
+        "actions": "Actions"
+      }
+    },
+    "create": {
+      "title": "Create Digital Product Passport",
+      "description": "Generate a new DPP for an existing product",
+      "form": {
+        "product": {
+          "label": "Product",
+          "placeholder": "Select product"
+        },
+        "serialNumber": {
+          "label": "Serial Number",
+          "placeholder": "Enter serial number"
+        },
+        "manufacturingDate": {
+          "label": "Manufacturing Date",
+          "placeholder": "Select manufacturing date"
+        },
+        "manufacturingFacility": {
+          "label": "Manufacturing Facility",
+          "placeholder": "Enter facility name"
+        }
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "create": "Create DPP"
+      },
+      "validation": {
+        "productRequired": "Product selection is required",
+        "serialNumberRequired": "Serial number is required",
+        "manufacturingDateRequired": "Manufacturing date is required",
+        "manufacturingFacilityRequired": "Manufacturing facility is required"
+      },
+      "success": {
+        "title": "Success!",
+        "description": "Digital Product Passport has been created successfully"
+      },
+      "error": {
+        "title": "Error",
+        "description": "An error occurred while creating the DPP"
       }
     }
   }
