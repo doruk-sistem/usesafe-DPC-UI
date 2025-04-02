@@ -1,12 +1,20 @@
 "use client";
 
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { Download, FileText } from "lucide-react";
+import { Download, FileText, Eye, History, AlertTriangle, CheckCircle, XCircle, Clock } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -15,9 +23,16 @@ interface ProductDocumentsProps {
 }
 
 interface Document {
+  id: string;
   name: string;
   url: string;
   type: string;
+  status: "APPROVED" | "PENDING" | "REJECTED";
+  validUntil?: string;
+  version: string;
+  uploadedAt: string;
+  fileSize: string;
+  rejectionReason?: string;
 }
 
 interface Product {
@@ -61,9 +76,16 @@ export function ProductDocuments({ productId }: ProductDocumentsProps) {
             if (Array.isArray(docs)) {
               docs.forEach(doc => {
                 allDocuments.push({
+                  id: doc.id || `doc-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
                   name: doc.name,
                   url: doc.url,
-                  type: type
+                  type: type,
+                  status: doc.status || "PENDING",
+                  validUntil: doc.validUntil,
+                  version: doc.version || "1.0",
+                  uploadedAt: doc.uploadedAt || new Date().toISOString(),
+                  fileSize: doc.fileSize || "N/A",
+                  rejectionReason: doc.rejectionReason
                 });
               });
             }
@@ -104,6 +126,57 @@ export function ProductDocuments({ productId }: ProductDocumentsProps) {
         description: "Failed to download document",
         variant: "destructive",
       });
+    }
+  };
+
+  const handleView = (doc: Document) => {
+    // Open document in a new tab
+    window.open(doc.url, '_blank');
+  };
+
+  const handleViewHistory = (doc: Document) => {
+    // Check if document has a valid ID
+    if (!doc.id) {
+      toast({
+        title: "Error",
+        description: "Document ID is missing",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    // Navigate to document history page
+    window.location.href = `/dashboard/documents/${doc.id}/history`;
+  };
+
+  const handleReupload = (doc: Document) => {
+    // Navigate to the product edit page with a query parameter to indicate re-upload
+    window.location.href = `/dashboard/products/${productId}/edit?reupload=${doc.id}`;
+  };
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case "APPROVED":
+        return <CheckCircle className="h-4 w-4" />;
+      case "REJECTED":
+        return <XCircle className="h-4 w-4" />;
+      case "PENDING":
+        return <Clock className="h-4 w-4" />;
+      default:
+        return <AlertTriangle className="h-4 w-4" />;
+    }
+  };
+
+  const getStatusVariant = (status: string) => {
+    switch (status) {
+      case "APPROVED":
+        return "success";
+      case "REJECTED":
+        return "destructive";
+      case "PENDING":
+        return "warning";
+      default:
+        return "secondary";
     }
   };
 
@@ -179,6 +252,9 @@ export function ProductDocuments({ productId }: ProductDocumentsProps) {
               <TableRow>
                 <TableHead>Document Name</TableHead>
                 <TableHead>Type</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Valid Until</TableHead>
+                <TableHead>Version</TableHead>
                 <TableHead className="w-[100px] text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -191,15 +267,52 @@ export function ProductDocuments({ productId }: ProductDocumentsProps) {
                       {documentTypeLabels[document.type] || document.type}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-right">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => handleDownload(document)}
-                      className="h-8 w-8"
+                  <TableCell>
+                    <Badge
+                      variant={getStatusVariant(document.status)}
+                      className="flex w-fit items-center gap-1"
                     >
-                      <Download className="h-4 w-4" />
-                    </Button>
+                      {getStatusIcon(document.status)}
+                      {document.status.toLowerCase()}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    {document.validUntil 
+                      ? new Date(document.validUntil).toLocaleDateString()
+                      : "N/A"}
+                  </TableCell>
+                  <TableCell>v{document.version}</TableCell>
+                  <TableCell className="text-right">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <FileText className="h-4 w-4" />
+                          <span className="sr-only">Open menu</span>
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={() => handleDownload(document)}>
+                          <Download className="h-4 w-4 mr-2" />
+                          Download
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleView(document)}>
+                          <Eye className="h-4 w-4 mr-2" />
+                          View
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleViewHistory(document)}>
+                          <History className="h-4 w-4 mr-2" />
+                          View History
+                        </DropdownMenuItem>
+                        {document.status === "REJECTED" && (
+                          <DropdownMenuItem>
+                            <FileText className="h-4 w-4 mr-2" />
+                            Re-upload
+                          </DropdownMenuItem>
+                        )}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </TableCell>
                 </TableRow>
               ))}
