@@ -339,5 +339,81 @@
         "description": "Lütfen geçerli bir ürün kodu girin veya geçerli bir QR kod tarayın."
       }
     }
+  },
+  "settings": {
+    "title": "Ayarlar",
+    "description": "Firma profilinizi ve tercihlerinizi yönetin",
+    "saveChanges": "Değişiklikleri Kaydet",
+    "tabs": {
+      "company": "Firma",
+      "contact": "İletişim",
+      "notifications": "Bildirimler",
+      "security": "Güvenlik"
+    },
+    "company": {
+      "title": "Firma Bilgileri",
+      "name": {
+        "label": "Firma Adı",
+        "description": "Firma adını güncellemek için destek ekibiyle iletişime geçin"
+      },
+      "taxId": {
+        "label": "Vergi No",
+        "description": "Vergi numarasını güncellemek için destek ekibiyle iletişime geçin"
+      },
+      "tradeRegisterNumber": {
+        "label": "Ticaret Sicil No"
+      },
+      "mersisNumber": {
+        "label": "MERSİS No"
+      }
+    },
+    "contact": {
+      "title": "İletişim Bilgileri",
+      "email": "E-posta",
+      "phone": "Telefon",
+      "fax": "Faks",
+      "website": "Web Sitesi",
+      "address": {
+        "title": "Adres Bilgileri",
+        "headquarters": "Merkez Adresi",
+        "factory": "Fabrika Adresi",
+        "branches": "Şube Adresleri"
+      },
+      "authorized": {
+        "title": "Yetkili Kişi",
+        "name": "Ad Soyad",
+        "title": "Ünvan",
+        "department": "Departman",
+        "email": "E-posta",
+        "phone": "Telefon"
+      }
+    },
+    "notifications": {
+      "title": "Bildirim Tercihleri",
+      "email": {
+        "label": "E-posta Bildirimleri",
+        "description": "Önemli güncellemeler ve hatırlatmalar için e-posta bildirimleri alın"
+      },
+      "sms": {
+        "label": "SMS Bildirimleri",
+        "description": "Acil durumlar ve önemli hatırlatmalar için SMS bildirimleri alın"
+      },
+      "system": {
+        "label": "Sistem Uyarıları",
+        "description": "Platform içi bildirimler ve uyarılar alın"
+      },
+      "documents": {
+        "label": "Belge Hatırlatmaları",
+        "description": "Belge yükleme ve güncelleme hatırlatmaları alın"
+      },
+      "certifications": {
+        "label": "Sertifika Uyarıları",
+        "description": "Sertifika yenileme ve son kullanma tarihi bildirimleri alın"
+      }
+    },
+    "success": {
+      "title": "Ayarlar güncellendi",
+      "description": "Ayarlarınız başarıyla kaydedildi."
+    }
   }
 }

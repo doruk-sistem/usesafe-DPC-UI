@@ -290,5 +290,81 @@
         "description": "Please enter a valid product code or scan a valid QR code."
       }
     }
+  },
+  "settings": {
+    "title": "Settings",
+    "description": "Manage your company profile and preferences",
+    "saveChanges": "Save Changes",
+    "tabs": {
+      "company": "Company",
+      "contact": "Contact",
+      "notifications": "Notifications",
+      "security": "Security"
+    },
+    "company": {
+      "title": "Company Information",
+      "name": {
+        "label": "Company Name",
+        "description": "Contact support to update company name"
+      },
+      "taxId": {
+        "label": "Tax ID",
+        "description": "Contact support to update tax ID"
+      },
+      "tradeRegisterNumber": {
+        "label": "Trade Register Number"
+      },
+      "mersisNumber": {
+        "label": "MERSIS Number"
+      }
+    },
+    "contact": {
+      "title": "Contact Information",
+      "email": "Email",
+      "phone": "Phone",
+      "fax": "Fax",
+      "website": "Website",
+      "address": {
+        "title": "Address Information",
+        "headquarters": "Headquarters Address",
+        "factory": "Factory Address",
+        "branches": "Branch Addresses"
+      },
+      "authorized": {
+        "title": "Authorized Person",
+        "name": "Full Name",
+        "title": "Title",
+        "department": "Department",
+        "email": "Email",
+        "phone": "Phone"
+      }
+    },
+    "notifications": {
+      "title": "Notification Preferences",
+      "email": {
+        "label": "Email Notifications",
+        "description": "Receive email notifications for important updates and reminders"
+      },
+      "sms": {
+        "label": "SMS Notifications",
+        "description": "Receive SMS notifications for urgent matters and important reminders"
+      },
+      "system": {
+        "label": "System Alerts",
+        "description": "Receive in-platform notifications and alerts"
+      },
+      "documents": {
+        "label": "Document Reminders",
+        "description": "Receive reminders for document uploads and updates"
+      },
+      "certifications": {
+        "label": "Certification Alerts",
+        "description": "Receive notifications for certification renewals and expiration dates"
+      }
+    },
+    "success": {
+      "title": "Settings updated",
+      "description": "Your settings have been saved successfully."
+    }
   }
 }
