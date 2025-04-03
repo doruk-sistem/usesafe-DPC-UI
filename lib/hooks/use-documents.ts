@@ -59,11 +59,11 @@ export const documentsApiHooks = {
               // Handle documents as an object with arrays
               Object.entries(product.documents).forEach(([docType, docs]) => {
                 if (Array.isArray(docs)) {
-                  docs.forEach((doc: any) => {
+                  docs.forEach((doc: any, index: number) => {
                     // Generate a consistent document ID
                     // First try to use the existing ID if it exists
-                    // Otherwise generate a new one with the format: productId-documentName-documentType
-                    const documentId = doc.id || `${product.id}-${doc.name}-${docType}`;
+                    // Otherwise generate a new one with the format: productId-documentName-documentType-index
+                    const documentId = doc.id || `${product.id}-${doc.name}-${docType}-${index}`;
                     console.log("Generated document ID:", documentId);
                     
                     allDocuments.push({
@@ -88,11 +88,11 @@ export const documentsApiHooks = {
             }
             // Check if documents is an array
             else if (product.documents && Array.isArray(product.documents)) {
-              product.documents.forEach((doc: any) => {
+              product.documents.forEach((doc: any, index: number) => {
                 // Generate a consistent document ID
                 // First try to use the existing ID if it exists
-                // Otherwise generate a new one with the format: productId-documentName-documentType
-                const documentId = doc.id || `${product.id}-${doc.name}-${doc.type || 'technical_docs'}`;
+                // Otherwise generate a new one with the format: productId-documentName-documentType-index
+                const documentId = doc.id || `${product.id}-${doc.name}-${doc.type || 'technical_docs'}-${index}`;
                 console.log("Generated document ID:", documentId);
                 
                 allDocuments.push({
@@ -452,6 +452,111 @@ export const documentsApiHooks = {
       },
       onError: (error) => {
         console.error("Error in direct document status update:", error);
+      }
+    });
+  },
+
+  // Ürün reddetme işlevi
+  useRejectProduct: () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+      mutationFn: async ({ productId, reason }: { productId: string; reason: string }) => {
+        console.log("Rejecting product:", { productId, reason });
+        
+        try {
+          // Ürünü bul
+          const { data: products, error: fetchError } = await supabase
+            .from("products")
+            .select("*")
+            .eq("id", productId);
+          
+          if (fetchError) {
+            console.error("Error fetching product:", fetchError);
+            throw new Error(`Failed to fetch product: ${fetchError.message}`);
+          }
+          
+          if (!products || products.length === 0) {
+            throw new Error(`No product found with ID ${productId}`);
+          }
+          
+          const product = products[0];
+          console.log("Product before rejection:", product);
+          
+          // Ürün durumunu değiştirmek yerine, ürünün belgelerini güncelle
+          // Bu, ürün durumunu değiştirmeden ürünü reddetmemizi sağlar
+          
+          // Belgeleri güncelle
+          let updatedDocuments;
+          
+          // Belgeleri nesne olarak işle
+          if (product.documents && typeof product.documents === 'object' && !Array.isArray(product.documents)) {
+            updatedDocuments = JSON.parse(JSON.stringify(product.documents));
+            
+            // Tüm belge tiplerini kontrol et
+            for (const docType in updatedDocuments) {
+              if (Array.isArray(updatedDocuments[docType])) {
+                // Tüm belgeleri reddedilmiş olarak işaretle
+                updatedDocuments[docType] = updatedDocuments[docType].map((doc: any) => ({
+                  ...doc,
+                  status: "rejected",
+                  rejection_reason: reason,
+                  rejection_date: new Date().toISOString()
+                }));
+              }
+            }
+          }
+          // Belgeleri dizi olarak işle
+          else if (Array.isArray(product.documents)) {
+            updatedDocuments = JSON.parse(JSON.stringify(product.documents));
+            
+            // Tüm belgeleri reddedilmiş olarak işaretle
+            updatedDocuments = updatedDocuments.map((doc: any) => ({
+              ...doc,
+              status: "rejected",
+              rejection_reason: reason,
+              rejection_date: new Date().toISOString()
+            }));
+          } else {
+            // Belgeler yok, yeni oluştur
+            // Burada documents değişkenini bir dizi olarak kullanmıyoruz
+            // Bunun yerine, doğrudan bir dizi oluşturuyoruz
+            updatedDocuments = [{
+              id: `rejected-${product.id}-${Date.now()}`, // Benzersiz ID oluştur
+              name: "Product Rejection",
+              type: "rejection",
+              status: "rejected",
+              rejection_reason: reason,
+              rejection_date: new Date().toISOString()
+            }];
+          }
+          
+          // Ürünü güncelle
+          const { data: updatedProduct, error: updateError } = await supabase
+            .from("products")
+            .update({ documents: updatedDocuments })
+            .eq("id", product.id)
+            .select();
+          
+          if (updateError) {
+            console.error("Error updating product documents:", updateError);
+            throw new Error(`Failed to update product documents: ${updateError.message}`);
+          }
+          
+          console.log("Product after rejection:", updatedProduct);
+          
+          return updatedProduct;
+        } catch (error) {
+          console.error("Error in product rejection:", error);
+          throw error;
+        }
+      },
+      onSuccess: (data) => {
+        console.log("Product rejection successful:", data);
+        queryClient.invalidateQueries({ queryKey: ["getDocuments"] });
+        queryClient.invalidateQueries({ queryKey: ["getProducts"] });
+      },
+      onError: (error) => {
+        console.error("Error in product rejection:", error);
       }
     });
   },

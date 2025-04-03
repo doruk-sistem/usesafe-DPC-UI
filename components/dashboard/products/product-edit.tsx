@@ -111,24 +111,60 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
 
         // Extract all documents from the product and add IDs if missing
         if (data.documents) {
-          const docs = Object.entries(data.documents).flatMap(([type, documents]: [string, any[]]) => {
-            return documents.map((doc: any, index: number) => {
+          // Check if documents is an object with arrays
+          if (typeof data.documents === 'object' && !Array.isArray(data.documents)) {
+            const docs = Object.entries(data.documents).flatMap(([type, documents]: [string, any[]]) => {
+              // Check if documents is an array before using map
+              if (Array.isArray(documents)) {
+                return documents.map((doc: any, index: number) => {
+                  // Add an ID if it doesn't exist
+                  if (!doc.id) {
+                    doc.id = `doc-${type}-${index}-${Date.now()}`;
+                  }
+                  return doc;
+                });
+              } else {
+                // If documents is not an array, return an empty array
+                console.warn(`Documents for type ${type} is not an array:`, documents);
+                return [];
+              }
+            });
+            setAllDocuments(docs);
+            
+            // If we have a reuploadDocumentId, find the rejected document
+            if (reuploadDocumentId) {
+              const doc = docs.find((doc: any) => doc.id === reuploadDocumentId);
+              if (doc) {
+                setRejectedDocument(doc);
+              }
+            }
+          } 
+          // Check if documents is an array
+          else if (Array.isArray(data.documents)) {
+            const docs = data.documents.map((doc: any, index: number) => {
               // Add an ID if it doesn't exist
               if (!doc.id) {
-                doc.id = `doc-${type}-${index}-${Date.now()}`;
+                doc.id = `doc-${doc.type || 'unknown'}-${index}-${Date.now()}`;
               }
               return doc;
             });
-          });
-          setAllDocuments(docs);
-          
-          // If we have a reuploadDocumentId, find the rejected document
-          if (reuploadDocumentId) {
-            const doc = docs.find((doc: any) => doc.id === reuploadDocumentId);
-            if (doc) {
-              setRejectedDocument(doc);
+            setAllDocuments(docs);
+            
+            // If we have a reuploadDocumentId, find the rejected document
+            if (reuploadDocumentId) {
+              const doc = docs.find((doc: any) => doc.id === reuploadDocumentId);
+              if (doc) {
+                setRejectedDocument(doc);
+              }
             }
+          } else {
+            // If documents is neither an object nor an array, set empty array
+            console.warn("Documents is neither an object nor an array:", data.documents);
+            setAllDocuments([]);
           }
+        } else {
+          // If no documents, set empty array
+          setAllDocuments([]);
         }
       } catch (error) {
         console.error("Error fetching product:", error);

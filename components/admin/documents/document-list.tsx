@@ -71,6 +71,7 @@ export function DocumentList() {
   const { data: allProducts = [], isLoading: isLoadingProducts } = documentsApiHooks.useGetProducts();
   const { mutate: updateDocumentStatus } = documentsApiHooks.useUpdateDocumentStatus();
   const { mutate: updateDocumentStatusDirect } = documentsApiHooks.useUpdateDocumentStatusDirect();
+  const { mutate: rejectProduct } = documentsApiHooks.useRejectProduct();
   
   console.log("DEBUG: Documents API Response:", { 
     documentCount: documents.length,
@@ -297,16 +298,29 @@ export function DocumentList() {
   };
 
   const submitRejectProduct = async () => {
+    if (!selectedProductId || !rejectReason) {
+      console.error("DEBUG: Missing product ID or reject reason");
+      return;
+    }
+
+    console.log("DEBUG: Rejecting product with ID:", selectedProductId);
+    console.log("DEBUG: Reject reason:", rejectReason);
+    
     try {
-      // Instead of using rejectProduct mutation, show a toast message
+      await rejectProduct({
+        productId: selectedProductId,
+        reason: rejectReason,
+      });
+      
       toast({
-        title: "Feature Not Available",
-        description: "Product rejection functionality is currently unavailable.",
-        variant: "destructive",
+        title: "Success",
+        description: "Product rejected successfully",
       });
       setRejectDialogOpen(false);
       setRejectReason("");
+      setSelectedProductId(null);
     } catch (error) {
+      console.error("DEBUG: Error rejecting product:", error);
       toast({
         title: "Error",
         description: "Failed to reject product. Please try again.",
