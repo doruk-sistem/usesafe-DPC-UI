@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { ListChecks } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { KeyFeature } from "@/lib/types/product";
@@ -12,6 +13,8 @@ export interface ProductKeyFeaturesProps {
 }
 
 export function ProductKeyFeatures({ features, itemVariants }: ProductKeyFeaturesProps) {
+  const t = useTranslations("products.details.keyFeatures");
+
   return (
     <motion.div
       variants={itemVariants}
@@ -21,7 +24,7 @@ export function ProductKeyFeatures({ features, itemVariants }: ProductKeyFeature
         <CardHeader>
           <div className="flex items-center gap-2">
             <ListChecks className="w-5 h-5 text-primary" />
-            <CardTitle>Key Features</CardTitle>
+            <CardTitle>{t("title")}</CardTitle>
           </div>
         </CardHeader>
         <CardContent>

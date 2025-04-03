@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { ArrowLeft, HardHat, Warehouse } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 
 import { ProductQR } from "@/components/products/product-qr";
@@ -26,6 +27,8 @@ interface BatteryProductDetailsProps {
 }
 
 export function BatteryProductDetails({ product }: BatteryProductDetailsProps) {
+  const t = useTranslations("products.details");
+
   // Extract data from DPP config
   const getFieldValue = (sectionId: string, fieldId: string) => {
     if (!product?.dpp_config?.sections) return undefined;
@@ -77,14 +80,16 @@ export function BatteryProductDetails({ product }: BatteryProductDetailsProps) {
   const environmentalFields =
     product.dpp_config?.sections
       .find((s) => s.id === "environmental")
-      ?.fields?.map((field) => ({
-        id: field.id,
-        name: field.name,
-        value:
-          typeof field.value === "object"
-            ? JSON.stringify(field.value)
-            : field.value,
-      })) || [];
+      ?.fields?.map((field) => {
+        const fieldValue = typeof field.value === "object"
+          ? JSON.stringify(field.value)
+          : field.value;
+        return {
+          id: field.id,
+          name: field.name,
+          value: fieldValue || ""
+        };
+      }) || [];
 
   // Predefined arrays for specific sections
   const hazardPictograms = [
@@ -245,7 +250,7 @@ export function BatteryProductDetails({ product }: BatteryProductDetailsProps) {
               className="gradient-hover group flex items-center"
             >
               <ArrowLeft className="mr-2 h-4 w-4 group-hover:-translate-x-1 transition-transform" />
-              Back to Products
+              {t("backToProducts")}
             </Button>
           </motion.div>
         </Link>
@@ -307,7 +312,7 @@ export function BatteryProductDetails({ product }: BatteryProductDetailsProps) {
           <CardHeader>
             <div className="flex items-center gap-2">
               <HardHat className="h-5 w-5 text-primary" />
-              <CardTitle>Health and Safety Measures</CardTitle>
+              <CardTitle>{t("battery.healthAndSafety.title")}</CardTitle>
             </div>
           </CardHeader>
           <CardContent>
@@ -332,14 +337,14 @@ export function BatteryProductDetails({ product }: BatteryProductDetailsProps) {
           <CardHeader>
             <div className="flex items-center gap-2">
               <Warehouse className="h-5 w-5 text-primary" />
-              <CardTitle>Storage and Installation Guidelines</CardTitle>
+              <CardTitle>{t("battery.storage.title")}</CardTitle>
             </div>
           </CardHeader>
           <CardContent>
             <div className="space-y-6">
               {storageGuidelines.map((section, index) => (
                 <div key={index} className="space-y-3">
-                  <h3 className="font-semibold text-lg">{section.title}</h3>
+                  <h3 className="font-semibold text-lg">{t(`battery.storage.sections.${section.title.toLowerCase().replace(" ", "")}`)}</h3>
                   <ul className="list-disc pl-6 space-y-2">
                     {section.items.map((item, itemIndex) => (
                       <li key={itemIndex} className="text-muted-foreground">

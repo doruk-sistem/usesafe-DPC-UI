@@ -5,35 +5,38 @@ import { ArrowLeft, AlertCircle, Upload, FileText, Download, Trash2, Plus } from
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Textarea } from "@/components/ui/textarea";
+import { productsApiHooks } from "@/lib/hooks/use-products";
+import type { Product } from "@/lib/types/product";
+
+const formSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  model: z.string().min(2, "Model must be at least 2 characters"),
+  description: z.string().min(10, "Description must be at least 10 characters"),
+  product_type: z.string().min(2, "Product type must be at least 2 characters"),
+  status: z.enum(["DRAFT", "NEW", "DELETED", "ARCHIVED"]),
+});
+
+type FormValues = z.infer<typeof formSchema>;
 
 interface ProductEditProps {
-  productId: string;
-  reuploadDocumentId?: string;
-}
-
-interface Product {
-  id: string;
-  name: string;
-  model: string;
-  product_type: string;
-  status: string;
-  documents: Record<string, any[]>;
-  images?: Array<{
-    url: string;
-    alt?: string;
-    is_primary?: boolean;
-  }>;
+  product: Product;
 }
 
 interface Document {
@@ -48,11 +51,58 @@ interface Document {
   version?: string;
 }
 
-export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps) {
+export function ProductEdit({ product: initialProduct }: ProductEditProps) {
+  const supabase = createClientComponentClient();
+  const t = useTranslations("productManagement");
+  const router = useRouter();
+  const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: initialProduct.name,
+      model: initialProduct.model,
+      description: initialProduct.description,
+      product_type: initialProduct.product_type,
+      status: initialProduct.status,
+    },
+  });
+
+  const { mutate: updateProduct } = productsApiHooks.useUpdateProductMutation({
+    onSuccess: () => {
+      toast({
+        title: t("edit.success.title"),
+        description: t("edit.success.description"),
+      });
+      router.push("/dashboard/products");
+    },
+    onError: (error) => {
+      toast({
+        title: t("edit.error.title"),
+        description: error instanceof Error ? error.message : t("edit.error.description"),
+        variant: "destructive",
+      });
+    },
+    onSettled: () => {
+      setIsLoading(false);
+    },
+  });
+
+  const onSubmit = (values: FormValues) => {
+    setIsLoading(true);
+    updateProduct({
+      id: initialProduct.id,
+      product: {
+        ...values,
+        id: initialProduct.id,
+      },
+    });
+  };
+
   const [product, setProduct] = useState<Product | null>(null);
   const [rejectedDocument, setRejectedDocument] = useState<Document | null>(null);
   const [allDocuments, setAllDocuments] = useState<Document[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
@@ -66,17 +116,6 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
     type: "technical_docs",
   });
   const [showAddDialog, setShowAddDialog] = useState(false);
-  const { toast } = useToast();
-  const router = useRouter();
-  const supabase = createClientComponentClient();
-
-  // Form state
-  const [formData, setFormData] = useState({
-    name: "",
-    model: "",
-    product_type: "",
-  });
-
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [newImage, setNewImage] = useState<File | null>(null);
 
@@ -86,17 +125,19 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
         const { data, error } = await supabase
           .from("products")
           .select("*")
-          .eq("id", productId)
+          .eq("id", initialProduct.id)
           .single();
 
         if (error) throw error;
         setProduct(data);
         
         // Initialize form data
-        setFormData({
+        form.reset({
           name: data.name,
           model: data.model,
+          description: data.description,
           product_type: data.product_type,
+          status: data.status,
         });
 
         // Extract all documents from the product and add IDs if missing
@@ -113,8 +154,8 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
           setAllDocuments(docs);
           
           // If we have a reuploadDocumentId, find the rejected document
-          if (reuploadDocumentId) {
-            const doc = docs.find((doc: any) => doc.id === reuploadDocumentId);
+          if (data.rejected_document_id) {
+            const doc = docs.find((doc: any) => doc.id === data.rejected_document_id);
             if (doc) {
               setRejectedDocument(doc);
             }
@@ -133,14 +174,14 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
     }
 
     fetchProduct();
-  }, [productId, reuploadDocumentId, toast, supabase]);
+  }, [initialProduct.id, toast, supabase, form]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
+    form.reset({
+      ...form.getValues(),
       [id]: value
-    }));
+    });
   };
 
   const handleNewDocumentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -395,9 +436,11 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
       const { error } = await supabase
         .from("products")
         .update({
-          name: formData.name,
-          model: formData.model,
-          product_type: formData.product_type,
+          name: form.getValues().name,
+          model: form.getValues().model,
+          product_type: form.getValues().product_type,
+          description: form.getValues().description,
+          status: form.getValues().status,
           documents: allDocuments.reduce((acc, doc) => {
             if (!acc[doc.type]) {
               acc[doc.type] = [];
@@ -406,7 +449,7 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
             return acc;
           }, {} as Record<string, any[]>),
         })
-        .eq("id", productId);
+        .eq("id", product.id);
       
       if (error) throw error;
       
@@ -450,7 +493,7 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
     setIsUploadingImage(true);
     try {
       const fileExt = file.name.split('.').pop();
-      const fileName = `${productId}-${Date.now()}.${fileExt}`;
+      const fileName = `${product.id}-${Date.now()}.${fileExt}`;
       const filePath = `products/${fileName}`;
 
       const { error: uploadError } = await supabase.storage
@@ -474,7 +517,7 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
       const { error: updateError } = await supabase
         .from('products')
         .update({ images: updatedImages })
-        .eq('id', productId);
+        .eq('id', product.id);
 
       if (updateError) throw updateError;
 
@@ -505,7 +548,7 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
       const { error: updateError } = await supabase
         .from('products')
         .update({ images: updatedImages })
-        .eq('id', productId);
+        .eq('id', product.id);
 
       if (updateError) throw updateError;
 
@@ -536,7 +579,7 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
       const { error: updateError } = await supabase
         .from('products')
         .update({ images: updatedImages })
-        .eq('id', productId);
+        .eq('id', product.id);
 
       if (updateError) throw updateError;
 
@@ -592,276 +635,94 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
   }
 
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
-        <div className="flex items-center space-x-2">
-          <Button variant="ghost" size="icon" asChild>
-            <Link href="/dashboard/products">
-              <ArrowLeft className="h-4 w-4" />
-              <span className="sr-only">Back</span>
-            </Link>
-          </Button>
-          <CardTitle>Edit Product</CardTitle>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-6">
-          {rejectedDocument && (
-            <Alert variant="destructive" key="rejected-document-alert">
-              <AlertCircle className="h-4 w-4" />
-              <AlertTitle>Document Rejected</AlertTitle>
-              <AlertDescription>
-                <div className="mt-2">
-                  <p key="doc-name"><strong>Document:</strong> {rejectedDocument.name}</p>
-                  <p key="doc-type"><strong>Type:</strong> {rejectedDocument.type}</p>
-                  <p key="doc-reason"><strong>Rejection Reason:</strong> {rejectedDocument.rejection_reason}</p>
-                  <p key="doc-date"><strong>Rejection Date:</strong> {new Date(rejectedDocument.rejection_date || "").toLocaleDateString()}</p>
-                </div>
-              </AlertDescription>
-            </Alert>
-          )}
-          
-          <div className="space-y-2">
-            <Label htmlFor="name">Product Name</Label>
-            <Input 
-              id="name" 
-              value={formData.name} 
-              onChange={handleInputChange}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="model">Model</Label>
-            <Input 
-              id="model" 
-              value={formData.model} 
-              onChange={handleInputChange}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="type">Product Type</Label>
-            <Input 
-              id="product_type" 
-              value={formData.product_type} 
-              onChange={handleInputChange}
-            />
-          </div>
-          
-          <Separator className="my-6" />
-          
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold">Product Images</h3>
-              <div className="flex items-center gap-2">
-                <Input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) {
-                      setNewImage(file);
-                      handleImageUpload(file);
-                    }
-                  }}
-                  className="hidden"
-                  id="image-upload"
-                />
-                <Button
-                  size="sm"
-                  onClick={() => document.getElementById('image-upload')?.click()}
-                  disabled={isUploadingImage}
-                >
-                  {isUploadingImage ? (
-                    "Uploading..."
-                  ) : (
-                    <>
-                      <Upload className="h-4 w-4 mr-2" />
-                      Add New Image
-                    </>
-                  )}
-                </Button>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {product?.images?.map((image, index) => (
-                <div key={index} className="relative group">
-                  <div className="aspect-square relative rounded-lg overflow-hidden border">
-                    <img
-                      src={image.url}
-                      alt={image.alt || `Product image ${index + 1}`}
-                      className="object-cover w-full h-full"
-                    />
-                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        onClick={() => handleSetPrimaryImage(image.url)}
-                        disabled={image.is_primary}
+    <div className="container max-w-4xl mx-auto py-10 px-4">
+      <Card>
+        <CardHeader>
+          <CardTitle>{t("edit.title")}</CardTitle>
+          <CardDescription>{t("edit.description")}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("edit.form.name")}</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="model"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("edit.form.model")}</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("edit.form.description")}</FormLabel>
+                    <FormControl>
+                      <Textarea {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="product_type"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("edit.form.productType")}</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("edit.form.status")}</FormLabel>
+                    <FormControl>
+                      <select
+                        {...field}
+                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                       >
-                        {image.is_primary ? "Primary" : "Set as Primary"}
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="destructive"
-                        onClick={() => handleDeleteImage(image.url)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-          
-          <Separator className="my-6" />
-          
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold">Product Documents</h3>
-              <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
-                <DialogTrigger asChild>
-                  <Button size="sm">
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add New Document
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Add New Document</DialogTitle>
-                    <DialogDescription>
-                      Upload a new document for this product.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div className="space-y-4 py-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="document-file">Document File</Label>
-                      <Input
-                        id="document-file"
-                        type="file"
-                        onChange={handleNewDocumentChange}
-                      />
-                      {newDocument.file && (
-                        <p className="text-sm text-muted-foreground">
-                          Selected: {newDocument.name}
-                        </p>
-                      )}
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="document-type">Document Type</Label>
-                      <Select
-                        value={newDocument.type}
-                        onValueChange={handleDocumentTypeChange}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select document type" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="technical_docs">Technical Documentation</SelectItem>
-                          <SelectItem value="test_reports">Test Reports</SelectItem>
-                          <SelectItem value="compliance_docs">Compliance Documents</SelectItem>
-                          <SelectItem value="certificates">Certificates</SelectItem>
-                          <SelectItem value="other">Other</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-                  <DialogFooter>
-                    <Button variant="outline" onClick={() => setShowAddDialog(false)}>
-                      Cancel
-                    </Button>
-                    <Button onClick={handleAddNewDocument} disabled={isUploading || !newDocument.file}>
-                      {isUploading ? "Uploading..." : "Upload Document"}
-                    </Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
-            </div>
-            
-            {allDocuments.length === 0 ? (
-              <div className="text-center py-6 text-muted-foreground">
-                No documents found for this product.
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {allDocuments.map((doc) => (
-                  <div key={doc.id || `doc-${doc.name}-${doc.type}`} className="border rounded-md p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center space-x-2">
-                        <FileText className="h-5 w-5 text-muted-foreground" />
-                        <span className="font-medium">{doc.name}</span>
-                        {getStatusBadge(doc.status)}
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Button variant="ghost" size="sm" asChild>
-                          <Link href={doc.file_url || "#"}>
-                            <Download className="h-4 w-4 mr-1" />
-                            Download
-                          </Link>
-                        </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          onClick={() => {
-                            console.log("Delete button clicked for document:", doc);
-                            if (doc.id) {
-                              handleDeleteDocument(doc.id, doc.name, doc.type);
-                            } else {
-                              // Generate a temporary ID if none exists
-                              const tempId = `doc-${doc.name}-${doc.type}-${Date.now()}`;
-                              console.log("Generated temporary ID:", tempId);
-                              handleDeleteDocument(tempId, doc.name, doc.type);
-                            }
-                          }}
-                          disabled={isDeleting === (doc.id || `doc-${doc.name}-${doc.type}`)}
-                        >
-                          <Trash2 className="h-4 w-4 mr-1" />
-                          {isDeleting === (doc.id || `doc-${doc.name}-${doc.type}`) ? "Deleting..." : "Delete"}
-                        </Button>
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground">
-                      <div key={`doc-type-${doc.id || doc.name}`}><span className="font-medium">Type:</span> {doc.type}</div>
-                      <div key={`doc-version-${doc.id || doc.name}`}><span className="font-medium">Version:</span> {doc.version || "N/A"}</div>
-                      <div key={`doc-upload-date-${doc.id || doc.name}`}><span className="font-medium">Upload Date:</span> {doc.upload_date ? new Date(doc.upload_date).toLocaleDateString() : "N/A"}</div>
-                      {doc.rejection_reason && (
-                        <div key={`doc-rejection-reason-${doc.id || doc.name}`}><span className="font-medium">Rejection Reason:</span> {doc.rejection_reason}</div>
-                      )}
-                    </div>
-                    
-                    {doc.id === reuploadDocumentId && (
-                      <div className="mt-4 pt-4 border-t">
-                        <Label htmlFor={`document-${doc.id || doc.name}`} className="text-sm font-medium">Re-upload Document</Label>
-                        <div className="flex items-center space-x-2 mt-2">
-                          <Input
-                            id={`document-${doc.id || doc.name}`}
-                            type="file"
-                            onChange={(e) => handleFileUpload(e, doc.id)}
-                            className="flex-1"
-                          />
-                          <Button size="sm" disabled={isUploading}>
-                            <Upload className="h-4 w-4 mr-2" />
-                            {isUploading ? "Uploading..." : "Upload"}
-                          </Button>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-          
-          <div className="flex justify-end space-x-2">
-            <Button variant="outline" asChild>
-              <Link href="/dashboard/products">Cancel</Link>
-            </Button>
-            <Button onClick={handleSaveChanges} disabled={isSaving}>
-              {isSaving ? "Saving..." : "Save Changes"}
-            </Button>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+                        <option value="NEW">New</option>
+                        <option value="DRAFT">Draft</option>
+                        <option value="PUBLISHED">Published</option>
+                      </select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button type="submit" className="w-full" disabled={isLoading}>
+                {isLoading ? "Loading..." : t("edit.form.submit")}
+              </Button>
+            </form>
+          </Form>
+        </CardContent>
+      </Card>
+    </div>
   );
 } 

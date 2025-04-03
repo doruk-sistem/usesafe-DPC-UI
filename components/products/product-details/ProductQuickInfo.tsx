@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Barcode, Factory } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { Card } from "@/components/ui/card";
 
@@ -12,6 +13,8 @@ export interface ProductQuickInfoProps {
 }
 
 export function ProductQuickInfo({ model, manufacturer, cardVariants }: ProductQuickInfoProps) {
+  const t = useTranslations("products.details.quickInfo");
+
   return (
     <div className="grid grid-cols-2 gap-4">
       <motion.div
@@ -21,7 +24,7 @@ export function ProductQuickInfo({ model, manufacturer, cardVariants }: ProductQ
         <Card className="p-4 flex items-center gap-3">
           <Barcode className="w-5 h-5 text-primary" />
           <div>
-            <p className="text-sm text-muted-foreground">Model</p>
+            <p className="text-sm text-muted-foreground">{t("model")}</p>
             <p className="font-medium">{model}</p>
           </div>
         </Card>
@@ -34,7 +37,7 @@ export function ProductQuickInfo({ model, manufacturer, cardVariants }: ProductQ
         <Card className="p-4 flex items-center gap-3">
           <Factory className="w-5 h-5 text-primary" />
           <div>
-            <p className="text-sm text-muted-foreground">Manufacturer</p>
+            <p className="text-sm text-muted-foreground">{t("manufacturer")}</p>
             <p className="font-medium">{manufacturer}</p>
           </div>
         </Card>
