@@ -8,10 +8,15 @@ import {
   CheckCircle,
   XCircle,
   Clock,
+  ChevronDown,
+  ChevronRight,
 } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -46,63 +51,39 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useToast } from "@/components/ui/use-toast";
-
-const documents = [
-  {
-    id: "DOC-001",
-    name: "ISO 9001:2015 Certificate",
-    type: "Certification",
-    manufacturer: "TechFabrics Ltd",
-    manufacturerId: "MFR-001",
-    status: "pending",
-    validUntil: "2025-03-15",
-    uploadedAt: "2024-03-15T10:30:00",
-    fileSize: "2.4 MB",
-    version: "1.0",
-  },
-  {
-    id: "DOC-002",
-    name: "Environmental Compliance Report",
-    type: "Compliance",
-    manufacturer: "EcoTextiles Co",
-    manufacturerId: "MFR-002",
-    status: "approved",
-    validUntil: "2024-12-31",
-    uploadedAt: "2024-03-14T15:45:00",
-    fileSize: "1.8 MB",
-    version: "2.1",
-  },
-  {
-    id: "DOC-003",
-    name: "Quality Control Certificate",
-    type: "Quality",
-    manufacturer: "Sustainable Wear",
-    manufacturerId: "MFR-003",
-    status: "rejected",
-    validUntil: "2024-09-30",
-    uploadedAt: "2024-03-13T09:15:00",
-    fileSize: "3.2 MB",
-    version: "1.0",
-  },
-  {
-    id: "DOC-004",
-    name: "Manufacturing License",
-    type: "Legal",
-    manufacturer: "TechFabrics Ltd",
-    manufacturerId: "MFR-001",
-    status: "expired",
-    validUntil: "2024-02-28",
-    uploadedAt: "2023-03-01T11:20:00",
-    fileSize: "1.5 MB",
-    version: "1.0",
-  },
-];
+import { documentsApiHooks } from "@/lib/hooks/use-documents";
+import type { Document } from "@/lib/types/document";
 
 export function DocumentList() {
   const { toast } = useToast();
   const searchParams = useSearchParams();
   const manufacturerId = searchParams.get("manufacturer");
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [expandedProducts, setExpandedProducts] = useState<Record<string, boolean>>({});
+  const [rejectDialogOpen, setRejectDialogOpen] = useState<boolean>(false);
+  const [rejectReason, setRejectReason] = useState<string>("");
+  const [selectedProductId, setSelectedProductId] = useState<string>("");
+  const [documentRejectDialogOpen, setDocumentRejectDialogOpen] = useState<boolean>(false);
+  const [documentRejectReason, setDocumentRejectReason] = useState<string>("");
+  const [selectedDocumentId, setSelectedDocumentId] = useState<string>("");
+
+  const { data: documents = [], isLoading, error } = documentsApiHooks.useGetDocuments();
+  const { data: allProducts = [], isLoading: isLoadingProducts } = documentsApiHooks.useGetProducts();
+  const { mutate: updateDocumentStatus } = documentsApiHooks.useUpdateDocumentStatus();
+  const { mutate: updateDocumentStatusDirect } = documentsApiHooks.useUpdateDocumentStatusDirect();
+  
+  console.log("DEBUG: Documents API Response:", { 
+    documentCount: documents.length,
+    isLoading, 
+    error 
+  });
+  console.log("DEBUG: Products API Response:", { 
+    productCount: allProducts.length, 
+    isLoadingProducts 
+  });
+
+  console.log("DEBUG: Manufacturer ID from URL:", manufacturerId);
+  console.log("DEBUG: Status filter:", statusFilter);
 
   const filteredDocuments = documents
     .filter((doc) =>
@@ -111,8 +92,230 @@ export function DocumentList() {
     .filter((doc) =>
       statusFilter === "all" ? true : doc.status === statusFilter
     );
+    
+  console.log("DEBUG: Filtered Documents:", filteredDocuments.map(doc => ({
+    id: doc.id,
+    name: doc.name,
+    type: doc.type,
+    manufacturer: doc.manufacturer,
+    manufacturerId: doc.manufacturerId,
+    status: doc.status
+  })));
 
-  const getStatusIcon = (status: string) => {
+  // Group documents by product
+  const documentsByProduct = filteredDocuments.reduce<Record<string, Document[]>>((acc, doc) => {
+    // Use productId for grouping
+    const productId = doc.productId;
+    console.log("DEBUG: Grouping document by product:", {
+      documentId: doc.id,
+      documentName: doc.name,
+      productId: productId,
+      manufacturerId: doc.manufacturerId
+    });
+    
+    if (!acc[productId]) {
+      acc[productId] = [];
+    }
+    // Check if this document is already in the array to avoid duplicates
+    const isDuplicate = acc[productId].some(existingDoc => 
+      existingDoc.id === doc.id && existingDoc.type === doc.type
+    );
+    if (!isDuplicate) {
+      acc[productId].push(doc);
+    } else {
+      console.log("DEBUG: Skipping duplicate document:", {
+        documentId: doc.id,
+        documentName: doc.name,
+        productId: productId
+      });
+    }
+    return acc;
+  }, {});
+
+  // Add products with no documents
+  allProducts.forEach(product => {
+    if (!documentsByProduct[product.id]) {
+      console.log("DEBUG: Adding product with no documents:", {
+        productId: product.id,
+        productName: product.name
+      });
+      documentsByProduct[product.id] = [];
+    }
+  });
+
+  // Create a mapping of product IDs to product names for display
+  const productNameMap = allProducts.reduce<Record<string, string>>((acc, product) => {
+    acc[product.id] = product.name;
+    return acc;
+  }, {});
+
+  const handleApprove = async (documentId: string) => {
+    console.log("DEBUG: Approving document with ID:", documentId);
+    console.log("DEBUG: All available documents:", documents);
+    
+    try {
+      // Find the document in the filtered documents array
+      console.log("DEBUG: Searching for document in filtered documents. Count:", filteredDocuments.length);
+      const document = filteredDocuments.find(doc => {
+        console.log("DEBUG: Comparing document:", {
+          docId: doc.id,
+          docName: doc.name,
+          docType: doc.type,
+          docManufacturerId: doc.manufacturerId,
+          docManufacturer: doc.manufacturer,
+          targetId: documentId
+        });
+        return doc.id === documentId;
+      });
+
+      if (!document) {
+        console.error("DEBUG: Document not found in filtered documents. Document ID:", documentId);
+        console.log("DEBUG: Available documents:", filteredDocuments.map(d => ({ 
+          id: d.id, 
+          name: d.name, 
+          type: d.type,
+          manufacturerId: d.manufacturerId,
+          manufacturer: d.manufacturer
+        })));
+        return;
+      }
+      
+      console.log("DEBUG: Found document to approve:", {
+        id: document.id,
+        name: document.name,
+        type: document.type,
+        manufacturerId: document.manufacturerId,
+        manufacturer: document.manufacturer,
+        status: document.status
+      });
+      
+      // Doğrudan belge nesnesini kullanarak durumu güncelle
+      await updateDocumentStatusDirect({
+        document,
+        status: "approved",
+      });
+      
+      toast({
+        title: "Success",
+        description: "Document approved successfully",
+      });
+    } catch (error) {
+      console.error("DEBUG: Error approving document:", error);
+      toast({
+        title: "Error",
+        description: "Failed to approve document. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleReject = async (docId: string) => {
+    console.log("DEBUG: Rejecting document with ID:", docId);
+    setSelectedDocumentId(docId);
+    setDocumentRejectDialogOpen(true);
+  };
+
+  const submitRejectDocument = async () => {
+    if (!selectedDocumentId || !documentRejectReason) {
+      console.error("DEBUG: Missing document ID or reject reason");
+      return;
+    }
+
+    console.log("DEBUG: Rejecting document with ID:", selectedDocumentId);
+    console.log("DEBUG: Reject reason:", documentRejectReason);
+    console.log("DEBUG: All available documents:", documents);
+    
+    try {
+      // Find the document in the filtered documents array
+      console.log("DEBUG: Searching for document in filtered documents. Count:", filteredDocuments.length);
+      const document = filteredDocuments.find(doc => {
+        console.log("DEBUG: Comparing document:", {
+          docId: doc.id,
+          docName: doc.name,
+          docType: doc.type,
+          docManufacturerId: doc.manufacturerId,
+          docManufacturer: doc.manufacturer,
+          targetId: selectedDocumentId
+        });
+        return doc.id === selectedDocumentId;
+      });
+
+      if (!document) {
+        console.error("DEBUG: Document not found in filtered documents. Document ID:", selectedDocumentId);
+        console.log("DEBUG: Available documents:", filteredDocuments.map(d => ({ 
+          id: d.id, 
+          name: d.name, 
+          type: d.type,
+          manufacturerId: d.manufacturerId,
+          manufacturer: d.manufacturer
+        })));
+        return;
+      }
+      
+      console.log("DEBUG: Found document to reject:", {
+        id: document.id,
+        name: document.name,
+        type: document.type,
+        manufacturerId: document.manufacturerId,
+        manufacturer: document.manufacturer,
+        status: document.status
+      });
+      
+      // Reddetme nedeni ve tarihini ekle
+      const updatedDocument = {
+        ...document,
+        rejection_reason: documentRejectReason,
+        rejection_date: new Date().toISOString()
+      };
+      
+      // Doğrudan belge nesnesini kullanarak durumu güncelle
+      await updateDocumentStatusDirect({
+        document: updatedDocument,
+        status: "rejected",
+      });
+      
+      toast({
+        title: "Success",
+        description: "Document rejected successfully",
+      });
+      setDocumentRejectReason("");
+      setSelectedDocumentId(null);
+      setDocumentRejectDialogOpen(false);
+    } catch (error) {
+      console.error("DEBUG: Error rejecting document:", error);
+      toast({
+        title: "Error",
+        description: "Failed to reject document. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleRejectProduct = async (productId: string) => {
+    setSelectedProductId(productId);
+    setRejectDialogOpen(true);
+  };
+
+  const submitRejectProduct = async () => {
+    try {
+      // Instead of using rejectProduct mutation, show a toast message
+      toast({
+        title: "Feature Not Available",
+        description: "Product rejection functionality is currently unavailable.",
+        variant: "destructive",
+      });
+      setRejectDialogOpen(false);
+      setRejectReason("");
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to reject product. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const getStatusIcon = (status: Document["status"]) => {
     switch (status) {
       case "approved":
         return <CheckCircle className="h-4 w-4" />;
@@ -125,39 +328,7 @@ export function DocumentList() {
     }
   };
 
-  const handleApprove = async (docId: string) => {
-    try {
-      // TODO: API çağrısı eklenecek
-      toast({
-        title: "Document Approved",
-        description: "The document has been approved successfully.",
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to approve document. Please try again.",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleReject = async (docId: string) => {
-    try {
-      // TODO: API çağrısı eklenecek
-      toast({
-        title: "Document Rejected",
-        description: "The document has been rejected.",
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to reject document. Please try again.",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const getStatusVariant = (status: string) => {
+  const getStatusVariant = (status: Document["status"]) => {
     switch (status) {
       case "approved":
         return "success";
@@ -170,6 +341,35 @@ export function DocumentList() {
     }
   };
 
+  const toggleProductExpansion = (productId: string) => {
+    setExpandedProducts(prev => ({
+      ...prev,
+      [productId]: !prev[productId]
+    }));
+  };
+
+  if (isLoading || isLoadingProducts) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Document Repository</CardTitle>
+          <CardDescription>Loading documents...</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="flex items-center space-x-4">
+              <div className="w-12 h-12 bg-gray-200 animate-pulse" />
+              <div className="space-y-2">
+                <div className="w-48 h-4 bg-gray-200 animate-pulse" />
+                <div className="w-36 h-4 bg-gray-200 animate-pulse" />
+              </div>
+            </div>
+          ))}
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -180,108 +380,264 @@ export function DocumentList() {
               View and manage all uploaded documents
             </CardDescription>
           </div>
-          <div className="flex items-center gap-2">
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Filter by status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Statuses</SelectItem>
-                <SelectItem value="pending">Pending Review</SelectItem>
-                <SelectItem value="approved">Approved</SelectItem>
-                <SelectItem value="rejected">Rejected</SelectItem>
-                <SelectItem value="expired">Expired</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Filter by status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Statuses</SelectItem>
+              <SelectItem value="pending">Pending Review</SelectItem>
+              <SelectItem value="approved">Approved</SelectItem>
+              <SelectItem value="rejected">Rejected</SelectItem>
+              <SelectItem value="expired">Expired</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </CardHeader>
       <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Document</TableHead>
-              <TableHead>Type</TableHead>
-              <TableHead>Manufacturer</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Valid Until</TableHead>
-              <TableHead>Version</TableHead>
-              <TableHead></TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredDocuments.map((doc) => (
-              <TableRow key={doc.id}>
-                <TableCell>
-                  <div className="flex items-center gap-2">
-                    <FileText className="h-4 w-4 text-muted-foreground" />
-                    <div>
-                      <p className="font-medium">{doc.name}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {doc.id} · {doc.fileSize}
-                      </p>
+        {filteredDocuments.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-12">
+            <FileText className="h-12 w-12 text-muted-foreground mb-4" />
+            <h2 className="text-xl font-semibold mb-2">No Documents Found</h2>
+            <p className="text-muted-foreground mb-4">
+              {documents.length === 0 
+                ? "No documents have been uploaded yet."
+                : "No documents match the current filter criteria."}
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {Object.entries(documentsByProduct).map(([productId, productDocs]) => {
+              const isExpanded = expandedProducts[productId] || false;
+              const productName = productNameMap[productId] || "Unknown Product";
+              const documentCount = productDocs.length;
+              
+              return (
+                <div key={productId} className="border rounded-lg overflow-hidden">
+                  <div 
+                    className="flex items-center justify-between p-4 bg-muted/50 cursor-pointer"
+                    onClick={() => toggleProductExpansion(productId)}
+                  >
+                    <div className="flex items-center gap-2">
+                      {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+                      <h3 className="font-medium">{productName}</h3>
+                      <Badge variant="outline">{documentCount} {documentCount === 1 ? 'document' : 'documents'}</Badge>
+                    </div>
+                    <div className="flex gap-2">
+                      {productDocs.length > 0 ? (
+                        <>
+                          {productDocs.some(doc => doc.status === "pending") && (
+                            <Badge variant="warning">Pending Review</Badge>
+                          )}
+                          {productDocs.every(doc => doc.status === "approved") && (
+                            <Badge variant="success">All Approved</Badge>
+                          )}
+                          {productDocs.some(doc => doc.status === "rejected") && (
+                            <Badge variant="destructive">Has Rejected Documents</Badge>
+                          )}
+                          {!productDocs.some(doc => doc.status === "pending") && 
+                           !productDocs.every(doc => doc.status === "approved") && 
+                           !productDocs.some(doc => doc.status === "rejected") && (
+                            <Badge variant="outline">Other Status</Badge>
+                          )}
+                        </>
+                      ) : (
+                        <Badge variant="outline">No Documents</Badge>
+                      )}
                     </div>
                   </div>
-                </TableCell>
-                <TableCell>{doc.type}</TableCell>
-                <TableCell>{doc.manufacturer}</TableCell>
-                <TableCell>
-                  <Badge
-                    variant={getStatusVariant(doc.status)}
-                    className="flex w-fit items-center gap-1"
-                  >
-                    {getStatusIcon(doc.status)}
-                    {doc.status}
-                  </Badge>
-                </TableCell>
-                <TableCell>
-                  {new Date(doc.validUntil).toLocaleDateString()}
-                </TableCell>
-                <TableCell>v{doc.version}</TableCell>
-                <TableCell>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon">
-                        <MoreHorizontal className="h-4 w-4" />
-                        <span className="sr-only">Open menu</span>
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem asChild>
-                        <Link href={`/admin/documents/${doc.id}`}>
-                          <Eye className="h-4 w-4 mr-2" />
-                          View Details
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>Download</DropdownMenuItem>
-                      <DropdownMenuItem>View History</DropdownMenuItem>
-                      {doc.status === "pending" && (
-                        <>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem
-                            className="text-green-600"
-                            onClick={() => handleApprove(doc.id)}
-                          >
-                            Approve
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            className="text-red-600"
-                            onClick={() => handleReject(doc.id)}
-                          >
-                            Reject
-                          </DropdownMenuItem>
-                        </>
-                      )}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+                  
+                  {isExpanded && (
+                    productDocs.length > 0 ? (
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Document</TableHead>
+                            <TableHead>Type</TableHead>
+                            <TableHead>Status</TableHead>
+                            <TableHead>Valid Until</TableHead>
+                            <TableHead>Version</TableHead>
+                            <TableHead></TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {productDocs.map((doc) => (
+                            <TableRow key={`${doc.id}-${doc.type}`}>
+                              <TableCell>
+                                <div className="flex items-center gap-2">
+                                  <FileText className="h-4 w-4 text-muted-foreground" />
+                                  <div>
+                                    <p className="font-medium">{doc.name}</p>
+                                    <p className="text-sm text-muted-foreground">
+                                      {doc.id} · {doc.fileSize}
+                                    </p>
+                                  </div>
+                                </div>
+                              </TableCell>
+                              <TableCell>{doc.type}</TableCell>
+                              <TableCell>
+                                <Badge
+                                  variant={getStatusVariant(doc.status)}
+                                  className="flex w-fit items-center gap-1"
+                                >
+                                  {getStatusIcon(doc.status)}
+                                  {(() => {
+                                    switch (doc.status) {
+                                      case "rejected":
+                                        return "REJECTED";
+                                      case "pending":
+                                        return "PENDING";
+                                      case "approved":
+                                        return "APPROVED";
+                                      case "expired":
+                                        return "EXPIRED";
+                                      default:
+                                        return String(doc.status).toUpperCase();
+                                    }
+                                  })()}
+                                </Badge>
+                                {doc.status === "rejected" && doc.rejection_reason && (
+                                  <div className="mt-1 text-xs text-red-500">
+                                    Reason: {doc.rejection_reason}
+                                  </div>
+                                )}
+                              </TableCell>
+                              <TableCell>
+                                {doc.validUntil ? new Date(doc.validUntil).toLocaleDateString() : "N/A"}
+                              </TableCell>
+                              <TableCell>v{doc.version}</TableCell>
+                              <TableCell>
+                                <DropdownMenu>
+                                  <DropdownMenuTrigger asChild>
+                                    <Button variant="ghost" size="icon">
+                                      <MoreHorizontal className="h-4 w-4" />
+                                      <span className="sr-only">Open menu</span>
+                                    </Button>
+                                  </DropdownMenuTrigger>
+                                  <DropdownMenuContent align="end">
+                                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem asChild>
+                                      <Link href={`/admin/documents/${doc.id}`}>
+                                        <Eye className="h-4 w-4 mr-2" />
+                                        View Details
+                                      </Link>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => window.open(doc.url, '_blank')}>Download</DropdownMenuItem>
+                                    <DropdownMenuItem>View History</DropdownMenuItem>
+                                    {doc.status === "pending" && (
+                                      <>
+                                        <DropdownMenuSeparator />
+                                        <DropdownMenuItem
+                                          className="text-green-600"
+                                          onClick={() => handleApprove(doc.id)}
+                                        >
+                                          Approve
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem
+                                          className="text-red-600"
+                                          onClick={() => handleReject(doc.id)}
+                                        >
+                                          Reject
+                                        </DropdownMenuItem>
+                                      </>
+                                    )}
+                                  </DropdownMenuContent>
+                                </DropdownMenu>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    ) : (
+                      <div className="p-4 text-center">
+                        <p className="text-muted-foreground mb-4">
+                          No documents available for this product.
+                        </p>
+                        <Button 
+                          variant="destructive" 
+                          size="sm"
+                          onClick={() => handleRejectProduct(productId)}
+                        >
+                          <XCircle className="h-4 w-4 mr-2" />
+                          Reject Product
+                        </Button>
+                      </div>
+                    )
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
       </CardContent>
+
+      <Dialog open={rejectDialogOpen} onOpenChange={setRejectDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Reject Product</DialogTitle>
+            <DialogDescription>
+              Please provide a reason for rejecting this product due to missing documents.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="reason" className="text-right">
+                Reason
+              </Label>
+              <Textarea
+                id="reason"
+                value={rejectReason}
+                onChange={(e) => setRejectReason(e.target.value)}
+                className="col-span-3"
+                placeholder="Enter the reason for rejection..."
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setRejectDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={submitRejectProduct}>
+              Reject
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={documentRejectDialogOpen} onOpenChange={setDocumentRejectDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Reject Document</DialogTitle>
+            <DialogDescription>
+              Please provide a reason for rejecting this document.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="documentReason" className="text-right">
+                Reason
+              </Label>
+              <Textarea
+                id="documentReason"
+                value={documentRejectReason}
+                onChange={(e) => setDocumentRejectReason(e.target.value)}
+                className="col-span-3"
+                placeholder="Enter the reason for rejection..."
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDocumentRejectDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={submitRejectDocument}>
+              Reject
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 }
+  

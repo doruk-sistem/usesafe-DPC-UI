@@ -1,4 +1,5 @@
 import { StatusTransition, ProductImage, KeyFeature } from "./product"
+import { Document } from "./document"
 
 export type Json =
   | string
@@ -27,7 +28,7 @@ export interface Database {
           key_features: KeyFeature[]
           created_at: string
           updated_at: string
-          documents?: Json
+          documents?: Document[]
           manufacturer_id: string
         }
         Insert: {
@@ -48,7 +49,7 @@ export interface Database {
           key_features?: KeyFeature[]
           created_at?: string
           updated_at?: string
-          documents?: Json
+          documents?: Document[]
           manufacturer_id: string
         }
         Update: {
@@ -69,7 +70,7 @@ export interface Database {
           product_type?: string
           product_subcategory?: string
           model?: string
-          documents?: Json
+          documents?: Document[]
           manufacturer_id?: string
         }
       }

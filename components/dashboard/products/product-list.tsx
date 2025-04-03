@@ -193,14 +193,22 @@ export function ProductList({ products, isLoading }: ProductListProps) {
                   <TableCell>
                     <Badge
                       variant={
-                        product.status === "NEW"
-                          ? "success"
-                          : product.status === "DRAFT"
+                        Object.values(product.documents || {}).flat().some(doc => doc.status === "rejected")
+                          ? "destructive"
+                          : Object.values(product.documents || {}).flat().some(doc => doc.status === "pending")
                           ? "warning"
-                          : "destructive"
+                          : Object.values(product.documents || {}).flat().every(doc => doc.status === "approved")
+                          ? "success"
+                          : "secondary"
                       }
                     >
-                      {product.status.toLowerCase()}
+                      {Object.values(product.documents || {}).flat().some(doc => doc.status === "rejected")
+                        ? "REJECTED"
+                        : Object.values(product.documents || {}).flat().some(doc => doc.status === "pending")
+                        ? "PENDING"
+                        : Object.values(product.documents || {}).flat().every(doc => doc.status === "approved")
+                        ? "APPROVED"
+                        : "NEW"}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">

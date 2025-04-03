@@ -48,6 +48,16 @@ interface Document {
   version?: string;
 }
 
+const documentTypeLabels: Record<string, string> = {
+  quality_cert: "Quality Certificate",
+  safety_cert: "Safety Certificate",
+  test_reports: "Test Reports",
+  technical_docs: "Technical Documentation",
+  compliance_docs: "Compliance Documents",
+  certificates: "Certificates",
+  other: "Other"
+};
+
 export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps) {
   const [product, setProduct] = useState<Product | null>(null);
   const [rejectedDocument, setRejectedDocument] = useState<Document | null>(null);
@@ -430,7 +440,7 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
   };
 
   const getStatusBadge = (status: string | undefined | null) => {
-    if (!status) return <Badge>Unknown</Badge>;
+    if (!status) return <Badge className="bg-gray-500">Pending</Badge>;
     
     switch (status.toLowerCase()) {
       case "approved":
@@ -440,7 +450,7 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
       case "rejected":
         return <Badge className="bg-red-500">Rejected</Badge>;
       default:
-        return <Badge>{status}</Badge>;
+        return <Badge className="bg-gray-500">Pending</Badge>;
     }
   };
 
@@ -821,11 +831,19 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
                       </div>
                     </div>
                     <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground">
-                      <div key={`doc-type-${doc.id || doc.name}`}><span className="font-medium">Type:</span> {doc.type}</div>
-                      <div key={`doc-version-${doc.id || doc.name}`}><span className="font-medium">Version:</span> {doc.version || "N/A"}</div>
-                      <div key={`doc-upload-date-${doc.id || doc.name}`}><span className="font-medium">Upload Date:</span> {doc.upload_date ? new Date(doc.upload_date).toLocaleDateString() : "N/A"}</div>
+                      <div key={`doc-type-${doc.id || doc.name}`}>
+                        <span className="font-medium">Type:</span> {documentTypeLabels[doc.type] || doc.type}
+                      </div>
+                      <div key={`doc-version-${doc.id || doc.name}`}>
+                        <span className="font-medium">Version:</span> {doc.version || "1.0"}
+                      </div>
+                      <div key={`doc-upload-date-${doc.id || doc.name}`}>
+                        <span className="font-medium">Upload Date:</span> {doc.upload_date ? new Date(doc.upload_date).toLocaleDateString() : new Date().toLocaleDateString()}
+                      </div>
                       {doc.rejection_reason && (
-                        <div key={`doc-rejection-reason-${doc.id || doc.name}`}><span className="font-medium">Rejection Reason:</span> {doc.rejection_reason}</div>
+                        <div key={`doc-rejection-reason-${doc.id || doc.name}`}>
+                          <span className="font-medium">Rejection Reason:</span> {doc.rejection_reason}
+                        </div>
                       )}
                     </div>
                     
