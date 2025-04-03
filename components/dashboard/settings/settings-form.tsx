@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -80,6 +81,7 @@ const defaultValues: Partial<SettingsFormValues> = {
 
 export function SettingsForm() {
   const { toast } = useToast();
+  const t = useTranslations("settings");
 
   const form = useForm<SettingsFormValues>({
     resolver: zodResolver(settingsSchema),
@@ -88,8 +90,8 @@ export function SettingsForm() {
 
   function onSubmit(data: SettingsFormValues) {
     toast({
-      title: "Settings updated",
-      description: "Your settings have been saved successfully.",
+      title: t("success.title"),
+      description: t("success.description"),
     });
   }
 
@@ -98,16 +100,16 @@ export function SettingsForm() {
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <Tabs defaultValue="company" className="space-y-4">
           <TabsList>
-            <TabsTrigger value="company">Company</TabsTrigger>
-            <TabsTrigger value="contact">Contact</TabsTrigger>
-            <TabsTrigger value="notifications">Notifications</TabsTrigger>
-            <TabsTrigger value="security">Security</TabsTrigger>
+            <TabsTrigger value="company">{t("tabs.company")}</TabsTrigger>
+            <TabsTrigger value="contact">{t("tabs.contact")}</TabsTrigger>
+            <TabsTrigger value="notifications">{t("tabs.notifications")}</TabsTrigger>
+            <TabsTrigger value="security">{t("tabs.security")}</TabsTrigger>
           </TabsList>
 
           <TabsContent value="company">
             <Card>
               <CardHeader>
-                <CardTitle>Company Information</CardTitle>
+                <CardTitle>{t("company.title")}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <FormField
@@ -115,12 +117,12 @@ export function SettingsForm() {
                   name="companyName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Company Name</FormLabel>
+                      <FormLabel>{t("company.name.label")}</FormLabel>
                       <FormControl>
                         <Input {...field} disabled />
                       </FormControl>
                       <FormDescription>
-                        Contact support to update company name
+                        {t("company.name.description")}
                       </FormDescription>
                     </FormItem>
                   )}
@@ -131,12 +133,12 @@ export function SettingsForm() {
                   name="taxId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Tax ID</FormLabel>
+                      <FormLabel>{t("company.taxId.label")}</FormLabel>
                       <FormControl>
                         <Input {...field} disabled />
                       </FormControl>
                       <FormDescription>
-                        Contact support to update tax ID
+                        {t("company.taxId.description")}
                       </FormDescription>
                     </FormItem>
                   )}
@@ -148,7 +150,7 @@ export function SettingsForm() {
                     name="tradeRegisterNumber"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Trade Register Number</FormLabel>
+                        <FormLabel>{t("company.tradeRegisterNumber.label")}</FormLabel>
                         <FormControl>
                           <Input {...field} disabled />
                         </FormControl>
@@ -161,7 +163,7 @@ export function SettingsForm() {
                     name="mersisNumber"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>MERSIS Number</FormLabel>
+                        <FormLabel>{t("company.mersisNumber.label")}</FormLabel>
                         <FormControl>
                           <Input {...field} disabled />
                         </FormControl>
@@ -177,7 +179,7 @@ export function SettingsForm() {
             <div className="space-y-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Contact Information</CardTitle>
+                  <CardTitle>{t("contact.title")}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid gap-4 md:grid-cols-2">
@@ -186,7 +188,7 @@ export function SettingsForm() {
                       name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Email</FormLabel>
+                          <FormLabel>{t("contact.email")}</FormLabel>
                           <FormControl>
                             <Input {...field} type="email" />
                           </FormControl>
@@ -199,9 +201,9 @@ export function SettingsForm() {
                       name="phone"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Phone</FormLabel>
+                          <FormLabel>{t("contact.phone")}</FormLabel>
                           <FormControl>
-                            <Input {...field} />
+                            <Input {...field} type="tel" />
                           </FormControl>
                         </FormItem>
                       )}
@@ -212,9 +214,9 @@ export function SettingsForm() {
                       name="fax"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Fax</FormLabel>
+                          <FormLabel>{t("contact.fax")}</FormLabel>
                           <FormControl>
-                            <Input {...field} />
+                            <Input {...field} type="tel" />
                           </FormControl>
                         </FormItem>
                       )}
@@ -225,7 +227,7 @@ export function SettingsForm() {
                       name="website"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Website</FormLabel>
+                          <FormLabel>{t("contact.website")}</FormLabel>
                           <FormControl>
                             <Input {...field} type="url" />
                           </FormControl>
@@ -238,7 +240,7 @@ export function SettingsForm() {
 
               <Card>
                 <CardHeader>
-                  <CardTitle>Address Information</CardTitle>
+                  <CardTitle>{t("contact.address.title")}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <FormField
@@ -246,7 +248,7 @@ export function SettingsForm() {
                     name="headquarters"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Headquarters Address</FormLabel>
+                        <FormLabel>{t("contact.address.headquarters")}</FormLabel>
                         <FormControl>
                           <Textarea {...field} />
                         </FormControl>
@@ -259,7 +261,7 @@ export function SettingsForm() {
                     name="factoryAddress"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Factory Address</FormLabel>
+                        <FormLabel>{t("contact.address.factory")}</FormLabel>
                         <FormControl>
                           <Textarea {...field} />
                         </FormControl>
@@ -272,13 +274,10 @@ export function SettingsForm() {
                     name="branchAddresses"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Branch Addresses</FormLabel>
+                        <FormLabel>{t("contact.address.branches")}</FormLabel>
                         <FormControl>
                           <Textarea {...field} />
                         </FormControl>
-                        <FormDescription>
-                          Enter multiple addresses separated by new lines
-                        </FormDescription>
                       </FormItem>
                     )}
                   />
@@ -287,7 +286,7 @@ export function SettingsForm() {
 
               <Card>
                 <CardHeader>
-                  <CardTitle>Authorized Person</CardTitle>
+                  <CardTitle>{t("contact.authorized.title")}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid gap-4 md:grid-cols-2">
@@ -296,7 +295,7 @@ export function SettingsForm() {
                       name="authorizedName"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Full Name</FormLabel>
+                          <FormLabel>{t("contact.authorized.name")}</FormLabel>
                           <FormControl>
                             <Input {...field} />
                           </FormControl>
@@ -309,7 +308,7 @@ export function SettingsForm() {
                       name="authorizedTitle"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Title</FormLabel>
+                          <FormLabel>{t("contact.authorized.title")}</FormLabel>
                           <FormControl>
                             <Input {...field} />
                           </FormControl>
@@ -322,7 +321,7 @@ export function SettingsForm() {
                       name="authorizedDepartment"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Department</FormLabel>
+                          <FormLabel>{t("contact.authorized.department")}</FormLabel>
                           <FormControl>
                             <Input {...field} />
                           </FormControl>
@@ -335,7 +334,7 @@ export function SettingsForm() {
                       name="authorizedEmail"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Email</FormLabel>
+                          <FormLabel>{t("contact.authorized.email")}</FormLabel>
                           <FormControl>
                             <Input {...field} type="email" />
                           </FormControl>
@@ -348,9 +347,9 @@ export function SettingsForm() {
                       name="authorizedPhone"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Phone</FormLabel>
+                          <FormLabel>{t("contact.authorized.phone")}</FormLabel>
                           <FormControl>
-                            <Input {...field} />
+                            <Input {...field} type="tel" />
                           </FormControl>
                         </FormItem>
                       )}
@@ -364,20 +363,20 @@ export function SettingsForm() {
           <TabsContent value="notifications">
             <Card>
               <CardHeader>
-                <CardTitle>Notification Preferences</CardTitle>
+                <CardTitle>{t("notifications.title")}</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-8">
                 <FormField
                   control={form.control}
                   name="emailNotifications"
                   render={({ field }) => (
-                    <FormItem className="flex items-center justify-between rounded-lg border p-4">
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                       <div className="space-y-0.5">
                         <FormLabel className="text-base">
-                          Email Notifications
+                          {t("notifications.email.label")}
                         </FormLabel>
                         <FormDescription>
-                          Receive notifications via email
+                          {t("notifications.email.description")}
                         </FormDescription>
                       </div>
                       <FormControl>
@@ -394,13 +393,13 @@ export function SettingsForm() {
                   control={form.control}
                   name="smsNotifications"
                   render={({ field }) => (
-                    <FormItem className="flex items-center justify-between rounded-lg border p-4">
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                       <div className="space-y-0.5">
                         <FormLabel className="text-base">
-                          SMS Notifications
+                          {t("notifications.sms.label")}
                         </FormLabel>
                         <FormDescription>
-                          Receive notifications via SMS
+                          {t("notifications.sms.description")}
                         </FormDescription>
                       </div>
                       <FormControl>
@@ -417,11 +416,13 @@ export function SettingsForm() {
                   control={form.control}
                   name="systemAlerts"
                   render={({ field }) => (
-                    <FormItem className="flex items-center justify-between rounded-lg border p-4">
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                       <div className="space-y-0.5">
-                        <FormLabel className="text-base">System Alerts</FormLabel>
+                        <FormLabel className="text-base">
+                          {t("notifications.system.label")}
+                        </FormLabel>
                         <FormDescription>
-                          Receive important system alerts
+                          {t("notifications.system.description")}
                         </FormDescription>
                       </div>
                       <FormControl>
@@ -438,13 +439,13 @@ export function SettingsForm() {
                   control={form.control}
                   name="documentReminders"
                   render={({ field }) => (
-                    <FormItem className="flex items-center justify-between rounded-lg border p-4">
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                       <div className="space-y-0.5">
                         <FormLabel className="text-base">
-                          Document Reminders
+                          {t("notifications.documents.label")}
                         </FormLabel>
                         <FormDescription>
-                          Get notified about expiring documents
+                          {t("notifications.documents.description")}
                         </FormDescription>
                       </div>
                       <FormControl>
@@ -461,13 +462,13 @@ export function SettingsForm() {
                   control={form.control}
                   name="certificationAlerts"
                   render={({ field }) => (
-                    <FormItem className="flex items-center justify-between rounded-lg border p-4">
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                       <div className="space-y-0.5">
                         <FormLabel className="text-base">
-                          Certification Alerts
+                          {t("notifications.certifications.label")}
                         </FormLabel>
                         <FormDescription>
-                          Get notified about certification status changes
+                          {t("notifications.certifications.description")}
                         </FormDescription>
                       </div>
                       <FormControl>
@@ -479,55 +480,6 @@ export function SettingsForm() {
                     </FormItem>
                   )}
                 />
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="security">
-            <Card>
-              <CardHeader>
-                <CardTitle>Security Settings</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-4">
-                  <h3 className="text-lg font-medium">Change Password</h3>
-                  <div className="grid gap-4">
-                    <FormItem>
-                      <FormLabel>Current Password</FormLabel>
-                      <FormControl>
-                        <Input type="password" />
-                      </FormControl>
-                    </FormItem>
-                    <FormItem>
-                      <FormLabel>New Password</FormLabel>
-                      <FormControl>
-                        <Input type="password" />
-                      </FormControl>
-                    </FormItem>
-                    <FormItem>
-                      <FormLabel>Confirm New Password</FormLabel>
-                      <FormControl>
-                        <Input type="password" />
-                      </FormControl>
-                    </FormItem>
-                    <Button className="w-fit">Change Password</Button>
-                  </div>
-                </div>
-
-                <div className="space-y-4">
-                  <h3 className="text-lg font-medium">Two-Factor Authentication</h3>
-                  <FormItem className="flex items-center justify-between rounded-lg border p-4">
-                    <div className="space-y-0.5">
-                      <FormLabel className="text-base">
-                        Enable Two-Factor Authentication
-                      </FormLabel>
-                      <FormDescription>
-                        Add an extra layer of security to your account
-                      </FormDescription>
-                    </div>
-                    <Switch />
-                  </FormItem>
-                </div>
               </CardContent>
             </Card>
           </TabsContent>

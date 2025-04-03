@@ -6,14 +6,14 @@ import { DPPForm } from "@/components/dashboard/dpps/dpp-form";
 import { Card } from "@/components/ui/card";
 
 export default function NewDPPPage() {
-  const t = useTranslations();
+  const t = useTranslations("dpp.new");
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold">{t("dpp.create.title")}</h1>
+        <h1 className="text-2xl font-semibold">{t("title")}</h1>
         <p className="text-sm text-muted-foreground">
-          {t("dpp.create.description")}
+          {t("description")}
         </p>
       </div>
 

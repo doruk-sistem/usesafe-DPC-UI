@@ -1,8 +1,9 @@
 "use client";
 
 import { Plus, X } from "lucide-react";
-import { useCallback, useEffect, useState } from "react"; // useState ekledik
+import { useCallback, useEffect, useState } from "react";
 import { UseFormReturn } from "react-hook-form";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -37,6 +38,7 @@ interface DocumentUploadStepProps {
   setValidationFunction: (fn: () => boolean) => void;
   onNext: () => void;
 }
+
 export function DocumentUploadStep({
   form,
   setValidationFunction,
@@ -44,14 +46,22 @@ export function DocumentUploadStep({
 }: DocumentUploadStepProps) {
   const { user } = useAuth();
   const { toast } = useToast();
-  const companyId =
-    user?.user_metadata?.company_id || "7d26ed35-49ca-4c0d-932e-52254fb0e5b8";
+  const t = useTranslations("productManagement.addProduct");
+  const companyId = user?.user_metadata?.company_id;
 
-  const productType = form.watch("product_type");
-  console.log("Selected Product Type:", productType);
+  if (!companyId) {
+    toast({
+      title: "Error",
+      description: "Company ID not found",
+      variant: "destructive",
+    });
+    return null;
+  }
+
+  const productType = form.watch("product_type") || "";
 
   const normalizedType = productType
-    ?.toLowerCase()
+    .toLowerCase()
     .replace(/[ğ]/g, "g")
     .replace(/[ü]/g, "u")
     .replace(/[ş]/g, "s")
@@ -59,14 +69,13 @@ export function DocumentUploadStep({
     .replace(/[ö]/g, "o")
     .replace(/[ç]/g, "c")
     .replace(/\s+|-/g, "_");
-  console.log("Normalized Type:", normalizedType);
 
-  const requiredConfig = productType
-    ? REQUIRED_DOCUMENTS[normalizedType] ||
-      REQUIRED_DOCUMENTS[productType.toUpperCase()] ||
-      REQUIRED_DOCUMENTS[productType] ||
-      {}
-    : {};
+  const requiredConfig = REQUIRED_DOCUMENTS[normalizedType] ||
+    REQUIRED_DOCUMENTS[productType.toUpperCase()] ||
+    REQUIRED_DOCUMENTS[productType] ||
+    {};
+
+  const [uploadProgress, setUploadProgress] = useState<Record<string, number>>({});
 
   const handleDocumentUpload = useCallback(
     async (
@@ -127,11 +136,15 @@ export function DocumentUploadStep({
                 "product-documents",
             });
 
-            newDocs.push({
-              name: file.name,
-              url: url,
-              type: docType,
-            });
+            if (url) {
+              newDocs.push({
+                name: file.name,
+                url: url,
+                type: docType,
+              });
+            } else {
+              errors.push(`Failed to upload ${file.name}: No URL returned`);
+            }
           } catch (error) {
             errors.push(
               `Error uploading ${file.name}: ${
@@ -150,6 +163,7 @@ export function DocumentUploadStep({
     },
     [companyId]
   );
+
   const handleFileChange = useCallback(
     async (
       e: React.ChangeEvent<HTMLInputElement>,
@@ -182,10 +196,9 @@ export function DocumentUploadStep({
   return (
     <Card className="p-6 space-y-6">
       <div>
-        <h3 className="text-lg font-semibold">Product Documents</h3>
+        <h3 className="text-lg font-semibold">{t("form.documents.title")}</h3>
         <p className="text-sm text-muted-foreground">
-          Upload relevant documents for your product. Required documents are
-          marked with (*).
+          {t("form.documents.description")}
         </p>
       </div>
 
@@ -199,98 +212,44 @@ export function DocumentUploadStep({
           name={`documents.${docType.id}`}
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="flex items-center gap-2">
-                {docType.label}
-                {requiredConfig[docType.id] === true && (
-                  <span className="text-sm text-red-500">*</span>
-                )}
+              <FormLabel>
+                {t(`form.documents.types.${docType.id}`)}
+                {requiredConfig[docType.id] && " *"}
               </FormLabel>
               <FormControl>
-                <div className="space-y-2">
-                  {field.value?.map((file: any, index: number) => (
-                    <div key={index} className="flex items-center gap-2">
-                      <Input
-                        type="text"
-                        value={file.name}
-                        readOnly
-                        className="flex-1"
-                      />
+                <div className="space-y-4">
+                  {field.value?.map((doc: Document, index: number) => (
+                    <div key={index} className="flex items-center gap-4">
+                      <Input value={doc.name} disabled />
                       <Button
                         type="button"
-                        variant="ghost"
+                        variant="destructive"
                         size="icon"
                         onClick={() => {
-                          const newFiles = field.value.filter(
-                            (_: any, i: number) => i !== index
-                          );
-                          field.onChange(newFiles);
-                          form.setValue(`documents.${docType.id}`, newFiles);
+                          const newDocs = [...(field.value || [])];
+                          newDocs.splice(index, 1);
+                          field.onChange(newDocs);
                         }}
                       >
                         <X className="h-4 w-4" />
                       </Button>
                     </div>
                   ))}
-
-                  <div className="flex items-center gap-2">
-                    <input
-                      id={`file-upload-${docType.id}`}
+                  <div>
+                    <Input
                       type="file"
-                      accept={ACCEPTED_DOCUMENT_FORMATS.map(
-                        (format) => `.${format}`
-                      ).join(",")}
-                      className="hidden"
+                      accept={ACCEPTED_DOCUMENT_FORMATS.join(",")}
                       onChange={(e) => handleFileChange(e, field, docType.id)}
                       multiple
                     />
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => {
-                        document
-                          .getElementById(`file-upload-${docType.id}`)
-                          ?.click();
-                      }}
-                    >
-                      <Plus className="h-4 w-4 mr-2" />
-                      Add Document
-                    </Button>
                   </div>
                 </div>
               </FormControl>
-              {requiredConfig[docType.id] && (
-                <p className="text-sm text-muted-foreground mt-1">
-                  This document is required for this product category
-                </p>
-              )}
               <FormMessage />
             </FormItem>
           )}
         />
       ))}
-      <FormField
-        control={form.control}
-        name="documents_confirmed"
-        render={({ field }) => (
-          <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-            <FormControl>
-              <Checkbox
-                checked={field.value}
-                onCheckedChange={field.onChange}
-              />
-            </FormControl>
-            <div className="space-y-1 leading-none">
-              <FormLabel>
-                I confirm that all uploaded documents are accurate and authentic
-              </FormLabel>
-              <p className="text-sm text-muted-foreground">
-                By checking this box, you acknowledge that all documents
-                provided are genuine and contain accurate information.
-              </p>
-            </div>
-          </FormItem>
-        )}
-      />
     </Card>
   );
 }

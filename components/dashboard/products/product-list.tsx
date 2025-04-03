@@ -6,6 +6,7 @@ import { Battery, FileText, ImageOff, MoreHorizontal, Trash } from "lucide-react
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
@@ -27,12 +28,13 @@ export function ProductList({ products, isLoading }: ProductListProps) {
   const queryClient = useQueryClient();
   const [productToDelete, setProductToDelete] = useState<Product | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const t = useTranslations("productManagement");
 
   const { mutate: deleteProduct } = productsApiHooks.useDeleteProductMutation({
     onSuccess: () => {
       toast({
-        title: "Product deleted",
-        description: "The product has been successfully deleted.",
+        title: t("delete.title"),
+        description: t("delete.description"),
       });
       queryClient.invalidateQueries({ queryKey: ["getProducts"] });
       setIsDeleteDialogOpen(false);
@@ -40,8 +42,8 @@ export function ProductList({ products, isLoading }: ProductListProps) {
     },
     onError: (error) => {
       toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to delete product. Please try again.",
+        title: t("delete.error.title"),
+        description: error instanceof Error ? error.message : t("delete.error.description"),
         variant: "destructive",
       });
       setIsDeleteDialogOpen(false);
@@ -79,8 +81,8 @@ export function ProductList({ products, isLoading }: ProductListProps) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Products</CardTitle>
-          <CardDescription>Loading your products...</CardDescription>
+          <CardTitle>{t("list.title")}</CardTitle>
+          <CardDescription>{t("list.loading")}</CardDescription>
         </CardHeader>
         <CardContent>
           {[1, 2, 3].map((i) => (
@@ -102,12 +104,12 @@ export function ProductList({ products, isLoading }: ProductListProps) {
       <Card>
         <CardContent className="flex flex-col items-center justify-center py-12">
           <Battery className="h-12 w-12 text-muted-foreground mb-4" />
-          <h2 className="text-xl font-semibold mb-2">No Products Found</h2>
+          <h2 className="text-xl font-semibold mb-2">{t("list.empty.title")}</h2>
           <p className="text-muted-foreground mb-4">
-            Start by adding your first product.
+            {t("list.empty.description")}
           </p>
           <Button asChild>
-            <Link href="/dashboard/products/new">Add Product</Link>
+            <Link href="/dashboard/products/new">{t("actions.addProduct")}</Link>
           </Button>
         </CardContent>
       </Card>
@@ -118,19 +120,19 @@ export function ProductList({ products, isLoading }: ProductListProps) {
     <>
       <Card>
         <CardHeader>
-          <CardTitle>Products</CardTitle>
+          <CardTitle>{t("list.title")}</CardTitle>
           <CardDescription>
-            Manage your product catalog
+            {t("list.description")}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Product</TableHead>
-                <TableHead>Category</TableHead>
-                <TableHead>Basic Info</TableHead>
-                <TableHead>Status</TableHead>
+                <TableHead>{t("list.columns.product")}</TableHead>
+                <TableHead>{t("list.columns.category")}</TableHead>
+                <TableHead>{t("list.columns.basicInfo")}</TableHead>
+                <TableHead>{t("list.columns.status")}</TableHead>
                 <TableHead></TableHead>
               </TableRow>
             </TableHeader>
@@ -202,27 +204,27 @@ export function ProductList({ products, isLoading }: ProductListProps) {
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon">
                           <MoreHorizontal className="h-4 w-4" />
-                          <span className="sr-only">Open menu</span>
+                          <span className="sr-only">{t("actions.menu")}</span>
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuLabel>{t("actions.menu")}</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem asChild>
                           <Link href={`/dashboard/products/${product.id}`}>
                             <Battery className="h-4 w-4 mr-2" />
-                            View Details
+                            {t("actions.viewDetails")}
                           </Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem asChild>
                           <Link href={`/dashboard/products/${product.id}/edit`}>
-                            Edit Product
+                            {t("actions.editProduct")}
                           </Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem asChild>
                           <Link href={`/dashboard/products/${product.id}/documents`}>
                             <FileText className="h-4 w-4 mr-2" />
-                            View Documents
+                            {t("actions.viewDocuments")}
                           </Link>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
@@ -231,7 +233,7 @@ export function ProductList({ products, isLoading }: ProductListProps) {
                           onClick={() => handleDeleteClick(product)}
                         >
                           <Trash className="h-4 w-4 mr-2" />
-                          Delete Product
+                          {t("actions.deleteProduct")}
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -246,19 +248,20 @@ export function ProductList({ products, isLoading }: ProductListProps) {
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure you want to delete this product?</AlertDialogTitle>
+            <AlertDialogTitle>{t("delete.confirm.title")}</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the product
-              {productToDelete && <strong> &quot;{productToDelete.name}&quot;</strong>} and remove its data from our servers.
+              {t("delete.confirm.description", {
+                name: productToDelete?.name || ""
+              })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{t("delete.confirm.cancel")}</AlertDialogCancel>
             <AlertDialogAction 
               onClick={handleConfirmDelete}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              Delete
+              {t("delete.confirm.confirm")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

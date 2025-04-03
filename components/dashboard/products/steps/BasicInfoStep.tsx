@@ -5,6 +5,7 @@ import { Plus, Upload, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { UseFormReturn } from "react-hook-form";
 import Select from "react-select";
+import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -23,7 +24,35 @@ import type { KeyFeature, NewProduct } from "@/lib/types/product";
 import type { Json } from "@/lib/types/supabase";
 
 interface BasicInfoStepProps {
-  form: UseFormReturn<NewProduct>;
+  form: UseFormReturn<{
+    name: string;
+    description: string;
+    product_type: string;
+    model: string;
+    company_id?: string;
+    status?: "DRAFT" | "NEW" | "DELETED" | "ARCHIVED";
+    images: {
+      url: string;
+      alt?: string;
+      is_primary: boolean;
+      fileObject?: any;
+    }[];
+    key_features: {
+      name: string;
+      value: string;
+      unit?: string;
+    }[];
+    documents?: {
+      quality_cert?: { name: string; url: string; type: string; }[];
+      safety_cert?: { name: string; url: string; type: string; }[];
+      test_reports?: { name: string; url: string; type: string; }[];
+      technical_docs?: { name: string; url: string; type: string; }[];
+      compliance_docs?: { name: string; url: string; type: string; }[];
+    };
+    manufacturer_id?: string;
+    product_subcategory?: string;
+    documents_confirmed?: boolean;
+  }>;
 }
 
 type OptionType = {
@@ -48,6 +77,7 @@ const selectClassNames = {
 
 export function BasicInfoStep({ form }: BasicInfoStepProps) {
   const [subcategories, setSubcategories] = useState<SubcategoryOption[]>([]);
+  const t = useTranslations("productManagement.addProduct");
   
   const productType = form.watch("product_type");
   
@@ -94,7 +124,7 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
           name="images"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Product Images</FormLabel>
+              <FormLabel>{t("form.images.title")}</FormLabel>
               <FormControl>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {field.value.map((image, index) => (
@@ -130,7 +160,7 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
                   <label className="flex flex-col items-center justify-center gap-2 cursor-pointer aspect-square rounded-lg border-2 border-dashed hover:border-primary transition-colors">
                     <Upload className="h-8 w-8 text-muted-foreground" />
                     <span className="text-sm text-muted-foreground">
-                      Upload Image
+                      {t("form.images.upload")}
                     </span>
                     <input
                       type="file"
@@ -164,9 +194,9 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Product Name</FormLabel>
+              <FormLabel>{t("form.fields.name.label")}</FormLabel>
               <FormControl>
-                <Input placeholder="Enter product name" {...field} />
+                <Input placeholder={t("form.fields.name.placeholder")} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -178,7 +208,7 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
           name="product_type"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Product Type</FormLabel>
+              <FormLabel>{t("form.fields.type.label")}</FormLabel>
               <FormControl>
                 <Select
                   options={PRODUCT_TYPE_OPTIONS}
@@ -188,7 +218,7 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
                     field.onChange(newValue);
                     form.setValue("product_subcategory", "");
                   }}
-                  placeholder="Select Product Type"
+                  placeholder={t("form.fields.type.placeholder")}
                   classNames={selectClassNames}
                 />
               </FormControl>
@@ -226,9 +256,9 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
           name="model"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Model</FormLabel>
+              <FormLabel>{t("form.fields.model.label")}</FormLabel>
               <FormControl>
-                <Input placeholder="Enter product model" {...field} />
+                <Input placeholder={t("form.fields.model.placeholder")} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -240,10 +270,10 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
           name="description"
           render={({ field }) => (
             <FormItem className={subcategories.length > 0 ? "md:col-span-1" : "col-span-2"}>
-              <FormLabel>Description</FormLabel>
+              <FormLabel>{t("form.fields.description.label")}</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder="Enter product description"
+                  placeholder={t("form.fields.description.placeholder")}
                   className="min-h-[100px]"
                   {...field}
                 />
@@ -259,45 +289,36 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
             name="key_features"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Key Features</FormLabel>
+                <FormLabel>{t("form.features.title")}</FormLabel>
                 <FormControl>
                   <div className="space-y-4">
-                    {(Array.isArray(field.value) ? field.value : []).map(
-                      (feature: KeyFeature, index: number) => (
-                        <div key={index} className="flex gap-4">
+                    {field.value.map((feature, index) => (
+                      <div key={index} className="grid grid-cols-3 gap-2">
+                        <Input
+                          placeholder={t("form.features.name")}
+                          value={feature.name}
+                          onChange={(e) => {
+                            const newFeatures = [...field.value];
+                            newFeatures[index].name = e.target.value;
+                            field.onChange(newFeatures);
+                          }}
+                        />
+                        <Input
+                          placeholder={t("form.features.value")}
+                          value={feature.value}
+                          onChange={(e) => {
+                            const newFeatures = [...field.value];
+                            newFeatures[index].value = e.target.value;
+                            field.onChange(newFeatures);
+                          }}
+                        />
+                        <div className="flex gap-2">
                           <Input
-                            placeholder="Feature name"
-                            value={feature.name}
+                            placeholder={t("form.features.unit")}
+                            value={feature.unit}
                             onChange={(e) => {
                               const newFeatures = [...field.value];
-                              newFeatures[index] = {
-                                ...feature,
-                                name: e.target.value,
-                              };
-                              field.onChange(newFeatures);
-                            }}
-                          />
-                          <Input
-                            placeholder="Value"
-                            value={feature.value}
-                            onChange={(e) => {
-                              const newFeatures = [...field.value];
-                              newFeatures[index] = {
-                                ...feature,
-                                value: e.target.value,
-                              };
-                              field.onChange(newFeatures);
-                            }}
-                          />
-                          <Input
-                            placeholder="Unit (optional)"
-                            value={feature.unit || ""}
-                            onChange={(e) => {
-                              const newFeatures = [...field.value];
-                              newFeatures[index] = {
-                                ...feature,
-                                unit: e.target.value || undefined,
-                              };
+                              newFeatures[index].unit = e.target.value;
                               field.onChange(newFeatures);
                             }}
                           />
@@ -314,25 +335,20 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
                             <X className="h-4 w-4" />
                           </Button>
                         </div>
-                      )
-                    )}
+                      </div>
+                    ))}
                     <Button
                       type="button"
                       variant="outline"
                       onClick={() => {
-                        const newFeature: KeyFeature = {
-                          name: "",
-                          value: "",
-                          unit: undefined,
-                        };
                         field.onChange([
-                          ...(Array.isArray(field.value) ? field.value : []),
-                          newFeature,
+                          ...field.value,
+                          { name: "", value: "", unit: "" },
                         ]);
                       }}
                     >
                       <Plus className="h-4 w-4 mr-2" />
-                      Add Feature
+                      {t("form.features.add")}
                     </Button>
                   </div>
                 </FormControl>

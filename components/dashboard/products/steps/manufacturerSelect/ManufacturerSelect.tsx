@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import { Card, CardContent } from "@/components/ui/card";
 import {
   FormControl,
@@ -18,14 +20,16 @@ interface ManufacturerSelectProps {
 export function ManufacturerSelect({
   form,
 }: ManufacturerSelectProps) {
+  const t = useTranslations("productManagement.addProduct");
+
   return (
     <Card>
       <CardContent className="p-6">
         <div className="space-y-6">
           <div>
-            <h3 className="text-lg font-semibold">Select Manufacturer</h3>
+            <h3 className="text-lg font-semibold">{t("form.steps.manufacturer")}</h3>
             <p className="text-sm text-muted-foreground">
-              Search and select the manufacturer for this product
+              {t("form.fields.manufacturer.description")}
             </p>
           </div>
 
@@ -34,7 +38,7 @@ export function ManufacturerSelect({
             name="manufacturer_id"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Manufacturer *</FormLabel>
+                <FormLabel>{t("form.fields.manufacturer.label")} *</FormLabel>
                 <FormControl>
                   <ManufacturerSearch
                     value={field.value}

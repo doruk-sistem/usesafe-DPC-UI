@@ -5,6 +5,7 @@ import { ArrowRight, ArrowLeft } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
@@ -70,6 +71,8 @@ const productSchema = z.object({
   description: z.string().min(5, "Product description is required"),
   product_type: z.string().min(1, "Product type is required"),
   model: z.string().min(1, "Product model is required"),
+  company_id: z.string().optional(),
+  status: z.enum(["DRAFT", "NEW", "DELETED", "ARCHIVED"]).optional(),
   images: z
     .array(
       z.object({
@@ -91,14 +94,41 @@ const productSchema = z.object({
     .default([]),
   documents: documentSchema.optional(),
   manufacturer_id: z.string().optional(),
+  product_subcategory: z.string().optional(),
 });
 
-type FormData = z.infer<typeof productSchema> & {
+type FormData = {
+  name: string;
+  description: string;
+  product_type: string;
+  model: string;
+  company_id?: string;
+  status?: "DRAFT" | "NEW" | "DELETED" | "ARCHIVED";
+  images: {
+    url: string;
+    alt?: string;
+    is_primary: boolean;
+    fileObject?: any;
+  }[];
+  key_features: {
+    name: string;
+    value: string;
+    unit?: string;
+  }[];
+  documents?: {
+    quality_cert?: { name: string; url: string; type: string; }[];
+    safety_cert?: { name: string; url: string; type: string; }[];
+    test_reports?: { name: string; url: string; type: string; }[];
+    technical_docs?: { name: string; url: string; type: string; }[];
+    compliance_docs?: { name: string; url: string; type: string; }[];
+  };
+  manufacturer_id?: string;
+  product_subcategory?: string;
   documents_confirmed?: boolean;
 };
 
 interface ProductFormProps {
-  onSubmit: (data: NewProduct) => Promise<void>;
+  onSubmit: (data: Omit<NewProduct, 'company_id'> & { company_id?: string }) => Promise<void>;
   defaultValues?: Partial<FormData>;
 }
 
@@ -112,6 +142,7 @@ export function ProductForm({ onSubmit, defaultValues }: ProductFormProps) {
     () => true
   );
   const [missingDocuments, setMissingDocuments] = useState<string[]>([]);
+  const t = useTranslations("productManagement.addProduct");
 
   const form = useForm<FormData>({
     resolver: zodResolver(productSchema),
@@ -168,7 +199,7 @@ export function ProductForm({ onSubmit, defaultValues }: ProductFormProps) {
         description: submitData.description || "",
         product_type: submitData.product_type || "",
         model: submitData.model || "",
-        company_id: "",
+        company_id: submitData.company_id || "",
         manufacturer_id: submitData.manufacturer_id || "",
         images: submitData.images.map((img) => ({
           url: img.url || "",
@@ -194,119 +225,89 @@ export function ProductForm({ onSubmit, defaultValues }: ProductFormProps) {
       const isValid = await form.trigger();
       if (!isValid) {
         toast({
-          title: "Validation Error",
-          description: "Please fill in all required fields correctly",
+          title: t("error.title"),
+          description: t("form.validation.error"),
           variant: "destructive",
         });
         return;
       }
-      setStep(step + 1);
+    }
+
+    if (step === 2 && !validateDocuments()) {
+      toast({
+        title: t("error.title"),
+        description: t("form.documents.missing", {
+          documents: missingDocuments.join(", ")
+        }),
+        variant: "destructive",
+      });
       return;
     }
 
-    try {
-      const isValid = await form.trigger();
-      if (!isValid) {
-        toast({
-          title: "Validation Error",
-          description: "Please fill in all required fields correctly",
-          variant: "destructive",
-        });
-        return;
-      }
+    if (step < TOTAL_STEPS) {
+      setStep((prev) => prev + 1);
+    }
+  };
 
-      const productType = form.getValues("product_type");
+  const handlePreviousStep = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (step > 1) {
+      setStep((prev) => prev - 1);
+    }
+  };
 
-      const normalizedType = productType?.toLowerCase().replace(/\s+|-/g, "_");
-
-      const requiredConfig =
-        REQUIRED_DOCUMENTS[normalizedType] ||
-        REQUIRED_DOCUMENTS[productType?.toUpperCase()] ||
-        REQUIRED_DOCUMENTS[productType];
-
-      if (requiredConfig) {
-        const uploadedDocs = form.getValues("documents") || {};
-
-        const missingDocs = DOCUMENT_TYPES.filter((docType) => {
-          const isRequired = requiredConfig[docType.id];
-          const hasDoc = uploadedDocs[docType.id]?.length > 0;
-
-          return isRequired && !hasDoc;
-        }).map((doc) => doc.label);
-
-        if (missingDocs.length > 0) {
-          toast({
-            title: "Required Documents Missing",
-            description: `Please upload: ${missingDocs.join(", ")}`,
-            variant: "destructive",
-          });
-          return;
-        }
-      }
-
-      const documentsConfirmed = form.getValues("documents_confirmed");
-      if (!documentsConfirmed) {
-        toast({
-          title: "Document Confirmation Required",
-          description: "Please confirm the accuracy of the uploaded documents",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      setStep(step + 1);
-    } catch (error) {
-      console.error("Error in handleNextStep:", error);
-      toast({
-        title: "Error",
-        description: "An error occurred while validating documents",
-        variant: "destructive",
-      });
+  const renderStep = () => {
+    switch (step) {
+      case 1:
+        return <ManufacturerSelect form={form} />;
+      case 2:
+        return <BasicInfoStep form={form} />;
+      case 3:
+        return (
+          <DocumentUploadStep
+            form={form}
+            setValidateDocuments={setValidateDocuments}
+          />
+        );
+      default:
+        return null;
     }
   };
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
-        <Progress value={progress} className="mb-8" />
-
-        {step === 1 && <BasicInfoStep form={form as any} />}
-
-        {step === 2 && (
-          <DocumentUploadStep
-            form={form}
-            setValidationFunction={setValidateDocuments}
-            onNext={() => setStep(step + 1)}
-          />
-        )}
-
-        {step === 3 && <ManufacturerSelect form={form} />}
-
-        <div className="flex justify-end gap-4">
+        <Progress value={progress} className="h-2" />
+        {renderStep()}
+        <div className="flex justify-between">
           {step > 1 && (
             <Button
               type="button"
               variant="outline"
-              onClick={() => setStep(step - 1)}
+              onClick={handlePreviousStep}
+              disabled={isSubmitting}
             >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Previous
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              {t("form.navigation.previous")}
             </Button>
           )}
-
           {step < TOTAL_STEPS ? (
             <Button
               type="button"
               onClick={handleNextStep}
               disabled={isSubmitting}
+              className="ml-auto"
             >
-              Next
-              <ArrowRight className="h-4 w-4 ml-2" />
+              {t("form.navigation.next")}
+              <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           ) : (
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting && <span className="mr-2">Saving...</span>}
-              {defaultValues ? "Update Product" : "Create Product"}
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="ml-auto"
+            >
+              {t("form.navigation.submit")}
             </Button>
           )}
         </div>
