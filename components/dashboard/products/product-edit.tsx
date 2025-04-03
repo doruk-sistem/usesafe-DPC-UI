@@ -109,6 +109,20 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
           product_type: data.product_type,
         });
 
+        // Check if product is rejected
+        if (data.status === "rejected") {
+          // Create a rejected document object with rejection reason
+          const rejectedDoc = {
+            id: `rejected-${data.id}`,
+            name: "Product Rejection",
+            type: "rejection",
+            status: "rejected",
+            rejection_reason: data.rejection_reason || "No reason provided",
+            rejection_date: data.rejection_date || new Date().toISOString(),
+          };
+          setRejectedDocument(rejectedDoc);
+        }
+
         // Extract all documents from the product and add IDs if missing
         if (data.documents) {
           // Check if documents is an object with arrays
@@ -876,9 +890,9 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
                       <div key={`doc-upload-date-${doc.id || doc.name}`}>
                         <span className="font-medium">Upload Date:</span> {doc.upload_date ? new Date(doc.upload_date).toLocaleDateString() : new Date().toLocaleDateString()}
                       </div>
-                      {doc.rejection_reason && (
+                      {doc.status === "rejected" && (
                         <div key={`doc-rejection-reason-${doc.id || doc.name}`}>
-                          <span className="font-medium">Rejection Reason:</span> {doc.rejection_reason}
+                          <span className="font-medium">Rejection Reason:</span> {doc.rejection_reason || "No reason provided"}
                         </div>
                       )}
                     </div>

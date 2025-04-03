@@ -339,7 +339,9 @@ export const documentsApiHooks = {
               if (documentIndex !== -1) {
                 updatedDocuments[docType][documentIndex] = {
                   ...updatedDocuments[docType][documentIndex],
-                  status
+                  status,
+                  rejection_reason: document.rejection_reason,
+                  rejection_date: document.rejection_date
                 };
               } else {
                 // Belge bulunamadı, yeni ekle
@@ -390,7 +392,9 @@ export const documentsApiHooks = {
             if (documentIndex !== -1) {
               updatedDocuments[documentIndex] = {
                 ...updatedDocuments[documentIndex],
-                status
+                status,
+                rejection_reason: document.rejection_reason,
+                rejection_date: document.rejection_date
               };
             } else {
               // Belge bulunamadı, yeni ekle
@@ -533,7 +537,12 @@ export const documentsApiHooks = {
           // Ürünü güncelle
           const { data: updatedProduct, error: updateError } = await supabase
             .from("products")
-            .update({ documents: updatedDocuments })
+            .update({ 
+              documents: updatedDocuments,
+              status: "rejected", // Ürün durumunu rejected olarak ayarla
+              rejection_reason: reason, // Reddetme nedenini ekle
+              rejection_date: new Date().toISOString() // Reddetme tarihini ekle
+            })
             .eq("id", product.id)
             .select();
           
