@@ -1,10 +1,6 @@
 const createNextIntlPlugin = require('next-intl/plugin');
 
-<<<<<<< HEAD
-const withNextIntl = createNextIntlPlugin('./i18n/request.ts');
-=======
 const withNextIntl = createNextIntlPlugin('./app/i18n/request.ts');
->>>>>>> feature/settings-translations
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
