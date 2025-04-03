@@ -35,7 +35,7 @@ export function DPPHeader() {
             <SelectItem value="marine">{t("list.filters.marine")}</SelectItem>
           </SelectContent>
         </Select>
-        <Button variant="outline" size="icon">
+        <Button variant="outline" size="icon" title={t("list.actions.download")}>
           <Download className="h-4 w-4" />
         </Button>
         <Button asChild>

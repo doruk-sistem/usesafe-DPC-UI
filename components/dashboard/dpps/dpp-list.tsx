@@ -30,6 +30,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
+import { useDPPs } from "@/lib/hooks/use-dpps";
 
 interface DPP {
   id: string;
@@ -86,9 +87,9 @@ export function DPPList({ dpps = [], isLoading, error }: DPPListProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{t("title")}</CardTitle>
+        <CardTitle>{t("list.title")}</CardTitle>
         <CardDescription>
-          {t("description")}
+          {t("list.description")}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -99,7 +100,7 @@ export function DPPList({ dpps = [], isLoading, error }: DPPListProps) {
               <TableHead>{t("list.product")}</TableHead>
               <TableHead>{t("list.manufacturingDate")}</TableHead>
               <TableHead>{t("list.facility")}</TableHead>
-              <TableHead>{t("list.actions")}</TableHead>
+              <TableHead>{t("list.actions.title")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -128,19 +129,22 @@ export function DPPList({ dpps = [], isLoading, error }: DPPListProps) {
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon">
                           <MoreHorizontal className="h-4 w-4" />
-                          <span className="sr-only">Open menu</span>
+                          <span className="sr-only">{t("list.actions.title")}</span>
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuLabel>{t("list.actions.title")}</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem asChild>
                           <Link href={`/dashboard/dpps/${dpp.id}`}>
                             <Eye className="h-4 w-4 mr-2" />
-                            View Details
+                            {t("list.actions.view")}
                           </Link>
                         </DropdownMenuItem>
-                        <DropdownMenuItem>Download QR Code</DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <QrCode className="h-4 w-4 mr-2" />
+                          {t("list.actions.download")}
+                        </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>

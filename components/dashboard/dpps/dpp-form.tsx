@@ -1,10 +1,10 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -150,9 +150,12 @@ export function DPPForm() {
           )}
         />
 
-        <Button type="submit">
-          {t("new.title")}
-        </Button>
+        <div className="flex justify-end space-x-4">
+          <Button variant="outline" onClick={() => router.back()}>
+            {t("buttons.cancel")}
+          </Button>
+          <Button type="submit">{t("buttons.create")}</Button>
+        </div>
       </form>
     </Form>
   );
