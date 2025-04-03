@@ -101,6 +101,93 @@
       }
     }
   },
+  "product": {
+    "details": {
+      "notAvailable": "DPP düzeni bu ürün tipi için mevcut değil",
+      "basicInfo": {
+        "title": "Temel Bilgiler",
+        "manufacturer": "Üretici",
+        "category": "Kategori"
+      },
+      "materials": {
+        "title": "Malzemeler",
+        "recyclable": "Geri Dönüştürülebilir",
+        "percentage": "Yüzde"
+      },
+      "certifications": {
+        "title": "Sertifikalar",
+        "issuedBy": "Veren Kurum",
+        "validUntil": "Geçerlilik Tarihi",
+        "status": {
+          "valid": "Geçerli",
+          "expired": "Süresi Dolmuş",
+          "unknown": "Bilinmiyor"
+        }
+      },
+      "keyFeatures": {
+        "title": "Önemli Özellikler"
+      },
+      "sustainability": {
+        "title": "Sürdürülebilirlik Metrikleri"
+      },
+      "hazards": {
+        "title": "Tehlike Piktogramları",
+        "health": "Sağlık Tehlikesi",
+        "corrosive": "Aşındırıcı",
+        "warning": "Uyarı",
+        "explosive": "Patlayıcı",
+        "environmental": "Çevresel Tehlike"
+      },
+      "safety": {
+        "title": "Güvenlik Önlemleri",
+        "measures": {
+          "careful": "Pilleri her zaman dikkatli taşıyın.",
+          "upright": "Her zaman dik konumda tutun.",
+          "ventilation": "İyi havalandırılan bir yerde şarj edin.",
+          "water": "Saf su eklemeyin. (Saf su seviyesi plakaların 1.5 cm üzerinde olmamalıdır.)",
+          "goggles": "Pil bakımı sırasında (su ekleme, temizlik, şarj) mutlaka çalışma koşullarına uygun koruyucu gözlük takın.",
+          "clothing": "Asit sıçrama riski durumunda koruyucu giysi giyin."
+        }
+      },
+      "emergency": {
+        "title": "Acil Durum Prosedürleri",
+        "procedures": {
+          "contact": "Göz veya cilt teması durumunda bol su ile yıkayın.",
+          "clothing": "Kirlenmiş giysileri hemen çıkarın.",
+          "ingestion": "Yutma: Bol su ve süt için. Doktora başvurun.",
+          "spill": "Döküntü: Küçük döküntüleri su ile yıkayın.",
+          "gases": "Çalışan piller yüksek derecede yanıcı hidrojen ve oksijen gazları yayar.",
+          "spark": "Şarj olan, araçta çalışan veya uzun süre çalıştıktan sonra duran pillerin yakınında sigara içmeyin veya kıvılcım çıkarabilecek kaynaklardan ve hareketlerden kaçının.",
+          "fire": "Ateşten uzak tutun.",
+          "devices": "Tüm cihazları büyük dikkatle kullanın."
+        }
+      },
+      "storage": {
+        "title": "Depolama Kılavuzu",
+        "general": {
+          "title": "Genel Depolama",
+          "dry": "Her zaman kuru ve serin bir yerde dik konumda saklayın. (10°C - 25°C)",
+          "pallet": "Beton zeminle doğrudan temas etmemesi için pilleri ahşap palet üzerine yerleştirin."
+        },
+        "charge": {
+          "title": "Şarj Seviyesi İzleme",
+          "sale": "Satış öncesi pil şarj seviyesi 12.6V'dan yüksek olmalıdır.",
+          "minimum": "Depolama sırasında minimum voltaj 12.4V olmalıdır.",
+          "damage": "Kalıcı hasarı önlemek için voltaj düşükse, paketi açın ve 16.1V ve 1/20Cn akımda şarj edin."
+        },
+        "installation": {
+          "title": "Kurulum Adımları",
+          "verify": "Pil uyumluluğunu araç kılavuzundan doğrulayın",
+          "engine": "Motorun kapalı olduğundan emin olun",
+          "remove": "Eski pili çıkarın (önce negatif terminal)",
+          "control": "Kısa devre kontrolü yapın",
+          "clean": "Pil bölmesini ve terminalleri temizleyin",
+          "install": "Yeni pili takın (önce pozitif kabloyu bağlayın)",
+          "check": "Şarj akımı uyumluluğunu kontrol edin"
+        }
+      }
+    }
+  },
   "products": {
     "title": "Sertifikalı Ürünler",
     "description": "Dijital Ürün Pasaportu ile doğrulanmış sertifikalı sürdürülebilir ürünlerimizi keşfedin.",
@@ -203,17 +290,9 @@
         }
       },
       "textile": {
-        "careInstructions": {
-          "title": "Bakım Talimatları",
-          "washing": "Yıkama",
-          "drying": "Kurutma",
-          "ironing": "Ütüleme",
-          "bleaching": "Ağartma",
-          "dryClean": "Kuru Temizleme",
-          "specialCare": "Özel Bakım Notları"
-        }
+        "careInstructions": "Bakım Talimatları"
       },
-      "layoutNotAvailable": "Bu ürün tipi için DPP düzeni mevcut değil:",
+      "layoutNotAvailable": "DPP düzeni bu ürün tipi için mevcut değil:",
       "quickInfo": {
         "title": "Hızlı Bilgi",
         "model": "Model",
@@ -221,7 +300,7 @@
         "category": "Kategori"
       },
       "keyFeatures": {
-        "title": "Temel Özellikler"
+        "title": "Önemli Özellikler"
       },
       "materials": {
         "title": "Malzemeler",
@@ -239,11 +318,18 @@
       "healthAndSafety": {
         "title": "Sağlık ve Güvenlik",
         "measures": {
-          "0": "Her zaman uygun kullanım ve depolama kılavuzlarını takip edin",
-          "1": "Aşırı sıcaklıklardan ve nemden uzak tutun",
-          "2": "Kullanım sırasında uygun kişisel koruyucu ekipman kullanın",
+          "0": "Her zaman uygun taşıma ve depolama kılavuzlarını takip edin",
+          "1": "Aşırı sıcaklık ve nemden uzak tutun",
+          "2": "Kullanırken uygun kişisel koruyucu ekipman kullanın",
           "3": "Düzenli bakım ve kontrol gereklidir"
         }
+      },
+      "emergencyProcedures": {
+        "title": "Acil Durum Prosedürleri",
+        "0": "Hasar durumunda hemen bağlantıyı kesin ve izole edin",
+        "1": "Sızıntı veya yangın durumunda acil servisleri arayın",
+        "2": "Hasar görmüş ürünler için uygun imha prosedürlerini takip edin",
+        "3": "Güvenlik olaylarını belgeleyin ve raporlayın"
       },
       "certifications": {
         "title": "Sertifikalar",
@@ -278,8 +364,8 @@
       },
       "qr": {
         "title": "Ürün QR Kodu",
-        "description": "Ürün orijinalliğini doğrulamak ve detaylı bilgiye erişmek için bu QR kodu tarayın",
-        "instructions": "Akıllı telefonunuzun kamerasını veya QR kod okuyucu uygulamasını kullanın"
+        "description": "Ürün orijinalliğini doğrulamak ve detaylı bilgilere erişmek için bu QR kodu tarayın",
+        "instructions": "Taramak için akıllı telefon kamerası veya QR kod okuyucu uygulaması kullanın"
       }
     }
   },
@@ -623,58 +709,49 @@
     }
   },
   "verify": {
-    "title": "Ürün Doğrula",
-    "description": "Ürünün orijinalliğini doğrulamak ve Dijital Ürün Pasaportunu görüntülemek için bir ürün ID girin veya QR kodu tarayın.",
-    "verification": {
-      "title": "Ürün Doğrulama",
-      "description": "Ürün kodu veya QR kod kullanarak ürün orijinalliğini doğrulayın",
-      "orScanQR": "veya QR kodu tarayın",
-      "manualInput": {
-        "placeholder": "Ürün kodunu girin (örn. PROD-2024-001)",
-        "verify": "Doğrula"
-      },
-      "scanner": {
-        "start": "Tarayıcıyı Başlat",
-        "stop": "Tarayıcıyı Durdur",
-        "positioning": "QR kodu çerçeve içine yerleştirin",
-        "error": {
-          "title": "Kamera Hatası",
-          "description": "Kameraya erişilemedi. Lütfen izinleri kontrol edin ve tekrar deneyin."
-        }
-      }
+    "title": "Ürün Doğrulama",
+    "description": "Orijinalliği doğrulamak için ürün ID'sini girin veya QR kodu tarayın",
+    "input": {
+      "label": "Ürün ID",
+      "placeholder": "Ürün ID'sini girin",
+      "submit": "Doğrula"
     },
-    "error": {
-      "invalidCode": {
-        "title": "Geçersiz Ürün Kodu",
-        "description": "Lütfen geçerli bir ürün kodu girin veya geçerli bir QR kod tarayın."
-      }
+    "scan": {
+      "title": "QR Kod Tara",
+      "description": "Ürün QR kodunu taramak için kameranızı kullanın"
+    },
+    "result": {
+      "title": "Doğrulama Sonucu",
+      "authentic": "Ürün orijinaldir",
+      "notFound": "Ürün bulunamadı",
+      "invalid": "Geçersiz ürün ID"
     }
   },
   "settings": {
     "title": "Ayarlar",
-    "description": "Firma profilinizi ve tercihlerinizi yönetin",
+    "description": "Şirket profilinizi ve tercihlerinizi yönetin",
     "saveChanges": "Değişiklikleri Kaydet",
     "tabs": {
-      "company": "Firma",
+      "company": "Şirket",
       "contact": "İletişim",
       "notifications": "Bildirimler",
       "security": "Güvenlik"
     },
     "company": {
-      "title": "Firma Bilgileri",
+      "title": "Şirket Bilgileri",
       "name": {
-        "label": "Firma Adı",
-        "description": "Firma adını güncellemek için destek ekibiyle iletişime geçin"
+        "label": "Şirket Adı",
+        "description": "Şirket adını güncellemek için destek ile iletişime geçin"
       },
       "taxId": {
-        "label": "Vergi No",
-        "description": "Vergi numarasını güncellemek için destek ekibiyle iletişime geçin"
+        "label": "Vergi Numarası",
+        "description": "Vergi numarasını güncellemek için destek ile iletişime geçin"
       },
       "tradeRegisterNumber": {
-        "label": "Ticaret Sicil No"
+        "label": "Ticaret Sicil Numarası"
       },
       "mersisNumber": {
-        "label": "MERSİS No"
+        "label": "MERSIS Numarası"
       }
     },
     "contact": {
@@ -691,7 +768,7 @@
       },
       "authorized": {
         "title": "Yetkili Kişi",
-        "fullName": "Ad Soyad",
+        "name": "Ad Soyad",
         "position": "Ünvan",
         "department": "Departman",
         "email": "E-posta",
@@ -714,11 +791,11 @@
       },
       "documents": {
         "label": "Belge Hatırlatmaları",
-        "description": "Belge yükleme ve güncelleme hatırlatmaları alın"
+        "description": "Belge yüklemeleri ve güncellemeleri için hatırlatmalar alın"
       },
       "certifications": {
         "label": "Sertifika Uyarıları",
-        "description": "Sertifika yenileme ve son kullanma tarihi bildirimleri alın"
+        "description": "Sertifika yenilemeleri ve son kullanma tarihleri için bildirimler alın"
       }
     },
     "success": {
@@ -728,85 +805,36 @@
   },
   "productManagement": {
     "title": "Ürün Yönetimi",
-    "description": "Akü ürünlerinizi ve DPP'lerinizi yönetin",
-    "search": {
-      "placeholder": "Ürün ara..."
+    "description": "Ürün kataloğunuzu ve sertifikalarınızı yönetin",
+    "loading": "Ürünler yükleniyor...",
+    "noProducts": "Ürün bulunamadı",
+    "addProduct": "Ürün Ekle",
+    "editProduct": "Ürünü Düzenle",
+    "deleteProduct": "Ürünü Sil",
+    "table": {
+      "name": "İsim",
+      "model": "Model",
+      "status": "Durum",
+      "actions": "İşlemler"
     },
-    "filters": {
-      "type": {
-        "label": "Türe göre filtrele",
-        "all": "Tüm Türler",
-        "agm": "AGM Aküler",
-        "efb": "EFB Aküler",
-        "standard": "Standart Aküler",
-        "marine": "Deniz Aküleri"
-      },
-      "status": {
-        "label": "Duruma göre filtrele",
-        "all": "Tüm Durumlar",
-        "active": "Aktif",
-        "pending": "DPC Bekliyor",
-        "draft": "Taslak"
-      }
+    "pagination": {
+      "previous": "Önceki",
+      "next": "Sonraki",
+      "showing": "Toplam {total} üründen {start} - {end} arası gösteriliyor"
     },
-    "actions": {
-      "download": "İndir",
-      "addProduct": "Ürün Ekle",
-      "viewDetails": "Detayları Görüntüle",
-      "editProduct": "Ürünü Düzenle",
-      "viewDocuments": "Belgeleri Görüntüle",
-      "deleteProduct": "Ürünü Sil",
-      "menu": "İşlemler"
-    },
-    "list": {
-      "title": "Ürünler",
-      "description": "Ürünlerinizi ve detaylarını yönetin",
-      "loading": "Ürünler yükleniyor...",
-      "empty": {
-        "title": "Ürün Yok",
-        "description": "Henüz hiç ürün eklemediniz"
-      },
-      "columns": {
-        "product": "Ürün",
-        "category": "Kategori",
-        "basicInfo": "Temel Bilgiler",
-        "status": "Durum",
-        "actions": "İşlemler"
-      }
+    "status": {
+      "draft": "Taslak",
+      "published": "Yayında",
+      "archived": "Arşivlenmiş"
     },
     "delete": {
-      "title": "Ürün Silindi",
-      "description": "Ürün başarıyla silindi",
-      "error": {
-        "title": "Hata",
-        "description": "Ürün silinirken bir hata oluştu"
-      },
+      "title": "Ürünü Sil",
       "confirm": {
-        "title": "Ürünü Sil",
-        "description": "{name} ürününü silmek istediğinizden emin misiniz?",
-        "cancel": "İptal",
-        "confirm": "Sil"
-      }
-    },
-    "edit": {
-      "title": "Ürünü Düzenle",
-      "description": "Ürün bilgilerinizi güncelleyin",
-      "form": {
-        "name": "Ürün Adı",
-        "model": "Model",
-        "description": "Açıklama",
-        "productType": "Ürün Tipi",
-        "status": "Durum",
-        "submit": "Değişiklikleri Kaydet"
+        "title": "Emin misiniz?",
+        "description": "{name} ürününü silmek istiyor musunuz? Bu işlem geri alınamaz."
       },
-      "success": {
-        "title": "Ürün Güncellendi",
-        "description": "Ürün başarıyla güncellendi"
-      },
-      "error": {
-        "title": "Hata",
-        "description": "Ürün güncellenirken bir hata oluştu"
-      }
+      "success": "Ürün başarıyla silindi",
+      "error": "Ürün silinirken bir hata oluştu"
     }
   }
 }

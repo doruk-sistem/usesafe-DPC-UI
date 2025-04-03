@@ -11,7 +11,7 @@ import { ProductService } from "@/lib/services/product";
 import { productBlockchainService } from "@/lib/services/product-blockchain";
 import { ProductStatusService } from "@/lib/services/product-status";
 import { StorageService } from "@/lib/services/storage";
-import type { NewProduct, ProductImage } from "@/lib/types/product";
+import type { NewProduct, ProductImage, ProductStatus } from "@/lib/types/product";
 import type { ProductFormData } from "@/lib/types/forms";
 import type { Json } from "@/lib/types/supabase";
 
@@ -67,6 +67,8 @@ export default function NewProductPageClient() {
         return;
       }
 
+      const initialStatus: ProductStatus = "DRAFT";
+
       const productData: NewProduct = {
         name: data.name,
         description: data.description,
@@ -78,11 +80,11 @@ export default function NewProductPageClient() {
         documents: data.documents as unknown as Json,
         manufacturer_id: data.manufacturer_id,
         company_id: company.id,
-        status: "DRAFT",
+        status: initialStatus,
         status_history: [
           {
-            from: "NEW",
-            to: "DRAFT",
+            from: null as any,
+            to: initialStatus,
             timestamp: new Date().toISOString(),
             userId: user.id,
           },
@@ -109,7 +111,7 @@ export default function NewProductPageClient() {
           await productBlockchainService.recordProductAction(
             response.data.id,
             data.name,
-            data.manufacturer_id,
+            data.manufacturer_id || "",
             data.description || "",
             "CREATE"
           );
@@ -132,10 +134,11 @@ export default function NewProductPageClient() {
         });
       }
 
-      if (ProductStatusService.validateStatus(response.data)) {
+      if (response.data && ProductStatusService.validateStatus(response.data)) {
+        const newStatus: ProductStatus = "NEW";
         await ProductStatusService.updateStatus(
           response.data.id,
-          "NEW",
+          newStatus,
           user.id,
           "Auto-transition: All required fields present"
         );
@@ -168,9 +171,7 @@ export default function NewProductPageClient() {
       </div>
 
       <Card className="p-6">
-        <ProductForm
-          onSubmit={handleSubmit}
-        />
+        <ProductForm onSubmit={handleSubmit} />
       </Card>
     </div>
   );

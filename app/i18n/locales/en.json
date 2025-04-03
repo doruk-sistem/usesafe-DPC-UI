@@ -101,6 +101,93 @@
       }
     }
   },
+  "product": {
+    "details": {
+      "notAvailable": "DPP layout not available for this product type",
+      "basicInfo": {
+        "title": "Basic Information",
+        "manufacturer": "Manufacturer",
+        "category": "Category"
+      },
+      "materials": {
+        "title": "Materials",
+        "recyclable": "Recyclable",
+        "percentage": "Percentage"
+      },
+      "certifications": {
+        "title": "Certifications",
+        "issuedBy": "Issued By",
+        "validUntil": "Valid Until",
+        "status": {
+          "valid": "Valid",
+          "expired": "Expired",
+          "unknown": "Unknown"
+        }
+      },
+      "keyFeatures": {
+        "title": "Key Features"
+      },
+      "sustainability": {
+        "title": "Sustainability Metrics"
+      },
+      "hazards": {
+        "title": "Hazard Pictograms",
+        "health": "Health Hazard",
+        "corrosive": "Corrosive",
+        "warning": "Warning",
+        "explosive": "Explosive",
+        "environmental": "Environmental Hazard"
+      },
+      "safety": {
+        "title": "Safety Measures",
+        "measures": {
+          "careful": "Always carry the batteries carefully.",
+          "upright": "Always keep in the upright position.",
+          "ventilation": "Charge in a well-ventilated place.",
+          "water": "Do not add extra quantities of pure water. (Pure water level must not be more than 1.5 cm above the plates.)",
+          "goggles": "During battery maintenance (addition of water, cleaning, battery charge), absolutely wear protective goggles suitable with working conditions.",
+          "clothing": "In case of any possible acid splash risk, wear protective clothing."
+        }
+      },
+      "emergency": {
+        "title": "Emergency Procedures",
+        "procedures": {
+          "contact": "In case of contact with eyes or skin wash with plenty of water.",
+          "clothing": "Immediately remove contaminated clothing.",
+          "ingestion": "Ingestion: Drink plenty of water and milk. Consult a physician.",
+          "spill": "Spill: Wash small-spills with water.",
+          "gases": "Operating batteries emit highly flammable hydrogen and oxygen gases.",
+          "spark": "Do not smoke or avoid any sources and acts which may cause sparks near batteries which are being charged, operating on the vehicle, or stopped after a long operation period.",
+          "fire": "Keep fire away.",
+          "devices": "Use all devices with great care."
+        }
+      },
+      "storage": {
+        "title": "Storage Guidelines",
+        "general": {
+          "title": "General Storage",
+          "dry": "Always store in a dry and cool place in the upright position. (10°C to 25°C).",
+          "pallet": "Place batteries on a wood pallet for avoiding direct contact with concrete ground."
+        },
+        "charge": {
+          "title": "Charge Level Monitoring",
+          "sale": "Charge level of the battery must be greater than 12.6V before sale.",
+          "minimum": "During storage, the minimum voltage must be 12.4V.",
+          "damage": "For preventing permanent damage, unpack and charge at 16.1V and 1/20Cn current if voltage is low."
+        },
+        "installation": {
+          "title": "Installation Steps",
+          "verify": "Verify battery compatibility with vehicle manual",
+          "engine": "Ensure engine is switched off",
+          "remove": "Remove old battery (negative terminal first)",
+          "control": "Conduct short-circuit control",
+          "clean": "Clean battery compartment and terminals",
+          "install": "Install new battery (connect positive cable first)",
+          "check": "Check charge current compatibility"
+        }
+      }
+    }
+  },
   "products": {
     "title": "Certified Products",
     "description": "Explore our collection of certified sustainable products with verified Digital Product Passports.",
@@ -567,31 +654,22 @@
     }
   },
   "verify": {
-    "title": "Verify Product",
-    "description": "Enter a product ID or scan a QR code to verify its authenticity and view its Digital Product Passport.",
-    "verification": {
-      "title": "Product Verification",
-      "description": "Verify product authenticity using a product code or QR code",
-      "orScanQR": "or scan QR code",
-      "manualInput": {
-        "placeholder": "Enter product code (e.g., PROD-2024-001)",
-        "verify": "Verify"
-      },
-      "scanner": {
-        "start": "Start Scanner",
-        "stop": "Stop Scanner",
-        "positioning": "Position the QR code within the frame to scan",
-        "error": {
-          "title": "Camera Error",
-          "description": "Failed to access camera. Please check permissions and try again."
-        }
-      }
+    "title": "Product Verification",
+    "description": "Enter the product ID or scan QR code to verify authenticity",
+    "input": {
+      "label": "Product ID",
+      "placeholder": "Enter product ID",
+      "submit": "Verify"
     },
-    "error": {
-      "invalidCode": {
-        "title": "Invalid Product Code",
-        "description": "Please enter a valid product code or scan a valid QR code."
-      }
+    "scan": {
+      "title": "Scan QR Code",
+      "description": "Use your camera to scan the product QR code"
+    },
+    "result": {
+      "title": "Verification Result",
+      "authentic": "Product is authentic",
+      "notFound": "Product not found",
+      "invalid": "Invalid product ID"
     }
   },
   "settings": {
@@ -635,7 +713,7 @@
       },
       "authorized": {
         "title": "Authorized Person",
-        "fullName": "Full Name",
+        "name": "Full Name",
         "position": "Title",
         "department": "Department",
         "email": "Email",
@@ -672,84 +750,36 @@
   },
   "productManagement": {
     "title": "Product Management",
-    "description": "Manage your battery products and DPPs",
-    "search": {
-      "placeholder": "Search products..."
+    "description": "Manage your product catalog and certifications",
+    "loading": "Loading products...",
+    "noProducts": "No products found",
+    "addProduct": "Add Product",
+    "editProduct": "Edit Product",
+    "deleteProduct": "Delete Product",
+    "table": {
+      "name": "Name",
+      "model": "Model",
+      "status": "Status",
+      "actions": "Actions"
     },
-    "filters": {
-      "type": {
-        "label": "Filter by type",
-        "all": "All Types",
-        "agm": "AGM Batteries",
-        "efb": "EFB Batteries",
-        "standard": "Standard Batteries",
-        "marine": "Marine Batteries"
-      },
-      "status": {
-        "label": "Filter by status",
-        "all": "All Status",
-        "active": "Active",
-        "pending": "Pending DPC",
-        "draft": "Draft"
-      }
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "showing": "Showing {start} to {end} of {total} products"
     },
-    "actions": {
-      "menu": "Actions",
-      "addProduct": "Add Product",
-      "viewDetails": "View Details",
-      "editProduct": "Edit Product",
-      "viewDocuments": "View Documents",
-      "deleteProduct": "Delete Product"
-    },
-    "list": {
-      "title": "Products",
-      "description": "Manage your products and their details",
-      "loading": "Loading products...",
-      "empty": {
-        "title": "No Products",
-        "description": "You haven't added any products yet"
-      },
-      "columns": {
-        "product": "Product",
-        "category": "Category",
-        "basicInfo": "Basic Info",
-        "status": "Status",
-        "actions": "Actions"
-      }
+    "status": {
+      "draft": "Draft",
+      "published": "Published",
+      "archived": "Archived"
     },
     "delete": {
-      "title": "Product Deleted",
-      "description": "The product has been deleted successfully",
-      "error": {
-        "title": "Error",
-        "description": "An error occurred while deleting the product"
-      },
+      "title": "Delete Product",
       "confirm": {
-        "title": "Delete Product",
-        "description": "Are you sure you want to delete {name}?",
-        "cancel": "Cancel",
-        "confirm": "Delete"
-      }
-    },
-    "edit": {
-      "title": "Edit Product",
-      "description": "Update your product information",
-      "form": {
-        "name": "Product Name",
-        "model": "Model",
-        "description": "Description",
-        "productType": "Product Type",
-        "status": "Status",
-        "submit": "Save Changes"
+        "title": "Are you sure?",
+        "description": "Do you want to delete {name}? This action cannot be undone."
       },
-      "success": {
-        "title": "Product Updated",
-        "description": "The product has been updated successfully"
-      },
-      "error": {
-        "title": "Error",
-        "description": "An error occurred while updating the product"
-      }
+      "success": "Product deleted successfully",
+      "error": "Failed to delete product"
     }
   }
 }

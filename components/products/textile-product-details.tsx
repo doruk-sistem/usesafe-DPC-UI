@@ -60,180 +60,87 @@ export function TextileProductDetails({ product }: TextileProductDetailsProps) {
     documentUrl: (field.value as any).documentUrl
   }));
 
-  // Get environmental metrics
+  // Get environmental metrics with proper type checking and conversion
   const environmentalFields = product.dpp_config?.sections
     .find(s => s.id === "environmental")
     ?.fields.map(field => {
-      const fieldValue = typeof field.value === 'object'
-        ? JSON.stringify(field.value)
-        : field.value;
+      let value: string | number = 0;
+      if (typeof field.value === "string" || typeof field.value === "number") {
+        value = field.value;
+      } else if (Array.isArray(field.value)) {
+        value = field.value.join(", ");
+      } else if (typeof field.value === "object" && field.value !== null) {
+        value = JSON.stringify(field.value);
+      }
       return {
         id: field.id,
         name: field.name,
-        value: fieldValue || ""
+        value
       };
     }) || [];
 
   // Get care instructions
   const careInstructions = product.dpp_config?.sections.find(s => s.id === "care-instructions")?.fields || [];
 
-  // Get basic info from key_features
-  const basicInfo = {
-    model: product.model,
-    serialNumber: product.key_features.find(f => f.name === "Serial Number")?.value || "",
-    manufacturingDate: product.key_features.find(f => f.name === "Manufacturing Date")?.value || "",
-    origin: product.key_features.find(f => f.name === "Origin")?.value || "",
-    weight: product.key_features.find(f => f.name === "Weight")?.value || "",
-    dimensions: product.key_features.find(f => f.name === "Dimensions")?.value || ""
-  };
-
-  const containerVariants = {
-    hidden: { 
-      opacity: 0,
-      y: 20
-    },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.5,
-        staggerChildren: 0.1
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { 
-      y: 20, 
-      opacity: 0,
-      scale: 0.9
-    },
-    visible: {
-      y: 0,
-      opacity: 1,
-      scale: 1,
-      transition: {
-        type: "spring",
-        damping: 12,
-        stiffness: 100
-      }
-    },
-    hover: {
-      scale: 1.03,
-      transition: { 
-        type: "spring", 
-        stiffness: 300 
-      }
-    }
-  };
-
-  const cardVariants = {
-    hidden: { 
-      opacity: 0, 
-      y: 30,
-      scale: 0.95
-    },
-    visible: {
-      opacity: 1, 
-      y: 0,
-      scale: 1,
-      transition: {
-        type: "spring",
-        damping: 10,
-        stiffness: 100
-      }
-    },
-    hover: {
-      scale: 1.02,
-      boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
-      transition: { 
-        type: "spring", 
-        stiffness: 300 
-      }
-    }
-  };
-
   return (
-    <motion.div 
-      initial="hidden"
-      animate="visible"
-      variants={containerVariants}
-      className="container mx-auto space-y-16 px-4 py-12 max-w-7xl"
-    >
+    <div className="container mx-auto space-y-16 px-4 py-12 max-w-7xl">
       {/* Back Button */}
-      <motion.div 
-        variants={itemVariants}
-        className="flex items-center gap-4"
-      >
+      <div className="flex items-center gap-4">
         <Link href="/products">
-          <motion.div
-            whileHover="hover"
-            variants={itemVariants}
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="gradient-hover group flex items-center"
           >
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="gradient-hover group flex items-center"
-            >
-              <ArrowLeft className="mr-2 h-4 w-4 group-hover:-translate-x-1 transition-transform" />
-              {t("backToProducts")}
-            </Button>
-          </motion.div>
+            <ArrowLeft className="mr-2 h-4 w-4 group-hover:-translate-x-1 transition-transform" />
+            {t("backToProducts")}
+          </Button>
         </Link>
-      </motion.div>
+      </div>
 
       {/* Product Overview */}
-      <motion.div 
-        variants={itemVariants}
-        className="grid gap-12 lg:grid-cols-2 items-start max-w-[1400px] mx-auto"
-      >
+      <div className="grid gap-12 lg:grid-cols-2 items-start max-w-[1400px] mx-auto">
         {/* Image Gallery */}
         <ProductImageGallery 
           images={product.images} 
-          name={product.name} 
-          itemVariants={itemVariants} 
+          name={product.name}
         />
 
         {/* Product Details */}
-        <motion.div 
-          variants={itemVariants}
-          className="space-y-8"
-        >
+        <div className="space-y-8">
           {/* Product Title and Description */}
           <ProductHeader 
             name={product.name} 
-            description={product.description} 
-            itemVariants={itemVariants} 
+            description={product.description}
           />
 
           {/* Quick Info Cards */}
           <ProductQuickInfo 
+            title={t("quickInfo.title")}
             model={product.model} 
             manufacturer={manufacturer}
-            cardVariants={cardVariants} 
           />
 
           {/* Key Features */}
           <ProductKeyFeatures 
-            features={product.key_features} 
-            itemVariants={itemVariants} 
+            title={t("keyFeatures.title")}
+            features={product.key_features}
           />
-        </motion.div>
-      </motion.div>
+        </div>
+      </div>
 
       <div className="grid gap-8 lg:grid-cols-2 mt-16 max-w-[1400px] mx-auto">
         {/* Basic Information */}
         <BasicInformationCard 
+          title={t("basicInfo.title")}
           manufacturer={manufacturer} 
-          category={category} 
-          model={product.model} 
-          cardVariants={cardVariants} 
+          category={category}
         />
 
         {/* Materials */}
         <MaterialsCard 
-          materials={materials} 
-          itemVariants={itemVariants} 
+          title={t("materials.title")}
+          materials={materials}
         />
 
         {/* Care Instructions */}
@@ -255,21 +162,26 @@ export function TextileProductDetails({ product }: TextileProductDetailsProps) {
 
         {/* Certifications */}
         <CertificationsCard 
-          certifications={certifications} 
-          itemVariants={itemVariants} 
+          title={t("certifications.title")}
+          certifications={certifications}
         />
 
         {/* Sustainability Metrics */}
         <SustainabilityMetricsCard 
-          environmentalFields={environmentalFields}
-          cardVariants={cardVariants} 
+          title={t("sustainability.title")}
+          metrics={environmentalFields}
         />
 
         {/* QR Code */}
         <Card className="lg:col-span-2">
-          <ProductQR productId={product.id} productName={product.name} />
+          <ProductQR 
+            productId={product.id} 
+            productName={product.name}
+            title={t("qr.title")}
+            description={t("qr.description")}
+          />
         </Card>
       </div>
-    </motion.div>
+    </div>
   );
 }

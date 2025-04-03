@@ -2,8 +2,8 @@
 
 import { motion } from "framer-motion";
 import { Download } from "lucide-react";
-import Link from "next/link";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -21,24 +21,25 @@ interface Certification {
   name: string;
   issuedBy: string;
   validUntil: string;
-  status: "active" | "expired" | "pending" | "unknown";
+  status: "active" | "valid" | "expired" | "pending" | "unknown";
   documentUrl?: string;
 }
 
 interface CertificationsCardProps {
+  title: string;
   certifications: Certification[];
-  itemVariants: any;
 }
 
 export function CertificationsCard({ 
-  certifications, 
-  itemVariants 
+  title,
+  certifications
 }: CertificationsCardProps) {
   const t = useTranslations("products.details.certifications");
 
   const getStatusVariant = (status: Certification["status"]) => {
     switch (status) {
       case "active":
+      case "valid":
         return "success";
       case "expired":
         return "destructive";
@@ -52,10 +53,14 @@ export function CertificationsCard({
   return (
     <Card className="lg:col-span-2">
       <CardHeader>
-        <CardTitle>{t("title")}</CardTitle>
+        <CardTitle>{title}</CardTitle>
       </CardHeader>
       <CardContent>
-        <motion.div variants={itemVariants}>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
           <Table>
             <TableHeader>
               <TableRow>

@@ -13,29 +13,27 @@ interface HazardPictogram {
 }
 
 interface HazardPictogramsCardProps {
-  hazardPictograms: HazardPictogram[];
-  itemVariants: any;
+  title: string;
+  pictograms: HazardPictogram[];
 }
 
 export function HazardPictogramsCard({
-  hazardPictograms,
-  itemVariants,
+  title,
+  pictograms,
 }: HazardPictogramsCardProps) {
   return (
     <Card className="lg:col-span-2">
       <CardHeader>
         <div className="flex items-center gap-2">
           <Skull className="h-5 w-5 text-destructive" />
-          <CardTitle>Hazard Pictograms</CardTitle>
+          <CardTitle>{title}</CardTitle>
         </div>
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-5 justify-center">
-          {hazardPictograms.map((pictogram, index) => (
-            <motion.div
+          {pictograms.map((pictogram, index) => (
+            <div
               key={index}
-              variants={itemVariants}
-              whileHover={{ scale: 1.05 }}
               className="flex flex-col items-center gap-3 p-4 rounded-lg border bg-white"
             >
               <div className="relative w-24 h-24">
@@ -52,7 +50,7 @@ export function HazardPictogramsCard({
                   {pictogram.description}
                 </p>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
       </CardContent>

@@ -95,77 +95,77 @@ export function BatteryProductDetails({ product }: BatteryProductDetailsProps) {
   const hazardPictograms = [
     {
       src: "/images/hazard-health.gif",
-      alt: "Health Hazard",
-      description: "May cause respiratory irritation",
+      alt: t("hazards.health"),
+      description: t("hazards.healthDesc"),
     },
     {
       src: "/images/hazard-explosive.gif",
-      alt: "Corrosive",
-      description: "Contains corrosive materials",
+      alt: t("hazards.corrosive"),
+      description: t("hazards.corrosiveDesc"),
     },
     {
       src: "/images/hazard-warning.png",
-      alt: "Warning",
-      description: "General safety warning",
+      alt: t("hazards.warning"),
+      description: t("hazards.warningDesc"),
     },
     {
       src: "/images/hazard-explosive.jpeg",
-      alt: "Explosive",
-      description: "Risk of explosion under specific conditions",
+      alt: t("hazards.explosive"),
+      description: t("hazards.explosiveDesc"),
     },
     {
       src: "/images/hazard-environmental.png",
-      alt: "Environmental Hazard",
-      description: "May pollute water sources",
+      alt: t("hazards.environmental"),
+      description: t("hazards.environmentalDesc"),
     },
   ];
 
   const safetyMeasures = [
-    "Always carry the batteries carefully.",
-    "Always keep in the upright position.",
-    "Charge in a well-ventilated place.",
-    "Do not add extra quantities of pure water. (Pure water level must not be more than 1.5 cm above the plates.)",
-    "During battery maintenance (addition of water, cleaning, battery charge), absolutely wear protective goggles suitable with working conditions.",
-    "In case of any possible acid splash risk, wear protective clothing.",
+    t("safety.measures.careful"),
+    t("safety.measures.upright"),
+    t("safety.measures.ventilation"),
+    t("safety.measures.water"),
+    t("safety.measures.goggles"),
+    t("safety.measures.clothing"),
   ];
 
   const emergencyProcedures = [
-    "In case of contact with eyes or skin wash with plenty of water.",
-    "Immediately remove contaminated clothing.",
-    "Ingestion: Drink plenty of water and milk. Consult a physician.",
-    "Spill: Wash small-spills with water.",
-    "Operating batteries emit highly flammable hydrogen and oxygen gases.",
-    "Do not smoke or avoid any sources and acts which may cause sparks near batteries which are being charged, operating on the vehicle, or stopped after a long operation period.",
-    "Keep fire away.",
-    "Use all devices with great care.",
+    t("emergency.procedures.contact"),
+    t("emergency.procedures.clothing"),
+    t("emergency.procedures.ingestion"),
+    t("emergency.procedures.spill"),
+    t("emergency.procedures.gases"),
+    t("emergency.procedures.spark"),
+    t("emergency.procedures.fire"),
+    t("emergency.procedures.devices"),
   ];
 
   const storageGuidelines = [
     {
-      title: "General Storage",
+      title: t("storage.general.title"),
       items: [
-        "Always store in a dry and cool place in the upright position. (10°C to 25°C).",
-        "Place batteries on a wood pallet for avoiding direct contact with concrete ground.",
+        t("storage.general.dry"),
+        t("storage.general.pallet"),
       ],
     },
     {
-      title: "Charge Level Monitoring",
+      title: t("storage.charge.title"),
       items: [
-        "Charge level of the battery must be greater than 12.6V before sale.",
-        "During storage, the minimum voltage must be 12.4V.",
-        "For preventing permanent damage, unpack and charge at 16.1V and 1/20Cn current if voltage is low.",
+        t("storage.charge.sale"),
+        t("storage.charge.minimum"),
+        t("storage.charge.damage"),
       ],
     },
     {
-      title: "Installation Steps",
+      title: t("storage.installation.title"),
       items: [
-        "Verify battery compatibility with vehicle manual",
-        "Ensure engine is switched off",
-        "Remove old battery (negative terminal first)",
-        "Conduct short-circuit control",
-        "Clean battery compartment and terminals",
-        "Install new battery (connect positive cable first)",
-        "Check charge current compatibility",
+        t("storage.installation.verify"),
+        t("storage.installation.engine"),
+        t("storage.installation.remove"),
+        t("storage.installation.control"),
+        t("storage.installation.clean"),
+        t("storage.installation.install"),
+        t("storage.installation.check"),
       ],
     },
   ];
@@ -207,32 +207,6 @@ export function BatteryProductDetails({ product }: BatteryProductDetailsProps) {
     },
   };
 
-  const cardVariants = {
-    hidden: {
-      opacity: 0,
-      y: 30,
-      scale: 0.95,
-    },
-    visible: {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      transition: {
-        type: "spring",
-        damping: 10,
-        stiffness: 100,
-      },
-    },
-    hover: {
-      scale: 1.02,
-      boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
-      transition: {
-        type: "spring",
-        stiffness: 300,
-      },
-    },
-  };
-
   return (
     <motion.div
       initial="hidden"
@@ -265,7 +239,6 @@ export function BatteryProductDetails({ product }: BatteryProductDetailsProps) {
         <ProductImageGallery
           images={product.images}
           name={product.name}
-          itemVariants={itemVariants}
         />
 
         {/* Product Details */}
@@ -274,38 +247,42 @@ export function BatteryProductDetails({ product }: BatteryProductDetailsProps) {
           <ProductHeader
             name={product.name}
             description={product.description}
-            itemVariants={itemVariants}
           />
 
           {/* Quick Info Cards */}
           <ProductQuickInfo
+            title={t('quickInfo.model')}
             model={product.model}
             manufacturer={manufacturer}
-            cardVariants={cardVariants}
           />
 
           {/* Key Features */}
-          <ProductKeyFeatures features={features} itemVariants={itemVariants} />
+          <ProductKeyFeatures 
+            title={t('keyFeatures.title')}
+            features={features} 
+          />
         </motion.div>
       </motion.div>
 
       <div className="space-y-8 mt-16">
         {/* Basic Information */}
         <BasicInformationCard
+          title={t('basicInfo.title')}
           manufacturer={manufacturer}
           category={category}
-          model={product.model}
-          cardVariants={cardVariants}
         />
 
         {/* Hazard Pictograms */}
         <HazardPictogramsCard
-          hazardPictograms={hazardPictograms}
-          itemVariants={itemVariants}
+          title={t('hazards.title')}
+          pictograms={hazardPictograms}
         />
 
         {/* Materials */}
-        <MaterialsCard materials={materials} itemVariants={itemVariants} />
+        <MaterialsCard
+          title={t('materials.title')}
+          materials={materials}
+        />
 
         {/* Health and Safety Section */}
         <Card className="lg:col-span-2">
@@ -328,8 +305,8 @@ export function BatteryProductDetails({ product }: BatteryProductDetailsProps) {
 
         {/* Emergency Procedures */}
         <EmergencyProceduresCard
-          emergencyProcedures={emergencyProcedures}
-          itemVariants={itemVariants}
+          title={t('emergency.title')}
+          procedures={emergencyProcedures}
         />
 
         {/* Storage and Installation */}
@@ -360,19 +337,28 @@ export function BatteryProductDetails({ product }: BatteryProductDetailsProps) {
 
         {/* Certifications */}
         <CertificationsCard
+          title={t('certifications.title')}
           certifications={certifications}
-          itemVariants={itemVariants}
         />
 
         {/* Sustainability Metrics */}
         <SustainabilityMetricsCard
-          environmentalFields={environmentalFields}
-          cardVariants={cardVariants}
+          title={t('sustainability.title')}
+          metrics={environmentalFields.map(field => ({
+            id: field.id,
+            name: field.name,
+            value: field.value || ''
+          }))}
         />
 
         {/* QR Code */}
         <Card className="lg:col-span-2">
-          <ProductQR productId={product.id} productName={product.name} />
+          <ProductQR 
+            productId={product.id} 
+            productName={product.name}
+            title={t('qr.title')}
+            description={t('qr.description')}
+          />
         </Card>
       </div>
     </motion.div>

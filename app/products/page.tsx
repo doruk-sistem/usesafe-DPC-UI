@@ -10,8 +10,8 @@ import {
   Globe, 
   Zap 
 } from "lucide-react";
-import Link from "next/link";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 
 import { ProductList } from "@/components/products/product-list";
 import { Button } from "@/components/ui/button";
@@ -78,7 +78,7 @@ export default function ProductsPage() {
 
           <motion.div variants={itemVariants} className="relative group">
             <Box className="h-16 w-16 text-primary mb-6 animate-pulse group-hover:rotate-12 transition-transform" />
-            <div className="absolute -top-2 -right-2 h-4 w-4 bg-green-500 rounded-full animate-ping"></div>
+            <div className="absolute -top-2 -right-2 h-4 w-4 bg-green-500 rounded-full animate-ping" />
           </motion.div>
           
           <motion.h1 
@@ -88,7 +88,7 @@ export default function ProductsPage() {
             {t("title")}
             <motion.span
               initial={{ width: 0 }}
-              animate={{ width: '100%' }}
+              animate={{ width: "100%" }}
               transition={{ duration: 1, delay: 0.5 }}
               className="absolute bottom-0 left-0 h-1 bg-primary"
             />

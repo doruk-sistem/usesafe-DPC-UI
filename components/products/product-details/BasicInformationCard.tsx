@@ -7,27 +7,25 @@ import { useTranslations } from "next-intl";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 export interface BasicInformationCardProps {
+  title: string;
   manufacturer: string;
   category: string;
-  model: string;
-  cardVariants: any;
 }
 
 export function BasicInformationCard({
+  title,
   manufacturer,
   category,
-  model,
-  cardVariants,
 }: BasicInformationCardProps) {
-  const t = useTranslations("products.details.quickInfo");
+  const t = useTranslations("products.details.basicInfo");
 
   return (
-    <motion.div variants={cardVariants} whileHover="hover">
+    <motion.div whileHover={{ scale: 1.02 }}>
       <Card className="w-full">
         <CardHeader>
           <div className="flex items-center gap-2">
             <Info className="w-5 h-5 text-primary" />
-            <CardTitle>{t("title")}</CardTitle>
+            <CardTitle>{title}</CardTitle>
           </div>
         </CardHeader>
         <CardContent>
@@ -39,10 +37,6 @@ export function BasicInformationCard({
             <div className="flex items-start gap-2">
               <span className="font-medium">{t("category")}:</span>
               <span className="text-muted-foreground">{category}</span>
-            </div>
-            <div className="flex items-start gap-2">
-              <span className="font-medium">{t("model")}:</span>
-              <span className="text-muted-foreground">{model}</span>
             </div>
           </div>
         </CardContent>

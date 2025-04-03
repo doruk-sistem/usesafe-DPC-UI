@@ -9,20 +9,17 @@ import { ProductImage } from "@/lib/types/product";
 interface ProductImageGalleryProps {
   images: ProductImage[];
   name: string;
-  itemVariants: any;
 }
 
 export function ProductImageGallery({
   images,
   name,
-  itemVariants,
 }: ProductImageGalleryProps) {
   const primaryImage = images.find((img) => img.is_primary) || images[0];
 
   return (
     <motion.div
-      variants={itemVariants}
-      whileHover="hover"
+      whileHover={{ scale: 1.02 }}
       className="space-y-8"
     >
       {/* Main Product Image */}
@@ -66,17 +63,16 @@ export function ProductImageGallery({
         {images.map((image, i) => (
           <motion.div
             key={i}
-            variants={itemVariants}
-            whileHover="hover"
+            whileHover={{ scale: 1.05 }}
             className="aspect-square relative rounded-xl overflow-hidden bg-white shadow-md cursor-pointer hover:ring-2 ring-primary/50 transition-all duration-200"
           >
             <Image
               src={image.url}
               alt={image.alt}
               fill
-              className="object-contain p-1" // object-cover yerine object-contain kullanıyoruz ve padding ekliyoruz
+              className="object-contain p-1"
               sizes="(max-width: 768px) 25vw, 15vw"
-              quality={80} // Thumbnail'lar için yeterli kalite
+              quality={80}
             />
           </motion.div>
         ))}

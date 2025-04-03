@@ -75,16 +75,16 @@ export function ProductList() {
   };
 
   const getManufacturer = (product: Product) => {
-    if (!product?.dpp_config?.sections) return "Unknown";
+    if (!product?.dpp_config?.sections) return t("quickInfo.unknown");
 
     const basicInfoSection = product.dpp_config.sections.find(
       (s) => s.id === "basic-info"
     );
-    if (!basicInfoSection?.fields) return "Unknown";
+    if (!basicInfoSection?.fields) return t("quickInfo.unknown");
 
     return (
       (basicInfoSection.fields.find((f) => f.id === "manufacturer")
-        ?.value as string) || "Unknown"
+        ?.value as string) || t("quickInfo.unknown")
     );
   };
 

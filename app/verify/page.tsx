@@ -1,9 +1,9 @@
 "use client";
 
 import { Search } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useTranslations } from "next-intl";
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
@@ -13,8 +13,8 @@ import { QRScanner } from "@/components/verify/qr-scanner";
 export default function VerifyPage() {
   const router = useRouter();
   const { toast } = useToast();
-  const [manualInput, setManualInput] = useState("");
   const t = useTranslations("verify");
+  const [manualInput, setManualInput] = useState("");
 
   const handleProductCode = (code: string) => {
     try {
