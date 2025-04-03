@@ -436,387 +436,6 @@
       }
     }
   },
-  "auth": {
-    "createAccount": {
-      "title": "Create Account",
-      "description": "Enter your information to create your account",
-      "form": {
-        "name": "Name",
-        "email": "Email",
-        "password": "Password",
-        "submit": "Create Account"
-      },
-      "validation": {
-        "name": {
-          "required": "Name is required",
-          "min": "Name must be at least 2 characters"
-        },
-        "email": {
-          "required": "Email is required",
-          "invalid": "Please enter a valid email"
-        },
-        "password": {
-          "required": "Password is required",
-          "min": "Password must be at least 8 characters"
-        }
-      },
-      "success": {
-        "title": "Account Created",
-        "description": "Your account has been created successfully"
-      },
-      "error": {
-        "title": "Error",
-        "description": "An error occurred while creating your account"
-      }
-    }
-  },
-  "company": {
-    "registration": {
-      "title": "Company Registration",
-      "description": "Register your company to start using our digital certification system",
-      "form": {
-        "companyName": "Company Name",
-        "companyType": "Company Type",
-        "taxId": "Tax ID",
-        "address": "Address",
-        "city": "City",
-        "country": "Country",
-        "phone": "Phone",
-        "website": "Website",
-        "submit": "Submit Registration"
-      },
-      "placeholders": {
-        "companyName": "Enter company name",
-        "companyType": "Select company type",
-        "taxId": "Enter tax ID",
-        "address": "Enter company address",
-        "city": "Enter city",
-        "country": "Select country",
-        "phone": "Enter phone number",
-        "website": "Enter website URL"
-      },
-      "validation": {
-        "companyNameRequired": "Company name is required",
-        "companyTypeRequired": "Company type is required",
-        "taxIdRequired": "Tax ID is required",
-        "addressRequired": "Address is required",
-        "cityRequired": "City is required",
-        "countryRequired": "Country is required",
-        "phoneRequired": "Phone number is required",
-        "websiteInvalid": "Please enter a valid website URL"
-      },
-      "success": {
-        "title": "Registration Successful",
-        "description": "Your company registration has been submitted successfully"
-      },
-      "error": {
-        "title": "Registration Failed",
-        "description": "There was an error submitting your registration"
-      }
-    }
-  },
-  "suppliers": {
-    "title": "Suppliers",
-    "description": "View and manage your company's suppliers",
-    "error": {
-      "title": "Error",
-      "description": "Failed to load suppliers"
-    },
-    "list": {
-      "title": "Supplier List",
-      "description": "View and manage your company's suppliers",
-      "loading": "Loading suppliers...",
-      "empty": {
-        "title": "No Suppliers Found",
-        "description": "You don't have any suppliers yet. They will appear here when you add products from manufacturers or material suppliers."
-      },
-      "columns": {
-        "company": "Company",
-        "type": "Type",
-        "taxId": "Tax ID",
-        "products": "Products",
-        "status": "Status"
-      },
-      "actions": {
-        "viewProducts": "View Products",
-        "viewDocuments": "View Documents",
-        "viewCertifications": "View Certifications",
-        "more": "Actions",
-        "download": "Download List"
-      },
-      "filters": {
-        "allTypes": "All Types",
-        "selectType": "Select Type"
-      },
-      "status": {
-        "active": "Active",
-        "inactive": "Inactive",
-        "pending": "Pending"
-      },
-      "types": {
-        "manufacturer": "Manufacturer",
-        "distributor": "Distributor",
-        "retailer": "Retailer"
-      }
-    },
-    "actions": {
-      "addSupplier": "Add Supplier",
-      "editSupplier": "Edit Supplier",
-      "deleteSupplier": "Delete Supplier",
-      "export": "Export Suppliers"
-    }
-  },
-  "documents": {
-    "title": "Document Management",
-    "description": "Manage your company documents and certifications",
-    "repository": {
-      "title": "Document Repository",
-      "description": "View and manage your company documents and certifications",
-      "columns": {
-        "document": "Document",
-        "type": "Type",
-        "category": "Category",
-        "status": "Status",
-        "validUntil": "Valid Until",
-        "issuer": "Issuer"
-      },
-      "status": {
-        "approved": "Approved",
-        "pending": "Pending",
-        "rejected": "Rejected",
-        "expired": "Expired",
-        "expiring": "Expiring"
-      },
-      "filters": {
-        "allDocuments": "All Documents",
-        "allStatus": "All Status"
-      },
-      "actions": {
-        "title": "Actions",
-        "view": "View Details",
-        "download": "Download",
-        "history": "View History",
-        "reupload": "Re-upload",
-        "delete": "Delete",
-        "upload": "Upload"
-      }
-    },
-    "types": {
-      "qualityManagement": "Quality Management",
-      "safetyHealth": "Safety & Health",
-      "batteryStandards": "Battery Standards"
-    },
-    "categories": {
-      "iso9001": "ISO 9001",
-      "iso45001": "ISO 45001",
-      "tsEn": "TS EN 50342-1"
-    }
-  },
-  "dpc": {
-    "title": "Digital Product Certifications",
-    "description": "Manage your DPC applications and certifications",
-    "applications": {
-      "title": "DPC Applications",
-      "description": "View and manage your Digital Product Certification applications",
-      "columns": {
-        "product": "Product",
-        "status": "Status",
-        "submitted": "Submitted",
-        "validUntil": "Valid Until",
-        "documents": "Documents",
-        "certifications": "Certifications"
-      },
-      "status": {
-        "approved": "Approved",
-        "pending": "Pending",
-        "rejected": "Rejected"
-      },
-      "filters": {
-        "allTypes": "All Types",
-        "allStatus": "All Status"
-      },
-      "actions": {
-        "title": "Actions",
-        "newDPC": "New DPC",
-        "download": "Download",
-        "view": "View Details",
-        "verify": "Verify DPC",
-        "resubmit": "Resubmit",
-        "delete": "Delete"
-      },
-      "documents": {
-        "reports": "Reports",
-        "documents": "Documents"
-      },
-      "types": {
-        "agm": "AGM Batteries",
-        "efb": "EFB Batteries",
-        "standard": "Standard Batteries",
-        "marine": "Marine Batteries"
-      }
-    }
-  },
-  "dpp": {
-    "title": "Digital Product Passports",
-    "description": "Manage your DPPs and track production information",
-    "list": {
-      "title": "Digital Product Passports",
-      "description": "View and manage your Digital Product Passports",
-      "serialNumber": "Serial Number",
-      "product": "Product",
-      "manufacturingDate": "Manufacturing Date",
-      "facility": "Facility",
-      "filters": {
-        "all": "All Products",
-        "type": {
-          "placeholder": "Filter by type"
-        },
-        "agm": "AGM Batteries",
-        "efb": "EFB Batteries",
-        "standard": "Standard Batteries",
-        "marine": "Marine Batteries"
-      },
-      "actions": {
-        "title": "Actions",
-        "view": "View Details",
-        "download": "Download QR Code"
-      },
-      "noResults": "No DPPs found"
-    },
-    "new": {
-      "title": "Create Digital Product Passport",
-      "description": "Create a new DPP for an existing product",
-      "form": {
-        "product": {
-          "label": "Product",
-          "placeholder": "Select product",
-          "error": "Product selection is required"
-        },
-        "serialNumber": {
-          "label": "Serial Number",
-          "placeholder": "Enter serial number",
-          "error": "Serial number is required"
-        },
-        "manufacturingDate": {
-          "label": "Manufacturing Date",
-          "placeholder": "Select manufacturing date",
-          "error": "Manufacturing date is required"
-        },
-        "facility": {
-          "label": "Manufacturing Facility",
-          "placeholder": "Enter facility name",
-          "error": "Manufacturing facility is required"
-        }
-      },
-      "buttons": {
-        "cancel": "Cancel",
-        "create": "Create DPP"
-      },
-      "success": {
-        "title": "Success!",
-        "description": "Digital Product Passport has been created successfully"
-      },
-      "error": {
-        "title": "Error",
-        "description": "An error occurred while creating the DPP"
-      }
-    }
-  },
-  "verify": {
-    "title": "Product Verification",
-    "description": "Enter the product ID or scan QR code to verify authenticity",
-    "input": {
-      "label": "Product ID",
-      "placeholder": "Enter product ID",
-      "submit": "Verify"
-    },
-    "scan": {
-      "title": "Scan QR Code",
-      "description": "Use your camera to scan the product QR code"
-    },
-    "result": {
-      "title": "Verification Result",
-      "authentic": "Product is authentic",
-      "notFound": "Product not found",
-      "invalid": "Invalid product ID"
-    }
-  },
-  "settings": {
-    "title": "Settings",
-    "description": "Manage your company profile and preferences",
-    "saveChanges": "Save Changes",
-    "tabs": {
-      "company": "Company",
-      "contact": "Contact",
-      "notifications": "Notifications",
-      "security": "Security"
-    },
-    "company": {
-      "title": "Company Information",
-      "name": {
-        "label": "Company Name",
-        "description": "Contact support to update company name"
-      },
-      "taxId": {
-        "label": "Tax ID",
-        "description": "Contact support to update tax ID"
-      },
-      "tradeRegisterNumber": {
-        "label": "Trade Register Number"
-      },
-      "mersisNumber": {
-        "label": "MERSIS Number"
-      }
-    },
-    "contact": {
-      "title": "Contact Information",
-      "email": "Email",
-      "phone": "Phone",
-      "fax": "Fax",
-      "website": "Website",
-      "address": {
-        "title": "Address Information",
-        "headquarters": "Headquarters Address",
-        "factory": "Factory Address",
-        "branches": "Branch Addresses"
-      },
-      "authorized": {
-        "title": "Authorized Person",
-        "name": "Full Name",
-        "position": "Title",
-        "department": "Department",
-        "email": "Email",
-        "phone": "Phone"
-      }
-    },
-    "notifications": {
-      "title": "Notification Preferences",
-      "email": {
-        "label": "Email Notifications",
-        "description": "Receive email notifications for important updates and reminders"
-      },
-      "sms": {
-        "label": "SMS Notifications",
-        "description": "Receive SMS notifications for urgent matters and important reminders"
-      },
-      "system": {
-        "label": "System Alerts",
-        "description": "Receive in-platform notifications and alerts"
-      },
-      "documents": {
-        "label": "Document Reminders",
-        "description": "Receive reminders for document uploads and updates"
-      },
-      "certifications": {
-        "label": "Certification Alerts",
-        "description": "Receive notifications for certification renewals and expiration dates"
-      }
-    },
-    "success": {
-      "title": "Settings updated",
-      "description": "Your settings have been saved successfully."
-    }
-  },
   "productManagement": {
     "title": "Product Management",
     "description": "Manage and track all your products",
@@ -940,5 +559,40 @@
     "automotive": "Automotive",
     "electronics": "Electronics",
     "clothing": "Clothing"
+  },
+  "documentManagement": {
+    "title": "Document Management",
+    "description": "Manage your company documents and certificates",
+    "repository": {
+      "title": "Document Repository",
+      "description": "View and manage your company documents and certificates",
+      "columns": {
+        "document": "Document",
+        "type": "Type",
+        "category": "Category",
+        "status": "Status",
+        "expiryDate": "Expiry Date",
+        "updatedBy": "Updated By",
+        "actions": "Actions"
+      }
+    },
+    "categories": {
+      "qualityManagement": "Quality Management",
+      "safetyAndHealth": "Safety & Health",
+      "batteryStandards": "Battery Standards"
+    },
+    "status": {
+      "approved": "Approved",
+      "expiringSoon": "Expiring Soon",
+      "pending": "Pending",
+      "rejected": "Rejected"
+    },
+    "filters": {
+      "allDocuments": "All Documents",
+      "allStatuses": "All Statuses"
+    },
+    "actions": {
+      "upload": "Upload"
+    }
   }
 }

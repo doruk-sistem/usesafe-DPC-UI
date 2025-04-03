@@ -1019,5 +1019,40 @@
     "automotive": "Otomotiv",
     "electronics": "Elektronik",
     "clothing": "Giyim"
+  },
+  "documentManagement": {
+    "title": "Döküman Yönetimi",
+    "description": "Şirket dökümanlarınızı ve sertifikalarınızı yönetin",
+    "repository": {
+      "title": "Döküman Deposu",
+      "description": "Şirket dökümanlarınızı ve sertifikalarınızı görüntüleyin ve yönetin",
+      "columns": {
+        "document": "Döküman",
+        "type": "Tür",
+        "category": "Kategori",
+        "status": "Durum",
+        "expiryDate": "Geçerlilik Tarihi",
+        "updatedBy": "Düzenleyen",
+        "actions": "İşlemler"
+      }
+    },
+    "categories": {
+      "qualityManagement": "Kalite Yönetimi",
+      "safetyAndHealth": "İş Sağlığı ve Güvenliği",
+      "batteryStandards": "Akü Standartları"
+    },
+    "status": {
+      "approved": "Onaylandı",
+      "expiringSoon": "Süresi Doluyor",
+      "pending": "Bekleniyor",
+      "rejected": "Reddedildi"
+    },
+    "filters": {
+      "allDocuments": "Tüm Dökümanlar",
+      "allStatuses": "Tüm Durumlar"
+    },
+    "actions": {
+      "upload": "Yükle"
+    }
   }
 }
