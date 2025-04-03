@@ -30,12 +30,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
+import { useDPPs } from "@/lib/hooks/use-dpps";
 
-<<<<<<< HEAD
-export function DPPList() {
-  const { dpps, isLoading, error } = useDPPs();
-  const t = useTranslations();
-=======
 interface DPP {
   id: string;
   serial_number: string;
@@ -43,7 +39,6 @@ interface DPP {
   manufacturing_date: string;
   manufacturing_facility: string;
 }
->>>>>>> feature/dpp-translations
 
 interface DPPListProps {
   dpps: DPP[];
@@ -92,34 +87,20 @@ export function DPPList({ dpps = [], isLoading, error }: DPPListProps) {
   return (
     <Card>
       <CardHeader>
-<<<<<<< HEAD
-        <CardTitle>{t("dpp.list.title")}</CardTitle>
+        <CardTitle>{t("list.title")}</CardTitle>
         <CardDescription>
-          {t("dpp.list.description")}
-=======
-        <CardTitle>{t("title")}</CardTitle>
-        <CardDescription>
-          {t("description")}
->>>>>>> feature/dpp-translations
+          {t("list.description")}
         </CardDescription>
       </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
-<<<<<<< HEAD
-              <TableHead>{t("dpp.list.columns.serialNumber")}</TableHead>
-              <TableHead>{t("dpp.list.columns.product")}</TableHead>
-              <TableHead>{t("dpp.list.columns.manufacturingDate")}</TableHead>
-              <TableHead>{t("dpp.list.columns.facility")}</TableHead>
-              <TableHead>{t("dpp.list.columns.actions")}</TableHead>
-=======
               <TableHead>{t("list.serialNumber")}</TableHead>
               <TableHead>{t("list.product")}</TableHead>
               <TableHead>{t("list.manufacturingDate")}</TableHead>
               <TableHead>{t("list.facility")}</TableHead>
-              <TableHead>{t("list.actions")}</TableHead>
->>>>>>> feature/dpp-translations
+              <TableHead>{t("list.actions.title")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -148,19 +129,22 @@ export function DPPList({ dpps = [], isLoading, error }: DPPListProps) {
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon">
                           <MoreHorizontal className="h-4 w-4" />
-                          <span className="sr-only">Open menu</span>
+                          <span className="sr-only">{t("list.actions.title")}</span>
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuLabel>{t("list.actions.title")}</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem asChild>
                           <Link href={`/dashboard/dpps/${dpp.id}`}>
                             <Eye className="h-4 w-4 mr-2" />
-                            View Details
+                            {t("list.actions.view")}
                           </Link>
                         </DropdownMenuItem>
-                        <DropdownMenuItem>Download QR Code</DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <QrCode className="h-4 w-4 mr-2" />
+                          {t("list.actions.download")}
+                        </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
