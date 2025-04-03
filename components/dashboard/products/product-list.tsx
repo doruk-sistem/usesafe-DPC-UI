@@ -171,7 +171,7 @@ export function ProductList({ products, isLoading }: ProductListProps) {
                   </TableCell>
                   <TableCell>
                     <Badge variant="secondary">
-                      {product.product_type}
+                      {t(`productTypes.${product.product_type.toLowerCase()}`)}
                     </Badge>
                   </TableCell>
                   <TableCell>

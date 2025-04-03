@@ -19,8 +19,10 @@
   "dashboard": {
     "title": "Dashboard",
     "welcome": "Welcome",
-    "overview": "Dashboard Overview",
-    "description": "Track your products, certifications and documents",
+    "overview": {
+      "title": "Dashboard Overview",
+      "description": "Track your products, certifications and documents"
+    },
     "period": {
       "select": "Select period",
       "today": "Today",
@@ -50,6 +52,73 @@
         "NEW": "New",
         "DRAFT": "Draft",
         "DELETED": "Deleted"
+      }
+    },
+    "menu": {
+      "dashboard": "Dashboard",
+      "products": "Products",
+      "profile": "Profile",
+      "settings": "Settings",
+      "dpps": "DPPs",
+      "suppliers": "Suppliers",
+      "documents": "Documents",
+      "certifications": "Certifications"
+    },
+    "registration": {
+      "title": "Registration",
+      "description": "Complete your company registration and start using our digital certification system",
+      "steps": {
+        "companyInfo": {
+          "title": "Company Information",
+          "companyName": "Company Name",
+          "taxId": "Tax ID",
+          "tradeRegisterNumber": "Trade Register Number",
+          "mersisNumber": "MERSIS Number"
+        },
+        "ownerInfo": {
+          "title": "Owner Information",
+          "nationalId": "National ID",
+          "countryCode": "Country Code",
+          "phone": "Phone Number"
+        },
+        "address": {
+          "title": "Address Information",
+          "headquarters": "Headquarters Address",
+          "city": "City",
+          "district": "District",
+          "postalCode": "Postal Code"
+        },
+        "documents": {
+          "title": "Documents",
+          "required": "Required Documents",
+          "optional": "Optional Documents",
+          "signatureCircular": "Signature Circular",
+          "tradeRegistry": "Trade Registry Gazette",
+          "taxPlate": "Tax Plate",
+          "activityCertificate": "Activity Certificate",
+          "isoCertificates": "ISO Certificates",
+          "qualityCertificates": "Quality Certificates",
+          "exportDocuments": "Export Documents",
+          "productionPermits": "Production Permits"
+        },
+        "success": {
+          "title": "Registration Completed Successfully",
+          "description": "Thank you for registering with UseSafe.",
+          "emailSent": "We've sent a verification email to your registered email address.",
+          "checkEmail": "Please check your email to verify your account",
+          "nextSteps": {
+            "title": "Next steps:",
+            "verifyEmail": "Verify your email address",
+            "waitReview": "Wait for admin review (typically 1-2 business days)",
+            "approval": "Receive approval notification",
+            "onboarding": "Complete platform onboarding"
+          }
+        },
+        "navigation": {
+          "next": "Next",
+          "previous": "Previous",
+          "submit": "Submit Registration"
+        }
       }
     }
   },
@@ -750,36 +819,115 @@
   },
   "productManagement": {
     "title": "Product Management",
-    "description": "Manage your product catalog and certifications",
-    "loading": "Loading products...",
-    "noProducts": "No products found",
-    "addProduct": "Add Product",
-    "editProduct": "Edit Product",
-    "deleteProduct": "Delete Product",
-    "table": {
-      "name": "Name",
-      "model": "Model",
-      "status": "Status",
-      "actions": "Actions"
+    "description": "Manage and track all your products",
+    "search": {
+      "placeholder": "Search products..."
     },
-    "pagination": {
-      "previous": "Previous",
-      "next": "Next",
-      "showing": "Showing {start} to {end} of {total} products"
+    "filters": {
+      "type": {
+        "label": "Product Type",
+        "all": "All Types",
+        "agm": "AGM",
+        "efb": "EFB",
+        "standard": "Standard",
+        "marine": "Marine"
+      },
+      "status": {
+        "label": "Status",
+        "all": "All Statuses",
+        "active": "Active",
+        "pending": "Pending",
+        "draft": "Draft"
+      }
     },
-    "status": {
-      "draft": "Draft",
-      "published": "Published",
-      "archived": "Archived"
+    "actions": {
+      "download": "Download",
+      "addProduct": "New Product",
+      "menu": "Actions",
+      "viewDetails": "View Details",
+      "editProduct": "Edit Product",
+      "viewDocuments": "View Documents",
+      "deleteProduct": "Delete Product"
+    },
+    "list": {
+      "title": "Product List",
+      "description": "View and manage all your products",
+      "loading": "Loading products...",
+      "empty": {
+        "title": "No Products Found",
+        "description": "You don't have any products yet. Use the 'New Product' button to add one."
+      },
+      "columns": {
+        "product": "Product",
+        "type": "Type",
+        "category": "Category",
+        "status": "Status",
+        "createdAt": "Created At",
+        "actions": "Actions",
+        "basicInfo": "Basic Info"
+      }
     },
     "delete": {
-      "title": "Delete Product",
       "confirm": {
-        "title": "Are you sure?",
-        "description": "Do you want to delete {name}? This action cannot be undone."
-      },
-      "success": "Product deleted successfully",
-      "error": "Failed to delete product"
+        "title": "Delete Product",
+        "description": "Are you sure you want to delete this product? This action cannot be undone.",
+        "cancel": "Cancel",
+        "confirm": "Delete"
+      }
+    },
+    "addProduct": {
+      "title": "Add New Product",
+      "description": "Fill in the form to add a new product",
+      "form": {
+        "steps": {
+          "manufacturer": "Manufacturer"
+        },
+        "fields": {
+          "manufacturer": {
+            "label": "Manufacturer",
+            "placeholder": "Select or enter manufacturer",
+            "description": "Select the product manufacturer or add a new one"
+          }
+        },
+        "navigation": {
+          "next": "Next",
+          "back": "Back",
+          "finish": "Finish"
+        }
+      }
+    },
+    "productTypes": {
+      "detergents": "Detergents",
+      "textile": "Textile",
+      "battery": "Battery",
+      "automotive": "Automotive",
+      "electronics": "Electronics",
+      "clothing": "Clothing",
+      "agm": "AGM",
+      "efb": "EFB",
+      "standard": "Standard",
+      "marine": "Marine"
     }
+  },
+  "common": {
+    "status": {
+      "new": "NEW"
+    }
+  },
+  "productCategories": {
+    "detergents": "Detergents",
+    "textile": "Textile",
+    "battery": "Battery",
+    "automotive": "Automotive",
+    "electronics": "Electronics",
+    "clothing": "Clothing"
+  },
+  "productTypes": {
+    "detergents": "Detergents",
+    "textile": "Textile",
+    "battery": "Battery",
+    "automotive": "Automotive",
+    "electronics": "Electronics",
+    "clothing": "Clothing"
   }
 }

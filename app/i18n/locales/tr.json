@@ -19,8 +19,10 @@
   "dashboard": {
     "title": "Kontrol Paneli",
     "welcome": "Hoş Geldiniz",
-    "overview": "Panel Genel Bakış",
-    "description": "Ürünlerinizi, sertifikalarınızı ve belgelerinizi takip edin",
+    "overview": {
+      "title": "Panel Genel Bakış",
+      "description": "Ürünlerinizi, sertifikalarınızı ve belgelerinizi takip edin"
+    },
     "period": {
       "select": "Dönem seçin",
       "today": "Bugün",
@@ -50,6 +52,73 @@
         "NEW": "Yeni",
         "DRAFT": "Taslak",
         "DELETED": "Silindi"
+      }
+    },
+    "menu": {
+      "dashboard": "Panel",
+      "products": "Ürünler",
+      "profile": "Profil",
+      "settings": "Ayarlar",
+      "dpps": "DPP'ler",
+      "suppliers": "Tedarikçiler",
+      "documents": "Belgeler",
+      "certifications": "Sertifikalar"
+    },
+    "registration": {
+      "title": "Kayıt",
+      "description": "Firma kaydınızı tamamlayın ve dijital sertifikasyon sistemimizi kullanmaya başlayın",
+      "steps": {
+        "companyInfo": {
+          "title": "Firma Bilgileri",
+          "companyName": "Firma Adı",
+          "taxId": "Vergi No",
+          "tradeRegisterNumber": "Ticaret Sicil No",
+          "mersisNumber": "MERSİS No"
+        },
+        "ownerInfo": {
+          "title": "Yetkili Bilgileri",
+          "nationalId": "TC Kimlik No",
+          "countryCode": "Ülke Kodu",
+          "phone": "Telefon Numarası"
+        },
+        "address": {
+          "title": "Adres Bilgileri",
+          "headquarters": "Merkez Adres",
+          "city": "Şehir",
+          "district": "İlçe",
+          "postalCode": "Posta Kodu"
+        },
+        "documents": {
+          "title": "Belgeler",
+          "required": "Zorunlu Belgeler",
+          "optional": "İsteğe Bağlı Belgeler",
+          "signatureCircular": "İmza Sirküleri",
+          "tradeRegistry": "Ticaret Sicil Gazetesi",
+          "taxPlate": "Vergi Levhası",
+          "activityCertificate": "Faaliyet Belgesi",
+          "isoCertificates": "ISO Sertifikaları",
+          "qualityCertificates": "Kalite Sertifikaları",
+          "exportDocuments": "İhracat Belgeleri",
+          "productionPermits": "Üretim İzinleri"
+        },
+        "success": {
+          "title": "Kayıt Başarıyla Tamamlandı",
+          "description": "UseSafe'e kaydolduğunuz için teşekkür ederiz.",
+          "emailSent": "Kayıtlı e-posta adresinize doğrulama e-postası gönderdik.",
+          "checkEmail": "Lütfen hesabınızı doğrulamak için e-postanızı kontrol edin",
+          "nextSteps": {
+            "title": "Sonraki adımlar:",
+            "verifyEmail": "E-posta adresinizi doğrulayın",
+            "waitReview": "Yönetici incelemesini bekleyin (genellikle 1-2 iş günü)",
+            "approval": "Onay bildirimini alın",
+            "onboarding": "Platform oryantasyonunu tamamlayın"
+          }
+        },
+        "navigation": {
+          "next": "İleri",
+          "previous": "Geri",
+          "submit": "Kaydı Tamamla"
+        }
       }
     }
   },
@@ -200,7 +269,8 @@
         "clothing": "Giyim",
         "women's clothing": "Kadın Giyim",
         "automotive batteries": "Otomotiv Aküleri",
-        "marine batteries": "Deniz Aküleri"
+        "marine batteries": "Deniz Aküleri",
+        "detergents": "Deterjanlar"
       },
       "sustainability": {
         "score": "Sürdürülebilirlik Puanı",
@@ -710,21 +780,38 @@
   },
   "verify": {
     "title": "Ürün Doğrulama",
-    "description": "Orijinalliği doğrulamak için ürün ID'sini girin veya QR kodu tarayın",
+    "description": "Ürün kimliğini girerek veya QR kodunu tarayarak ürünün orijinalliğini doğrulayın",
+    "verification": {
+      "title": "Ürün Doğrulama",
+      "description": "Ürün kimliğini girerek veya QR kodunu tarayarak ürünün orijinalliğini doğrulayın",
+      "manualInput": {
+        "placeholder": "Ürün kimliğini girin veya QR kodunu tarayın",
+        "verify": "Doğrula"
+      },
+      "orScanQR": "veya QR kodu tarayın",
+      "scanner": {
+        "title": "QR Kodu Tara",
+        "description": "Ürün üzerindeki QR kodunu taramak için kameranızı kullanın",
+        "permission": "Kamera izni gerekli",
+        "notSupported": "Tarayıcınız kamera erişimini desteklemiyor",
+        "start": "Taramayı Başlat"
+      }
+    },
     "input": {
-      "label": "Ürün ID",
-      "placeholder": "Ürün ID'sini girin",
+      "label": "Ürün Kimliği",
+      "placeholder": "Ürün kimliğini girin",
       "submit": "Doğrula"
     },
     "scan": {
-      "title": "QR Kod Tara",
-      "description": "Ürün QR kodunu taramak için kameranızı kullanın"
+      "title": "QR Kodu Tara",
+      "description": "Ürün üzerindeki QR kodunu taramak için kameranızı kullanın",
+      "permission": "Kamera izni gerekli",
+      "notSupported": "Tarayıcınız kamera erişimini desteklemiyor"
     },
     "result": {
-      "title": "Doğrulama Sonucu",
-      "authentic": "Ürün orijinaldir",
-      "notFound": "Ürün bulunamadı",
-      "invalid": "Geçersiz ürün ID"
+      "authentic": "Orijinal Ürün",
+      "notFound": "Ürün Bulunamadı",
+      "invalid": "Geçersiz Ürün Kimliği"
     }
   },
   "settings": {
@@ -805,36 +892,121 @@
   },
   "productManagement": {
     "title": "Ürün Yönetimi",
-    "description": "Ürün kataloğunuzu ve sertifikalarınızı yönetin",
-    "loading": "Ürünler yükleniyor...",
-    "noProducts": "Ürün bulunamadı",
-    "addProduct": "Ürün Ekle",
-    "editProduct": "Ürünü Düzenle",
-    "deleteProduct": "Ürünü Sil",
-    "table": {
-      "name": "İsim",
-      "model": "Model",
-      "status": "Durum",
-      "actions": "İşlemler"
+    "description": "Tüm ürünlerinizi yönetin ve takip edin",
+    "search": {
+      "placeholder": "Ürün ara..."
     },
-    "pagination": {
-      "previous": "Önceki",
-      "next": "Sonraki",
-      "showing": "Toplam {total} üründen {start} - {end} arası gösteriliyor"
+    "filters": {
+      "type": {
+        "label": "Ürün Tipi",
+        "all": "Tüm Tipler",
+        "agm": "AGM",
+        "efb": "EFB",
+        "standard": "Standart",
+        "marine": "Deniz",
+        "detergents": "Deterjanlar",
+        "textile": "Tekstil"
+      },
+      "status": {
+        "label": "Durum",
+        "all": "Tüm Durumlar",
+        "active": "Aktif",
+        "pending": "Beklemede",
+        "draft": "Taslak"
+      },
+      "category": {
+        "label": "Kategori",
+        "all": "Tüm Kategoriler"
+      }
     },
-    "status": {
-      "draft": "Taslak",
-      "published": "Yayında",
-      "archived": "Arşivlenmiş"
+    "actions": {
+      "download": "İndir",
+      "addProduct": "Yeni Ürün",
+      "menu": "İşlemler",
+      "viewDetails": "Detayları Görüntüle",
+      "editProduct": "Ürünü Düzenle",
+      "viewDocuments": "Belgeleri Görüntüle",
+      "deleteProduct": "Ürünü Sil"
+    },
+    "list": {
+      "title": "Ürün Listesi",
+      "description": "Tüm ürünlerinizi görüntüleyin ve yönetin",
+      "loading": "Ürünler yükleniyor...",
+      "empty": {
+        "title": "Ürün Bulunamadı",
+        "description": "Henüz hiç ürününüz yok. Yeni ürün eklemek için 'Yeni Ürün' butonunu kullanın."
+      },
+      "columns": {
+        "product": "Ürün",
+        "type": "Tip",
+        "category": "Kategori",
+        "status": "Durum",
+        "createdAt": "Oluşturulma Tarihi",
+        "actions": "İşlemler",
+        "basicInfo": "Temel Bilgiler"
+      }
     },
     "delete": {
-      "title": "Ürünü Sil",
       "confirm": {
-        "title": "Emin misiniz?",
-        "description": "{name} ürününü silmek istiyor musunuz? Bu işlem geri alınamaz."
-      },
-      "success": "Ürün başarıyla silindi",
-      "error": "Ürün silinirken bir hata oluştu"
+        "title": "Ürünü Sil",
+        "description": "Bu ürünü silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.",
+        "cancel": "İptal",
+        "confirm": "Sil"
+      }
+    },
+    "addProduct": {
+      "title": "Yeni Ürün Ekle",
+      "description": "Yeni bir ürün eklemek için formu doldurun",
+      "form": {
+        "steps": {
+          "manufacturer": "Üretici"
+        },
+        "fields": {
+          "manufacturer": {
+            "label": "Üretici",
+            "placeholder": "Üretici seçin veya girin",
+            "description": "Ürünün üreticisini seçin veya yeni bir üretici ekleyin"
+          }
+        },
+        "navigation": {
+          "next": "İleri",
+          "back": "Geri",
+          "finish": "Tamamla"
+        }
+      }
+    },
+    "productTypes": {
+      "detergents": "Deterjanlar",
+      "textile": "Tekstil",
+      "battery": "Akü",
+      "automotive": "Otomotiv",
+      "electronics": "Elektronik",
+      "clothing": "Giyim",
+      "agm": "AGM",
+      "efb": "EFB",
+      "standard": "Standart",
+      "marine": "Deniz"
     }
+  },
+  "common": {
+    "status": {
+      "new": "YENİ"
+    }
+  },
+  "productCategories": {
+    "detergents": "Deterjanlar",
+    "textile": "Tekstil",
+    "battery": "Akü",
+    "automotive": "Otomotiv",
+    "electronics": "Elektronik",
+    "clothing": "Giyim"
+  },
+  "productTypes": {
+    "detergents": "Deterjanlar",
+    "textile": "Tekstil",
+    "battery": "Akü",
+    "automotive": "Otomotiv",
+    "electronics": "Elektronik",
+    "clothing": "Giyim"
   }
 }
