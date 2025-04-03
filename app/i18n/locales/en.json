@@ -147,19 +147,68 @@
           "2": "Extended cycle life and reliable power output"
         },
         "healthAndSafety": {
-          "title": "Health and Safety Measures"
+          "title": "Health and Safety Measures",
+          "measures": {
+            "0": "Always handle batteries with care",
+            "1": "Keep in upright position at all times",
+            "2": "Charge in a well-ventilated area",
+            "3": "Do not add pure water (Pure water level should be 1.5 cm above plates)",
+            "4": "Always wear protective goggles suitable for working conditions during battery maintenance (adding water, cleaning, charging)",
+            "5": "Wear protective clothing if there is a risk of acid splashing"
+          }
         },
         "storage": {
           "title": "Storage and Installation Guidelines",
           "sections": {
             "general": "General Storage",
             "chargeLevel": "Charge Level Monitoring",
-            "installation": "Installation Steps"
+            "installation": "Installation Steps",
+            "items": {
+              "general": {
+                "0": "Always store upright in a dry and cool place (10°C - 25°C)",
+                "1": "Place batteries on wooden pallets to avoid direct contact with concrete floor"
+              },
+              "chargeLevel": {
+                "0": "Pre-sale battery charge level should be above 12.6V",
+                "1": "Minimum voltage during storage should be 12.4V",
+                "2": "If voltage is low, open package and charge at 16.1V and 1/20Cn current to prevent permanent damage"
+              },
+              "installation": {
+                "0": "Verify battery compatibility from vehicle manual",
+                "1": "Ensure engine is off",
+                "2": "Remove old battery (negative terminal first)",
+                "3": "Check for short circuits",
+                "4": "Clean battery compartment and terminals",
+                "5": "Install new battery (connect positive cable first)",
+                "6": "Check charging current compatibility"
+              }
+            }
+          }
+        },
+        "emergencyProcedures": {
+          "title": "Emergency Procedures",
+          "procedures": {
+            "0": "In case of damage, immediately disconnect and isolate",
+            "1": "Contact emergency services if leakage or fire occurs",
+            "2": "Follow proper disposal procedures for damaged items",
+            "3": "Document and report any safety incidents",
+            "4": "In case of eye or skin contact, rinse with plenty of water",
+            "5": "Remove contaminated clothing immediately",
+            "6": "If swallowed: Drink plenty of water and milk. Consult a doctor",
+            "7": "Spillage: Wash small spills with water"
           }
         }
       },
       "textile": {
-        "careInstructions": "Care Instructions"
+        "careInstructions": {
+          "title": "Care Instructions",
+          "washing": "Washing",
+          "drying": "Drying",
+          "ironing": "Ironing",
+          "bleaching": "Bleaching",
+          "dryClean": "Dry Clean",
+          "specialCare": "Special Care Notes"
+        }
       },
       "layoutNotAvailable": "DPP layout not available for product type:",
       "quickInfo": {
@@ -192,13 +241,6 @@
           "2": "Use appropriate personal protective equipment when handling",
           "3": "Regular maintenance and inspection required"
         }
-      },
-      "emergencyProcedures": {
-        "title": "Emergency Procedures",
-        "0": "In case of damage, immediately disconnect and isolate",
-        "1": "Contact emergency services if leakage or fire occurs",
-        "2": "Follow proper disposal procedures for damaged items",
-        "3": "Document and report any safety incidents"
       },
       "certifications": {
         "title": "Certifications",
@@ -240,30 +282,282 @@
   },
   "auth": {
     "createAccount": {
-      "title": "Create an Account",
+      "title": "Create Account",
       "name": "Full Name",
       "email": "Email",
       "password": "Password",
       "register": "Register",
-      "alreadyHaveAccount": "Do you already have an account?",
+      "alreadyHaveAccount": "Already have an account?",
       "login": "Login",
+      "placeholders": {
+        "name": "Enter your full name",
+        "email": "Enter your email",
+        "password": "Enter your password"
+      },
       "validation": {
         "nameMin": "Name must be at least 2 characters",
-        "emailInvalid": "Please enter a valid email address",
-        "passwordMin": "Password must be at least 6 characters long"
-      },
-      "placeholders": {
-        "name": "John Doe",
-        "email": "example@company.com",
-        "password": "******"
+        "emailInvalid": "Please enter a valid email",
+        "passwordMin": "Password must be at least 6 characters"
       },
       "success": {
-        "title": "Account created successfully",
-        "description": "Please verify your email address"
+        "title": "Success!",
+        "description": "Your account has been created successfully. Please login to continue."
       },
       "error": {
-        "title": "Error creating account",
-        "description": "Please try again"
+        "title": "Error",
+        "description": "There was an error creating your account. Please try again."
+      }
+    }
+  },
+  "company": {
+    "registration": {
+      "title": "Company Registration",
+      "description": "Register your company to start using our digital certification system",
+      "form": {
+        "companyName": "Company Name",
+        "companyType": "Company Type",
+        "taxId": "Tax ID",
+        "address": "Address",
+        "city": "City",
+        "country": "Country",
+        "phone": "Phone",
+        "website": "Website",
+        "submit": "Submit Registration"
+      },
+      "placeholders": {
+        "companyName": "Enter company name",
+        "companyType": "Select company type",
+        "taxId": "Enter tax ID",
+        "address": "Enter company address",
+        "city": "Enter city",
+        "country": "Select country",
+        "phone": "Enter phone number",
+        "website": "Enter website URL"
+      },
+      "validation": {
+        "companyNameRequired": "Company name is required",
+        "companyTypeRequired": "Company type is required",
+        "taxIdRequired": "Tax ID is required",
+        "addressRequired": "Address is required",
+        "cityRequired": "City is required",
+        "countryRequired": "Country is required",
+        "phoneRequired": "Phone number is required",
+        "websiteInvalid": "Please enter a valid website URL"
+      },
+      "success": {
+        "title": "Registration Successful",
+        "description": "Your company registration has been submitted successfully"
+      },
+      "error": {
+        "title": "Registration Failed",
+        "description": "There was an error submitting your registration"
+      }
+    }
+  },
+  "suppliers": {
+    "title": "Suppliers",
+    "description": "View and manage your company's suppliers",
+    "error": {
+      "title": "Error",
+      "description": "Failed to load suppliers"
+    },
+    "list": {
+      "title": "Supplier List",
+      "description": "View and manage your company's suppliers",
+      "loading": "Loading suppliers...",
+      "empty": {
+        "title": "No Suppliers Found",
+        "description": "You don't have any suppliers yet. They will appear here when you add products from manufacturers or material suppliers."
+      },
+      "columns": {
+        "company": "Company",
+        "type": "Type",
+        "taxId": "Tax ID",
+        "products": "Products",
+        "status": "Status"
+      },
+      "actions": {
+        "viewProducts": "View Products",
+        "viewDocuments": "View Documents",
+        "viewCertifications": "View Certifications",
+        "more": "Actions",
+        "download": "Download List"
+      },
+      "filters": {
+        "allTypes": "All Types",
+        "selectType": "Select Type"
+      },
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive",
+        "pending": "Pending"
+      },
+      "types": {
+        "manufacturer": "Manufacturer",
+        "distributor": "Distributor",
+        "retailer": "Retailer"
+      }
+    },
+    "actions": {
+      "addSupplier": "Add Supplier",
+      "editSupplier": "Edit Supplier",
+      "deleteSupplier": "Delete Supplier",
+      "export": "Export Suppliers"
+    }
+  },
+  "documents": {
+    "title": "Document Management",
+    "description": "Manage your company documents and certifications",
+    "repository": {
+      "title": "Document Repository",
+      "description": "View and manage your company documents and certifications",
+      "columns": {
+        "document": "Document",
+        "type": "Type",
+        "category": "Category",
+        "status": "Status",
+        "validUntil": "Valid Until",
+        "issuer": "Issuer"
+      },
+      "status": {
+        "approved": "Approved",
+        "pending": "Pending",
+        "rejected": "Rejected",
+        "expired": "Expired",
+        "expiring": "Expiring"
+      },
+      "filters": {
+        "allDocuments": "All Documents",
+        "allStatus": "All Status"
+      },
+      "actions": {
+        "title": "Actions",
+        "view": "View Details",
+        "download": "Download",
+        "history": "View History",
+        "reupload": "Re-upload",
+        "delete": "Delete",
+        "upload": "Upload"
+      }
+    },
+    "types": {
+      "qualityManagement": "Quality Management",
+      "safetyHealth": "Safety & Health",
+      "batteryStandards": "Battery Standards"
+    },
+    "categories": {
+      "iso9001": "ISO 9001",
+      "iso45001": "ISO 45001",
+      "tsEn": "TS EN 50342-1"
+    }
+  },
+  "dpc": {
+    "title": "Digital Product Certifications",
+    "description": "Manage your DPC applications and certifications",
+    "applications": {
+      "title": "DPC Applications",
+      "description": "View and manage your Digital Product Certification applications",
+      "columns": {
+        "product": "Product",
+        "status": "Status",
+        "submitted": "Submitted",
+        "validUntil": "Valid Until",
+        "documents": "Documents",
+        "certifications": "Certifications"
+      },
+      "status": {
+        "approved": "Approved",
+        "pending": "Pending",
+        "rejected": "Rejected"
+      },
+      "filters": {
+        "allTypes": "All Types",
+        "allStatus": "All Status"
+      },
+      "actions": {
+        "title": "Actions",
+        "newDPC": "New DPC",
+        "download": "Download",
+        "view": "View Details",
+        "verify": "Verify DPC",
+        "resubmit": "Resubmit",
+        "delete": "Delete"
+      },
+      "documents": {
+        "reports": "Reports",
+        "documents": "Documents"
+      },
+      "types": {
+        "agm": "AGM Batteries",
+        "efb": "EFB Batteries",
+        "standard": "Standard Batteries",
+        "marine": "Marine Batteries"
+      }
+    }
+  },
+  "dpp": {
+    "title": "Digital Product Passports",
+    "description": "Manage your DPPs and track production information",
+    "list": {
+      "title": "Digital Product Passports",
+      "description": "View and manage your Digital Product Passports",
+      "serialNumber": "Serial Number",
+      "product": "Product",
+      "manufacturingDate": "Manufacturing Date",
+      "facility": "Facility",
+      "filters": {
+        "all": "All Products",
+        "type": {
+          "placeholder": "Filter by type"
+        },
+        "agm": "AGM Batteries",
+        "efb": "EFB Batteries",
+        "standard": "Standard Batteries",
+        "marine": "Marine Batteries"
+      },
+      "actions": {
+        "title": "Actions",
+        "view": "View Details",
+        "download": "Download QR Code"
+      },
+      "noResults": "No DPPs found"
+    },
+    "new": {
+      "title": "Create Digital Product Passport",
+      "description": "Create a new DPP for an existing product",
+      "form": {
+        "product": {
+          "label": "Product",
+          "placeholder": "Select product",
+          "error": "Product selection is required"
+        },
+        "serialNumber": {
+          "label": "Serial Number",
+          "placeholder": "Enter serial number",
+          "error": "Serial number is required"
+        },
+        "manufacturingDate": {
+          "label": "Manufacturing Date",
+          "placeholder": "Select manufacturing date",
+          "error": "Manufacturing date is required"
+        },
+        "facility": {
+          "label": "Manufacturing Facility",
+          "placeholder": "Enter facility name",
+          "error": "Manufacturing facility is required"
+        }
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "create": "Create DPP"
+      },
+      "success": {
+        "title": "Success!",
+        "description": "Digital Product Passport has been created successfully"
+      },
+      "error": {
+        "title": "Error",
+        "description": "An error occurred while creating the DPP"
       }
     }
   },

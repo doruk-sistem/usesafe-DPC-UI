@@ -35,23 +35,33 @@ type HandleUploadResult = {
 
 interface DocumentUploadStepProps {
   form: UseFormReturn<any>;
-  setValidateDocuments: (fn: () => boolean) => void;
+  setValidationFunction: (fn: () => boolean) => void;
+  onNext: () => void;
 }
 
 export function DocumentUploadStep({
   form,
-  setValidateDocuments,
+  setValidationFunction,
+  onNext,
 }: DocumentUploadStepProps) {
   const { user } = useAuth();
   const { toast } = useToast();
   const t = useTranslations("productManagement.addProduct");
-  const companyId =
-    user?.user_metadata?.company_id || "7d26ed35-49ca-4c0d-932e-52254fb0e5b8";
+  const companyId = user?.user_metadata?.company_id;
 
-  const productType = form.watch("product_type");
+  if (!companyId) {
+    toast({
+      title: "Error",
+      description: "Company ID not found",
+      variant: "destructive",
+    });
+    return null;
+  }
+
+  const productType = form.watch("product_type") || "";
 
   const normalizedType = productType
-    ?.toLowerCase()
+    .toLowerCase()
     .replace(/[ğ]/g, "g")
     .replace(/[ü]/g, "u")
     .replace(/[ş]/g, "s")
@@ -60,12 +70,10 @@ export function DocumentUploadStep({
     .replace(/[ç]/g, "c")
     .replace(/\s+|-/g, "_");
 
-  const requiredConfig = productType
-    ? REQUIRED_DOCUMENTS[normalizedType] ||
-      REQUIRED_DOCUMENTS[productType.toUpperCase()] ||
-      REQUIRED_DOCUMENTS[productType] ||
-      {}
-    : {};
+  const requiredConfig = REQUIRED_DOCUMENTS[normalizedType] ||
+    REQUIRED_DOCUMENTS[productType.toUpperCase()] ||
+    REQUIRED_DOCUMENTS[productType] ||
+    {};
 
   const [uploadProgress, setUploadProgress] = useState<Record<string, number>>({});
 
