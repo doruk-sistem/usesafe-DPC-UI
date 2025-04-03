@@ -986,11 +986,22 @@
       "efb": "EFB",
       "standard": "Standart",
       "marine": "Deniz"
+    },
+    "common": {
+      "status": {
+        "new": "YENİ",
+        "draft": "Taslak",
+        "active": "Aktif",
+        "pending": "Beklemede"
+      }
     }
   },
   "common": {
     "status": {
-      "new": "YENİ"
+      "new": "YENİ",
+      "draft": "Taslak",
+      "active": "Aktif",
+      "pending": "Beklemede"
     }
   },
   "productCategories": {

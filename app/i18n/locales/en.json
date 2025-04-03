@@ -907,11 +907,22 @@
       "efb": "EFB",
       "standard": "Standard",
       "marine": "Marine"
+    },
+    "common": {
+      "status": {
+        "new": "NEW",
+        "draft": "Draft",
+        "active": "Active",
+        "pending": "Pending"
+      }
     }
   },
   "common": {
     "status": {
-      "new": "NEW"
+      "new": "NEW",
+      "draft": "Draft",
+      "active": "Active",
+      "pending": "Pending"
     }
   },
   "productCategories": {

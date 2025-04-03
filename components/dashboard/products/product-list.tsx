@@ -201,7 +201,7 @@ export function ProductList({ products, isLoading }: ProductListProps) {
                           : "default"
                       }
                     >
-                      {product.status}
+                      {t(`common.status.${product.status.toLowerCase()}`)}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
