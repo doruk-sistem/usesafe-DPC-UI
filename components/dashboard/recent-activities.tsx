@@ -25,14 +25,6 @@ export function RecentActivities() {
   const activities = getRecentActivities(products || []);
 
   return (
-<<<<<<< HEAD
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold tracking-tight">{t("title")}</h2>
-          <p className="text-muted-foreground">{t("description")}</p>
-        </div>
-=======
     <motion.div
       initial="hidden"
       animate="visible"
@@ -101,7 +93,6 @@ export function RecentActivities() {
             </div>
           </motion.div>
         ))}
->>>>>>> feature/settings-translations
       </div>
       <div className="divide-y divide-border rounded-md border">
         {activities.length === 0 ? (
@@ -159,6 +150,6 @@ export function RecentActivities() {
           ))
         )}
       </div>
-    </div>
+    </motion.div>
   );
 }
