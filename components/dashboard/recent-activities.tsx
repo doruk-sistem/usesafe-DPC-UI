@@ -2,12 +2,12 @@
 
 import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 import { motion } from "framer-motion";
+import { Box, CheckCircle2, XCircle , FileText, Trash2, PenLine } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { Box, CheckCircle2, XCircle } from "lucide-react";
+
 import { useProducts } from "@/lib/hooks/use-products";
-import { getRecentActivities } from "@/lib/utils/metrics";
 import { cn } from "@/lib/utils";
-import { FileText, Trash2, PenLine } from "lucide-react";
+import { getRecentActivities } from "@/lib/utils/metrics";
 
 const containerVariants = {
   hidden: { opacity: 0 },
