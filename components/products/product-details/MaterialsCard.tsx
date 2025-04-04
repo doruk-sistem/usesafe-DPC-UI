@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -21,28 +22,34 @@ interface Material {
 }
 
 interface MaterialsCardProps {
+  title: string;
   materials: Material[];
-  itemVariants: any;
 }
 
 export function MaterialsCard({ 
-  materials, 
-  itemVariants 
+  title,
+  materials
 }: MaterialsCardProps) {
+  const t = useTranslations("products.details.materials");
+
   return (
     <Card className="lg:col-span-2">
       <CardHeader>
-        <CardTitle>Materials</CardTitle>
+        <CardTitle>{title}</CardTitle>
       </CardHeader>
       <CardContent>
-        <motion.div variants={itemVariants}>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Material</TableHead>
-                <TableHead>Percentage</TableHead>
-                <TableHead>Recyclable</TableHead>
-                <TableHead>Description</TableHead>
+                <TableHead>{t("table.material")}</TableHead>
+                <TableHead>{t("table.percentage")}</TableHead>
+                <TableHead>{t("table.recyclable")}</TableHead>
+                <TableHead>{t("table.description")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -52,7 +59,7 @@ export function MaterialsCard({
                   <TableCell>{material.percentage}%</TableCell>
                   <TableCell>
                     <Badge variant={material.recyclable ? "success" : "secondary"}>
-                      {material.recyclable ? "Yes" : "No"}
+                      {material.recyclable ? t("recyclable.yes") : t("recyclable.no")}
                     </Badge>
                   </TableCell>
                   <TableCell>{material.description}</TableCell>

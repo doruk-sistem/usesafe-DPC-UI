@@ -10,13 +10,17 @@ import {
   Globe, 
   Zap 
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 
 import { ProductList } from "@/components/products/product-list";
 import { Button } from "@/components/ui/button";
 import { EnhancedCard } from "@/components/ui/enhanced-card";
+import { featureItems } from "@/lib/data/feature-items";
 
 export default function ProductsPage() {
+  const t = useTranslations("products");
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -39,30 +43,6 @@ export default function ProductsPage() {
       }
     }
   };
-
-  const featureItems = [
-    {
-      icon: QrCode,
-      title: "Product Traceability",
-      description: "Track product journey from source to store",
-      gradient: "from-blue-500 to-blue-700",
-      backgroundIcon: Globe
-    },
-    {
-      icon: History,
-      title: "Supply Chain History",
-      description: "Complete transparency of product lifecycle",
-      gradient: "from-green-500 to-green-700",
-      backgroundIcon: Leaf
-    },
-    {
-      icon: ShieldCheck,
-      title: "Verified Certifications",
-      description: "Authenticated sustainability credentials",
-      gradient: "from-purple-500 to-purple-700",
-      backgroundIcon: Zap
-    }
-  ];
 
   return (
     <motion.div 
@@ -98,17 +78,17 @@ export default function ProductsPage() {
 
           <motion.div variants={itemVariants} className="relative group">
             <Box className="h-16 w-16 text-primary mb-6 animate-pulse group-hover:rotate-12 transition-transform" />
-            <div className="absolute -top-2 -right-2 h-4 w-4 bg-green-500 rounded-full animate-ping"></div>
+            <div className="absolute -top-2 -right-2 h-4 w-4 bg-green-500 rounded-full animate-ping" />
           </motion.div>
           
           <motion.h1 
             variants={itemVariants}
             className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent relative"
           >
-            Certified Products
+            {t("title")}
             <motion.span
               initial={{ width: 0 }}
-              animate={{ width: '100%' }}
+              animate={{ width: "100%" }}
               transition={{ duration: 1, delay: 0.5 }}
               className="absolute bottom-0 left-0 h-1 bg-primary"
             />
@@ -118,7 +98,7 @@ export default function ProductsPage() {
             variants={itemVariants}
             className="text-xl text-muted-foreground max-w-3xl mb-8"
           >
-            Explore our collection of certified sustainable products with verified Digital Product Passports.
+            {t("description")}
           </motion.p>
           
           <motion.div 
@@ -127,7 +107,7 @@ export default function ProductsPage() {
           >
             {featureItems.map((item, index) => (
               <motion.div 
-                key={item.title}
+                key={item.titleKey}
                 variants={itemVariants}
                 whileHover={{ scale: 1.05 }}
                 className="group relative"
@@ -153,9 +133,9 @@ export default function ProductsPage() {
                 >
                   <div className="flex flex-col items-center p-4 h-full z-10 relative">
                     <item.icon className="h-8 w-8 text-white/80 mb-2 group-hover:rotate-12 transition-transform" />
-                    <h3 className="font-semibold mb-1 text-lg">{item.title}</h3>
+                    <h3 className="font-semibold mb-1 text-lg">{t(item.titleKey)}</h3>
                     <p className="text-sm text-white/70 text-center">
-                      {item.description}
+                      {t(item.descriptionKey)}
                     </p>
                   </div>
                 </EnhancedCard>
@@ -169,14 +149,14 @@ export default function ProductsPage() {
           className="space-y-4 mb-8 flex items-center justify-between"
         >
           <div>
-            <h2 className="text-2xl font-semibold">Featured Products</h2>
+            <h2 className="text-2xl font-semibold">{t("featured.title")}</h2>
             <p className="text-muted-foreground">
-              Browse our selection of certified sustainable products from e-bebek
+              {t("featured.description")}
             </p>
           </div>
           <Link href="/verify">
             <Button variant="outline" className="group">
-              Verify Product
+              {t("verify.button")}
               <ShieldCheck className="ml-2 h-4 w-4 group-hover:text-green-500 transition-colors" />
             </Button>
           </Link>

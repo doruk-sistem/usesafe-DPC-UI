@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 import { ProductForm } from "@/components/dashboard/products/product-form";
 import { Card } from "@/components/ui/card";
@@ -10,77 +11,91 @@ import { ProductService } from "@/lib/services/product";
 import { productBlockchainService } from "@/lib/services/product-blockchain";
 import { ProductStatusService } from "@/lib/services/product-status";
 import { StorageService } from "@/lib/services/storage";
-import type { NewProduct, ProductImage } from "@/lib/types/product";
+import type { NewProduct, ProductImage, ProductStatus } from "@/lib/types/product";
+import type { ProductFormData } from "@/lib/types/forms";
+import type { Json } from "@/lib/types/supabase";
 
 export default function NewProductPageClient() {
   const { user, company } = useAuth();
   const { toast } = useToast();
   const router = useRouter();
+  const t = useTranslations("productManagement.addProduct");
 
-  const handleSubmit = async (data: NewProduct) => {
+  const handleSubmit = async (data: ProductFormData) => {
     if (!user?.id || !company?.id) return;
 
     try {
       const uploadedImages = await Promise.all(
         data.images.map(async (image) => {
-          // Use type assertion to access fileObject
-          const typedImage = image as ProductImage;
-          if (image.url.startsWith("blob:") && typedImage.fileObject) {
+          if (image.url.startsWith("blob:") && "fileObject" in image) {
             const uploadedUrl = await StorageService.uploadProductImage(
-              typedImage.fileObject,
+              image.fileObject as File,
               company.id
             );
 
             if (!uploadedUrl) {
               toast({
-                title: "Image Upload Error",
-                description:
-                  "Failed to upload one or more images. Please try again.",
+                title: t("error.title"),
+                description: t("error.imageUpload"),
                 variant: "destructive",
               });
               return null;
             }
 
             return {
-              ...image,
               url: uploadedUrl,
+              alt: image.alt,
+              is_primary: image.is_primary,
             };
           }
-          return image;
+          return {
+            url: image.url,
+            alt: image.alt,
+            is_primary: image.is_primary,
+          };
         })
       );
 
-      // Filter out any null images
-      const validImages = uploadedImages.filter((img) => img !== null);
+      const validImages = uploadedImages.filter((img): img is ProductImage => img !== null);
 
       if (validImages.length === 0) {
         toast({
-          title: "Error",
-          description: "No images could be uploaded",
+          title: t("error.title"),
+          description: t("error.noImages"),
           variant: "destructive",
         });
         return;
       }
 
-      // Continue with product creation using validImages
-      const response = await ProductService.createProduct({
-        ...data,
+      const initialStatus: ProductStatus = "DRAFT";
+
+      const productData: NewProduct = {
+        name: data.name,
+        description: data.description,
+        product_type: data.product_type,
+        product_subcategory: data.product_subcategory || "",
+        model: data.model,
         images: validImages,
+        key_features: data.key_features,
+        documents: data.documents as unknown as Json,
+        manufacturer_id: data.manufacturer_id,
         company_id: company.id,
-        status: "DRAFT",
+        status: initialStatus,
         status_history: [
           {
-            from: null,
-            to: "DRAFT",
+            from: null as any,
+            to: initialStatus,
             timestamp: new Date().toISOString(),
             userId: user.id,
           },
         ],
-      });
+      };
+
+      const response = await ProductService.createProduct(productData);
 
       if (response.error) {
         toast({
-          title: "Error",
+          title: t("error.title"),
           description: response.error.message,
           variant: "destructive",
         });
@@ -91,60 +106,55 @@ export default function NewProductPageClient() {
         throw new Error("Product ID not received from server");
       }
 
-      // Blockchain kaydı oluştur
       try {
         const blockchainResult =
           await productBlockchainService.recordProductAction(
             response.data.id,
             data.name,
-            data.manufacturer_id,
-            data.description,
+            data.manufacturer_id || "",
+            data.description || "",
             "CREATE"
           );
 
-        // Update the product with contract address
-        // await ProductService.updateProduct(response.data.id, {
-        //   contract_address: blockchainResult.contractAddress,
-        // });
-
         toast({
-          title: "Success",
-          description: `Product created and recorded to blockchain. Contract Address: ${blockchainResult.contractAddress}`,
+          title: t("success.title"),
+          description: t("success.blockchain", {
+            address: blockchainResult.contractAddress
+          }),
         });
       } catch (blockchainError) {
         toast({
-          title: "Warning",
-          description:
-            "Product created but blockchain record failed: " +
-            (blockchainError instanceof Error
+          title: t("error.title"),
+          description: t("error.blockchain", {
+            error: blockchainError instanceof Error
               ? blockchainError.message
-              : "Unknown error"),
+              : "Unknown error"
+          }),
           variant: "destructive",
         });
       }
 
-      // Validate if product can be moved to NEW status
-      if (ProductStatusService.validateStatus(response.data)) {
+      if (response.data && ProductStatusService.validateStatus(response.data)) {
+        const newStatus: ProductStatus = "NEW";
         await ProductStatusService.updateStatus(
           response.data.id,
-          "NEW",
+          newStatus,
           user.id,
           "Auto-transition: All required fields present"
         );
       }
 
       toast({
-        title: "Success",
-        description: "Product created successfully",
+        title: t("success.title"),
+        description: t("success.description"),
       });
 
-      // Başarılı kayıt sonrası detay sayfasına yönlendir
       router.push("/dashboard/products");
     } catch (error) {
       console.error("Error creating product:", error);
       toast({
-        title: "Error",
-        description: "An unexpected error occurred while creating the product",
+        title: t("error.title"),
+        description: t("error.description"),
         variant: "destructive",
       });
       throw error;
@@ -154,16 +164,14 @@ export default function NewProductPageClient() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold">Add New Product</h1>
+        <h1 className="text-2xl font-semibold">{t("title")}</h1>
         <p className="text-sm text-muted-foreground">
-          Create a new product and configure its Digital Product Passport
+          {t("description")}
         </p>
       </div>
 
       <Card className="p-6">
-        <ProductForm
-          onSubmit={handleSubmit as any} // TODO: Fix type mismatch between NewProduct and handleSubmit
-        />
+        <ProductForm onSubmit={handleSubmit} />
       </Card>
     </div>
   );
