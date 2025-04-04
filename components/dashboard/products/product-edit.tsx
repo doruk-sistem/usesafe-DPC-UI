@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
 
 interface ProductEditProps {
@@ -846,11 +847,41 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
               <div className="space-y-4">
                 {allDocuments.map((doc) => (
                   <div key={doc.id || `doc-${doc.name}-${doc.type}`} className="border rounded-md p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center space-x-2">
-                        <FileText className="h-5 w-5 text-muted-foreground" />
-                        <span className="font-medium">{doc.name}</span>
-                        {getStatusBadge(doc.status)}
+                    <div className="flex items-start justify-between">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <FileText className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <span className="font-medium truncate max-w-[200px]">
+                                  {doc.name.length > 25 
+                                    ? `${doc.name.slice(0, 25)}...` 
+                                    : doc.name}
+                                </span>
+                              </TooltipTrigger>
+                              <TooltipContent side="top" align="start">
+                                <p className="max-w-[300px] break-words text-xs">{doc.name}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground">
+                          <div key={`doc-type-${doc.id || doc.name}`}>
+                            <span className="font-medium">Type:</span> {documentTypeLabels[doc.type] || doc.type}
+                          </div>
+                          <div key={`doc-version-${doc.id || doc.name}`}>
+                            <span className="font-medium">Version:</span> {doc.version || "1.0"}
+                          </div>
+                          <div key={`doc-upload-date-${doc.id || doc.name}`}>
+                            <span className="font-medium">Upload Date:</span> {doc.upload_date ? new Date(doc.upload_date).toLocaleDateString() : new Date().toLocaleDateString()}
+                          </div>
+                          {doc.status === "rejected" && (
+                            <div key={`doc-rejection-reason-${doc.id || doc.name}`}>
+                              <span className="font-medium">Rejection Reason:</span> {doc.rejection_reason || "No reason provided"}
+                            </div>
+                          )}
+                        </div>
                       </div>
                       <div className="flex items-center space-x-2">
                         <Button variant="ghost" size="sm" asChild>
@@ -879,22 +910,6 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
                           {isDeleting === (doc.id || `doc-${doc.name}-${doc.type}`) ? "Deleting..." : "Delete"}
                         </Button>
                       </div>
-                    </div>
-                    <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground">
-                      <div key={`doc-type-${doc.id || doc.name}`}>
-                        <span className="font-medium">Type:</span> {documentTypeLabels[doc.type] || doc.type}
-                      </div>
-                      <div key={`doc-version-${doc.id || doc.name}`}>
-                        <span className="font-medium">Version:</span> {doc.version || "1.0"}
-                      </div>
-                      <div key={`doc-upload-date-${doc.id || doc.name}`}>
-                        <span className="font-medium">Upload Date:</span> {doc.upload_date ? new Date(doc.upload_date).toLocaleDateString() : new Date().toLocaleDateString()}
-                      </div>
-                      {doc.status === "rejected" && (
-                        <div key={`doc-rejection-reason-${doc.id || doc.name}`}>
-                          <span className="font-medium">Rejection Reason:</span> {doc.rejection_reason || "No reason provided"}
-                        </div>
-                      )}
                     </div>
                     
                     {doc.id === reuploadDocumentId && (

@@ -1,5 +1,5 @@
-import { Database } from "./supabase";
 import { Document } from "./document";
+import { Database } from "./supabase";
 
 export type DPPFieldType =
   | "text"

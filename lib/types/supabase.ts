@@ -1,5 +1,5 @@
-import { StatusTransition, ProductImage, KeyFeature } from "./product"
 import { Document } from "./document"
+import { StatusTransition, ProductImage, KeyFeature } from "./product"
 
 export type Json =
   | string
