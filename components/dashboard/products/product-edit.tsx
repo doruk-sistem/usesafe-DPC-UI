@@ -16,24 +16,11 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
+import { Product } from "@/lib/types/product";
 
 interface ProductEditProps {
   productId: string;
   reuploadDocumentId?: string;
-}
-
-interface Product {
-  id: string;
-  name: string;
-  model: string;
-  product_type: string;
-  status: string;
-  documents: Record<string, any[]>;
-  images?: Array<{
-    url: string;
-    alt?: string;
-    is_primary?: boolean;
-  }>;
 }
 
 interface Document {
