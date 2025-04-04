@@ -1,11 +1,12 @@
 "use client";
 
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel,DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
 import { useQueryClient } from "@tanstack/react-query";
-import { Battery, FileText, ImageOff, MoreHorizontal, Trash, Pencil, ChevronLeft, ChevronRight } from "lucide-react";
+import { Battery, FileText, ImageOff, MoreHorizontal, Trash, Pencil } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
@@ -15,8 +16,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useToast } from "@/components/ui/use-toast";
 import { productsApiHooks } from "@/lib/hooks/use-products";
 import type { Product } from "@/lib/types/product";
-import { StorageHelper } from "@/lib/utils/storage";  
-
+import { StorageHelper } from "@/lib/utils/storage";
 
 interface ProductListProps {
   products: Product[];
@@ -28,6 +28,7 @@ export function ProductList({ products, isLoading }: ProductListProps) {
   const queryClient = useQueryClient();
   const [productToDelete, setProductToDelete] = useState<Product | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const t = useTranslations("productManagement");
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 10;
   const totalPages = Math.ceil(products.length / productsPerPage);
@@ -38,8 +39,8 @@ export function ProductList({ products, isLoading }: ProductListProps) {
   const { mutate: deleteProduct } = productsApiHooks.useDeleteProductMutation({
     onSuccess: () => {
       toast({
-        title: "Product deleted",
-        description: "The product has been successfully deleted.",
+        title: t("delete.title"),
+        description: t("delete.description"),
       });
       queryClient.invalidateQueries({ queryKey: ["getProducts"] });
       setIsDeleteDialogOpen(false);
@@ -47,8 +48,8 @@ export function ProductList({ products, isLoading }: ProductListProps) {
     },
     onError: (error) => {
       toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to delete product. Please try again.",
+        title: t("delete.error.title"),
+        description: error instanceof Error ? error.message : t("delete.error.description"),
         variant: "destructive",
       });
       setIsDeleteDialogOpen(false);
@@ -85,8 +86,8 @@ export function ProductList({ products, isLoading }: ProductListProps) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Products</CardTitle>
-          <CardDescription>Loading your products...</CardDescription>
+          <CardTitle>{t("list.title")}</CardTitle>
+          <CardDescription>{t("list.loading")}</CardDescription>
         </CardHeader>
         <CardContent>
           {[1, 2, 3].map((i) => (
@@ -108,12 +109,12 @@ export function ProductList({ products, isLoading }: ProductListProps) {
       <Card>
         <CardContent className="flex flex-col items-center justify-center py-12">
           <Battery className="h-12 w-12 text-muted-foreground mb-4" />
-          <h2 className="text-xl font-semibold mb-2">No Products Found</h2>
+          <h2 className="text-xl font-semibold mb-2">{t("list.empty.title")}</h2>
           <p className="text-muted-foreground mb-4">
-            Start by adding your first product.
+            {t("list.empty.description")}
           </p>
           <Button asChild>
-            <Link href="/dashboard/products/new">Add Product</Link>
+            <Link href="/dashboard/products/new">{t("actions.addProduct")}</Link>
           </Button>
         </CardContent>
       </Card>
@@ -124,20 +125,20 @@ export function ProductList({ products, isLoading }: ProductListProps) {
     <>
       <Card>
         <CardHeader>
-          <CardTitle>Products</CardTitle>
+          <CardTitle>{t("list.title")}</CardTitle>
           <CardDescription>
-            Manage your product catalog
+            {t("list.description")}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Product</TableHead>
-                <TableHead>Category</TableHead>
-                <TableHead>Basic Info</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="w-[100px] text-right">Actions</TableHead>
+                <TableHead>{t("list.columns.product")}</TableHead>
+                <TableHead>{t("list.columns.category")}</TableHead>
+                <TableHead>{t("list.columns.basicInfo")}</TableHead>
+                <TableHead>{t("list.columns.status")}</TableHead>
+                <TableHead className="w-[100px] text-right">{t("list.columns.actions")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -214,52 +215,38 @@ export function ProductList({ products, isLoading }: ProductListProps) {
                   <TableCell className="text-right">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button 
-                          variant="ghost" 
-                          size="icon"
-                          className="h-8 w-8 p-0 hover:bg-muted"
-                        >
-                          <MoreHorizontal className="h-4 w-4" />
+                        <Button variant="ghost" className="h-8 w-8 p-0">
                           <span className="sr-only">Open menu</span>
+                          <MoreHorizontal className="h-4 w-4" />
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent 
-                        align="end" 
-                        className="w-[180px] bg-white border shadow-lg rounded-md"
-                        sideOffset={5}
-                      >
-                        <DropdownMenuLabel className="font-medium text-sm px-2 py-1.5 bg-gray-50 border-b">
-                          Actions
-                        </DropdownMenuLabel>
-                        <div className="py-1">
-                          <DropdownMenuItem asChild>
-                            <Link href={`/dashboard/products/${product.id}`} className="flex items-center px-2 py-1.5 hover:bg-gray-50 cursor-pointer">
-                              <Battery className="h-4 w-4 mr-2 text-gray-500" />
-                              <span className="text-sm">View Details</span>
-                            </Link>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem asChild>
-                            <Link href={`/dashboard/products/${product.id}/edit`} className="flex items-center px-2 py-1.5 hover:bg-gray-50 cursor-pointer">
-                              <Pencil className="h-4 w-4 mr-2 text-gray-500" />
-                              <span className="text-sm">Edit Product</span>
-                            </Link>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem asChild>
-                            <Link href={`/dashboard/products/${product.id}/documents`} className="flex items-center px-2 py-1.5 hover:bg-gray-50 cursor-pointer">
-                              <FileText className="h-4 w-4 mr-2 text-gray-500" />
-                              <span className="text-sm">View Documents</span>
-                            </Link>
-                          </DropdownMenuItem>
-                        </div>
-                        <div className="border-t py-1">
-                          <DropdownMenuItem 
-                            className="flex items-center px-2 py-1.5 hover:bg-gray-50 cursor-pointer text-red-600 focus:text-red-600"
-                            onClick={() => handleDeleteClick(product)}
-                          >
-                            <Trash className="h-4 w-4 mr-2" />
-                            <span className="text-sm">Delete Product</span>
-                          </DropdownMenuItem>
-                        </div>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuLabel>{t("actions.menu")}</DropdownMenuLabel>
+                        <DropdownMenuItem asChild>
+                          <Link href={`/dashboard/products/${product.id}`}>
+                            <FileText className="mr-2 h-4 w-4" />
+                            {t("actions.viewDetails")}
+                          </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem asChild>
+                          <Link href={`/dashboard/products/${product.id}/edit`}>
+                            <Pencil className="mr-2 h-4 w-4" />
+                            {t("actions.editProduct")}
+                          </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem asChild>
+                          <Link href={`/dashboard/products/${product.id}/documents`}>
+                            <FileText className="mr-2 h-4 w-4" />
+                            {t("actions.viewDocuments")}
+                          </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => handleDeleteClick(product)}
+                          className="text-red-600"
+                        >
+                          <Trash className="mr-2 h-4 w-4" />
+                          {t("actions.deleteProduct")}
+                        </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
@@ -267,52 +254,21 @@ export function ProductList({ products, isLoading }: ProductListProps) {
               ))}
             </TableBody>
           </Table>
-
-          {/* Pagination */}
-          <div className="mt-4 flex items-center justify-between">
-            <p className="text-sm text-muted-foreground">
-              Showing {startIndex + 1} to {Math.min(endIndex, products.length)} of {products.length} products
-            </p>
-            <div className="flex items-center space-x-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                disabled={currentPage === 1}
-              >
-                <ChevronLeft className="h-4 w-4" />
-                Previous
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                disabled={currentPage === totalPages}
-              >
-                Next
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
         </CardContent>
       </Card>
 
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure you want to delete this product?</AlertDialogTitle>
+            <AlertDialogTitle>{t("delete.confirm.title")}</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the product
-              {productToDelete && <strong> &quot;{productToDelete.name}&quot;</strong>} and remove its data from our servers.
+              {t("delete.confirm.description", { name: productToDelete?.name || "" })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction 
-              onClick={handleConfirmDelete}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-            >
-              Delete
+            <AlertDialogCancel>{t("delete.confirm.cancel")}</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmDelete} className="bg-red-600 hover:bg-red-700">
+              {t("delete.confirm.confirm")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

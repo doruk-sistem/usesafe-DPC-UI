@@ -2,23 +2,26 @@
 
 import { motion } from "framer-motion";
 import { Leaf, Droplets, Zap, Recycle, Beaker, Sprout } from "lucide-react";
-
-import { Badge } from "@/components/ui/badge";
+import { useTranslations } from "next-intl";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 
 export interface SustainabilityMetricsCardProps {
-  environmentalFields: Array<{
+  title: string;
+  metrics: Array<{
     id: string;
     name: string;
     value: string | number;
   }>;
-  cardVariants: any;
 }
 
 export function SustainabilityMetricsCard({ 
-  environmentalFields,
-  cardVariants 
+  title,
+  metrics,
 }: SustainabilityMetricsCardProps) {
+  const t = useTranslations("products.details.sustainability");
+
   const getMetricIcon = (fieldId: string) => {
     switch (fieldId) {
       case "water-usage":
@@ -57,12 +60,30 @@ export function SustainabilityMetricsCard({
     return value;
   };
 
-  const sustainabilityScore = environmentalFields.find(f => f.id === "sustainability-score")?.value || 0;
+  const getMetricName = (id: string) => {
+    try {
+      return t(`metrics.${id}`);
+    } catch {
+      return id;
+    }
+  };
+
+  const calculateOverallProgress = () => {
+    if (!metrics || metrics.length === 0) return 0;
+    
+    const totalValues = metrics.reduce((sum, metric) => {
+      const value = typeof metric.value === "string" ? parseFloat(metric.value) : metric.value;
+      return sum + (isNaN(value) ? 0 : value);
+    }, 0);
+    
+    return Math.min(100, Math.max(0, (totalValues / metrics.length)));
+  };
+
+  const sustainabilityScore = metrics.find(f => f.id === "sustainability-score")?.value || 0;
 
   return (
     <motion.div
-      variants={cardVariants}
-      whileHover="hover"
+      whileHover={{ scale: 1.02 }}
       className="lg:col-span-2"
     >
       <Card className="bg-gradient-to-br from-background to-muted">
@@ -72,7 +93,7 @@ export function SustainabilityMetricsCard({
               <div className="p-2 rounded-full bg-primary/10">
                 <Leaf className="w-5 h-5 text-primary" />
               </div>
-              <CardTitle>Environmental Impact</CardTitle>
+              <CardTitle>{title}</CardTitle>
             </div>
             <Badge 
               variant={
@@ -81,13 +102,13 @@ export function SustainabilityMetricsCard({
               }
               className="text-lg px-4 py-1"
             >
-              {sustainabilityScore}% Sustainable
+              {sustainabilityScore}% {t("badge")}
             </Badge>
           </div>
         </CardHeader>
         <CardContent className="pt-6">
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {environmentalFields
+            {metrics
               .filter(field => field.id !== "sustainability-score")
               .map((field) => (
                 <motion.div
@@ -99,7 +120,7 @@ export function SustainabilityMetricsCard({
                     <div className="p-1.5 rounded-full bg-primary/10">
                       {getMetricIcon(field.id)}
                     </div>
-                    <span className="text-sm font-medium">{field.name}</span>
+                    <span className="text-sm font-medium">{getMetricName(field.id)}</span>
                   </div>
                   <span className={`text-lg font-semibold ${getSustainabilityColor(field.id, field.value)}`}>
                     {getValueWithUnit(field.id, field.value)}
@@ -109,23 +130,10 @@ export function SustainabilityMetricsCard({
           </div>
           <div className="mt-8">
             <div className="flex justify-between mb-2">
-              <span className="text-sm font-medium">Overall Sustainability Progress</span>
-              <span className="text-sm font-medium">{sustainabilityScore}%</span>
+              <span className="text-sm font-medium">{t("progress")}</span>
+              <span className="text-sm font-medium">{calculateOverallProgress().toFixed(1)}%</span>
             </div>
-            <motion.div
-              whileHover={{ scale: 1.01 }}
-              className="w-full bg-muted rounded-full h-3"
-            >
-              <motion.div 
-                initial={{ width: 0 }}
-                animate={{ width: `${sustainabilityScore}%` }}
-                transition={{ duration: 1 }}
-                className={`h-full rounded-full ${
-                  Number(sustainabilityScore) >= 80 ? "bg-green-500" :
-                  Number(sustainabilityScore) >= 60 ? "bg-yellow-500" : "bg-red-500"
-                }`}
-              />
-            </motion.div>
+            <Progress value={calculateOverallProgress()} className="h-2" />
           </div>
         </CardContent>
       </Card>

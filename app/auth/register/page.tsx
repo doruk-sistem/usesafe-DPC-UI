@@ -1,45 +1,36 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
-
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardHeader,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { useToast } from "@/components/ui/use-toast";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import { useAuth } from "@/lib/hooks/use-auth";
 
-const registerSchema = z.object({
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { useToast } from "@/components/ui/use-toast";
+
+const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Please enter a valid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters long"),
+  email: z.string().email("Please enter a valid email"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
 });
 
-type RegisterForm = z.infer<typeof registerSchema>;
+type FormValues = z.infer<typeof formSchema>;
 
 export default function RegisterPage() {
-  const { signUp } = useAuth();
-  const { toast } = useToast();
+  const t = useTranslations("auth.createAccount");
   const router = useRouter();
+  const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
+  const { signUp } = useAuth();
 
-  const form = useForm<RegisterForm>({
-    resolver: zodResolver(registerSchema),
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
       email: "",
@@ -47,32 +38,38 @@ export default function RegisterPage() {
     },
   });
 
-  const onSubmit = async (data: RegisterForm) => {
+  const onSubmit = async (values: FormValues) => {
+    setIsLoading(true);
     try {
-      await signUp(data.email, data.password, {
-        role: "manufacturer",
-        full_name: data.name,
+      await signUp(values.email, values.password, {
+        role: "user",
+        full_name: values.name,
+        company_id: "default"
       });
+      
       toast({
-        title: "Account created successfully",
-        description: "Please verify your email address",
+        title: t("success.title"),
+        description: t("success.description"),
       });
-
+      
       router.push("/auth/login");
     } catch (error) {
-      console.error(error);
       toast({
-        title: "Error creating account",
-        description: "Please try again",
+        title: t("error.title"),
+        description: error instanceof Error ? error.message : t("error.description"),
+        variant: "destructive",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="container max-w-4xl mx-auto py-10 px-4">
-      <Card className="max-w-md mx-auto">
+    <div className="container flex h-screen w-screen flex-col items-center justify-center">
+      <Card className="w-full max-w-md">
         <CardHeader>
-          <h1 className="text-2xl font-bold text-center">Create an account</h1>
+          <CardTitle>{t("title")}</CardTitle>
+          <CardDescription>{t("description")}</CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -82,61 +79,46 @@ export default function RegisterPage() {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Name</FormLabel>
+                    <FormLabel>{t("form.name")}</FormLabel>
                     <FormControl>
-                      <Input placeholder="John Doe" {...field} />
+                      <Input {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-
               <FormField
                 control={form.control}
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>{t("form.email")}</FormLabel>
                     <FormControl>
-                      <Input
-                        type="email"
-                        placeholder="example@company.com"
-                        {...field}
-                      />
+                      <Input type="email" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-
               <FormField
                 control={form.control}
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel>{t("form.password")}</FormLabel>
                     <FormControl>
-                      <Input type="password" placeholder="******" {...field} />
+                      <Input type="password" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-
-              <Button type="submit" className="w-full">
-                Register
+              <Button type="submit" className="w-full" disabled={isLoading}>
+                {isLoading ? "Loading..." : t("form.submit")}
               </Button>
             </form>
           </Form>
         </CardContent>
-        <CardFooter className="flex justify-center">
-          <p className="text-sm text-gray-600">
-            Do you already have an account?{" "}
-            <Link href="/auth/login" className="text-primary hover:underline">
-              Login
-            </Link>
-          </p>
-        </CardFooter>
       </Card>
     </div>
   );

@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Leaf, Factory, TreePine, Sparkles } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -18,6 +19,8 @@ import { textileProducts } from "@/lib/data/textile-products";
 import { Product } from "@/lib/types/product";
 
 export function ProductList() {
+  const t = useTranslations("products.list");
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -72,16 +75,16 @@ export function ProductList() {
   };
 
   const getManufacturer = (product: Product) => {
-    if (!product?.dpp_config?.sections) return "Unknown";
+    if (!product?.dpp_config?.sections) return t("quickInfo.unknown");
 
     const basicInfoSection = product.dpp_config.sections.find(
       (s) => s.id === "basic-info"
     );
-    if (!basicInfoSection?.fields) return "Unknown";
+    if (!basicInfoSection?.fields) return t("quickInfo.unknown");
 
     return (
       (basicInfoSection.fields.find((f) => f.id === "manufacturer")
-        ?.value as string) || "Unknown"
+        ?.value as string) || t("quickInfo.unknown")
     );
   };
 
@@ -163,7 +166,7 @@ export function ProductList() {
                     <CardTitle className="text-lg flex items-center justify-between">
                       {product.name}
                       <Badge variant="secondary" className="ml-2">
-                        {category}
+                        {t(`categories.${category.toLowerCase()}`)}
                       </Badge>
                     </CardTitle>
                     <CardDescription className="flex items-center">
@@ -177,7 +180,7 @@ export function ProductList() {
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-muted-foreground">
-                        Sustainability Score
+                        {t("sustainability.score")}
                       </span>
                       <Badge
                         variant={getSustainabilityVariant(sustainabilityScore)}
@@ -190,7 +193,7 @@ export function ProductList() {
 
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-muted-foreground">
-                        Carbon Footprint
+                        {t("sustainability.carbonFootprint")}
                       </span>
                       <span
                         className={`text-sm font-medium ${

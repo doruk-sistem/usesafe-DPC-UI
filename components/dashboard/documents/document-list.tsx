@@ -2,6 +2,7 @@
 
 import { FileText, MoreHorizontal, Download, History, ExternalLink, AlertTriangle, CheckCircle, XCircle, Clock } from "lucide-react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -85,6 +86,8 @@ const documents = [
 ];
 
 export function DocumentList() {
+  const t = useTranslations();
+
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "approved":
@@ -114,21 +117,21 @@ export function DocumentList() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Document Repository</CardTitle>
+        <CardTitle>{t("documents.repository.title")}</CardTitle>
         <CardDescription>
-          View and manage your company documents and certifications
+          {t("documents.repository.description")}
         </CardDescription>
       </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Document</TableHead>
-              <TableHead>Type</TableHead>
-              <TableHead>Category</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Valid Until</TableHead>
-              <TableHead>Issuer</TableHead>
+              <TableHead>{t("documents.repository.columns.document")}</TableHead>
+              <TableHead>{t("documents.repository.columns.type")}</TableHead>
+              <TableHead>{t("documents.repository.columns.category")}</TableHead>
+              <TableHead>{t("documents.repository.columns.status")}</TableHead>
+              <TableHead>{t("documents.repository.columns.validUntil")}</TableHead>
+              <TableHead>{t("documents.repository.columns.issuer")}</TableHead>
               <TableHead></TableHead>
             </TableRow>
           </TableHeader>
@@ -167,7 +170,7 @@ export function DocumentList() {
                     className="flex w-fit items-center gap-1"
                   >
                     {getStatusIcon(doc.status)}
-                    {doc.status}
+                    {t(`documents.repository.status.${doc.status}`)}
                   </Badge>
                 </TableCell>
                 <TableCell>
@@ -183,33 +186,33 @@ export function DocumentList() {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                      <DropdownMenuLabel>{t("documents.repository.actions.title")}</DropdownMenuLabel>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem asChild>
                         <Link href={`/dashboard/documents/${doc.id}`}>
                           <FileText className="h-4 w-4 mr-2" />
-                          View Details
+                          {t("documents.repository.actions.view")}
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem>
                         <Download className="h-4 w-4 mr-2" />
-                        Download
+                        {t("documents.repository.actions.download")}
                       </DropdownMenuItem>
                       <DropdownMenuItem>
                         <History className="h-4 w-4 mr-2" />
-                        View History
+                        {t("documents.repository.actions.history")}
                       </DropdownMenuItem>
                       {doc.status === "rejected" && (
                         <DropdownMenuItem asChild>
                           <Link href={`/dashboard/documents/${doc.id}/reupload`}>
                             <ExternalLink className="h-4 w-4 mr-2" />
-                            Re-upload
+                            {t("documents.repository.actions.reupload")}
                           </Link>
                         </DropdownMenuItem>
                       )}
                       <DropdownMenuSeparator />
                       <DropdownMenuItem className="text-red-600">
-                        Delete
+                        {t("documents.repository.actions.delete")}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>

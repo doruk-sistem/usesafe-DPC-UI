@@ -1,39 +1,67 @@
-import type { NextRequest, NextResponse } from "next/server";
+<<<<<<< HEAD
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+=======
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
+>>>>>>> feature/settings-translations
 import { updateSession } from "@/lib/supabase/middleware";
 
 export async function middleware(request: NextRequest) {
   // Update the session
   const response = await updateSession(request);
-  
+
   // Add Content Security Policy headers to allow Hedera connections
   if (response) {
     // Get the existing headers
-    const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
-    
+    const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
+
     // Set CSP headers with Hedera domains
     response.headers.set(
+<<<<<<< HEAD
       'Content-Security-Policy',
+      `default-src 'self'; script-src 'self' 'nonce-${nonce}' 'strict-dynamic' https: hashconnect.hashpack.app; connect-src 'self' https://*.hashpack.app https://*.hedera.com wss://*.hedera.com https://*.supabase.co; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https:; frame-src 'self' hashconnect.hashpack.app;`
+    );
+
+    // Add locale header
+    const locale = request.cookies.get('NEXT_LOCALE')?.value || 'tr';
+    response.headers.set('x-next-locale', locale);
+=======
+      "Content-Security-Policy",
       `default-src 'self'; connect-src 'self' https://*.hedera.com wss://*.hedera.com https://testnet-node*.hedera.com https://mainnet-node*.hedera.com data: ${
-        process.env.NEXT_PUBLIC_SUPABASE_URL || ''
-      } ${process.env.NEXT_PUBLIC_VERCEL_URL ? 'https://' + process.env.NEXT_PUBLIC_VERCEL_URL : ''} ws://localhost:*; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: ${
-        process.env.NEXT_PUBLIC_SUPABASE_URL || ''
+        process.env.NEXT_PUBLIC_SUPABASE_URL || ""
+      } ${
+        process.env.NEXT_PUBLIC_VERCEL_URL
+          ? "https://" + process.env.NEXT_PUBLIC_VERCEL_URL
+          : ""
+      } ws://localhost:*; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: ${
+        process.env.NEXT_PUBLIC_SUPABASE_URL || ""
       } https://images.unsplash.com https://udmyjobxsovqdshhavus.supabase.co; font-src 'self' data:; frame-src 'self'; base-uri 'self'; form-action 'self';`
     );
+
+    // Add locale header
+    const locale = request.cookies.get("NEXT_LOCALE")?.value || "tr";
+    response.headers.set("x-next-locale", locale);
+>>>>>>> feature/settings-translations
+
+    return response;
   }
-  
-  return response;
+
+  // If no session response, just add locale header
+<<<<<<< HEAD
+  const locale = request.cookies.get('NEXT_LOCALE')?.value || 'tr';
+  const newResponse = NextResponse.next();
+  newResponse.headers.set('x-next-locale', locale);
+=======
+  const locale = request.cookies.get("NEXT_LOCALE")?.value || "tr";
+  const newResponse = NextResponse.next();
+  newResponse.headers.set("x-next-locale", locale);
+>>>>>>> feature/settings-translations
+  return newResponse;
 }
 
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
-    "/((?!api|_next/static|_next/image|favicon.ico).*)",
-  ],
+  // Skip all paths that should not be internationalized
+  matcher: ['/((?!api|_next|.*\\..*).*)']
 };
