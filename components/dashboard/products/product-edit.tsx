@@ -5,39 +5,22 @@ import { ArrowLeft, AlertCircle, Upload, FileText, Download, Trash2, Plus } from
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Textarea } from "@/components/ui/textarea";
-import { productsApiHooks } from "@/lib/hooks/use-products";
-import type { Product } from "@/lib/types/product";
-
-const formSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  model: z.string().min(2, "Model must be at least 2 characters"),
-  description: z.string().min(10, "Description must be at least 10 characters"),
-  product_type: z.string().min(2, "Product type must be at least 2 characters"),
-  status: z.enum(["DRAFT", "NEW", "DELETED", "ARCHIVED"]),
-});
-
-type FormValues = z.infer<typeof formSchema>;
+import { Product } from "@/lib/types/product";
 
 interface ProductEditProps {
-  product: Product;
+  productId: string;
+  reuploadDocumentId?: string;
 }
 
 interface Document {
@@ -66,6 +49,7 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
   const [product, setProduct] = useState<Product | null>(null);
   const [rejectedDocument, setRejectedDocument] = useState<Document | null>(null);
   const [allDocuments, setAllDocuments] = useState<Document[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
@@ -79,6 +63,17 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
     type: "technical_docs",
   });
   const [showAddDialog, setShowAddDialog] = useState(false);
+  const { toast } = useToast();
+  const router = useRouter();
+  const supabase = createClientComponentClient();
+
+  // Form state
+  const [formData, setFormData] = useState({
+    name: "",
+    model: "",
+    product_type: "",
+  });
+
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [newImage, setNewImage] = useState<File | null>(null);
 
@@ -88,91 +83,39 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
         const { data, error } = await supabase
           .from("products")
           .select("*")
-          .eq("id", initialProduct.id)
+          .eq("id", productId)
           .single();
 
         if (error) throw error;
         setProduct(data);
         
         // Initialize form data
-        form.reset({
+        setFormData({
           name: data.name,
           model: data.model,
-          description: data.description,
           product_type: data.product_type,
-          status: data.status,
         });
-
-        // Check if product is rejected
-        if (data.status === "rejected") {
-          // Create a rejected document object with rejection reason
-          const rejectedDoc = {
-            id: `rejected-${data.id}`,
-            name: "Product Rejection",
-            type: "rejection",
-            status: "rejected",
-            rejection_reason: data.rejection_reason || "No reason provided",
-            rejection_date: data.rejection_date || new Date().toISOString(),
-          };
-          setRejectedDocument(rejectedDoc);
-        }
 
         // Extract all documents from the product and add IDs if missing
         if (data.documents) {
-          // Check if documents is an object with arrays
-          if (typeof data.documents === 'object' && !Array.isArray(data.documents)) {
-            const docs = Object.entries(data.documents).flatMap(([type, documents]: [string, any[]]) => {
-              // Check if documents is an array before using map
-              if (Array.isArray(documents)) {
-                return documents.map((doc: any, index: number) => {
-                  // Add an ID if it doesn't exist
-                  if (!doc.id) {
-                    doc.id = `doc-${type}-${index}-${Date.now()}`;
-                  }
-                  return doc;
-                });
-              } else {
-                // If documents is not an array, return an empty array
-                console.warn(`Documents for type ${type} is not an array:`, documents);
-                return [];
-              }
-            });
-            setAllDocuments(docs);
-            
-            // If we have a reuploadDocumentId, find the rejected document
-            if (reuploadDocumentId) {
-              const doc = docs.find((doc: any) => doc.id === reuploadDocumentId);
-              if (doc) {
-                setRejectedDocument(doc);
-              }
-            }
-          } 
-          // Check if documents is an array
-          else if (Array.isArray(data.documents)) {
-            const docs = data.documents.map((doc: any, index: number) => {
+          const docs = Object.entries(data.documents).flatMap(([type, documents]: [string, any[]]) => {
+            return documents.map((doc: any, index: number) => {
               // Add an ID if it doesn't exist
               if (!doc.id) {
-                doc.id = `doc-${doc.type || 'unknown'}-${index}-${Date.now()}`;
+                doc.id = `doc-${type}-${index}-${Date.now()}`;
               }
               return doc;
             });
-            setAllDocuments(docs);
-            
-            // If we have a reuploadDocumentId, find the rejected document
-            if (reuploadDocumentId) {
-              const doc = docs.find((doc: any) => doc.id === reuploadDocumentId);
-              if (doc) {
-                setRejectedDocument(doc);
-              }
+          });
+          setAllDocuments(docs);
+          
+          // If we have a reuploadDocumentId, find the rejected document
+          if (reuploadDocumentId) {
+            const doc = docs.find((doc: any) => doc.id === reuploadDocumentId);
+            if (doc) {
+              setRejectedDocument(doc);
             }
-          } else {
-            // If documents is neither an object nor an array, set empty array
-            console.warn("Documents is neither an object nor an array:", data.documents);
-            setAllDocuments([]);
           }
-        } else {
-          // If no documents, set empty array
-          setAllDocuments([]);
         }
       } catch (error) {
         console.error("Error fetching product:", error);
@@ -187,14 +130,14 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
     }
 
     fetchProduct();
-  }, [initialProduct.id, toast, supabase, form]);
+  }, [productId, reuploadDocumentId, toast, supabase]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
-    form.reset({
-      ...form.getValues(),
+    setFormData(prev => ({
+      ...prev,
       [id]: value
-    });
+    }));
   };
 
   const handleNewDocumentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -449,11 +392,9 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
       const { error } = await supabase
         .from("products")
         .update({
-          name: form.getValues().name,
-          model: form.getValues().model,
-          product_type: form.getValues().product_type,
-          description: form.getValues().description,
-          status: form.getValues().status,
+          name: formData.name,
+          model: formData.model,
+          product_type: formData.product_type,
           documents: allDocuments.reduce((acc, doc) => {
             if (!acc[doc.type]) {
               acc[doc.type] = [];
@@ -462,7 +403,7 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
             return acc;
           }, {} as Record<string, any[]>),
         })
-        .eq("id", product.id);
+        .eq("id", productId);
       
       if (error) throw error;
       
@@ -506,7 +447,7 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
     setIsUploadingImage(true);
     try {
       const fileExt = file.name.split('.').pop();
-      const fileName = `${product.id}-${Date.now()}.${fileExt}`;
+      const fileName = `${productId}-${Date.now()}.${fileExt}`;
       const filePath = `products/${fileName}`;
 
       const { error: uploadError } = await supabase.storage
@@ -530,7 +471,7 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
       const { error: updateError } = await supabase
         .from('products')
         .update({ images: updatedImages })
-        .eq('id', product.id);
+        .eq('id', productId);
 
       if (updateError) throw updateError;
 
@@ -561,7 +502,7 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
       const { error: updateError } = await supabase
         .from('products')
         .update({ images: updatedImages })
-        .eq('id', product.id);
+        .eq('id', productId);
 
       if (updateError) throw updateError;
 
@@ -592,7 +533,7 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
       const { error: updateError } = await supabase
         .from('products')
         .update({ images: updatedImages })
-        .eq('id', product.id);
+        .eq('id', productId);
 
       if (updateError) throw updateError;
 
@@ -648,77 +589,111 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
   }
 
   return (
-    <div className="container max-w-4xl mx-auto py-10 px-4">
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("edit.title")}</CardTitle>
-          <CardDescription>{t("edit.description")}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("edit.form.name")}</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="model"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("edit.form.model")}</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("edit.form.description")}</FormLabel>
-                    <FormControl>
-                      <Textarea {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="product_type"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("edit.form.productType")}</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="status"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("edit.form.status")}</FormLabel>
-                    <FormControl>
-                      <select
-                        {...field}
-                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between">
+        <div className="flex items-center space-x-2">
+          <Button variant="ghost" size="icon" asChild>
+            <Link href="/dashboard/products">
+              <ArrowLeft className="h-4 w-4" />
+              <span className="sr-only">Back</span>
+            </Link>
+          </Button>
+          <CardTitle>Edit Product</CardTitle>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-6">
+          {rejectedDocument && (
+            <Alert variant="destructive" key="rejected-document-alert">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>Document Rejected</AlertTitle>
+              <AlertDescription>
+                <div className="mt-2">
+                  <p key="doc-name"><strong>Document:</strong> {rejectedDocument.name}</p>
+                  <p key="doc-type"><strong>Type:</strong> {rejectedDocument.type}</p>
+                  <p key="doc-reason"><strong>Rejection Reason:</strong> {rejectedDocument.rejection_reason}</p>
+                  <p key="doc-date"><strong>Rejection Date:</strong> {new Date(rejectedDocument.rejection_date || "").toLocaleDateString()}</p>
+                </div>
+              </AlertDescription>
+            </Alert>
+          )}
+          
+          <div className="space-y-2">
+            <Label htmlFor="name">Product Name</Label>
+            <Input 
+              id="name" 
+              value={formData.name} 
+              onChange={handleInputChange}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="model">Model</Label>
+            <Input 
+              id="model" 
+              value={formData.model} 
+              onChange={handleInputChange}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="type">Product Type</Label>
+            <Input 
+              id="product_type" 
+              value={formData.product_type} 
+              onChange={handleInputChange}
+            />
+          </div>
+          
+          <Separator className="my-6" />
+          
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold">Product Images</h3>
+              <div className="flex items-center gap-2">
+                <Input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      setNewImage(file);
+                      handleImageUpload(file);
+                    }
+                  }}
+                  className="hidden"
+                  id="image-upload"
+                />
+                <Button
+                  size="sm"
+                  onClick={() => document.getElementById('image-upload')?.click()}
+                  disabled={isUploadingImage}
+                >
+                  {isUploadingImage ? (
+                    "Uploading..."
+                  ) : (
+                    <>
+                      <Upload className="h-4 w-4 mr-2" />
+                      Add New Image
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {product?.images?.map((image, index) => (
+                <div key={index} className="relative group">
+                  <div className="aspect-square relative rounded-lg overflow-hidden border">
+                    <img
+                      src={image.url}
+                      alt={image.alt || `Product image ${index + 1}`}
+                      className="object-cover w-full h-full"
+                    />
+                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        onClick={() => handleSetPrimaryImage(image.url)}
+                        disabled={image.is_primary}
                       >
                         {image.is_primary ? "Primary" : "Set as Primary"}
                       </Button>
@@ -808,41 +783,11 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
               <div className="space-y-4">
                 {allDocuments.map((doc) => (
                   <div key={doc.id || `doc-${doc.name}-${doc.type}`} className="border rounded-md p-4">
-                    <div className="flex items-start justify-between">
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-2">
-                          <FileText className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <span className="font-medium truncate max-w-[200px]">
-                                  {doc.name.length > 25 
-                                    ? `${doc.name.slice(0, 25)}...` 
-                                    : doc.name}
-                                </span>
-                              </TooltipTrigger>
-                              <TooltipContent side="top" align="start">
-                                <p className="max-w-[300px] break-words text-xs">{doc.name}</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-                        </div>
-                        <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground">
-                          <div key={`doc-type-${doc.id || doc.name}`}>
-                            <span className="font-medium">Type:</span> {documentTypeLabels[doc.type] || doc.type}
-                          </div>
-                          <div key={`doc-version-${doc.id || doc.name}`}>
-                            <span className="font-medium">Version:</span> {doc.version || "1.0"}
-                          </div>
-                          <div key={`doc-upload-date-${doc.id || doc.name}`}>
-                            <span className="font-medium">Upload Date:</span> {doc.upload_date ? new Date(doc.upload_date).toLocaleDateString() : new Date().toLocaleDateString()}
-                          </div>
-                          {doc.status === "rejected" && (
-                            <div key={`doc-rejection-reason-${doc.id || doc.name}`}>
-                              <span className="font-medium">Rejection Reason:</span> {doc.rejection_reason || "No reason provided"}
-                            </div>
-                          )}
-                        </div>
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center space-x-2">
+                        <FileText className="h-5 w-5 text-muted-foreground" />
+                        <span className="font-medium">{doc.name}</span>
+                        {getStatusBadge(doc.status)}
                       </div>
                       <div className="flex items-center space-x-2">
                         <Button variant="ghost" size="sm" asChild>
@@ -871,6 +816,22 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
                           {isDeleting === (doc.id || `doc-${doc.name}-${doc.type}`) ? "Deleting..." : "Delete"}
                         </Button>
                       </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground">
+                      <div key={`doc-type-${doc.id || doc.name}`}>
+                        <span className="font-medium">Type:</span> {documentTypeLabels[doc.type] || doc.type}
+                      </div>
+                      <div key={`doc-version-${doc.id || doc.name}`}>
+                        <span className="font-medium">Version:</span> {doc.version || "1.0"}
+                      </div>
+                      <div key={`doc-upload-date-${doc.id || doc.name}`}>
+                        <span className="font-medium">Upload Date:</span> {doc.upload_date ? new Date(doc.upload_date).toLocaleDateString() : new Date().toLocaleDateString()}
+                      </div>
+                      {doc.rejection_reason && (
+                        <div key={`doc-rejection-reason-${doc.id || doc.name}`}>
+                          <span className="font-medium">Rejection Reason:</span> {doc.rejection_reason}
+                        </div>
+                      )}
                     </div>
                     
                     {doc.id === reuploadDocumentId && (
@@ -908,4 +869,4 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
       </CardContent>
     </Card>
   );
-} 
+}
