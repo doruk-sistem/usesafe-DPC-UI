@@ -80,8 +80,7 @@ export const documentsApiHooks = {
                       fileSize: doc.fileSize || "0 KB",
                       version: doc.version || "1.0",
                       url: doc.url || "",
-                      rejection_reason: doc.rejection_reason || "",
-                      rejection_date: doc.rejection_date || "",
+                      rejection_reason: doc.rejection_reason || ""
                     });
                   });
                 }
@@ -109,8 +108,7 @@ export const documentsApiHooks = {
                   fileSize: doc.fileSize || "0 KB",
                   version: doc.version || "1.0",
                   url: doc.url || "",
-                  rejection_reason: doc.rejection_reason || "",
-                  rejection_date: doc.rejection_date || "",
+                  rejection_reason: doc.rejection_reason || ""
                 });
               });
             }
@@ -293,14 +291,15 @@ export const documentsApiHooks = {
   useUpdateDocumentStatusDirect: () => {
     const queryClient = useQueryClient();
     return useMutation({
-      mutationFn: async ({ document, status }: { document: Document; status: Document["status"] }) => {
-        console.log("Updating document status directly:", { document, status });
+      mutationFn: async ({ document, status, reason }: { document: Document; status: Document["status"]; reason?: string }) => {
+        console.log("Updating document status directly:", { document, status, reason });
         
         try {
           // Belge durumunu güncelle
           const updatedDocument = {
             ...document,
-            status
+            status,
+            ...(status === "rejected" && reason ? { rejection_reason: reason } : {})
           };
           
           // Belgeyi içeren ürünü bul
@@ -341,8 +340,7 @@ export const documentsApiHooks = {
                 updatedDocuments[docType][documentIndex] = {
                   ...updatedDocuments[docType][documentIndex],
                   status,
-                  rejection_reason: document.rejection_reason,
-                  rejection_date: document.rejection_date
+                  ...(status === "rejected" && reason ? { rejection_reason: reason } : {})
                 };
               } else {
                 // Belge bulunamadı, yeni ekle
@@ -360,8 +358,7 @@ export const documentsApiHooks = {
                   version: document.version,
                   validUntil: document.validUntil,
                   uploadedAt: document.uploadedAt,
-                  rejection_reason: document.rejection_reason,
-                  rejection_date: document.rejection_date
+                  ...(status === "rejected" && reason ? { rejection_reason: reason } : {})
                 });
               }
             } else {
@@ -376,8 +373,7 @@ export const documentsApiHooks = {
                 version: document.version,
                 validUntil: document.validUntil,
                 uploadedAt: document.uploadedAt,
-                rejection_reason: document.rejection_reason,
-                rejection_date: document.rejection_date
+                ...(status === "rejected" && reason ? { rejection_reason: reason } : {})
               }];
             }
           }
@@ -394,8 +390,7 @@ export const documentsApiHooks = {
               updatedDocuments[documentIndex] = {
                 ...updatedDocuments[documentIndex],
                 status,
-                rejection_reason: document.rejection_reason,
-                rejection_date: document.rejection_date
+                ...(status === "rejected" && reason ? { rejection_reason: reason } : {})
               };
             } else {
               // Belge bulunamadı, yeni ekle
@@ -409,8 +404,7 @@ export const documentsApiHooks = {
                 version: document.version,
                 validUntil: document.validUntil,
                 uploadedAt: document.uploadedAt,
-                rejection_reason: document.rejection_reason,
-                rejection_date: document.rejection_date
+                ...(status === "rejected" && reason ? { rejection_reason: reason } : {})
               });
             }
           } else {
@@ -425,8 +419,7 @@ export const documentsApiHooks = {
               version: document.version,
               validUntil: document.validUntil,
               uploadedAt: document.uploadedAt,
-              rejection_reason: document.rejection_reason,
-              rejection_date: document.rejection_date
+              ...(status === "rejected" && reason ? { rejection_reason: reason } : {})
             }];
           }
           
@@ -504,8 +497,7 @@ export const documentsApiHooks = {
                 updatedDocuments[docType] = updatedDocuments[docType].map((doc: any) => ({
                   ...doc,
                   status: "rejected",
-                  rejection_reason: reason,
-                  rejection_date: new Date().toISOString()
+                  rejection_reason: reason
                 }));
               }
             }
@@ -518,8 +510,7 @@ export const documentsApiHooks = {
             updatedDocuments = updatedDocuments.map((doc: any) => ({
               ...doc,
               status: "rejected",
-              rejection_reason: reason,
-              rejection_date: new Date().toISOString()
+              rejection_reason: reason
             }));
           } else {
             // Belgeler yok, yeni oluştur
@@ -530,19 +521,17 @@ export const documentsApiHooks = {
               name: "Product Rejection",
               type: "rejection",
               status: "rejected",
-              rejection_reason: reason,
-              rejection_date: new Date().toISOString()
+              rejection_reason: reason
             }];
           }
           
-          // Ürünü güncelle
+          // Ürünü güncelle - sadece belgeleri güncelle, ürün durumunu değiştirme
           const { data: updatedProduct, error: updateError } = await supabase
             .from("products")
             .update({ 
               documents: updatedDocuments,
-              status: "rejected", // Ürün durumunu rejected olarak ayarla
-              rejection_reason: reason, // Reddetme nedenini ekle
-              rejection_date: new Date().toISOString() // Reddetme tarihini ekle
+              // Ürün durumunu değiştirme - bu satırı kaldırıyoruz
+              // status: "rejected", 
             })
             .eq("id", product.id)
             .select();

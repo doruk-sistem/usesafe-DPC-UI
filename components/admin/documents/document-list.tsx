@@ -280,6 +280,7 @@ export function DocumentList() {
       await updateDocumentStatusDirect({
         document: updatedDocument,
         status: "rejected",
+        reason: documentRejectReason
       });
       
       toast({
