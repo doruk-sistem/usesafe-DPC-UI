@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Clock, ArrowRight } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 
 import { Badge } from "@/components/ui/badge";
@@ -11,21 +12,21 @@ import { Card, CardContent, CardHeader, CardDescription, CardTitle } from "@/com
 const approvals = [
   {
     id: "MFR-001",
-    type: "Manufacturer",
+    type: "manufacturer",
     name: "TechFabrics Ltd",
     status: "pending",
     submitted: "2024-03-15T10:30:00",
   },
   {
     id: "DOC-023",
-    type: "Document",
+    type: "document",
     name: "ISO 9001 Certificate",
     status: "pending",
     submitted: "2024-03-15T09:45:00",
   },
   {
     id: "DPC-089",
-    type: "DPC",
+    type: "dpc",
     name: "Organic Cotton T-Shirt",
     status: "pending",
     submitted: "2024-03-15T09:15:00",
@@ -33,6 +34,8 @@ const approvals = [
 ];
 
 export function PendingApprovals() {
+  const t = useTranslations("adminDashboard");
+
   return (
     <Card className="group hover:shadow-lg transition-all duration-300">
       <CardHeader>
@@ -40,9 +43,9 @@ export function PendingApprovals() {
           <div className="p-2 rounded-lg bg-amber-500/10 group-hover:bg-amber-500/20 transition-colors">
             <Clock className="h-5 w-5 text-amber-500" />
           </div>
-          Pending Approvals
+          {t("sections.pendingApprovals.title")}
         </CardTitle>
-        <CardDescription>Recent approval requests requiring attention</CardDescription>
+        <CardDescription>{t("sections.pendingApprovals.description")}</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
@@ -57,7 +60,7 @@ export function PendingApprovals() {
               <div className="space-y-1">
                 <p className="font-medium">{approval.name}</p>
                 <div className="flex items-center gap-2">
-                  <Badge variant="outline">{approval.type}</Badge>
+                  <Badge variant="outline">{t(`labels.${approval.type}`)}</Badge>
                   <span className="text-sm text-muted-foreground">{approval.id}</span>
                 </div>
               </div>
@@ -67,8 +70,8 @@ export function PendingApprovals() {
                 className="opacity-0 group-hover/item:opacity-100 transition-opacity"
                 asChild
               >
-                <Link href={`/admin/${approval.type.toLowerCase()}s/${approval.id}`}>
-                  Review
+                <Link href={`/admin/${approval.type}s/${approval.id}`}>
+                  {t("actions.review")}
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>

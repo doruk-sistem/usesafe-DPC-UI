@@ -1,4 +1,7 @@
+"use client";
+
 import { ArrowLeft, Building2, Mail, Phone } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 
 import { Badge } from "@/components/ui/badge";
@@ -56,6 +59,7 @@ interface ManufacturerDetailsProps {
 }
 
 export function ManufacturerDetails({ manufacturerId }: ManufacturerDetailsProps) {
+  const t = useTranslations("adminDashboard.sections.manufacturers.details");
   const manufacturer = manufacturersData[manufacturerId];
 
   if (!manufacturer) {
@@ -69,7 +73,7 @@ export function ManufacturerDetails({ manufacturerId }: ManufacturerDetailsProps
           <Link href="/admin/manufacturers">
             <Button variant="ghost" size="sm">
               <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to List
+              {t("backToList")}
             </Button>
           </Link>
           <h1 className="text-2xl font-semibold">{manufacturer.name}</h1>
@@ -82,78 +86,76 @@ export function ManufacturerDetails({ manufacturerId }: ManufacturerDetailsProps
                 : "warning"
             }
           >
-            {manufacturer.status}
+            {t(`status.${manufacturer.status}`)}
           </Badge>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline">Reject</Button>
-          <Button>Approve</Button>
+          <Button variant="outline">{t("actions.reject")}</Button>
+          <Button>{t("actions.approve")}</Button>
         </div>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Building2 className="h-5 w-5" />
-              Company Information
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center gap-2">
-              <Mail className="h-4 w-4 text-muted-foreground" />
-              <span>{manufacturer.details.email}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Phone className="h-4 w-4 text-muted-foreground" />
-              <span>{manufacturer.details.phone}</span>
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground">Address</p>
-              <p>{manufacturer.details.address}</p>
-              <p>
-                {manufacturer.details.city}, {manufacturer.details.country}
-              </p>
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground">Tax ID</p>
-              <p>{manufacturer.details.taxId}</p>
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground">Registration Date</p>
-              <p>
-                {new Date(manufacturer.details.registrationDate).toLocaleDateString()}
-              </p>
-            </div>
-          </CardContent>
-        </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Building2 className="h-5 w-5" />
+            {t("companyInfo.title")}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-center gap-2">
+            <Mail className="h-4 w-4 text-muted-foreground" />
+            <span>{manufacturer.details.email}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Phone className="h-4 w-4 text-muted-foreground" />
+            <span>{manufacturer.details.phone}</span>
+          </div>
+          <div>
+            <p className="text-sm text-muted-foreground">{t("companyInfo.address")}</p>
+            <p>{manufacturer.details.address}</p>
+            <p>
+              {manufacturer.details.city}, {manufacturer.details.country}
+            </p>
+          </div>
+          <div>
+            <p className="text-sm text-muted-foreground">{t("companyInfo.taxId")}</p>
+            <p>{manufacturer.details.taxId}</p>
+          </div>
+          <div>
+            <p className="text-sm text-muted-foreground">{t("companyInfo.registrationDate")}</p>
+            <p>
+              {new Date(manufacturer.details.registrationDate).toLocaleDateString()}
+            </p>
+          </div>
+        </CardContent>
+      </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Verification Status</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span>Document Verification</span>
-                <Badge variant="warning">In Progress</Badge>
-              </div>
-              <div className="flex items-center justify-between">
-                <span>Tax ID Verification</span>
-                <Badge variant="success">Verified</Badge>
-              </div>
-              <div className="flex items-center justify-between">
-                <span>Address Verification</span>
-                <Badge variant="warning">Pending</Badge>
-              </div>
-              <div className="flex items-center justify-between">
-                <span>Contact Verification</span>
-                <Badge variant="success">Verified</Badge>
-              </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>{t("verification.title")}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <span>{t("verification.document")}</span>
+              <Badge variant="warning">{t("verification.status.inProgress")}</Badge>
             </div>
-          </CardContent>
-        </Card>
-      </div>
+            <div className="flex items-center justify-between">
+              <span>{t("verification.taxId")}</span>
+              <Badge variant="success">{t("verification.status.verified")}</Badge>
+            </div>
+            <div className="flex items-center justify-between">
+              <span>{t("verification.address")}</span>
+              <Badge variant="warning">{t("verification.status.pending")}</Badge>
+            </div>
+            <div className="flex items-center justify-between">
+              <span>{t("verification.contact")}</span>
+              <Badge variant="success">{t("verification.status.verified")}</Badge>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

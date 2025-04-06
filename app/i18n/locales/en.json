@@ -594,5 +594,195 @@
     "actions": {
       "upload": "Upload"
     }
+  },
+  "adminDashboard": {
+    "title": "Admin Dashboard",
+    "description": "Monitor and manage system-wide operations",
+    "period": {
+      "select": "Select period",
+      "today": "Today",
+      "thisWeek": "This Week",
+      "thisMonth": "This Month",
+      "thisQuarter": "This Quarter"
+    },
+    "metrics": {
+      "totalManufacturers": "Total Manufacturers",
+      "pendingApprovals": "Pending Approvals",
+      "activeDPCs": "Active DPCs",
+      "documentVerifications": "Document Verifications",
+      "systemAlerts": "System Alerts",
+      "verificationRate": "Verification Rate",
+      "vsLastMonth": "vs last month"
+    },
+    "manufacturers": {
+      "list": {
+        "title": "Registered Manufacturers",
+        "description": "View and manage manufacturer registrations",
+        "columns": {
+          "company": "Company",
+          "status": "Status",
+          "documents": "Documents",
+          "products": "Products",
+          "date": "Registration Date",
+          "actions": "Actions"
+        },
+        "actions": {
+          "viewDetails": "View Details",
+          "reviewDocuments": "Review Documents",
+          "viewProducts": "View Products",
+          "approve": "Approve",
+          "reject": "Reject"
+        },
+        "status": {
+          "pending": "Pending",
+          "approved": "Approved",
+          "rejected": "Rejected"
+        }
+      },
+      "filters": {
+        "status": "Filter by status",
+        "allManufacturers": "All Manufacturers",
+        "pendingApproval": "Pending Approval",
+        "approved": "Approved",
+        "rejected": "Rejected"
+      },
+      "actions": {
+        "addNew": "Add New",
+        "reject": "Reject",
+        "approve": "Approve"
+      },
+      "details": {
+        "backToList": "Back to List",
+        "actions": {
+          "reject": "Reject",
+          "approve": "Approve"
+        },
+        "status": {
+          "approved": "Approved",
+          "rejected": "Rejected",
+          "pending": "Pending"
+        },
+        "companyInfo": {
+          "title": "Company Information",
+          "email": "Email",
+          "phone": "Phone",
+          "address": "Address",
+          "taxId": "Tax ID",
+          "registrationDate": "Registration Date"
+        },
+        "verification": {
+          "title": "Verification Status",
+          "document": "Document Verification",
+          "taxId": "Tax ID Verification",
+          "address": "Address Verification",
+          "contact": "Contact Verification",
+          "status": {
+            "inProgress": "In Progress",
+            "verified": "Verified",
+            "pending": "Pending"
+          }
+        }
+      }
+    },
+    "sections": {
+      "pendingApprovals": {
+        "title": "Pending Approvals",
+        "description": "Recent approval requests requiring attention"
+      },
+      "systemAlerts": {
+        "title": "System Alerts",
+        "description": "Recent system notifications and alerts",
+        "alerts": {
+          "highVolume": "High volume of pending approvals detected",
+          "failedVerification": "Blockchain verification attempt failed",
+          "maintenance": "System maintenance scheduled for tonight"
+        }
+      }
+    },
+    "labels": {
+      "manufacturer": "Manufacturer",
+      "document": "Document",
+      "dpc": "DPC",
+      "minutes": "minutes",
+      "hour": "hour",
+      "ago": "ago"
+    },
+    "actions": {
+      "review": "Review"
+    },
+    "documents": {
+      "title": "Document Management",
+      "description": "Review and manage document submissions",
+      "repository": {
+        "title": "Document Repository",
+        "description": "View and manage all uploaded documents",
+        "columns": {
+          "document": "Document",
+          "type": "Type",
+          "manufacturer": "Manufacturer",
+          "status": "Status",
+          "validUntil": "Valid Until",
+          "version": "Version",
+          "actions": "Actions"
+        },
+        "status": {
+          "pending": "Pending",
+          "approved": "Approved",
+          "rejected": "Rejected",
+          "expired": "Expired"
+        },
+        "types": {
+          "certification": "Certification",
+          "compliance": "Compliance",
+          "quality": "Quality",
+          "legal": "Legal"
+        }
+      },
+      "filters": {
+        "allDocuments": "All Documents",
+        "allStatus": "All Status"
+      },
+      "actions": {
+        "upload": "Upload"
+      }
+    }
+  },
+  "admin": {
+    "sidebar": {
+      "dashboard": "Dashboard",
+      "manufacturers": "Manufacturers",
+      "documents": "Documents",
+      "certifications": "Certifications",
+      "dppTemplates": "DPP Templates"
+    },
+    "dpc": {
+      "details": {
+        "notFound": "Certification not found",
+        "backButton": "Back to Certifications",
+        "exportDPC": "Export DPC",
+        "reject": "Reject",
+        "approve": "Approve",
+        "productInfo": {
+          "title": "Product Information",
+          "category": "Category",
+          "manufacturer": "Manufacturer",
+          "productionMethod": "Production Method",
+          "dyeingProcess": "Dyeing Process",
+          "materials": "Materials"
+        },
+        "certificationStatus": {
+          "title": "Certification Status",
+          "sustainabilityScore": "Sustainability Score",
+          "requiredCertifications": "Required Certifications",
+          "testReports": "Test Reports",
+          "supportingDocuments": "Supporting Documents"
+        },
+        "status": {
+          "verified": "Verified",
+          "pending": "Pending",
+          "passed": "Passed"
+        }
+      }
+    }
   }
 }

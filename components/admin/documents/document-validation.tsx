@@ -1,6 +1,7 @@
 "use client";
 
 import { CheckCircle, XCircle, AlertTriangle, Clock } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -26,27 +27,27 @@ const validationData: Record<string, DocumentValidation> = {
   "DOC-001": {
     authenticity: {
       status: "verified",
-      details: "Digital signature verified successfully",
+      details: "Dijital imza başarıyla doğrulandı",
       timestamp: "2024-03-15T10:31:00",
     },
     completeness: {
       status: "verified",
-      details: "All required fields are present",
+      details: "Tüm gerekli alanlar mevcut",
       timestamp: "2024-03-15T10:32:00",
     },
     format: {
       status: "verified",
-      details: "Document format meets requirements",
+      details: "Belge formatı gereksinimleri karşılıyor",
       timestamp: "2024-03-15T10:33:00",
     },
     expiration: {
       status: "valid",
-      details: "Document is within validity period",
+      details: "Belge geçerlilik süresi içinde",
       timestamp: "2024-03-15T10:34:00",
     },
     issuerVerification: {
       status: "pending",
-      details: "Issuer verification in progress",
+      details: "Düzenleyen doğrulaması devam ediyor",
       timestamp: "2024-03-15T10:35:00",
     },
   },
@@ -57,10 +58,11 @@ interface DocumentValidationProps {
 }
 
 export function DocumentValidation({ documentId }: DocumentValidationProps) {
+  const t = useTranslations("documentManagement.repository.validation");
   const validation = validationData[documentId];
 
   if (!validation) {
-    return <div>Validation data not found</div>;
+    return <div>{t("noData.title")}</div>;
   }
 
   const getStatusIcon = (status: ValidationStatus) => {
@@ -91,6 +93,14 @@ export function DocumentValidation({ documentId }: DocumentValidationProps) {
     }
   };
 
+  const getStatusText = (status: ValidationStatus) => {
+    return t(`checks.${status}`);
+  };
+
+  const getCheckTitle = (key: string) => {
+    return t(`checks.${key}.title`);
+  };
+
   const calculateProgress = () => {
     const total = Object.keys(validation).length;
     const completed = Object.values(validation).filter(
@@ -103,7 +113,7 @@ export function DocumentValidation({ documentId }: DocumentValidationProps) {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
-          <span>Validation Checks</span>
+          <span>{t("title")}</span>
           <Progress value={calculateProgress()} className="w-[100px]" />
         </CardTitle>
       </CardHeader>
@@ -112,14 +122,14 @@ export function DocumentValidation({ documentId }: DocumentValidationProps) {
           <div key={key} className="flex items-start gap-4">
             {getStatusIcon(check.status)}
             <div className="flex-1 space-y-1">
-              <p className="font-medium capitalize">{key}</p>
-              <p className="text-sm text-muted-foreground">{check.details}</p>
+              <p className="font-medium capitalize">{getCheckTitle(key)}</p>
+              <p className="text-sm text-muted-foreground">{t(`checks.${key}.${check.status}`)}</p>
               <p className="text-xs text-muted-foreground">
                 {new Date(check.timestamp).toLocaleString()}
               </p>
             </div>
             <span className={`text-sm font-medium ${getStatusColor(check.status)} capitalize`}>
-              {check.status}
+              {getStatusText(check.status)}
             </span>
           </div>
         ))}

@@ -1021,38 +1021,536 @@
     "clothing": "Giyim"
   },
   "documentManagement": {
-    "title": "Döküman Yönetimi",
-    "description": "Şirket dökümanlarınızı ve sertifikalarınızı yönetin",
+    "title": "Belge Yönetimi",
+    "description": "Belge yüklemelerini inceleyin ve yönetin",
     "repository": {
-      "title": "Döküman Deposu",
-      "description": "Şirket dökümanlarınızı ve sertifikalarınızı görüntüleyin ve yönetin",
+      "title": "Belge Deposu",
+      "description": "Tüm belgeleri görüntüleyin ve yönetin",
       "columns": {
-        "document": "Döküman",
+        "document": "Belge",
         "type": "Tür",
-        "category": "Kategori",
+        "manufacturer": "Üretici",
         "status": "Durum",
+        "validUntil": "Geçerlilik",
+        "version": "Versiyon",
+        "actions": "İşlemler",
+        "category": "Kategori",
         "expiryDate": "Geçerlilik Tarihi",
-        "updatedBy": "Düzenleyen",
-        "actions": "İşlemler"
+        "updatedBy": "Güncelleyen"
+      },
+      "filters": {
+        "type": "Türe göre filtrele",
+        "status": "Duruma göre filtrele",
+        "allDocuments": "Tüm Belgeler",
+        "allStatus": "Tüm Durumlar",
+        "pendingReview": "İnceleme Bekleyen",
+        "approved": "Onaylanan",
+        "rejected": "Reddedilen",
+        "expired": "Süresi Dolmuş"
+      },
+      "types": {
+        "certification": "Sertifikasyon",
+        "compliance": "Uygunluk",
+        "quality": "Kalite",
+        "legal": "Yasal"
+      },
+      "actions": {
+        "title": "İşlemler",
+        "viewDetails": "Detayları Görüntüle",
+        "download": "İndir",
+        "viewHistory": "Geçmişi Görüntüle",
+        "approve": "Onayla",
+        "reject": "Reddet",
+        "upload": "Yükle"
+      },
+      "status": {
+        "pending": "Beklemede",
+        "approved": "Onaylandı",
+        "rejected": "Reddedildi",
+        "expired": "Süresi Dolmuş"
+      },
+      "toast": {
+        "approved": {
+          "title": "Belge Onaylandı",
+          "description": "Belge başarıyla onaylandı."
+        },
+        "rejected": {
+          "title": "Belge Reddedildi",
+          "description": "Belge reddedildi."
+        },
+        "error": {
+          "title": "Hata",
+          "approveDescription": "Belge onaylanırken bir hata oluştu. Lütfen tekrar deneyin.",
+          "rejectDescription": "Belge reddedilirken bir hata oluştu. Lütfen tekrar deneyin."
+        }
+      },
+      "noData": {
+        "title": "Belge bulunamadı",
+        "description": "Doğrulama verisi bulunamadı"
+      },
+      "tabs": {
+        "validation": "Doğrulama",
+        "history": "Geçmiş"
+      },
+      "validation": {
+        "title": "Doğrulama Kontrolleri",
+        "noData": {
+          "title": "Doğrulama verisi bulunamadı",
+          "description": "Bu belge için doğrulama verisi mevcut değil"
+        },
+        "checks": {
+          "authenticity": {
+            "title": "Orijinallik Kontrolü",
+            "verified": "Belge orijinalliği doğrulandı",
+            "invalid": "Belge orijinalliği doğrulanamadı",
+            "pending": "Orijinallik kontrolü beklemede"
+          },
+          "completeness": {
+            "title": "Tamlık Kontrolü",
+            "verified": "Tüm gerekli alanlar mevcut",
+            "invalid": "Eksik alanlar mevcut",
+            "pending": "Tamlık kontrolü beklemede"
+          },
+          "format": {
+            "title": "Format Kontrolü",
+            "verified": "Belge formatı doğru",
+            "invalid": "Belge formatı hatalı",
+            "pending": "Format kontrolü beklemede"
+          },
+          "expiration": {
+            "title": "Geçerlilik Kontrolü",
+            "verified": "Belge geçerlilik süresi uygun",
+            "invalid": "Belge süresi dolmuş",
+            "pending": "Geçerlilik kontrolü beklemede"
+          },
+          "issuerVerification": {
+            "title": "Düzenleyen Kontrolü",
+            "verified": "Düzenleyen doğrulandı",
+            "invalid": "Düzenleyen doğrulanamadı",
+            "pending": "Düzenleyen kontrolü beklemede"
+          },
+          "verified": "Doğrulandı",
+          "valid": "Geçerli",
+          "failed": "Başarısız",
+          "warning": "Uyarı",
+          "pending": "Beklemede"
+        }
+      },
+      "history": {
+        "title": "Belge Geçmişi",
+        "noData": {
+          "title": "Geçmiş bulunamadı",
+          "description": "Bu belge için geçmiş verisi mevcut değil"
+        },
+        "events": {
+          "uploaded": "Belge yüklendi",
+          "approved": "Belge onaylandı",
+          "rejected": "Belge reddedildi",
+          "expired": "Belgenin süresi doldu"
+        }
+      },
+      "details": {
+        "title": "Belge Detayları",
+        "backToList": "Listeye Dön",
+        "documentInfo": {
+          "title": "Belge Bilgileri",
+          "id": "Belge ID",
+          "version": "Versiyon",
+          "type": "Tür",
+          "fileSize": "Dosya Boyutu",
+          "uploadDate": "Yüklenme Tarihi",
+          "validUntil": "Geçerlilik Tarihi",
+          "description": "Açıklama"
+        },
+        "verificationStatus": {
+          "title": "Doğrulama Durumu",
+          "authenticity": "Orijinallik",
+          "completeness": "Tamlık",
+          "signature": "İmza",
+          "expiration": "Geçerlilik",
+          "verified": "Doğrulandı",
+          "invalid": "Geçersiz",
+          "pending": "Beklemede"
+        },
+        "adminReview": {
+          "title": "Yönetici İncelemesi",
+          "comment": "Yorum",
+          "commentPlaceholder": "Yorumunuzu buraya ekleyin..."
+        }
       }
+    },
+    "filters": {
+      "allDocuments": "Tüm Belgeler",
+      "allStatuses": "Tüm Durumlar",
+      "type": "Türe Göre Filtrele",
+      "status": "Duruma Göre Filtrele"
     },
     "categories": {
       "qualityManagement": "Kalite Yönetimi",
-      "safetyAndHealth": "İş Sağlığı ve Güvenliği",
-      "batteryStandards": "Akü Standartları"
+      "safetyAndHealth": "Güvenlik ve Sağlık",
+      "batteryStandards": "Batarya Standartları",
+      "certification": "Sertifikasyon",
+      "compliance": "Uygunluk",
+      "quality": "Kalite",
+      "legal": "Yasal"
     },
     "status": {
+      "pending": "Beklemede",
       "approved": "Onaylandı",
-      "expiringSoon": "Süresi Doluyor",
-      "pending": "Bekleniyor",
-      "rejected": "Reddedildi"
-    },
-    "filters": {
-      "allDocuments": "Tüm Dökümanlar",
-      "allStatuses": "Tüm Durumlar"
+      "rejected": "Reddedildi",
+      "expired": "Süresi Dolmuş",
+      "expiringSoon": "Süresi Yakında Dolacak"
     },
     "actions": {
-      "upload": "Yükle"
+      "title": "İşlemler",
+      "upload": "Yükle",
+      "download": "İndir",
+      "approve": "Onayla",
+      "reject": "Reddet",
+      "viewDetails": "Detayları Görüntüle",
+      "viewHistory": "Geçmişi Görüntüle"
+    },
+    "toast": {
+      "approved": {
+        "title": "Belge Onaylandı",
+        "description": "Belge başarıyla onaylandı."
+      },
+      "rejected": {
+        "title": "Belge Reddedildi",
+        "description": "Belge reddedildi."
+      },
+      "error": {
+        "title": "Hata",
+        "approveDescription": "Belge onaylanırken bir hata oluştu. Lütfen tekrar deneyin.",
+        "rejectDescription": "Belge reddedilirken bir hata oluştu. Lütfen tekrar deneyin."
+      }
+    },
+    "history": {
+      "title": "Belge Geçmişi",
+      "events": {
+        "uploaded": "Belge Yüklendi",
+        "verified": "Orijinallik Doğrulandı",
+        "checked": "Tamlık Kontrolü",
+        "reviewed": "Manuel İnceleme Başladı"
+      },
+      "user": "Kullanıcı",
+      "system": "Sistem",
+      "details": {
+        "initialUpload": "İlk belge yüklemesi",
+        "signatureValidated": "Belge imzası doğrulandı",
+        "fieldsVerified": "Tüm gerekli alanlar doğrulandı",
+        "underReview": "Belge sertifikasyon ekibi tarafından inceleniyor"
+      }
+    },
+    "validation": {
+      "title": "Doğrulama Kontrolleri",
+      "progress": "İlerleme",
+      "checks": {
+        "authenticity": {
+          "title": "Orijinallik",
+          "verified": "Dijital imza başarıyla doğrulandı"
+        },
+        "completeness": {
+          "title": "Tamlık",
+          "verified": "Tüm gerekli alanlar mevcut"
+        },
+        "format": {
+          "title": "Format",
+          "verified": "Belge formatı gereksinimleri karşılıyor"
+        },
+        "expiration": {
+          "title": "Geçerlilik",
+          "valid": "Belge geçerlilik süresi içinde"
+        },
+        "issuer": {
+          "title": "Düzenleyen",
+          "pending": "Düzenleyen doğrulaması devam ediyor"
+        }
+      }
+    }
+  },
+  "adminDashboard": {
+    "title": "Yönetici Paneli",
+    "description": "Sistem genelindeki işlemleri izleyin ve yönetin",
+    "period": {
+      "select": "Dönem seçin",
+      "today": "Bugün",
+      "thisWeek": "Bu Hafta",
+      "thisMonth": "Bu Ay",
+      "thisQuarter": "Bu Çeyrek"
+    },
+    "metrics": {
+      "totalManufacturers": "Toplam Üretici",
+      "pendingApprovals": "Bekleyen Onaylar",
+      "activeDPCs": "Aktif DPC'ler",
+      "documentVerifications": "Belge Doğrulamaları",
+      "systemAlerts": "Sistem Uyarıları",
+      "verificationRate": "Doğrulama Oranı",
+      "vsLastMonth": "geçen aya göre"
+    },
+    "manufacturers": {
+      "list": {
+        "title": "Kayıtlı Üreticiler",
+        "description": "Üretici kayıtlarını görüntüleyin ve yönetin",
+        "columns": {
+          "company": "Firma",
+          "status": "Durum",
+          "documents": "Belgeler",
+          "products": "Ürünler",
+          "date": "Kayıt Tarihi",
+          "actions": "İşlemler"
+        },
+        "actions": {
+          "viewDetails": "Detayları Görüntüle",
+          "reviewDocuments": "Belgeleri İncele",
+          "viewProducts": "Ürünleri Görüntüle",
+          "approve": "Onayla",
+          "reject": "Reddet"
+        },
+        "status": {
+          "pending": "Beklemede",
+          "approved": "Onaylandı",
+          "rejected": "Reddedildi"
+        }
+      },
+      "filters": {
+        "status": "Duruma göre filtrele",
+        "allManufacturers": "Tüm Üreticiler",
+        "pendingApproval": "Onay Bekleyenler",
+        "approved": "Onaylananlar",
+        "rejected": "Reddedilenler"
+      },
+      "actions": {
+        "addNew": "Yeni Ekle",
+        "reject": "Reddet",
+        "approve": "Onayla"
+      },
+      "details": {
+        "backToList": "Listeye Dön",
+        "actions": {
+          "reject": "Reddet",
+          "approve": "Onayla"
+        },
+        "status": {
+          "approved": "Onaylandı",
+          "rejected": "Reddedildi",
+          "pending": "Beklemede"
+        },
+        "companyInfo": {
+          "title": "Firma Bilgileri",
+          "email": "E-posta",
+          "phone": "Telefon",
+          "address": "Adres",
+          "taxId": "Vergi No",
+          "registrationDate": "Kayıt Tarihi"
+        },
+        "verification": {
+          "title": "Doğrulama Durumu",
+          "document": "Belge Doğrulama",
+          "taxId": "Vergi No Doğrulama",
+          "address": "Adres Doğrulama",
+          "contact": "İletişim Doğrulama",
+          "status": {
+            "inProgress": "İşlemde",
+            "verified": "Doğrulandı",
+            "pending": "Beklemede"
+          }
+        }
+      }
+    },
+    "sections": {
+      "pendingApprovals": {
+        "title": "Bekleyen Onaylar",
+        "description": "Dikkat gerektiren son onay istekleri"
+      },
+      "systemAlerts": {
+        "title": "Sistem Uyarıları",
+        "description": "Son sistem bildirimleri ve uyarıları",
+        "alerts": {
+          "highVolume": "Yüksek sayıda bekleyen onay tespit edildi",
+          "failedVerification": "Blockchain doğrulama denemesi başarısız",
+          "maintenance": "Sistem bakımı bu gece için planlandı"
+        }
+      }
+    },
+    "labels": {
+      "manufacturer": "Üretici",
+      "document": "Belge",
+      "dpc": "DPC",
+      "minutes": "dakika",
+      "hour": "saat",
+      "ago": "önce"
+    },
+    "actions": {
+      "review": "İncele"
+    },
+    "documents": {
+      "title": "Belge Yönetimi",
+      "description": "Belge yüklemelerini inceleyin ve yönetin",
+      "repository": {
+        "title": "Belge Deposu",
+        "description": "Tüm belgeleri görüntüleyin ve yönetin",
+        "columns": {
+          "document": "Belge",
+          "type": "Tür",
+          "category": "Kategori",
+          "status": "Durum",
+          "expiryDate": "Geçerlilik Tarihi",
+          "updatedBy": "Versiyon",
+          "actions": "İşlemler"
+        },
+        "filters": {
+          "allStatuses": "Duruma göre filtrele",
+          "allDocuments": "Tüm Belgeler"
+        },
+        "status": {
+          "pending": "Beklemede",
+          "approved": "Onaylandı",
+          "rejected": "Reddedildi",
+          "expired": "Süresi Dolmuş",
+          "expiringSoon": "Süresi Yakında Dolacak"
+        },
+        "actions": {
+          "title": "İşlemler",
+          "viewDetails": "Detayları Görüntüle",
+          "download": "İndir",
+          "viewHistory": "Geçmişi Görüntüle",
+          "approve": "Onayla",
+          "reject": "Reddet"
+        },
+        "toast": {
+          "approved": {
+            "title": "Belge Onaylandı",
+            "description": "Belge başarıyla onaylandı"
+          },
+          "rejected": {
+            "title": "Belge Reddedildi",
+            "description": "Belge reddedildi"
+          },
+          "error": {
+            "title": "Hata",
+            "approveDescription": "Belge onaylanırken bir hata oluştu",
+            "rejectDescription": "Belge reddedilirken bir hata oluştu"
+          }
+        }
+      }
+    }
+  },
+  "admin": {
+    "dpc": {
+      "title": "DPC Başvuruları",
+      "description": "DPC başvurularını görüntüleyin ve yönetin",
+      "columns": {
+        "product": "Ürün",
+        "category": "Kategori",
+        "manufacturer": "Üretici",
+        "status": "Durum",
+        "score": "Puan",
+        "documents": "Belgeler"
+      },
+      "actions": {
+        "title": "İşlemler",
+        "newDPC": "Yeni DPC Başvurusu",
+        "download": "İndir",
+        "view": "Görüntüle",
+        "approve": "Onayla",
+        "reject": "Reddet",
+        "back": "Geri"
+      },
+      "filters": {
+        "allCategories": "Tüm Kategoriler",
+        "allStatus": "Tüm Durumlar"
+      },
+      "status": {
+        "pending": "Beklemede",
+        "approved": "Onaylandı",
+        "rejected": "Reddedildi",
+        "verified": "Doğrulandı",
+        "passed": "Geçti"
+      },
+      "new": {
+        "title": "Yeni DPC Başvurusu",
+        "description": "Yeni bir DPC başvurusu oluşturun",
+        "form": {
+          "productName": {
+            "label": "Ürün Adı",
+            "placeholder": "Ürün adını girin"
+          },
+          "category": {
+            "label": "Kategori",
+            "placeholder": "Bir kategori seçin",
+            "options": {
+              "textile": "Tekstil",
+              "battery": "Batarya",
+              "electronics": "Elektronik"
+            }
+          },
+          "manufacturer": {
+            "label": "Üretici",
+            "placeholder": "Üretici adını girin"
+          },
+          "description": {
+            "label": "Açıklama",
+            "placeholder": "Ürün açıklamasını girin"
+          },
+          "submit": "Başvuruyu Gönder",
+          "cancel": "İptal"
+        },
+        "success": {
+          "title": "Başvuru Başarılı",
+          "description": "DPC başvurunuz başarıyla oluşturuldu"
+        },
+        "error": {
+          "title": "Başvuru Başarısız",
+          "description": "DPC başvurunuz oluşturulurken bir hata oluştu"
+        }
+      },
+      "details": {
+        "notFound": "Sertifika bulunamadı",
+        "backButton": "Sertifikalara Geri Dön",
+        "exportDPC": "DPC'yi Dışa Aktar",
+        "productInfo": {
+          "title": "Ürün Bilgileri",
+          "category": "Kategori",
+          "manufacturer": "Üretici",
+          "productionMethod": "Üretim Yöntemi",
+          "dyeingProcess": "Boyama İşlemi",
+          "materials": "Malzemeler"
+        },
+        "certificationStatus": {
+          "title": "Sertifika Durumu",
+          "sustainabilityScore": "Sürdürülebilirlik Puanı",
+          "requiredCertifications": "Gerekli Sertifikalar",
+          "testReports": "Test Raporları",
+          "supportingDocuments": "Destekleyici Belgeler"
+        }
+      },
+      "tabs": {
+        "documents": "Belgeler",
+        "testReports": "Test Raporları"
+      },
+      "documents": {
+        "title": "Destekleyici Belgeler",
+        "noDocuments": "Belge bulunamadı"
+      },
+      "tests": {
+        "noTests": "Test raporu bulunamadı",
+        "completed": "Tamamlandı",
+        "progress": "Test İlerlemesi",
+        "table": {
+          "parameter": "Parametre",
+          "result": "Sonuç",
+          "limit": "Limit",
+          "status": "Durum"
+        }
+      }
+    },
+    "sidebar": {
+      "dashboard": "Gösterge Paneli",
+      "manufacturers": "Üreticiler",
+      "documents": "Belgeler",
+      "certifications": "Sertifikalar",
+      "dppTemplates": "DPP Şablonları"
     }
   }
 }

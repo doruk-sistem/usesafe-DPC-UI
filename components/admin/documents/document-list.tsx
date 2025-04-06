@@ -8,10 +8,12 @@ import {
   CheckCircle,
   XCircle,
   Clock,
+  History,
 } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -99,6 +101,7 @@ const documents = [
 ];
 
 export function DocumentList() {
+  const t = useTranslations("documentManagement");
   const { toast } = useToast();
   const searchParams = useSearchParams();
   const manufacturerId = searchParams.get("manufacturer");
@@ -129,13 +132,13 @@ export function DocumentList() {
     try {
       // TODO: API çağrısı eklenecek
       toast({
-        title: "Document Approved",
-        description: "The document has been approved successfully.",
+        title: t("toast.approved.title"),
+        description: t("toast.approved.description"),
       });
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to approve document. Please try again.",
+        title: t("toast.error.title"),
+        description: t("toast.error.approveDescription"),
         variant: "destructive",
       });
     }
@@ -145,13 +148,13 @@ export function DocumentList() {
     try {
       // TODO: API çağrısı eklenecek
       toast({
-        title: "Document Rejected",
-        description: "The document has been rejected.",
+        title: t("toast.rejected.title"),
+        description: t("toast.rejected.description"),
       });
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to reject document. Please try again.",
+        title: t("toast.error.title"),
+        description: t("toast.error.rejectDescription"),
         variant: "destructive",
       });
     }
@@ -175,22 +178,22 @@ export function DocumentList() {
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle>Document Repository</CardTitle>
+            <CardTitle>{t("repository.title")}</CardTitle>
             <CardDescription>
-              View and manage all uploaded documents
+              {t("repository.description")}
             </CardDescription>
           </div>
           <div className="flex items-center gap-2">
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Filter by status" />
+                <SelectValue placeholder={t("filters.allStatuses")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Statuses</SelectItem>
-                <SelectItem value="pending">Pending Review</SelectItem>
-                <SelectItem value="approved">Approved</SelectItem>
-                <SelectItem value="rejected">Rejected</SelectItem>
-                <SelectItem value="expired">Expired</SelectItem>
+                <SelectItem value="all">{t("filters.allDocuments")}</SelectItem>
+                <SelectItem value="pending">{t("status.pending")}</SelectItem>
+                <SelectItem value="approved">{t("status.approved")}</SelectItem>
+                <SelectItem value="rejected">{t("status.rejected")}</SelectItem>
+                <SelectItem value="expired">{t("status.expiringSoon")}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -200,13 +203,13 @@ export function DocumentList() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Document</TableHead>
-              <TableHead>Type</TableHead>
-              <TableHead>Manufacturer</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Valid Until</TableHead>
-              <TableHead>Version</TableHead>
-              <TableHead></TableHead>
+              <TableHead>{t("repository.columns.document")}</TableHead>
+              <TableHead>{t("repository.columns.type")}</TableHead>
+              <TableHead>{t("repository.columns.category")}</TableHead>
+              <TableHead>{t("repository.columns.status")}</TableHead>
+              <TableHead>{t("repository.columns.expiryDate")}</TableHead>
+              <TableHead>{t("repository.columns.updatedBy")}</TableHead>
+              <TableHead>{t("repository.columns.actions")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -231,7 +234,7 @@ export function DocumentList() {
                     className="flex w-fit items-center gap-1"
                   >
                     {getStatusIcon(doc.status)}
-                    {doc.status}
+                    {t(`status.${doc.status}`)}
                   </Badge>
                 </TableCell>
                 <TableCell>
@@ -247,30 +250,32 @@ export function DocumentList() {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                      <DropdownMenuLabel>{t("repository.actions.title")}</DropdownMenuLabel>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem asChild>
                         <Link href={`/admin/documents/${doc.id}`}>
-                          <Eye className="h-4 w-4 mr-2" />
-                          View Details
+                          <Eye className="mr-2 h-4 w-4" />
+                          {t("repository.actions.viewDetails")}
                         </Link>
                       </DropdownMenuItem>
-                      <DropdownMenuItem>Download</DropdownMenuItem>
-                      <DropdownMenuItem>View History</DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <FileText className="mr-2 h-4 w-4" />
+                        {t("repository.actions.download")}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <History className="mr-2 h-4 w-4" />
+                        {t("repository.actions.viewHistory")}
+                      </DropdownMenuItem>
                       {doc.status === "pending" && (
                         <>
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem
-                            className="text-green-600"
-                            onClick={() => handleApprove(doc.id)}
-                          >
-                            Approve
+                          <DropdownMenuItem onClick={() => handleApprove(doc.id)}>
+                            <CheckCircle className="mr-2 h-4 w-4" />
+                            {t("repository.actions.approve")}
                           </DropdownMenuItem>
-                          <DropdownMenuItem
-                            className="text-red-600"
-                            onClick={() => handleReject(doc.id)}
-                          >
-                            Reject
+                          <DropdownMenuItem onClick={() => handleReject(doc.id)}>
+                            <XCircle className="mr-2 h-4 w-4" />
+                            {t("repository.actions.reject")}
                           </DropdownMenuItem>
                         </>
                       )}
