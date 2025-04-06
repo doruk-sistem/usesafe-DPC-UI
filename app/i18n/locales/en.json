@@ -612,7 +612,20 @@
       "documentVerifications": "Document Verifications",
       "systemAlerts": "System Alerts",
       "verificationRate": "Verification Rate",
-      "vsLastMonth": "vs last month"
+      "vsLastMonth": "vs Last Month"
+    },
+    "recentApprovals": {
+      "title": "Recent Approvals",
+      "noApprovals": "No approvals yet"
+    },
+    "systemAlerts": {
+      "title": "System Alerts",
+      "noAlerts": "No active alerts",
+      "severity": {
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low"
+      }
     },
     "manufacturers": {
       "list": {

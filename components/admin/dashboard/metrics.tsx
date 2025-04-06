@@ -12,103 +12,164 @@ import {
   TrendingDown,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-
+import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
+import { MetricsService, type DashboardMetrics } from "@/lib/services/metrics";
+import { supabase } from "@/lib/supabase/client";
 
 export function DashboardMetrics() {
   const t = useTranslations("adminDashboard");
+  const [metrics, setMetrics] = useState<DashboardMetrics | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const metrics = [
+  useEffect(() => {
+    const fetchMetrics = async () => {
+      try {
+        const data = await MetricsService.getDashboardMetrics();
+        setMetrics(data);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchMetrics();
+
+    // Optional: Set up real-time subscription
+    const subscription = supabase
+      .channel('metrics-changes')
+      .on('postgres_changes', { 
+        event: '*', 
+        schema: 'public',
+        table: 'companies'
+      }, () => {
+        fetchMetrics();
+      })
+      .subscribe();
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  const metricConfigs = [
     {
+      key: 'totalManufacturers',
       title: t("metrics.totalManufacturers"),
-      value: "1,284",
-      change: "+12.3%",
-      trend: "up",
       icon: Users,
       gradient: "from-blue-500 to-blue-600",
+      getValue: () => ({
+        value: metrics?.totalManufacturers.count.toLocaleString() ?? '0',
+        change: metrics?.totalManufacturers.change ?? 0
+      })
     },
     {
+      key: 'pendingApprovals',
       title: t("metrics.pendingApprovals"),
-      value: "23",
-      change: "-4.5%",
-      trend: "down",
       icon: Clock,
       gradient: "from-amber-500 to-amber-600",
+      getValue: () => ({
+        value: metrics?.pendingApprovals.count.toLocaleString() ?? '0',
+        change: metrics?.pendingApprovals.change ?? 0
+      })
     },
     {
+      key: 'activeDPCs',
       title: t("metrics.activeDPCs"),
-      value: "3,891",
-      change: "+23.1%",
-      trend: "up",
       icon: Shield,
       gradient: "from-green-500 to-green-600",
+      getValue: () => ({
+        value: metrics?.activeDPCs.count.toLocaleString() ?? '0',
+        change: metrics?.activeDPCs.change ?? 0
+      })
     },
     {
+      key: 'documentVerifications',
       title: t("metrics.documentVerifications"),
-      value: "156",
-      change: "+8.2%",
-      trend: "up",
       icon: FileCheck,
       gradient: "from-purple-500 to-purple-600",
+      getValue: () => ({
+        value: metrics?.documentVerifications.count.toLocaleString() ?? '0',
+        change: metrics?.documentVerifications.change ?? 0
+      })
     },
     {
+      key: 'systemAlerts',
       title: t("metrics.systemAlerts"),
-      value: "12",
-      change: "-2.4%",
-      trend: "down",
       icon: AlertTriangle,
       gradient: "from-red-500 to-red-600",
+      getValue: () => ({
+        value: metrics?.systemAlerts.count.toLocaleString() ?? '0',
+        change: metrics?.systemAlerts.change ?? 0
+      })
     },
     {
+      key: 'verificationRate',
       title: t("metrics.verificationRate"),
-      value: "98.3%",
-      change: "+1.2%",
-      trend: "up",
       icon: CheckCircle2,
       gradient: "from-indigo-500 to-indigo-600",
+      getValue: () => ({
+        value: `${metrics?.verificationRate.rate.toFixed(1) ?? '0'}%`,
+        change: metrics?.verificationRate.change ?? 0
+      })
     },
   ];
 
+  if (error) {
+    return (
+      <div className="p-4 text-red-500 bg-red-50 rounded-lg">
+        {error}
+      </div>
+    );
+  }
+
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {metrics.map((metric, index) => (
-        <motion.div
-          key={metric.title}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: index * 0.1 }}
-        >
-          <Card className="relative overflow-hidden group hover:shadow-lg transition-all duration-300">
-            <div className="absolute inset-0 bg-gradient-to-br opacity-10 group-hover:opacity-20 transition-opacity duration-300" />
-            <div className="p-6 relative z-10">
-              <div className="flex justify-between items-start mb-4">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">
-                    {metric.title}
-                  </p>
-                  <h3 className="text-2xl font-bold mt-1">{metric.value}</h3>
+      {metricConfigs.map((config, index) => {
+        const { value, change } = config.getValue();
+        const trend = change >= 0 ? "up" : "down";
+
+        return (
+          <motion.div
+            key={config.key}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.1 }}
+          >
+            <Card className={`relative overflow-hidden group hover:shadow-lg transition-all duration-300 ${isLoading ? 'animate-pulse' : ''}`}>
+              <div className="absolute inset-0 bg-gradient-to-br opacity-10 group-hover:opacity-20 transition-opacity duration-300" />
+              <div className="p-6 relative z-10">
+                <div className="flex justify-between items-start mb-4">
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground">
+                      {config.title}
+                    </p>
+                    <h3 className="text-2xl font-bold mt-1">{value}</h3>
+                  </div>
+                  <div className={`p-2 rounded-lg bg-gradient-to-br ${config.gradient} bg-opacity-10`}>
+                    <config.icon className="h-5 w-5" />
+                  </div>
                 </div>
-                <div className={`p-2 rounded-lg bg-gradient-to-br ${metric.gradient} bg-opacity-10`}>
-                  <metric.icon className="h-5 w-5" />
+                <div className="flex items-center gap-2">
+                  {trend === "up" ? (
+                    <TrendingUp className="h-4 w-4 text-green-500" />
+                  ) : (
+                    <TrendingDown className="h-4 w-4 text-red-500" />
+                  )}
+                  <span className={`text-sm font-medium ${
+                    trend === "up" ? "text-green-500" : "text-red-500"
+                  }`}>
+                    {change >= 0 ? "+" : ""}{change.toFixed(1)}%
+                  </span>
+                  <span className="text-sm text-muted-foreground">{t("metrics.vsLastMonth")}</span>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
-                {metric.trend === "up" ? (
-                  <TrendingUp className="h-4 w-4 text-green-500" />
-                ) : (
-                  <TrendingDown className="h-4 w-4 text-red-500" />
-                )}
-                <span className={`text-sm font-medium ${
-                  metric.trend === "up" ? "text-green-500" : "text-red-500"
-                }`}>
-                  {metric.change}
-                </span>
-                <span className="text-sm text-muted-foreground">{t("metrics.vsLastMonth")}</span>
-              </div>
-            </div>
-          </Card>
-        </motion.div>
-      ))}
+            </Card>
+          </motion.div>
+        );
+      })}
     </div>
   );
 }

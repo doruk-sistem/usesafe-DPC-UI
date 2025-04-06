@@ -1286,7 +1286,21 @@
       "documentVerifications": "Belge Doğrulamaları",
       "systemAlerts": "Sistem Uyarıları",
       "verificationRate": "Doğrulama Oranı",
-      "vsLastMonth": "geçen aya göre"
+      "vsLastMonth": "Geçen Aya Göre",
+      "noDataAvailable": "Henüz veri bulunmamaktadır"
+    },
+    "recentApprovals": {
+      "title": "Son Onaylananlar",
+      "noApprovals": "Henüz onaylanan yok"
+    },
+    "systemAlerts": {
+      "title": "Sistem Uyarıları",
+      "noAlerts": "Aktif uyarı yok",
+      "severity": {
+        "high": "Yüksek",
+        "medium": "Orta",
+        "low": "Düşük"
+      }
     },
     "manufacturers": {
       "list": {

@@ -413,5 +413,17 @@
         "description": "Lütfen geçerli bir ürün kodu girin veya geçerli bir QR kod tarayın."
       }
     }
+  },
+  "adminDashboard": {
+    "metrics": {
+      "totalManufacturers": "Toplam Üretici",
+      "pendingApprovals": "Bekleyen Onaylar",
+      "activeDPCs": "Aktif DPC'ler",
+      "documentVerifications": "Belge Doğrulamaları",
+      "systemAlerts": "Sistem Uyarıları",
+      "verificationRate": "Doğrulama Oranı",
+      "vsLastMonth": "geçen aya göre",
+      "noDataAvailable": "Henüz veri bulunmamaktadır"
+    }
   }
 } 

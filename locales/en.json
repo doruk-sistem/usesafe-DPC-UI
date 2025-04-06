@@ -414,5 +414,17 @@
         "description": "Please enter a valid product code or scan a valid QR code."
       }
     }
+  },
+  "adminDashboard": {
+    "metrics": {
+      "totalManufacturers": "Total Manufacturers",
+      "pendingApprovals": "Pending Approvals",
+      "activeDPCs": "Active DPCs",
+      "documentVerifications": "Document Verifications",
+      "systemAlerts": "System Alerts",
+      "verificationRate": "Verification Rate",
+      "vsLastMonth": "vs last month",
+      "noDataAvailable": "No data available yet"
+    }
   }
 } 
