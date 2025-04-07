@@ -159,6 +159,7 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
                   onChange={(selectedOption: OptionType | null) => {
                     const newValue = selectedOption?.value || "";
                     field.onChange(newValue);
+                    form.setValue('model', '');
                   }}
                   placeholder="Select Product Type"
                   classNames={selectClassNames}
@@ -176,7 +177,21 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
             <FormItem>
               <FormLabel>Model</FormLabel>
               <FormControl>
-                <Input placeholder="Enter product model" {...field} />
+                <Select
+                  options={PRODUCT_TYPE_OPTIONS.find(
+                    option => option.value === form.watch('product_type')
+                  )?.subcategories || []}
+                  value={PRODUCT_TYPE_OPTIONS.find(
+                    option => option.value === form.watch('product_type')
+                  )?.subcategories.find(sub => sub.value === field.value) || null}
+                  onChange={(selectedOption: OptionType | null) => {
+                    const newValue = selectedOption?.value || "";
+                    field.onChange(newValue);
+                  }}
+                  placeholder="Select Model"
+                  classNames={selectClassNames}
+                  isDisabled={!form.watch('product_type') || form.watch('product_type') === 'please_select'}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
