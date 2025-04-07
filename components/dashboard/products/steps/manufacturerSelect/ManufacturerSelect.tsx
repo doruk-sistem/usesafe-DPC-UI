@@ -22,6 +22,11 @@ export function ManufacturerSelect({
 }: ManufacturerSelectProps) {
   const t = useTranslations("productManagement.addProduct");
 
+  const handleManufacturerChange = (value: string) => {
+    form.setValue("manufacturer_id", value);
+    form.setValue("company_id", value);
+  };
+
   return (
     <Card>
       <CardContent className="p-6">
@@ -38,11 +43,14 @@ export function ManufacturerSelect({
             name="manufacturer_id"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t("form.fields.manufacturer.label")} *</FormLabel>
+                <FormLabel>Manufacturer</FormLabel>
                 <FormControl>
                   <ManufacturerSearch
                     value={field.value}
-                    onChange={field.onChange}
+                    onChange={(value) => {
+                      field.onChange(value);
+                      handleManufacturerChange(value || "");
+                    }}
                   />
                 </FormControl>
                 <FormMessage />

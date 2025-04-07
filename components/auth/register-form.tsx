@@ -128,6 +128,13 @@ export function RegisterForm() {
     }
   };
 
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      onNextStep();
+    }
+  };
+
   if (isSubmitted) {
     return <RegistrationSuccess />;
   }
@@ -149,11 +156,7 @@ export function RegisterForm() {
       <Form {...form}>
         <form
           className="space-y-8" // Add these for debugging
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              console.log("Enter key pressed");
-            }
-          }}
+          onKeyDown={handleKeyPress}
         >
           <CurrentStepComponent form={form} />
 

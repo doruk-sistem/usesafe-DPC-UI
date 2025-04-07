@@ -73,7 +73,6 @@ export default function NewProductPageClient() {
         name: data.name,
         description: data.description,
         product_type: data.product_type,
-        product_subcategory: data.product_subcategory || "",
         model: data.model,
         images: validImages,
         key_features: data.key_features,
