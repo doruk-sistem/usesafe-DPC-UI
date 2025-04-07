@@ -61,8 +61,8 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
       const errors: string[] = [];
 
       const validFiles = Array.from(files).filter((file) => {
-        const isValidType = ACCEPTED_DOCUMENT_FORMATS.some(
-          (format) => file.name.toLowerCase().endsWith(format)
+        const isValidType = ACCEPTED_DOCUMENT_FORMATS.some((format) =>
+          file.name.toLowerCase().endsWith(format)
         );
 
         const isValidSize =
@@ -144,7 +144,7 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
           variant: "destructive",
         });
       }
-      
+
       field.onChange([...result.documents]);
       form.setValue(`documents.${docType}`, result.documents || []);
     },
@@ -156,7 +156,8 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
       <div>
         <h3 className="text-lg font-semibold">Product Documents</h3>
         <p className="text-sm text-muted-foreground">
-          Upload relevant documents for your product. All documents are optional.
+          Upload relevant documents for your product. All documents are
+          optional.
         </p>
       </div>
 
@@ -185,7 +186,9 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
                         variant="ghost"
                         size="icon"
                         onClick={() => {
-                          const newFiles = field.value.filter((_: any, i: number) => i !== index);
+                          const newFiles = field.value.filter(
+                            (_: any, i: number) => i !== index
+                          );
                           field.onChange(newFiles);
                           form.setValue(`documents.${docType.id}`, newFiles);
                         }}
@@ -198,15 +201,28 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
                   {/* ✅ Dosya yükleme alanı */}
                   <div className="flex items-center gap-2">
                     {/* Gizli input */}
-                    <input
-                      id={`file-upload-${docType.id}`}
+                    <Input
                       type="file"
-                      accept={ACCEPTED_DOCUMENT_FORMATS.join(",")}
+                      id={`file-upload-${docType.id}`}
                       className="hidden"
                       onChange={(e) => handleFileChange(e, field, docType.id)}
+                      accept={ACCEPTED_DOCUMENT_FORMATS.map(
+                        (format) => `.${format}`
+                      ).join(",")}
+                      multiple
                     />
-                    <Button type="button" variant="outline" size="icon">
-                      <Plus className="h-4 w-4" />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => {
+                        const input = document.getElementById(
+                          `file-upload-${docType.id}`
+                        ) as HTMLInputElement;
+                        input?.click();
+                      }}
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Document
                     </Button>
                   </div>
                 </div>

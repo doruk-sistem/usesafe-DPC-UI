@@ -1,14 +1,13 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { supabase } from "@/lib/supabase/client";
-import { Document } from "@/lib/types/document";
+import { Document, DocumentStatus, DocumentType } from "@/lib/types/document";
 
 export const documentsApiHooks = {
   useGetProducts: () => {
     return useQuery({
       queryKey: ["getProducts"],
       queryFn: async () => {
-        console.log("Fetching all products...");
         try {
           const { data: products, error } = await supabase
             .from("products")
@@ -16,11 +15,9 @@ export const documentsApiHooks = {
             .order("created_at", { ascending: false });
 
           if (error) {
-            console.error("Supabase error:", error);
             throw error;
           }
 
-          console.log("Products returned from Supabase:", products);
           return products || [];
         } catch (error) {
           console.error("Error fetching products:", error);
@@ -34,87 +31,24 @@ export const documentsApiHooks = {
     return useQuery({
       queryKey: ["getDocuments"],
       queryFn: async () => {
-        console.log("Fetching documents from products...");
         try {
-          // Fetch all products without filtering by company_id
-          const { data: products, error } = await supabase
+          const products = await supabase
             .from("products")
             .select("id, name, documents, manufacturer_id, created_at")
             .order("created_at", { ascending: false });
 
-          if (error) {
-            console.error("Supabase error:", error);
-            throw error;
+          if (products.error) {
+            throw products.error;
           }
 
-          console.log("Products returned from Supabase:", products);
-          console.log("Number of products:", products.length);
-
-          // Extract documents from products
           const allDocuments: Document[] = [];
-          products.forEach(product => {
-            console.log(`Product ${product.id} documents:`, product.documents);
-            
-            // Check if documents is an object with arrays
-            if (product.documents && typeof product.documents === 'object' && !Array.isArray(product.documents)) {
-              // Handle documents as an object with arrays
-              Object.entries(product.documents).forEach(([docType, docs]) => {
-                if (Array.isArray(docs)) {
-                  docs.forEach((doc: any, index: number) => {
-                    // Generate a consistent document ID
-                    // First try to use the existing ID if it exists
-                    // Otherwise generate a new one with the format: productId-documentName-documentType-index
-                    const documentId = doc.id || `${product.id}-${doc.name}-${docType}-${index}`;
-                    console.log("Generated document ID:", documentId);
-                    
-                    allDocuments.push({
-                      id: documentId,
-                      name: doc.name,
-                      type: doc.type || docType,
-                      manufacturer: product.name,
-                      manufacturerId: product.manufacturer_id,
-                      productId: product.id,
-                      status: doc.status || "pending",
-                      validUntil: doc.validUntil || "",
-                      uploadedAt: doc.uploadedAt || product.created_at,
-                      fileSize: doc.fileSize || "0 KB",
-                      version: doc.version || "1.0",
-                      url: doc.url || "",
-                      rejection_reason: doc.rejection_reason || ""
-                    });
-                  });
-                }
-              });
-            }
-            // Check if documents is an array
-            else if (product.documents && Array.isArray(product.documents)) {
-              product.documents.forEach((doc: any, index: number) => {
-                // Generate a consistent document ID
-                // First try to use the existing ID if it exists
-                // Otherwise generate a new one with the format: productId-documentName-documentType-index
-                const documentId = doc.id || `${product.id}-${doc.name}-${doc.type || 'technical_docs'}-${index}`;
-                console.log("Generated document ID:", documentId);
-                
-                allDocuments.push({
-                  id: documentId,
-                  name: doc.name,
-                  type: doc.type || "technical_docs",
-                  manufacturer: product.name,
-                  manufacturerId: product.manufacturer_id,
-                  productId: product.id,
-                  status: doc.status || "pending",
-                  validUntil: doc.validUntil || "",
-                  uploadedAt: doc.uploadedAt || product.created_at,
-                  fileSize: doc.fileSize || "0 KB",
-                  version: doc.version || "1.0",
-                  url: doc.url || "",
-                  rejection_reason: doc.rejection_reason || ""
-                });
-              });
+          products.data.forEach(product => {
+            if (product.documents) {
+              const productDocuments = extractDocumentsFromProduct(product);
+              allDocuments.push(...productDocuments);
             }
           });
 
-          console.log("Extracted documents:", allDocuments);
           return allDocuments;
         } catch (error) {
           console.error("Error fetching documents:", error);
@@ -160,8 +94,6 @@ export const documentsApiHooks = {
     const queryClient = useQueryClient();
     return useMutation({
       mutationFn: async ({ productId, documentId, status }: { productId: string; documentId: string; status: Document["status"] }) => {
-        console.log("Updating document status:", { productId, documentId, status });
-        
         try {
           // First, get the product to find the document
           const { data: products, error: fetchError } = await supabase
@@ -170,7 +102,6 @@ export const documentsApiHooks = {
             .eq("manufacturer_id", productId);
 
           if (fetchError) {
-            console.error("Error fetching product:", fetchError);
             throw new Error(`Failed to fetch product: ${fetchError.message}`);
           }
 
@@ -180,9 +111,6 @@ export const documentsApiHooks = {
 
           // Use the first product that matches the manufacturer ID
           const product = products[0];
-          console.log("Product before update:", product);
-          console.log("Product documents before update:", product.documents);
-          console.log("Document ID we're looking for:", documentId);
 
           // Create a deep copy of the documents to avoid reference issues
           let updatedDocuments;
@@ -191,22 +119,15 @@ export const documentsApiHooks = {
           // Handle documents as an object with arrays
           if (product.documents && typeof product.documents === 'object' && !Array.isArray(product.documents)) {
             updatedDocuments = JSON.parse(JSON.stringify(product.documents));
-            console.log("Documents is an object with arrays");
             
             // Try to find the document in all document types
             for (const docTypeKey in updatedDocuments) {
               if (Array.isArray(updatedDocuments[docTypeKey])) {
-                console.log(`Checking document type: ${docTypeKey}`);
-                
-                // Find the document by ID - direct match without parsing
                 const documentIndex = updatedDocuments[docTypeKey].findIndex((doc: any) => 
                   (doc.id && doc.id === documentId) || (doc.name && documentId.includes(doc.name))
                 );
                 
                 if (documentIndex !== -1) {
-                  console.log(`Found document at index ${documentIndex} in type ${docTypeKey}:`, updatedDocuments[docTypeKey][documentIndex]);
-                  
-                  // Update the document status
                   updatedDocuments[docTypeKey][documentIndex] = {
                     ...updatedDocuments[docTypeKey][documentIndex],
                     status
@@ -220,9 +141,7 @@ export const documentsApiHooks = {
           }
           // Handle documents as an array
           else if (Array.isArray(product.documents)) {
-            console.log("Documents is an array");
             updatedDocuments = JSON.parse(JSON.stringify(product.documents));
-            console.log(`Array has ${updatedDocuments.length} documents`);
             
             // Find the document by ID - direct match without parsing
             const documentIndex = updatedDocuments.findIndex((doc: any) => 
@@ -230,9 +149,6 @@ export const documentsApiHooks = {
             );
             
             if (documentIndex !== -1) {
-              console.log(`Found document at index ${documentIndex}:`, updatedDocuments[documentIndex]);
-              
-              // Update the document status
               updatedDocuments[documentIndex] = {
                 ...updatedDocuments[documentIndex],
                 status
@@ -241,20 +157,12 @@ export const documentsApiHooks = {
               documentUpdated = true;
             }
           } else {
-            console.error("Invalid documents format");
-            throw new Error("Invalid documents format in product");
+            throw new Error("Invalid documents format");
           }
 
           if (!documentUpdated) {
-            console.error("Document not found in the product");
-            console.log("Document ID we were looking for:", documentId);
-            console.log("Available documents:", JSON.stringify(product.documents, null, 2));
-            
-            // Don't throw an error, just log it and continue
-            console.log("Document not found, but continuing with the update process");
+            throw new Error(`Document with ID ${documentId} not found in product`);
           }
-
-          console.log("Updated documents to save:", updatedDocuments);
 
           // Update the product with the updated documents
           const { data: updatedProduct, error: updateError } = await supabase
@@ -264,12 +172,9 @@ export const documentsApiHooks = {
             .select();
 
           if (updateError) {
-            console.error("Error updating product:", updateError);
             throw new Error(`Failed to update product: ${updateError.message}`);
           }
 
-          console.log("Product after update:", updatedProduct);
-          
           return updatedProduct;
         } catch (error) {
           console.error("Error in document status update:", error);
@@ -277,7 +182,6 @@ export const documentsApiHooks = {
         }
       },
       onSuccess: (data) => {
-        console.log("Document status update successful:", data);
         queryClient.invalidateQueries({ queryKey: ["getDocuments"] });
         queryClient.invalidateQueries({ queryKey: ["getProducts"] });
       },
@@ -292,8 +196,6 @@ export const documentsApiHooks = {
     const queryClient = useQueryClient();
     return useMutation({
       mutationFn: async ({ document, status, reason }: { document: Document; status: Document["status"]; reason?: string }) => {
-        console.log("Updating document status directly:", { document, status, reason });
-        
         try {
           // Belge durumunu güncelle
           const updatedDocument = {
@@ -309,7 +211,6 @@ export const documentsApiHooks = {
             .eq("id", document.productId);
           
           if (fetchError) {
-            console.error("Error fetching product:", fetchError);
             throw new Error(`Failed to fetch product: ${fetchError.message}`);
           }
           
@@ -318,7 +219,6 @@ export const documentsApiHooks = {
           }
           
           const product = products[0];
-          console.log("Product before update:", product);
           
           // Belgeyi güncelle
           let updatedDocuments;
@@ -351,13 +251,15 @@ export const documentsApiHooks = {
                 updatedDocuments[docType].push({
                   id: document.id,
                   name: document.name,
-                  type: document.type,
+                  type: document.type as DocumentType,
                   status,
                   url: document.url,
                   fileSize: document.fileSize,
                   version: document.version,
                   validUntil: document.validUntil,
                   uploadedAt: document.uploadedAt,
+                  manufacturer: product.manufacturer || '',
+                  manufacturerId: product.manufacturer_id || '',
                   ...(status === "rejected" && reason ? { rejection_reason: reason } : {})
                 });
               }
@@ -366,13 +268,15 @@ export const documentsApiHooks = {
               updatedDocuments[docType] = [{
                 id: document.id,
                 name: document.name,
-                type: document.type,
+                type: document.type as DocumentType,
                 status,
                 url: document.url,
                 fileSize: document.fileSize,
                 version: document.version,
                 validUntil: document.validUntil,
                 uploadedAt: document.uploadedAt,
+                manufacturer: product.manufacturer || '',
+                manufacturerId: product.manufacturer_id || '',
                 ...(status === "rejected" && reason ? { rejection_reason: reason } : {})
               }];
             }
@@ -397,13 +301,15 @@ export const documentsApiHooks = {
               updatedDocuments.push({
                 id: document.id,
                 name: document.name,
-                type: document.type,
+                type: document.type as DocumentType,
                 status,
                 url: document.url,
                 fileSize: document.fileSize,
                 version: document.version,
                 validUntil: document.validUntil,
                 uploadedAt: document.uploadedAt,
+                manufacturer: product.manufacturer || '',
+                manufacturerId: product.manufacturer_id || '',
                 ...(status === "rejected" && reason ? { rejection_reason: reason } : {})
               });
             }
@@ -412,13 +318,15 @@ export const documentsApiHooks = {
             updatedDocuments = [{
               id: document.id,
               name: document.name,
-              type: document.type,
+              type: document.type as DocumentType,
               status,
               url: document.url,
               fileSize: document.fileSize,
               version: document.version,
               validUntil: document.validUntil,
               uploadedAt: document.uploadedAt,
+              manufacturer: product.manufacturer || '',
+              manufacturerId: product.manufacturer_id || '',
               ...(status === "rejected" && reason ? { rejection_reason: reason } : {})
             }];
           }
@@ -431,11 +339,8 @@ export const documentsApiHooks = {
             .select();
           
           if (updateError) {
-            console.error("Error updating product:", updateError);
             throw new Error(`Failed to update product: ${updateError.message}`);
           }
-          
-          console.log("Product after update:", updatedProduct);
           
           return updatedProduct;
         } catch (error) {
@@ -444,7 +349,6 @@ export const documentsApiHooks = {
         }
       },
       onSuccess: (data) => {
-        console.log("Direct document status update successful:", data);
         queryClient.invalidateQueries({ queryKey: ["getDocuments"] });
         queryClient.invalidateQueries({ queryKey: ["getProducts"] });
       },
@@ -459,8 +363,6 @@ export const documentsApiHooks = {
     const queryClient = useQueryClient();
     return useMutation({
       mutationFn: async ({ productId, reason }: { productId: string; reason: string }) => {
-        console.log("Rejecting product:", { productId, reason });
-        
         try {
           // Ürünü bul
           const { data: products, error: fetchError } = await supabase
@@ -469,7 +371,6 @@ export const documentsApiHooks = {
             .eq("id", productId);
           
           if (fetchError) {
-            console.error("Error fetching product:", fetchError);
             throw new Error(`Failed to fetch product: ${fetchError.message}`);
           }
           
@@ -478,7 +379,6 @@ export const documentsApiHooks = {
           }
           
           const product = products[0];
-          console.log("Product before rejection:", product);
           
           // Ürün durumunu değiştirmek yerine, ürünün belgelerini güncelle
           // Bu, ürün durumunu değiştirmeden ürünü reddetmemizi sağlar
@@ -530,18 +430,13 @@ export const documentsApiHooks = {
             .from("products")
             .update({ 
               documents: updatedDocuments,
-              // Ürün durumunu değiştirme - bu satırı kaldırıyoruz
-              // status: "rejected", 
             })
             .eq("id", product.id)
             .select();
           
           if (updateError) {
-            console.error("Error updating product documents:", updateError);
             throw new Error(`Failed to update product documents: ${updateError.message}`);
           }
-          
-          console.log("Product after rejection:", updatedProduct);
           
           return updatedProduct;
         } catch (error) {
@@ -550,7 +445,6 @@ export const documentsApiHooks = {
         }
       },
       onSuccess: (data) => {
-        console.log("Product rejection successful:", data);
         queryClient.invalidateQueries({ queryKey: ["getDocuments"] });
         queryClient.invalidateQueries({ queryKey: ["getProducts"] });
       },
@@ -559,4 +453,256 @@ export const documentsApiHooks = {
       }
     });
   },
+};
+
+const fetchAllProducts = async () => {
+  try {
+    const { data: products, error } = await supabase
+      .from('products')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    return products;
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    return [];
+  }
+};
+
+const fetchDocumentsFromProducts = async () => {
+  try {
+    const products = await fetchAllProducts();
+    const allDocuments: Document[] = [];
+
+    for (const product of products) {
+      if (product.documents) {
+        const productDocuments = extractDocumentsFromProduct(product);
+        allDocuments.push(...productDocuments);
+      }
+    }
+
+    return allDocuments;
+  } catch (error) {
+    console.error('Error fetching documents from products:', error);
+    return [];
+  }
+};
+
+const extractDocumentsFromProduct = (product: any): Document[] => {
+  const documents: Document[] = [];
+  if (!product.documents) return documents;
+
+  Object.entries(product.documents).forEach(([docType, docList]: [string, any]) => {
+    if (Array.isArray(docList)) {
+      docList.forEach((doc: any) => {
+        if (doc && doc.id) {
+          documents.push({
+            id: doc.id,
+            name: doc.name || 'Unnamed Document',
+            type: doc.type as DocumentType,
+            url: doc.url,
+            status: doc.status || 'pending',
+            productId: product.id,
+            manufacturer: product.manufacturer || '',
+            manufacturerId: product.manufacturer_id || '',
+          });
+        }
+      });
+    }
+  });
+
+  return documents;
+};
+
+const updateDocumentStatus = async (productId: string, documentId: string, status: DocumentStatus) => {
+  try {
+    const { data: product, error: fetchError } = await supabase
+      .from('products')
+      .select('*')
+      .eq('id', productId)
+      .single();
+
+    if (fetchError) throw fetchError;
+    if (!product) throw new Error('Product not found');
+
+    let updatedDocuments = { ...product.documents };
+    let documentFound = false;
+
+    if (typeof updatedDocuments === 'object' && !Array.isArray(updatedDocuments)) {
+      for (const docTypeKey in updatedDocuments) {
+        if (Array.isArray(updatedDocuments[docTypeKey])) {
+          const documentIndex = updatedDocuments[docTypeKey].findIndex(
+            (doc: any) => doc.id === documentId
+          );
+
+          if (documentIndex !== -1) {
+            updatedDocuments[docTypeKey][documentIndex] = {
+              ...updatedDocuments[docTypeKey][documentIndex],
+              status,
+              updatedAt: new Date().toISOString()
+            };
+            documentFound = true;
+            break;
+          }
+        }
+      }
+    } else if (Array.isArray(updatedDocuments)) {
+      const documentIndex = updatedDocuments.findIndex(
+        (doc: any) => doc.id === documentId
+      );
+
+      if (documentIndex !== -1) {
+        updatedDocuments[documentIndex] = {
+          ...updatedDocuments[documentIndex],
+          status,
+          updatedAt: new Date().toISOString()
+        };
+        documentFound = true;
+      }
+    }
+
+    if (!documentFound) {
+      throw new Error(`Document with ID ${documentId} not found in product`);
+    }
+
+    const { data: updatedProduct, error: updateError } = await supabase
+      .from('products')
+      .update({ documents: updatedDocuments })
+      .eq('id', productId)
+      .select()
+      .single();
+
+    if (updateError) throw updateError;
+
+    return updatedProduct;
+  } catch (error) {
+    console.error('Error updating document status:', error);
+    throw error;
+  }
+};
+
+const updateDocumentStatusDirectly = async (document: Document, status: DocumentStatus, reason?: string) => {
+  try {
+    const { data: product, error: fetchError } = await supabase
+      .from('products')
+      .select('*')
+      .eq('id', document.productId)
+      .single();
+
+    if (fetchError) throw fetchError;
+    if (!product) throw new Error('Product not found');
+
+    let updatedDocuments = { ...product.documents };
+    let documentFound = false;
+
+    if (typeof updatedDocuments === 'object' && !Array.isArray(updatedDocuments)) {
+      for (const docTypeKey in updatedDocuments) {
+        if (Array.isArray(updatedDocuments[docTypeKey])) {
+          const documentIndex = updatedDocuments[docTypeKey].findIndex(
+            (doc: any) => doc.id === document.id
+          );
+
+          if (documentIndex !== -1) {
+            updatedDocuments[docTypeKey][documentIndex] = {
+              ...updatedDocuments[docTypeKey][documentIndex],
+              status,
+              reason,
+              updatedAt: new Date().toISOString()
+            };
+            documentFound = true;
+            break;
+          }
+        }
+      }
+    } else if (Array.isArray(updatedDocuments)) {
+      const documentIndex = updatedDocuments.findIndex(
+        (doc: any) => doc.id === document.id
+      );
+
+      if (documentIndex !== -1) {
+        updatedDocuments[documentIndex] = {
+          ...updatedDocuments[documentIndex],
+          status,
+          reason,
+          updatedAt: new Date().toISOString()
+        };
+        documentFound = true;
+      }
+    }
+
+    if (!documentFound) {
+      throw new Error(`Document with ID ${document.id} not found in product`);
+    }
+
+    const { data: updatedProduct, error: updateError } = await supabase
+      .from('products')
+      .update({ documents: updatedDocuments })
+      .eq('id', document.productId)
+      .select()
+      .single();
+
+    if (updateError) throw updateError;
+
+    return updatedProduct;
+  } catch (error) {
+    console.error('Error updating document status directly:', error);
+    throw error;
+  }
+};
+
+const rejectProduct = async (productId: string, reason: string) => {
+  try {
+    const { data: product, error: fetchError } = await supabase
+      .from('products')
+      .select('*')
+      .eq('id', productId)
+      .single();
+
+    if (fetchError) throw fetchError;
+    if (!product) throw new Error('Product not found');
+
+    let updatedDocuments = { ...product.documents };
+    let documentsUpdated = false;
+
+    if (typeof updatedDocuments === 'object' && !Array.isArray(updatedDocuments)) {
+      for (const docTypeKey in updatedDocuments) {
+        if (Array.isArray(updatedDocuments[docTypeKey])) {
+          updatedDocuments[docTypeKey] = updatedDocuments[docTypeKey].map((doc: any) => ({
+            ...doc,
+            status: 'rejected',
+            reason,
+            updatedAt: new Date().toISOString()
+          }));
+          documentsUpdated = true;
+        }
+      }
+    } else if (Array.isArray(updatedDocuments)) {
+      updatedDocuments = updatedDocuments.map((doc: any) => ({
+        ...doc,
+        status: 'rejected',
+        reason,
+        updatedAt: new Date().toISOString()
+      }));
+      documentsUpdated = true;
+    }
+
+    if (!documentsUpdated) {
+      throw new Error('No documents found to update');
+    }
+
+    const { data: updatedProduct, error: updateError } = await supabase
+      .from('products')
+      .update({ documents: updatedDocuments })
+      .eq('id', productId)
+      .select()
+      .single();
+
+    if (updateError) throw updateError;
+
+    return updatedProduct;
+  } catch (error) {
+    console.error('Error rejecting product:', error);
+    throw error;
+  }
 }; 

@@ -135,7 +135,6 @@ export class ProductService {
         // Delete each product image from storage
         for (const image of product.images) {
           if (image?.url) {
-            console.log(`Attempting to delete product image: ${image.url}`);
             await StorageService.deleteProductImage(image.url);
           }
         }

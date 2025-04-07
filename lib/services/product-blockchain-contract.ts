@@ -83,19 +83,6 @@ class ProductBlockchainContractService {
       //Get the Transaction ID
       const txContractCreateId = txResponse.transactionId.toString();
 
-      console.log(
-        "--------------------------------- Create Contract Flow ---------------------------------"
-      );
-      console.log(
-        "Consensus status           :",
-        receipt.status.toString()
-      );
-      console.log("Transaction ID             :", txContractCreateId);
-      console.log(
-        "Hashscan URL               :",
-        "https://hashscan.io/testnet/tx/" + txContractCreateId
-      );
-
       return txResponse.transactionId.toString();
     } catch (error) {
       console.error("Error creating product on blockchain:", error);

@@ -14,7 +14,9 @@ import {
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
-
+import { useToast } from "@/components/ui/use-toast";
+import { documentsApiHooks } from "@/lib/hooks/use-documents";
+import type { Document } from "@/lib/types/document";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -57,9 +59,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useToast } from "@/components/ui/use-toast";
-import { documentsApiHooks } from "@/lib/hooks/use-documents";
-import type { Document } from "@/lib/types/document";
 
 export function DocumentList() {
   const { toast } = useToast();
@@ -80,19 +79,6 @@ export function DocumentList() {
   const { mutate: updateDocumentStatusDirect } = documentsApiHooks.useUpdateDocumentStatusDirect();
   const { mutate: rejectProduct } = documentsApiHooks.useRejectProduct();
   
-  console.log("DEBUG: Documents API Response:", { 
-    documentCount: documents.length,
-    isLoading, 
-    error 
-  });
-  console.log("DEBUG: Products API Response:", { 
-    productCount: allProducts.length, 
-    isLoadingProducts 
-  });
-
-  console.log("DEBUG: Manufacturer ID from URL:", manufacturerId);
-  console.log("DEBUG: Status filter:", statusFilter);
-
   const filteredDocuments = documents
     .filter((doc) =>
       manufacturerId ? doc.manufacturerId === manufacturerId : true
@@ -100,104 +86,49 @@ export function DocumentList() {
     .filter((doc) =>
       statusFilter === "all" ? true : doc.status === statusFilter
     );
-    
-  console.log("DEBUG: Filtered Documents:", filteredDocuments.map(doc => ({
-    id: doc.id,
-    name: doc.name,
-    type: doc.type,
-    manufacturer: doc.manufacturer,
-    manufacturerId: doc.manufacturerId,
-    status: doc.status
-  })));
 
   // Group documents by product
   const documentsByProduct = filteredDocuments.reduce<Record<string, Document[]>>((acc, doc) => {
-    // Use productId for grouping
     const productId = doc.productId;
-    console.log("DEBUG: Grouping document by product:", {
-      documentId: doc.id,
-      documentName: doc.name,
-      productId: productId,
-      manufacturerId: doc.manufacturerId
-    });
     
-    if (!acc[productId]) {
-      acc[productId] = [];
-    }
-    // Check if this document is already in the array to avoid duplicates
-    const isDuplicate = acc[productId].some(existingDoc => 
-      existingDoc.id === doc.id && existingDoc.type === doc.type
-    );
-    if (!isDuplicate) {
-      acc[productId].push(doc);
-    } else {
-      console.log("DEBUG: Skipping duplicate document:", {
-        documentId: doc.id,
-        documentName: doc.name,
-        productId: productId
-      });
+    if (productId) {
+      if (!acc[productId]) {
+        acc[productId] = [];
+      }
+      const isDuplicate = acc[productId].some(existingDoc => 
+        existingDoc.id === doc.id && existingDoc.type === doc.type
+      );
+      if (!isDuplicate) {
+        acc[productId].push(doc);
+      }
     }
     return acc;
   }, {});
 
   // Add products with no documents
   allProducts.forEach(product => {
-    if (!documentsByProduct[product.id]) {
-      console.log("DEBUG: Adding product with no documents:", {
-        productId: product.id,
-        productName: product.name
-      });
+    if (product.id && !documentsByProduct[product.id]) {
       documentsByProduct[product.id] = [];
     }
   });
 
   // Create a mapping of product IDs to product names for display
   const productNameMap = allProducts.reduce<Record<string, string>>((acc, product) => {
-    acc[product.id] = product.name;
+    if (product.id) {
+      acc[product.id] = product.name;
+    }
     return acc;
   }, {});
 
   const handleApprove = async (documentId: string) => {
-    console.log("DEBUG: Approving document with ID:", documentId);
-    console.log("DEBUG: All available documents:", documents);
-    
     try {
-      // Find the document in the filtered documents array
-      console.log("DEBUG: Searching for document in filtered documents. Count:", filteredDocuments.length);
-      const document = filteredDocuments.find(doc => {
-        console.log("DEBUG: Comparing document:", {
-          docId: doc.id,
-          docName: doc.name,
-          docType: doc.type,
-          docManufacturerId: doc.manufacturerId,
-          docManufacturer: doc.manufacturer,
-          targetId: documentId
-        });
-        return doc.id === documentId;
-      });
+      const document = filteredDocuments.find(doc => doc.id === documentId);
 
       if (!document) {
-        console.error("DEBUG: Document not found in filtered documents. Document ID:", documentId);
-        console.log("DEBUG: Available documents:", filteredDocuments.map(d => ({ 
-          id: d.id, 
-          name: d.name, 
-          type: d.type,
-          manufacturerId: d.manufacturerId,
-          manufacturer: d.manufacturer
-        })));
+        console.error("Document not found in filtered documents. Document ID:", documentId);
         return;
       }
       
-      console.log("DEBUG: Found document to approve:", {
-        id: document.id,
-        name: document.name,
-        type: document.type,
-        manufacturerId: document.manufacturerId,
-        manufacturer: document.manufacturer,
-        status: document.status
-      });
-      
-      // Doğrudan belge nesnesini kullanarak durumu güncelle
       await updateDocumentStatusDirect({
         document,
         status: "approved",
@@ -208,7 +139,7 @@ export function DocumentList() {
         description: "Document approved successfully",
       });
     } catch (error) {
-      console.error("DEBUG: Error approving document:", error);
+      console.error("Error approving document:", error);
       toast({
         title: "Error",
         description: "Failed to approve document. Please try again.",
@@ -218,65 +149,30 @@ export function DocumentList() {
   };
 
   const handleReject = async (docId: string) => {
-    console.log("DEBUG: Rejecting document with ID:", docId);
     setSelectedDocumentId(docId);
     setDocumentRejectDialogOpen(true);
   };
 
   const submitRejectDocument = async () => {
     if (!selectedDocumentId || !documentRejectReason) {
-      console.error("DEBUG: Missing document ID or reject reason");
+      console.error("Missing document ID or reject reason");
       return;
     }
-
-    console.log("DEBUG: Rejecting document with ID:", selectedDocumentId);
-    console.log("DEBUG: Reject reason:", documentRejectReason);
-    console.log("DEBUG: All available documents:", documents);
     
     try {
-      // Find the document in the filtered documents array
-      console.log("DEBUG: Searching for document in filtered documents. Count:", filteredDocuments.length);
-      const document = filteredDocuments.find(doc => {
-        console.log("DEBUG: Comparing document:", {
-          docId: doc.id,
-          docName: doc.name,
-          docType: doc.type,
-          docManufacturerId: doc.manufacturerId,
-          docManufacturer: doc.manufacturer,
-          targetId: selectedDocumentId
-        });
-        return doc.id === selectedDocumentId;
-      });
+      const document = filteredDocuments.find(doc => doc.id === selectedDocumentId);
 
       if (!document) {
-        console.error("DEBUG: Document not found in filtered documents. Document ID:", selectedDocumentId);
-        console.log("DEBUG: Available documents:", filteredDocuments.map(d => ({ 
-          id: d.id, 
-          name: d.name, 
-          type: d.type,
-          manufacturerId: d.manufacturerId,
-          manufacturer: d.manufacturer
-        })));
+        console.error("Document not found in filtered documents. Document ID:", selectedDocumentId);
         return;
       }
       
-      console.log("DEBUG: Found document to reject:", {
-        id: document.id,
-        name: document.name,
-        type: document.type,
-        manufacturerId: document.manufacturerId,
-        manufacturer: document.manufacturer,
-        status: document.status
-      });
-      
-      // Reddetme nedeni ve tarihini ekle
       const updatedDocument = {
         ...document,
         rejection_reason: documentRejectReason,
         rejection_date: new Date().toISOString()
       };
       
-      // Doğrudan belge nesnesini kullanarak durumu güncelle
       await updateDocumentStatusDirect({
         document: updatedDocument,
         status: "rejected",
@@ -288,10 +184,10 @@ export function DocumentList() {
         description: "Document rejected successfully",
       });
       setDocumentRejectReason("");
-      setSelectedDocumentId(null);
+      setSelectedDocumentId("");
       setDocumentRejectDialogOpen(false);
     } catch (error) {
-      console.error("DEBUG: Error rejecting document:", error);
+      console.error("Error rejecting document:", error);
       toast({
         title: "Error",
         description: "Failed to reject document. Please try again.",
@@ -307,12 +203,9 @@ export function DocumentList() {
 
   const submitRejectProduct = async () => {
     if (!selectedProductId || !rejectReason) {
-      console.error("DEBUG: Missing product ID or reject reason");
+      console.error("Missing product ID or reject reason");
       return;
     }
-
-    console.log("DEBUG: Rejecting product with ID:", selectedProductId);
-    console.log("DEBUG: Reject reason:", rejectReason);
     
     try {
       await rejectProduct({
@@ -326,9 +219,9 @@ export function DocumentList() {
       });
       setRejectDialogOpen(false);
       setRejectReason("");
-      setSelectedProductId(null);
+      setSelectedProductId("");
     } catch (error) {
-      console.error("DEBUG: Error rejecting product:", error);
+      console.error("Error rejecting product:", error);
       toast({
         title: "Error",
         description: "Failed to reject product. Please try again.",

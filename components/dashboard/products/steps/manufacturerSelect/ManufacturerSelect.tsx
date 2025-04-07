@@ -49,7 +49,7 @@ export function ManufacturerSelect({
                     value={field.value}
                     onChange={(value) => {
                       field.onChange(value);
-                      handleManufacturerChange(value);
+                      handleManufacturerChange(value || "");
                     }}
                   />
                 </FormControl>

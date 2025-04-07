@@ -1,12 +1,11 @@
 "use client";
 
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
 import { useQueryClient } from "@tanstack/react-query";
-import { Battery, FileText, ImageOff, MoreHorizontal, Trash, Pencil } from "lucide-react";
+import { Battery, FileText, ImageOff, MoreHorizontal, Trash } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { useTranslations } from "next-intl";
 
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
@@ -28,19 +27,12 @@ export function ProductList({ products, isLoading }: ProductListProps) {
   const queryClient = useQueryClient();
   const [productToDelete, setProductToDelete] = useState<Product | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const t = useTranslations("productManagement");
-  const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 10;
-  const totalPages = Math.ceil(products.length / productsPerPage);
-  const startIndex = (currentPage - 1) * productsPerPage;
-  const endIndex = startIndex + productsPerPage;
-  const paginatedProducts = products.slice(startIndex, endIndex);
 
   const { mutate: deleteProduct } = productsApiHooks.useDeleteProductMutation({
     onSuccess: () => {
       toast({
-        title: t("delete.title"),
-        description: t("delete.description"),
+        title: "Product deleted",
+        description: "The product has been successfully deleted.",
       });
       queryClient.invalidateQueries({ queryKey: ["getProducts"] });
       setIsDeleteDialogOpen(false);
@@ -48,8 +40,8 @@ export function ProductList({ products, isLoading }: ProductListProps) {
     },
     onError: (error) => {
       toast({
-        title: t("delete.error.title"),
-        description: error instanceof Error ? error.message : t("delete.error.description"),
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to delete product. Please try again.",
         variant: "destructive",
       });
       setIsDeleteDialogOpen(false);
@@ -68,6 +60,7 @@ export function ProductList({ products, isLoading }: ProductListProps) {
     }
   };
 
+  // ✅ getImageUrl için güvenli fallback eklendi
   const getImageUrl = (url?: string): string => {
     if (!url) return "/images/placeholder-product.png";
     if (url.startsWith("http")) return url;
@@ -86,8 +79,8 @@ export function ProductList({ products, isLoading }: ProductListProps) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>{t("list.title")}</CardTitle>
-          <CardDescription>{t("list.loading")}</CardDescription>
+          <CardTitle>Products</CardTitle>
+          <CardDescription>Loading your products...</CardDescription>
         </CardHeader>
         <CardContent>
           {[1, 2, 3].map((i) => (
@@ -109,12 +102,12 @@ export function ProductList({ products, isLoading }: ProductListProps) {
       <Card>
         <CardContent className="flex flex-col items-center justify-center py-12">
           <Battery className="h-12 w-12 text-muted-foreground mb-4" />
-          <h2 className="text-xl font-semibold mb-2">{t("list.empty.title")}</h2>
+          <h2 className="text-xl font-semibold mb-2">No Products Found</h2>
           <p className="text-muted-foreground mb-4">
-            {t("list.empty.description")}
+            Start by adding your first product.
           </p>
           <Button asChild>
-            <Link href="/dashboard/products/new">{t("actions.addProduct")}</Link>
+            <Link href="/dashboard/products/new">Add Product</Link>
           </Button>
         </CardContent>
       </Card>
@@ -125,24 +118,24 @@ export function ProductList({ products, isLoading }: ProductListProps) {
     <>
       <Card>
         <CardHeader>
-          <CardTitle>{t("list.title")}</CardTitle>
+          <CardTitle>Products</CardTitle>
           <CardDescription>
-            {t("list.description")}
+            Manage your product catalog
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>{t("list.columns.product")}</TableHead>
-                <TableHead>{t("list.columns.category")}</TableHead>
-                <TableHead>{t("list.columns.basicInfo")}</TableHead>
-                <TableHead>{t("list.columns.status")}</TableHead>
-                <TableHead className="w-[100px] text-right">{t("list.columns.actions")}</TableHead>
+                <TableHead>Product</TableHead>
+                <TableHead>Category</TableHead>
+                <TableHead>Basic Info</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {paginatedProducts.map((product) => (
+              {products.map((product) => (
                 <TableRow key={product.id}>
                   <TableCell>
                     <div className="flex items-center gap-4">
@@ -194,58 +187,51 @@ export function ProductList({ products, isLoading }: ProductListProps) {
                   <TableCell>
                     <Badge
                       variant={
-                        Object.values(product.documents || {}).flat().some(doc => doc.status === "rejected")
-                          ? "destructive"
-                          : Object.values(product.documents || {}).flat().some(doc => doc.status === "pending")
-                          ? "warning"
-                          : Object.values(product.documents || {}).flat().every(doc => doc.status === "approved")
+                        product.status === "NEW"
                           ? "success"
-                          : "secondary"
+                          : product.status === "DRAFT"
+                          ? "warning"
+                          : "destructive"
                       }
                     >
-                      {Object.values(product.documents || {}).flat().some(doc => doc.status === "rejected")
-                        ? "REJECTED"
-                        : Object.values(product.documents || {}).flat().some(doc => doc.status === "pending")
-                        ? "PENDING"
-                        : Object.values(product.documents || {}).flat().every(doc => doc.status === "approved")
-                        ? "APPROVED"
-                        : "NEW"}
+                      {product.status.toLowerCase()}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-right">
+                  <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
-                          <span className="sr-only">Open menu</span>
+                        <Button variant="ghost" size="icon">
                           <MoreHorizontal className="h-4 w-4" />
+                          <span className="sr-only">Open menu</span>
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>{t("actions.menu")}</DropdownMenuLabel>
+                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
                         <DropdownMenuItem asChild>
                           <Link href={`/dashboard/products/${product.id}`}>
-                            <FileText className="mr-2 h-4 w-4" />
-                            {t("actions.viewDetails")}
+                            <Battery className="h-4 w-4 mr-2" />
+                            View Details
                           </Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem asChild>
                           <Link href={`/dashboard/products/${product.id}/edit`}>
-                            <Pencil className="mr-2 h-4 w-4" />
-                            {t("actions.editProduct")}
+                            Edit Product
                           </Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem asChild>
                           <Link href={`/dashboard/products/${product.id}/documents`}>
-                            <FileText className="mr-2 h-4 w-4" />
-                            {t("actions.viewDocuments")}
+                            <FileText className="h-4 w-4 mr-2" />
+                            View Documents
                           </Link>
                         </DropdownMenuItem>
-                        <DropdownMenuItem
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem 
+                          className="text-destructive focus:text-destructive"
                           onClick={() => handleDeleteClick(product)}
-                          className="text-red-600"
                         >
-                          <Trash className="mr-2 h-4 w-4" />
-                          {t("actions.deleteProduct")}
+                          <Trash className="h-4 w-4 mr-2" />
+                          Delete Product
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -260,15 +246,19 @@ export function ProductList({ products, isLoading }: ProductListProps) {
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>{t("delete.confirm.title")}</AlertDialogTitle>
+            <AlertDialogTitle>Are you sure you want to delete this product?</AlertDialogTitle>
             <AlertDialogDescription>
-              {t("delete.confirm.description", { name: productToDelete?.name || "" })}
+              This action cannot be undone. This will permanently delete the product
+              {productToDelete && <strong> &quot;{productToDelete.name}&quot;</strong>} and remove its data from our servers.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>{t("delete.confirm.cancel")}</AlertDialogCancel>
-            <AlertDialogAction onClick={handleConfirmDelete} className="bg-red-600 hover:bg-red-700">
-              {t("delete.confirm.confirm")}
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={handleConfirmDelete}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Delete
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
