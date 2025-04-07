@@ -158,6 +158,8 @@ export class ProductService {
 
 export const productService = createService({
   getProducts: async ({ companyId }: { companyId: string }) => {
+    console.log("Fetching products for company:", companyId);
+    
     const { data, error } = await supabase
       .from("products")
       .select("*")
@@ -169,6 +171,7 @@ export const productService = createService({
       throw new Error("Failed to fetch products");
     }
 
+    console.log("Raw products data:", data);
     return data || [];
   },
   getProduct: async ({

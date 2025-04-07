@@ -38,6 +38,7 @@ export const documentsApiHooks = {
             .order("created_at", { ascending: false });
 
           if (products.error) {
+            console.error("Error fetching products:", products.error);
             throw products.error;
           }
 
@@ -491,24 +492,94 @@ const fetchDocumentsFromProducts = async () => {
 
 const extractDocumentsFromProduct = (product: any): Document[] => {
   const documents: Document[] = [];
-  if (!product.documents) return documents;
+  if (!product.documents) {
+    return documents;
+  }
 
+
+  // Handle array of documents
+  if (Array.isArray(product.documents)) {
+    product.documents.forEach((doc: any) => {
+      if (doc && doc.id) {
+        const document = {
+          id: doc.id,
+          name: doc.name || 'Unnamed Document',
+          type: (doc.type || 'unknown') as DocumentType,
+          url: doc.url,
+          status: (doc.status || 'pending').toLowerCase() as DocumentStatus,
+          productId: product.id,
+          manufacturer: product.manufacturer || '',
+          manufacturerId: product.manufacturer_id || '',
+          fileSize: doc.fileSize || '',
+          version: doc.version || '1.0',
+          validUntil: doc.validUntil || null,
+          rejection_reason: doc.rejection_reason || null
+        };
+        documents.push(document);
+      }
+    });
+    return documents;
+  }
+
+  // Handle object of document arrays
   Object.entries(product.documents).forEach(([docType, docList]: [string, any]) => {
     if (Array.isArray(docList)) {
       docList.forEach((doc: any) => {
         if (doc && doc.id) {
-          documents.push({
+          const document = {
             id: doc.id,
             name: doc.name || 'Unnamed Document',
-            type: doc.type as DocumentType,
+            type: docType as DocumentType,
             url: doc.url,
-            status: doc.status || 'pending',
+            status: (doc.status || 'pending').toLowerCase() as DocumentStatus,
             productId: product.id,
             manufacturer: product.manufacturer || '',
             manufacturerId: product.manufacturer_id || '',
-          });
+            fileSize: doc.fileSize || '',
+            version: doc.version || '1.0',
+            validUntil: doc.validUntil || null,
+            rejection_reason: doc.rejection_reason || null
+          };
+          documents.push(document);
+        } else if (doc && doc.name) {
+          // Handle documents without id but with name
+          const document = {
+            id: `${docType}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+            name: doc.name,
+            type: docType as DocumentType,
+            url: doc.url,
+            status: (doc.status || 'pending').toLowerCase() as DocumentStatus,
+            productId: product.id,
+            manufacturer: product.manufacturer || '',
+            manufacturerId: product.manufacturer_id || '',
+            fileSize: doc.fileSize || '',
+            version: doc.version || '1.0',
+            validUntil: doc.validUntil || null,
+            rejection_reason: doc.rejection_reason || null
+          };
+          documents.push(document);
         }
       });
+    } else if (docList && typeof docList === 'object' && !Array.isArray(docList)) {
+      // Handle single document object
+      const doc = docList;
+      if (doc && (doc.id || doc.name)) {
+        const document = {
+          id: doc.id || `${docType}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+          name: doc.name || 'Unnamed Document',
+          type: docType as DocumentType,
+          url: doc.url,
+          status: (doc.status || 'pending').toLowerCase() as DocumentStatus,
+          productId: product.id,
+          manufacturer: product.manufacturer || '',
+          manufacturerId: product.manufacturer_id || '',
+          fileSize: doc.fileSize || '',
+          version: doc.version || '1.0',
+          validUntil: doc.validUntil || null,
+          rejection_reason: doc.rejection_reason || null
+        };
+        documents.push(document);
+      }
     }
   });
 

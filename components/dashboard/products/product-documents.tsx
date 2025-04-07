@@ -33,12 +33,12 @@ interface Document {
   name: string;
   url: string;
   type: string;
-  status: "APPROVED" | "PENDING" | "REJECTED";
+  status: "approved" | "pending" | "rejected" | "expired";
   validUntil?: string;
   version: string;
   uploadedAt: string;
   fileSize: string;
-  rejectionReason?: string;
+  rejection_reason?: string;
 }
 
 interface Product {
@@ -86,12 +86,12 @@ export function ProductDocuments({ productId }: ProductDocumentsProps) {
                   name: doc.name,
                   url: doc.url,
                   type: type,
-                  status: doc.status || "PENDING",
+                  status: (doc.status || "pending").toLowerCase() as "approved" | "pending" | "rejected" | "expired",
                   validUntil: doc.validUntil,
                   version: doc.version || "1.0",
                   uploadedAt: doc.uploadedAt || new Date().toISOString(),
                   fileSize: doc.fileSize || "N/A",
-                  rejectionReason: doc.rejectionReason
+                  rejection_reason: doc.rejection_reason
                 });
               });
             }
@@ -162,11 +162,11 @@ export function ProductDocuments({ productId }: ProductDocumentsProps) {
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case "APPROVED":
+      case "approved":
         return <CheckCircle className="h-4 w-4" />;
-      case "REJECTED":
+      case "rejected":
         return <XCircle className="h-4 w-4" />;
-      case "PENDING":
+      case "pending":
         return <Clock className="h-4 w-4" />;
       default:
         return <AlertTriangle className="h-4 w-4" />;
@@ -175,11 +175,11 @@ export function ProductDocuments({ productId }: ProductDocumentsProps) {
 
   const getStatusVariant = (status: string) => {
     switch (status) {
-      case "APPROVED":
+      case "approved":
         return "success";
-      case "REJECTED":
+      case "rejected":
         return "destructive";
-      case "PENDING":
+      case "pending":
         return "warning";
       default:
         return "secondary";
@@ -334,7 +334,7 @@ export function ProductDocuments({ productId }: ProductDocumentsProps) {
                           <History className="h-4 w-4 mr-2" />
                           View History
                         </DropdownMenuItem>
-                        {document.status === "REJECTED" && (
+                        {document.status === "rejected" && (
                           <DropdownMenuItem>
                             <FileText className="h-4 w-4 mr-2" />
                             Re-upload

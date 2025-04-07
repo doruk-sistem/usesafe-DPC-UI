@@ -87,14 +87,14 @@ export function ProductHeader({
         </Select>
 
         <Select value={status} onValueChange={handleStatusChange}>
-          <SelectTrigger className="w-full sm:w-[160px]">
-            <SelectValue placeholder={t("filters.status.label")} />
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="All Statuses" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all-status">{t("filters.status.all")}</SelectItem>
-            <SelectItem value="active">{t("filters.status.active")}</SelectItem>
-            <SelectItem value="pending">{t("filters.status.pending")}</SelectItem>
-            <SelectItem value="draft">{t("filters.status.draft")}</SelectItem>
+            <SelectItem value="all-status">All Statuses</SelectItem>
+            <SelectItem value="APPROVED">Approved</SelectItem>
+            <SelectItem value="REJECTED">Rejected</SelectItem>
+            <SelectItem value="PENDING">Pending</SelectItem>
           </SelectContent>
         </Select>
 

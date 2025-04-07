@@ -46,10 +46,29 @@ export function useProduct(productId: string) {
     });
   };
 
+  const determineProductStatus = (documents: any[]): string => {
+    if (!documents || documents.length === 0) {
+      return "PENDING";
+    }
+
+    const hasRejected = documents.some(doc => doc.status === "rejected");
+    if (hasRejected) {
+      return "REJECTED";
+    }
+
+    const allApproved = documents.every(doc => doc.status === "approved");
+    if (allApproved) {
+      return "APPROVED";
+    }
+
+    return "PENDING";
+  };
+
   return {
     product,
     isLoading,
     error,
     updateProduct,
+    determineProductStatus,
   };
 }

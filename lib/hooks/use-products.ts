@@ -9,6 +9,8 @@ export const productsApiHooks = createApiHooks(productService);
 export function useProducts() {
   const { company } = useAuth();
 
+  console.log("Company ID:", company?.id);
+
   const {
     data: products = [],
     isLoading,
@@ -21,6 +23,8 @@ export function useProducts() {
       enabled: !!company?.id,
     }
   );
+
+  console.log("Fetched products:", products);
 
   return {
     products,
