@@ -29,6 +29,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 // Sample data - In a real app, this would come from an API
 const documents = [
@@ -136,7 +142,20 @@ export function DocumentList() {
                   <div className="flex items-center gap-2">
                     <FileText className="h-4 w-4 text-muted-foreground" />
                     <div>
-                      <p className="font-medium">{doc.name}</p>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <p className="font-medium truncate max-w-[200px]">
+                              {doc.name.length > 25 
+                                ? `${doc.name.slice(0, 25)}...` 
+                                : doc.name}
+                            </p>
+                          </TooltipTrigger>
+                          <TooltipContent side="top" align="start">
+                            <p className="max-w-[300px] break-words text-xs">{doc.name}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
                       <p className="text-sm text-muted-foreground">
                         {doc.id} · {doc.fileSize}
                       </p>

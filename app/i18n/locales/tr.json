@@ -51,6 +51,18 @@
         "DRAFT": "Taslak",
         "DELETED": "Silindi"
       }
+    },
+    "menu": {
+      "dashboard": "Kontrol Paneli",
+      "products": "Ürünler",
+      "dpps": "DPP'ler",
+      "suppliers": "Tedarikçiler",
+      "documents": "Belgeler",
+      "certifications": "Sertifikalar"
+    },
+    "registration": {
+      "title": "Kayıt Tamamlama",
+      "description": "UseSafe'i kullanmaya başlamadan önce lütfen şirket kaydınızı tamamlayın."
     }
   },
   "home": {
@@ -811,6 +823,97 @@
     "addProduct": "Ürün Ekle",
     "editProduct": "Ürünü Düzenle",
     "deleteProduct": "Ürünü Sil",
+    "search": {
+      "placeholder": "Ürün ara..."
+    },
+    "filters": {
+      "type": {
+        "label": "Ürün Tipi",
+        "all": "Tüm Tipler",
+        "agm": "AGM Aküler",
+        "efb": "EFB Aküler",
+        "standard": "Standart Aküler",
+        "marine": "Deniz Aküleri"
+      },
+      "status": {
+        "label": "Durum",
+        "all": "Tüm Durumlar",
+        "active": "Aktif",
+        "pending": "Beklemede",
+        "draft": "Taslak",
+        "rejected": "Reddedildi"
+      }
+    },
+    "list": {
+      "title": "Ürün Listesi",
+      "description": "Ürünlerinizi görüntüleyin ve yönetin",
+      "columns": {
+        "product": "Ürün",
+        "category": "Kategori",
+        "basicInfo": "Temel Bilgiler",
+        "status": "Durum",
+        "actions": "İşlemler",
+        "name": "İsim",
+        "model": "Model",
+        "type": "Tip",
+        "manufacturer": "Üretici",
+        "createdAt": "Oluşturulma Tarihi",
+        "updatedAt": "Güncellenme Tarihi"
+      },
+      "empty": {
+        "title": "Ürün Bulunamadı",
+        "description": "Henüz hiç ürün eklenmemiş. Yeni bir ürün eklemek için aşağıdaki butonu kullanın."
+      },
+      "loading": "Ürünler yükleniyor...",
+      "filters": {
+        "all": "Tüm Ürünler",
+        "type": {
+          "label": "Ürün Tipi",
+          "placeholder": "Tipe göre filtrele"
+        },
+        "status": {
+          "label": "Durum",
+          "placeholder": "Duruma göre filtrele"
+        },
+        "manufacturer": {
+          "label": "Üretici",
+          "placeholder": "Üreticiye göre filtrele"
+        }
+      },
+      "actions": {
+        "view": "Detayları Görüntüle",
+        "edit": "Düzenle",
+        "delete": "Sil",
+        "download": "İndir",
+        "export": "Dışa Aktar",
+        "import": "İçe Aktar"
+      },
+      "pagination": {
+        "showing": "Toplam {total} üründen {start} - {end} arası gösteriliyor",
+        "previous": "Önceki",
+        "next": "Sonraki",
+        "first": "İlk Sayfa",
+        "last": "Son Sayfa"
+      }
+    },
+    "actions": {
+      "menu": "İşlemler",
+      "viewDetails": "Detayları Görüntüle",
+      "editProduct": "Ürünü Düzenle",
+      "viewDocuments": "Belgeleri Görüntüle",
+      "deleteProduct": "Ürünü Sil",
+      "addProduct": "Ürün Ekle",
+      "download": "İndir",
+      "export": "Dışa Aktar",
+      "import": "İçe Aktar",
+      "duplicate": "Kopyala",
+      "archive": "Arşivle",
+      "restore": "Geri Yükle",
+      "print": "Yazdır",
+      "share": "Paylaş",
+      "verify": "Doğrula",
+      "certify": "Sertifikala"
+    },
     "table": {
       "name": "İsim",
       "model": "Model",
@@ -824,17 +927,90 @@
     },
     "status": {
       "draft": "Taslak",
-      "published": "Yayında",
-      "archived": "Arşivlenmiş"
+      "published": "Yayınlandı",
+      "archived": "Arşivlendi"
     },
     "delete": {
       "title": "Ürünü Sil",
+      "description": "Ürün başarıyla silindi",
       "confirm": {
-        "title": "Emin misiniz?",
-        "description": "{name} ürününü silmek istiyor musunuz? Bu işlem geri alınamaz."
+        "title": "Ürünü Sil",
+        "description": "Bu ürünü silmek istediğinizden emin misiniz? Bu işlem geri alınamaz ve tüm ürün verileri kalıcı olarak silinecektir.",
+        "confirm": "Evet, sil",
+        "cancel": "İptal",
+        "warning": "Dikkat: Bu işlem geri alınamaz!",
+        "success": "Ürün başarıyla silindi",
+        "error": "Ürün silinirken bir hata oluştu"
       },
-      "success": "Ürün başarıyla silindi",
-      "error": "Ürün silinirken bir hata oluştu"
+      "error": {
+        "title": "Hata",
+        "description": "Ürün silinirken bir hata oluştu",
+        "permission": "Bu işlem için yetkiniz bulunmuyor",
+        "dependencies": "Bu ürüne bağlı kayıtlar olduğu için silinemiyor"
+      }
+    },
+    "addProduct": {
+      "title": "Yeni Ürün Ekle",
+      "description": "Yeni bir ürün eklemek için aşağıdaki adımları takip edin",
+      "steps": {
+        "basicInfo": "Temel Bilgiler",
+        "manufacturer": "Üretici Seçimi",
+        "documents": "Belgeler",
+        "review": "İnceleme"
+      },
+      "form": {
+        "name": {
+          "label": "Ürün Adı",
+          "placeholder": "Ürün adını girin",
+          "error": "Ürün adı zorunludur"
+        },
+        "description": {
+          "label": "Ürün Açıklaması",
+          "placeholder": "Ürün açıklamasını girin",
+          "error": "Ürün açıklaması zorunludur"
+        },
+        "type": {
+          "label": "Ürün Tipi",
+          "placeholder": "Ürün tipini seçin",
+          "error": "Ürün tipi zorunludur"
+        },
+        "model": {
+          "label": "Model",
+          "placeholder": "Model numarasını girin",
+          "error": "Model numarası zorunludur"
+        },
+        "manufacturer": {
+          "label": "Üretici",
+          "placeholder": "Üretici seçin",
+          "error": "Üretici seçimi zorunludur",
+          "search": "Üretici ara...",
+          "noResults": "Üretici bulunamadı"
+        },
+        "documents": {
+          "label": "Belgeler",
+          "description": "Ürünle ilgili belgeleri yükleyin",
+          "upload": "Belge Yükle",
+          "remove": "Belgeyi Kaldır",
+          "error": "En az bir belge yüklemelisiniz"
+        }
+      },
+      "buttons": {
+        "next": "İleri",
+        "previous": "Geri",
+        "submit": "Ürünü Kaydet",
+        "cancel": "İptal",
+        "saveDraft": "Taslak Olarak Kaydet"
+      },
+      "success": {
+        "title": "Ürün Eklendi",
+        "description": "Ürün başarıyla eklendi"
+      },
+      "error": {
+        "title": "Hata",
+        "description": "Ürün eklenirken bir hata oluştu",
+        "validation": "Lütfen tüm zorunlu alanları doldurun",
+        "duplicate": "Bu ürün zaten mevcut"
+      }
     }
   }
 }

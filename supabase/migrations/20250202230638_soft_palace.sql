@@ -84,3 +84,6 @@ CREATE TRIGGER add_supplier_on_product_create
 
 -- Add comment explaining the table
 COMMENT ON TABLE company_suppliers IS 'Tracks relationships between companies and their suppliers';
+
+-- Add product_subcategory column to products table
+ALTER TABLE products ADD COLUMN IF NOT EXISTS product_subcategory TEXT NULL;

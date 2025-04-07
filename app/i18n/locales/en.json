@@ -756,6 +756,50 @@
     "addProduct": "Add Product",
     "editProduct": "Edit Product",
     "deleteProduct": "Delete Product",
+    "search": {
+      "placeholder": "Search products..."
+    },
+    "filters": {
+      "type": {
+        "label": "Product Type",
+        "all": "All Types",
+        "agm": "AGM Batteries",
+        "efb": "EFB Batteries",
+        "standard": "Standard Batteries",
+        "marine": "Marine Batteries"
+      },
+      "status": {
+        "label": "Status",
+        "all": "All Status",
+        "active": "Active",
+        "pending": "Pending",
+        "draft": "Draft"
+      }
+    },
+    "list": {
+      "title": "Product List",
+      "description": "View and manage your products",
+      "columns": {
+        "product": "Product",
+        "category": "Category",
+        "basicInfo": "Basic Info",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "empty": {
+        "title": "No Products Found",
+        "description": "No products have been added yet. Use the button below to add a new product."
+      },
+      "loading": "Loading products..."
+    },
+    "actions": {
+      "menu": "Actions",
+      "viewDetails": "View Details",
+      "editProduct": "Edit Product",
+      "viewDocuments": "View Documents",
+      "deleteProduct": "Delete Product",
+      "addProduct": "Add Product"
+    },
     "table": {
       "name": "Name",
       "model": "Model",
@@ -774,12 +818,11 @@
     },
     "delete": {
       "title": "Delete Product",
-      "confirm": {
-        "title": "Are you sure?",
-        "description": "Do you want to delete {name}? This action cannot be undone."
-      },
-      "success": "Product deleted successfully",
-      "error": "Failed to delete product"
+      "description": "Product deleted successfully",
+      "error": {
+        "title": "Error",
+        "description": "Failed to delete product"
+      }
     }
   }
 }

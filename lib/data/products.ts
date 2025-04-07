@@ -10,7 +10,6 @@ export const products: Product[] = [
     company_id: "INCI-001",
     manufacturer_id: "INCI-001",
     product_type: "battery",
-    product_subcategory: "automotive",
     model: "AGM-LEO-12V-65AH",
     status: "NEW",
     status_history: [
@@ -311,7 +310,6 @@ export const products: Product[] = [
     company_id: "INCI-001",
     manufacturer_id: "INCI-001",
     product_type: "battery",
-    product_subcategory: "automotive",
     model: "EFB-TIGRIS-12V-145AH",
     status: "NEW",
     status_history: [
@@ -600,7 +598,6 @@ export const products: Product[] = [
     company_id: "INCI-001",
     manufacturer_id: "INCI-001",
     product_type: "battery",
-    product_subcategory: "automotive",
     model: "MAXIM-GORILLA-12V-105AH",
     status: "NEW",
     status_history: [
@@ -889,7 +886,6 @@ export const products: Product[] = [
     company_id: "INCI-001",
     manufacturer_id: "INCI-001",
     product_type: "battery",
-    product_subcategory: "automotive",
     model: "SUPRA-SENTOR-12V-90AH",
     status: "NEW",
     status_history: [
@@ -1178,7 +1174,6 @@ export const products: Product[] = [
     company_id: "INCI-001",
     manufacturer_id: "INCI-001",
     product_type: "battery",
-    product_subcategory: "marine",
     model: "L5 Marine",
     status: "NEW",
     status_history: [

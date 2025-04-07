@@ -1,13 +1,11 @@
 "use client";
 
 import { Plus, X } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import { UseFormReturn } from "react-hook-form";
-import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   FormControl,
   FormField,
@@ -21,7 +19,7 @@ import {
   DOCUMENT_TYPES,
   ACCEPTED_DOCUMENT_FORMATS,
   DOCUMENT_TYPE_CONFIG,
-  REQUIRED_DOCUMENTS,
+  type DocumentType,
 } from "@/lib/constants/documents";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { DocumentService } from "@/lib/services/document";
@@ -35,48 +33,16 @@ type HandleUploadResult = {
 
 interface DocumentUploadStepProps {
   form: UseFormReturn<any>;
-  setValidationFunction: (fn: () => boolean) => void;
-  onNext: () => void;
 }
 
-export function DocumentUploadStep({
-  form,
-  setValidationFunction,
-  onNext,
-}: DocumentUploadStepProps) {
+export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
   const { user } = useAuth();
   const { toast } = useToast();
-  const t = useTranslations("productManagement.addProduct");
-  const companyId = user?.user_metadata?.company_id;
 
-  if (!companyId) {
-    toast({
-      title: "Error",
-      description: "Company ID not found",
-      variant: "destructive",
-    });
-    return null;
-  }
+  const companyId =
+    user?.user_metadata?.company_id || "7d26ed35-49ca-4c0d-932e-52254fb0e5b8";
 
-  const productType = form.watch("product_type") || "";
-
-  const normalizedType = productType
-    .toLowerCase()
-    .replace(/[ğ]/g, "g")
-    .replace(/[ü]/g, "u")
-    .replace(/[ş]/g, "s")
-    .replace(/[ı]/g, "i")
-    .replace(/[ö]/g, "o")
-    .replace(/[ç]/g, "c")
-    .replace(/\s+|-/g, "_");
-
-  const requiredConfig = REQUIRED_DOCUMENTS[normalizedType] ||
-    REQUIRED_DOCUMENTS[productType.toUpperCase()] ||
-    REQUIRED_DOCUMENTS[productType] ||
-    {};
-
-  const [uploadProgress, setUploadProgress] = useState<Record<string, number>>({});
-
+  // ✅ Dosya yükleme işlemi
   const handleDocumentUpload = useCallback(
     async (
       files: FileList,
@@ -104,19 +70,10 @@ export function DocumentUploadStep({
           (DOCUMENT_TYPE_CONFIG[docType]?.maxSize || 10 * 1024 * 1024);
 
         if (!isValidType) {
-          errors.push(
-            `${
-              file.name
-            }: Invalid file type. Accepted formats: ${ACCEPTED_DOCUMENT_FORMATS.join(
-              ", "
-            )}`
-          );
+          errors.push(`${file.name}: Invalid file type`);
         }
         if (!isValidSize) {
-          const maxSizeMB =
-            (DOCUMENT_TYPE_CONFIG[docType]?.maxSize || 10 * 1024 * 1024) /
-            (1024 * 1024);
-          errors.push(`${file.name}: File size exceeds limit (${maxSizeMB}MB)`);
+          errors.push(`${file.name}: File size exceeds limit`);
         }
 
         return isValidType && isValidSize;
@@ -136,15 +93,15 @@ export function DocumentUploadStep({
                 "product-documents",
             });
 
-            if (url) {
-              newDocs.push({
-                name: file.name,
-                url: url,
-                type: docType,
-              });
-            } else {
-              errors.push(`Failed to upload ${file.name}: No URL returned`);
-            }
+            newDocs.push({
+              name: file.name,
+              url: url || "",
+              type: docType as DocumentType,
+              id: "",
+              manufacturer: "",
+              manufacturerId: "",
+              status: "pending",
+            } as Document);
           } catch (error) {
             errors.push(
               `Error uploading ${file.name}: ${
@@ -164,6 +121,7 @@ export function DocumentUploadStep({
     [companyId]
   );
 
+  // ✅ Dosya yükleme fonksiyonu
   const handleFileChange = useCallback(
     async (
       e: React.ChangeEvent<HTMLInputElement>,
@@ -196,52 +154,76 @@ export function DocumentUploadStep({
   return (
     <Card className="p-6 space-y-6">
       <div>
-        <h3 className="text-lg font-semibold">{t("form.documents.title")}</h3>
+        <h3 className="text-lg font-semibold">Product Documents</h3>
         <p className="text-sm text-muted-foreground">
-          {t("form.documents.description")}
+          Upload relevant documents for your product. All documents are
+          optional.
         </p>
       </div>
 
-      {DOCUMENT_TYPES.filter((docType) => {
-        if (Object.keys(requiredConfig).length === 0) return true;
-        return requiredConfig[docType.id] === true;
-      }).map((docType) => (
+      {/* ✅ Tüm belge türleri için alan oluştur */}
+      {DOCUMENT_TYPES.map((docType) => (
         <FormField
           key={docType.id}
           control={form.control}
           name={`documents.${docType.id}`}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>
-                {t(`form.documents.types.${docType.id}`)}
-                {requiredConfig[docType.id] && " *"}
-              </FormLabel>
+              <FormLabel>{docType.label}</FormLabel>
               <FormControl>
-                <div className="space-y-4">
-                  {field.value?.map((doc: Document, index: number) => (
-                    <div key={index} className="flex items-center gap-4">
-                      <Input value={doc.name} disabled />
+                <div className="space-y-2">
+                  {/* ✅ Yüklenen dosyaları göster */}
+                  {field.value?.map((file: any, index: number) => (
+                    <div key={index} className="flex items-center gap-2">
+                      <Input
+                        type="text"
+                        value={file.name}
+                        readOnly
+                        className="flex-1"
+                      />
                       <Button
                         type="button"
-                        variant="destructive"
+                        variant="ghost"
                         size="icon"
                         onClick={() => {
-                          const newDocs = [...(field.value || [])];
-                          newDocs.splice(index, 1);
-                          field.onChange(newDocs);
+                          const newFiles = field.value.filter(
+                            (_: any, i: number) => i !== index
+                          );
+                          field.onChange(newFiles);
+                          form.setValue(`documents.${docType.id}`, newFiles);
                         }}
                       >
                         <X className="h-4 w-4" />
                       </Button>
                     </div>
                   ))}
-                  <div>
+
+                  {/* ✅ Dosya yükleme alanı */}
+                  <div className="flex items-center gap-2">
+                    {/* Gizli input */}
                     <Input
                       type="file"
-                      accept={ACCEPTED_DOCUMENT_FORMATS.join(",")}
+                      id={`file-upload-${docType.id}`}
+                      className="hidden"
                       onChange={(e) => handleFileChange(e, field, docType.id)}
+                      accept={ACCEPTED_DOCUMENT_FORMATS.map(
+                        (format) => `.${format}`
+                      ).join(",")}
                       multiple
                     />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => {
+                        const input = document.getElementById(
+                          `file-upload-${docType.id}`
+                        ) as HTMLInputElement;
+                        input?.click();
+                      }}
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Document
+                    </Button>
                   </div>
                 </div>
               </FormControl>

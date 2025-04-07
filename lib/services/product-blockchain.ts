@@ -32,12 +32,15 @@ class ProductBlockchainService {
       let transactionId: string;
       let contractAddress: string;
 
+      // If manufacturer is empty, use a default value
+      const manufacturerValue = manufacturer || 'Unknown Manufacturer';
+
       switch (action) {
         case 'CREATE':
           transactionId = await productBlockchainContractService.createProduct(
             id,
             name,
-            manufacturer,
+            manufacturerValue,
             description,
             'product', // productType - varsayılan değer
             'default'  // model - varsayılan değer
@@ -48,7 +51,7 @@ class ProductBlockchainService {
           transactionId = await productBlockchainContractService.updateProduct(
             id,
             name,
-            manufacturer,
+            manufacturerValue,
             description,
             'product', // productType - varsayılan değer
             'default'  // model - varsayılan değer

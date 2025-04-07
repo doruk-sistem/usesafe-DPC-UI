@@ -257,6 +257,23 @@
           "category": {
             "label": "Kategori",
             "placeholder": "Ürün kategorisi seçin"
+          },
+          "documents": {
+            "title": "Belgeler",
+            "description": "Ürününüz için gerekli belgeleri yükleyin",
+            "types": {
+              "quality_cert": "Kalite Sertifikası",
+              "safety_cert": "Güvenlik Sertifikası",
+              "test_reports": "Test Raporları",
+              "technical_docs": "Teknik Dokümanlar",
+              "compliance_docs": "Uyumluluk Belgeleri"
+            }
+          },
+          "validation": {
+            "error": "Lütfen tüm gerekli alanları doldurun"
+          },
+          "documents": {
+            "missing": "Eksik belgeler: {documents}"
           }
         },
         "sustainability": {
@@ -411,6 +428,37 @@
       "error": {
         "title": "Geçersiz Ürün Kodu",
         "description": "Lütfen geçerli bir ürün kodu girin veya geçerli bir QR kod tarayın."
+      }
+    }
+  },
+  "productManagement": {
+    "addProduct": {
+      "form": {
+        "buttons": {
+          "previous": "Önceki",
+          "next": "İleri",
+          "saving": "Kaydediliyor...",
+          "update": "Ürünü Güncelle",
+          "create": "Ürün Oluştur"
+        },
+        "validation": {
+          "error": "Lütfen tüm gerekli alanları doldurun"
+        },
+        "documents": {
+          "title": "Belgeler",
+          "description": "Ürününüzle ilgili gerekli belgeleri yükleyin",
+          "missing": "Eksik belgeler: {documents}",
+          "types": {
+            "quality_cert": "Kalite Sertifikası",
+            "safety_cert": "Güvenlik Sertifikası",
+            "test_reports": "Test Raporları",
+            "technical_docs": "Teknik Dokümanlar",
+            "compliance_docs": "Uyumluluk Belgeleri"
+          }
+        },
+        "error": {
+          "title": "Hata"
+        }
       }
     }
   }
