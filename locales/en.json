@@ -258,6 +258,23 @@
           "category": {
             "label": "Category",
             "placeholder": "Select product category"
+          },
+          "documents": {
+            "title": "Documents",
+            "description": "Upload required documents for your product",
+            "types": {
+              "quality_cert": "Quality Certificate",
+              "safety_cert": "Safety Certificate",
+              "test_reports": "Test Reports",
+              "technical_docs": "Technical Documents",
+              "compliance_docs": "Compliance Documents"
+            }
+          },
+          "validation": {
+            "error": "Please fill in all required fields"
+          },
+          "documents": {
+            "missing": "Missing documents: {documents}"
           }
         },
         "sustainability": {
@@ -412,6 +429,37 @@
       "error": {
         "title": "Invalid Product Code",
         "description": "Please enter a valid product code or scan a valid QR code."
+      }
+    }
+  },
+  "productManagement": {
+    "addProduct": {
+      "form": {
+        "buttons": {
+          "previous": "Previous",
+          "next": "Next",
+          "saving": "Saving...",
+          "update": "Update Product",
+          "create": "Create Product"
+        },
+        "validation": {
+          "error": "Please fill in all required fields"
+        },
+        "documents": {
+          "title": "Documents",
+          "description": "Upload required documents for your product",
+          "missing": "Missing documents: {documents}",
+          "types": {
+            "quality_cert": "Quality Certificate",
+            "safety_cert": "Safety Certificate",
+            "test_reports": "Test Reports",
+            "technical_docs": "Technical Documents",
+            "compliance_docs": "Compliance Documents"
+          }
+        },
+        "error": {
+          "title": "Error"
+        }
       }
     }
   }

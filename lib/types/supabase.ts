@@ -1,4 +1,3 @@
-import { Document } from "./document"
 import { StatusTransition, ProductImage, KeyFeature } from "./product"
 
 export type Json =
@@ -20,15 +19,14 @@ export interface Database {
           description: string
           company_id: string
           product_type: string
-          product_subcategory: string
-          model: string
+          model?: string
           status: "DRAFT" | "NEW" | "DELETED" | "ARCHIVED"
           status_history: StatusTransition[]
           images: ProductImage[]
           key_features: KeyFeature[]
           created_at: string
           updated_at: string
-          documents?: Document[]
+          documents?: Json
           manufacturer_id: string
         }
         Insert: {
@@ -37,7 +35,6 @@ export interface Database {
           description: string | null
           company_id: string
           product_type: string
-          product_subcategory?: string
           model: string
           status?: 'DRAFT' | 'NEW' | 'DELETED' | 'ARCHIVED'
           status_history?: StatusTransition[]
@@ -49,7 +46,7 @@ export interface Database {
           key_features?: KeyFeature[]
           created_at?: string
           updated_at?: string
-          documents?: Document[]
+          documents?: Json
           manufacturer_id: string
         }
         Update: {
@@ -68,9 +65,8 @@ export interface Database {
           created_at?: string
           updated_at?: string
           product_type?: string
-          product_subcategory?: string
           model?: string
-          documents?: Document[]
+          documents?: Json
           manufacturer_id?: string
         }
       }

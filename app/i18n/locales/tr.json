@@ -51,6 +51,18 @@
         "DRAFT": "Taslak",
         "DELETED": "Silindi"
       }
+    },
+    "menu": {
+      "dashboard": "Kontrol Paneli",
+      "products": "Ürünler",
+      "dpps": "DPP'ler",
+      "suppliers": "Tedarikçiler",
+      "documents": "Belgeler",
+      "certifications": "Sertifikalar"
+    },
+    "registration": {
+      "title": "Kayıt Tamamlama",
+      "description": "UseSafe'i kullanmaya başlamadan önce lütfen şirket kaydınızı tamamlayın."
     }
   },
   "home": {
@@ -811,6 +823,50 @@
     "addProduct": "Ürün Ekle",
     "editProduct": "Ürünü Düzenle",
     "deleteProduct": "Ürünü Sil",
+    "search": {
+      "placeholder": "Ürün ara..."
+    },
+    "filters": {
+      "type": {
+        "label": "Ürün Tipi",
+        "all": "Tüm Tipler",
+        "agm": "AGM Aküler",
+        "efb": "EFB Aküler",
+        "standard": "Standart Aküler",
+        "marine": "Deniz Aküleri"
+      },
+      "status": {
+        "label": "Durum",
+        "all": "Tüm Durumlar",
+        "active": "Aktif",
+        "pending": "Beklemede",
+        "draft": "Taslak"
+      }
+    },
+    "list": {
+      "title": "Ürün Listesi",
+      "description": "Ürünlerinizi görüntüleyin ve yönetin",
+      "columns": {
+        "product": "Ürün",
+        "category": "Kategori",
+        "basicInfo": "Temel Bilgiler",
+        "status": "Durum",
+        "actions": "İşlemler"
+      },
+      "empty": {
+        "title": "Ürün Bulunamadı",
+        "description": "Henüz hiç ürün eklenmemiş. Yeni bir ürün eklemek için aşağıdaki butonu kullanın."
+      },
+      "loading": "Ürünler yükleniyor..."
+    },
+    "actions": {
+      "menu": "İşlemler",
+      "viewDetails": "Detayları Görüntüle",
+      "editProduct": "Ürünü Düzenle",
+      "viewDocuments": "Belgeleri Görüntüle",
+      "deleteProduct": "Ürünü Sil",
+      "addProduct": "Ürün Ekle"
+    },
     "table": {
       "name": "İsim",
       "model": "Model",
@@ -824,17 +880,16 @@
     },
     "status": {
       "draft": "Taslak",
-      "published": "Yayında",
-      "archived": "Arşivlenmiş"
+      "published": "Yayınlandı",
+      "archived": "Arşivlendi"
     },
     "delete": {
       "title": "Ürünü Sil",
-      "confirm": {
-        "title": "Emin misiniz?",
-        "description": "{name} ürününü silmek istiyor musunuz? Bu işlem geri alınamaz."
-      },
-      "success": "Ürün başarıyla silindi",
-      "error": "Ürün silinirken bir hata oluştu"
+      "description": "Ürün başarıyla silindi",
+      "error": {
+        "title": "Hata",
+        "description": "Ürün silinirken bir hata oluştu"
+      }
     }
   }
 }

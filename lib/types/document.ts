@@ -4,12 +4,12 @@ export interface Document {
   type: DocumentType;
   manufacturer: string;
   manufacturerId: string;
-  productId: string;
+  productId?: string;
   status: DocumentStatus;
-  validUntil: string;
-  uploadedAt: string;
-  fileSize: string;
-  version: string;
+  validUntil?: string;
+  uploadedAt?: string;
+  fileSize?: string;
+  version?: string;
   url: string;
   rejection_reason?: string;
   rejection_date?: string;
