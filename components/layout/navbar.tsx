@@ -2,14 +2,14 @@
 
 import { ShieldCheck, LogIn, Box, Factory, Search, Menu, X } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
 import { useTranslations } from 'next-intl';
+import { useState } from "react";
 
+import { LanguageSwitcher } from "@/components/language-switcher";
 import { UserNav } from "@/components/layout/user-nav";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/hooks/use-auth";
-import { LanguageSwitcher } from "@/components/language-switcher";
 
 export function Navbar() {
   const t = useTranslations('navbar');

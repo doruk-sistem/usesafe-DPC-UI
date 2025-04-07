@@ -2,9 +2,9 @@
 
 import { motion } from "framer-motion";
 import { Leaf, Factory, TreePine, Sparkles } from "lucide-react";
-import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import {

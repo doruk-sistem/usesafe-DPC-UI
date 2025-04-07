@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useTranslations } from "next-intl";
 import {
   Box,
   FileText,
@@ -10,6 +9,7 @@ import {
   TrendingDown,
   AlertTriangle,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { EnhancedCard } from "@/components/ui/enhanced-card";
 import { useProducts } from "@/lib/hooks/use-products";

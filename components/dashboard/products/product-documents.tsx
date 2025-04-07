@@ -1,7 +1,16 @@
 "use client";
 
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { Download, FileText, Eye, History, AlertTriangle, CheckCircle, XCircle, Clock } from "lucide-react";
+import {
+  Download,
+  FileText,
+  Eye,
+  History,
+  AlertTriangle,
+  CheckCircle,
+  XCircle,
+  Clock,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
@@ -15,7 +24,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import {
   Tooltip,
   TooltipContent,
@@ -52,7 +68,7 @@ const documentTypeLabels: Record<string, string> = {
   safety_cert: "Safety Certificate",
   test_reports: "Test Reports",
   technical_docs: "Technical Documentation",
-  compliance_docs: "Compliance Documents"
+  compliance_docs: "Compliance Documents",
 };
 
 export function ProductDocuments({ productId }: ProductDocumentsProps) {
@@ -80,18 +96,26 @@ export function ProductDocuments({ productId }: ProductDocumentsProps) {
         if (data?.documents) {
           Object.entries(data.documents).forEach(([type, docs]) => {
             if (Array.isArray(docs)) {
-              docs.forEach(doc => {
+              docs.forEach((doc) => {
                 allDocuments.push({
-                  id: doc.id || `doc-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+                  id:
+                    doc.id ||
+                    `doc-${Date.now()}-${Math.random()
+                      .toString(36)
+                      .substr(2, 9)}`,
                   name: doc.name,
                   url: doc.url,
                   type: type,
-                  status: (doc.status || "pending").toLowerCase() as "approved" | "pending" | "rejected" | "expired",
+                  status: (doc.status || "pending").toLowerCase() as
+                    | "approved"
+                    | "pending"
+                    | "rejected"
+                    | "expired",
                   validUntil: doc.validUntil,
                   version: doc.version || "1.0",
                   uploadedAt: doc.uploadedAt || new Date().toISOString(),
                   fileSize: doc.fileSize || "N/A",
-                  rejection_reason: doc.rejection_reason
+                  rejection_reason: doc.rejection_reason,
                 });
               });
             }
@@ -118,7 +142,7 @@ export function ProductDocuments({ productId }: ProductDocumentsProps) {
       const response = await fetch(doc.url);
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
+      const a = document.createElement("a");
       a.href = url;
       a.download = doc.name;
       document.body.appendChild(a);
@@ -137,7 +161,7 @@ export function ProductDocuments({ productId }: ProductDocumentsProps) {
 
   const handleView = (doc: Document) => {
     // Open document in a new tab
-    window.open(doc.url, '_blank');
+    window.open(doc.url, "_blank");
   };
 
   const handleViewHistory = (doc: Document) => {
@@ -150,7 +174,7 @@ export function ProductDocuments({ productId }: ProductDocumentsProps) {
       });
       return;
     }
-    
+
     // Navigate to document history page
     window.location.href = `/dashboard/documents/${doc.id}/history`;
   };
@@ -275,13 +299,15 @@ export function ProductDocuments({ productId }: ProductDocumentsProps) {
                           <Tooltip>
                             <TooltipTrigger asChild>
                               <p className="font-medium truncate max-w-[200px]">
-                                {document.name.length > 25 
-                                  ? `${document.name.slice(0, 25)}...` 
+                                {document.name.length > 25
+                                  ? `${document.name.slice(0, 25)}...`
                                   : document.name}
                               </p>
                             </TooltipTrigger>
                             <TooltipContent side="top" align="start">
-                              <p className="max-w-[300px] break-words text-xs">{document.name}</p>
+                              <p className="max-w-[300px] break-words text-xs">
+                                {document.name}
+                              </p>
                             </TooltipContent>
                           </Tooltip>
                         </TooltipProvider>
@@ -306,7 +332,7 @@ export function ProductDocuments({ productId }: ProductDocumentsProps) {
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    {document.validUntil 
+                    {document.validUntil
                       ? new Date(document.validUntil).toLocaleDateString()
                       : "N/A"}
                   </TableCell>
@@ -322,7 +348,9 @@ export function ProductDocuments({ productId }: ProductDocumentsProps) {
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => handleDownload(document)}>
+                        <DropdownMenuItem
+                          onClick={() => handleDownload(document)}
+                        >
                           <Download className="h-4 w-4 mr-2" />
                           Download
                         </DropdownMenuItem>
@@ -330,7 +358,9 @@ export function ProductDocuments({ productId }: ProductDocumentsProps) {
                           <Eye className="h-4 w-4 mr-2" />
                           View
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleViewHistory(document)}>
+                        <DropdownMenuItem
+                          onClick={() => handleViewHistory(document)}
+                        >
                           <History className="h-4 w-4 mr-2" />
                           View History
                         </DropdownMenuItem>
@@ -351,4 +381,4 @@ export function ProductDocuments({ productId }: ProductDocumentsProps) {
       </CardContent>
     </Card>
   );
-} 
+}

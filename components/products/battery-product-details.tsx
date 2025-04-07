@@ -2,8 +2,8 @@
 
 import { motion } from "framer-motion";
 import { ArrowLeft, HardHat, Warehouse } from "lucide-react";
-import { useTranslations } from "next-intl";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 import { ProductQR } from "@/components/products/product-qr";
 import { Button } from "@/components/ui/button";

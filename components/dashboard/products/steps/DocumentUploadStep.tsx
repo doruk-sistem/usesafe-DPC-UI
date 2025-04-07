@@ -1,11 +1,12 @@
 "use client";
 
 import { Plus, X } from "lucide-react";
-import { useCallback } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { UseFormReturn } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   FormControl,
   FormField,
@@ -38,9 +39,33 @@ interface DocumentUploadStepProps {
 export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
   const { user } = useAuth();
   const { toast } = useToast();
+  const [isVerified, setIsVerified] = useState(false);
 
   const companyId =
     user?.user_metadata?.company_id || "7d26ed35-49ca-4c0d-932e-52254fb0e5b8";
+
+  // Form trigger metodunu sadece bu komponentin yaşam döngüsü boyunca override edelim
+  useEffect(() => {
+    const originalTrigger = form.trigger;
+
+    // Override the trigger method
+    form.trigger = async (name?: string | string[]) => {
+      if (!isVerified) {
+        toast({
+          title: "Document Verification Required",
+          description: "Please verify the documents you have uploaded.",
+          variant: "destructive",
+        });
+        return false;
+      }
+      return originalTrigger(name);
+    };
+
+    // Cleanup function to restore the original trigger method
+    return () => {
+      form.trigger = originalTrigger;
+    };
+  }, [form, isVerified, toast]);
 
   // ✅ Dosya yükleme işlemi
   const handleDocumentUpload = useCallback(
@@ -232,6 +257,27 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
           )}
         />
       ))}
+
+      {/* Doküman doğrulama checkbox'ı */}
+      <div className="flex items-start space-x-3 space-y-0 rounded-md border p-4 mt-6">
+        <Checkbox
+          id="documents-verification"
+          checked={isVerified}
+          onCheckedChange={(checked) => setIsVerified(checked === true)}
+        />
+        <div className="space-y-1 leading-none">
+          <label
+            htmlFor="documents-verification"
+            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+          >
+            I verify the authenticity of all uploaded documents
+          </label>
+          <p className="text-sm text-muted-foreground">
+            You acknowledge that you are responsible for the accuracy and
+            currency of these documents.
+          </p>
+        </div>
+      </div>
     </Card>
   );
 }

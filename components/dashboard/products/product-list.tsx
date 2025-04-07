@@ -5,8 +5,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Battery, FileText, ImageOff, MoreHorizontal, Trash, Pencil } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { useState } from "react";
 
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
@@ -14,10 +14,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/components/ui/use-toast";
+import { useProduct } from "@/lib/hooks/use-product";
 import { productsApiHooks } from "@/lib/hooks/use-products";
 import type { Product } from "@/lib/types/product";
 import { StorageHelper } from "@/lib/utils/storage";
-import { useProduct } from "@/lib/hooks/use-product";
 
 interface ProductListProps {
   products: Product[];

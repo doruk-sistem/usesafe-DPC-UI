@@ -29,8 +29,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { cn } from "@/lib/utils";
 import { useDPPs } from "@/lib/hooks/use-dpps";
+import { cn } from "@/lib/utils";
 
 interface DPP {
   id: string;

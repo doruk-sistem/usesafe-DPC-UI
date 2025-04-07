@@ -11,8 +11,8 @@ import { ProductService } from "@/lib/services/product";
 import { productBlockchainService } from "@/lib/services/product-blockchain";
 import { ProductStatusService } from "@/lib/services/product-status";
 import { StorageService } from "@/lib/services/storage";
-import type { NewProduct, ProductImage, ProductStatus } from "@/lib/types/product";
 import type { ProductFormData } from "@/lib/types/forms";
+import type { NewProduct, ProductImage, ProductStatus } from "@/lib/types/product";
 import type { Json } from "@/lib/types/supabase";
 
 export default function NewProductPageClient() {
