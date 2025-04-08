@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { Package, Search, Filter, MoreHorizontal } from "lucide-react";
+import { Package, Search, Filter, MoreHorizontal, FileText, Eye } from "lucide-react";
 import Link from "next/link";
 
 import { Badge } from "@/components/ui/badge";
@@ -16,14 +16,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -44,6 +36,11 @@ interface Product {
   created_at: string;
   document_count: number;
   document_status: "All Approved" | "Pending Review" | "Has Rejected Documents" | "No Documents";
+  images?: {
+    url: string;
+    alt: string;
+    is_primary: boolean;
+  }[];
 }
 
 interface Document {
@@ -96,7 +93,8 @@ export function ProductList() {
             product_type,
             status,
             created_at,
-            documents
+            documents,
+            images
           `);
 
         if (productsError) {
@@ -131,6 +129,7 @@ export function ProductList() {
             manufacturer_name: manufacturerMap[product.manufacturer_id] || "Unknown Manufacturer",
             document_count: documentCount,
             document_status: documentStatus,
+            images: product.images || [],
             category: product.product_type
           };
         });
@@ -198,126 +197,179 @@ export function ProductList() {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Product Management</CardTitle>
-        <CardDescription>
-          Review and manage all products in the system
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        {/* Filters */}
-        <div className="flex gap-4 mb-6">
-          <div className="flex-1">
-            <div className="relative">
-              <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search products..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-8"
-              />
-            </div>
+    <Card className="border-none shadow-lg">
+      <CardHeader className="bg-gradient-to-r from-primary/5 to-primary/10 pb-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle className="text-2xl font-bold">Products</CardTitle>
+            <CardDescription className="text-base mt-1">
+              Manage and review all products in the system
+            </CardDescription>
           </div>
-          <Select value={manufacturerFilter} onValueChange={setManufacturerFilter}>
-            <SelectTrigger className="w-[200px]">
-              <SelectValue placeholder="Filter by manufacturer" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Manufacturers</SelectItem>
-              {Object.entries(manufacturers).map(([id, name]) => (
-                <SelectItem key={id} value={id}>
-                  {name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-[200px]">
-              <SelectValue placeholder="Filter by status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Status</SelectItem>
-              <SelectItem value="All Approved">All Approved</SelectItem>
-              <SelectItem value="Pending Review">Pending Review</SelectItem>
-              <SelectItem value="Has Rejected Documents">Has Rejected Documents</SelectItem>
-              <SelectItem value="No Documents">No Documents</SelectItem>
-            </SelectContent>
-          </Select>
+          <Button asChild className="bg-primary hover:bg-primary/90">
+            <Link href="/admin/products/new">
+              <Package className="mr-2 h-4 w-4" />
+              Add New Product
+            </Link>
+          </Button>
+        </div>
+      </CardHeader>
+      <CardContent className="p-6">
+        {/* Filters */}
+        <div className="flex flex-col gap-4 mb-6 bg-muted/30 p-4 rounded-lg">
+          <div className="flex items-center gap-4">
+            <div className="flex-1">
+              <div className="relative">
+                <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search products..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-9 bg-background"
+                />
+              </div>
+            </div>
+            <Select value={manufacturerFilter} onValueChange={setManufacturerFilter}>
+              <SelectTrigger className="w-[200px] bg-background">
+                <SelectValue placeholder="Filter by manufacturer" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Manufacturers</SelectItem>
+                {Object.entries(manufacturers).map(([id, name]) => (
+                  <SelectItem key={id} value={id}>
+                    {name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="w-[200px] bg-background">
+                <SelectValue placeholder="Filter by status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Status</SelectItem>
+                <SelectItem value="All Approved">All Approved</SelectItem>
+                <SelectItem value="Pending Review">Pending Review</SelectItem>
+                <SelectItem value="Has Rejected Documents">Has Rejected Documents</SelectItem>
+                <SelectItem value="No Documents">No Documents</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
-        {/* Products Table */}
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[300px]">Product</TableHead>
-              <TableHead>Manufacturer</TableHead>
-              <TableHead>Category</TableHead>
-              <TableHead>Documents</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredProducts.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={6} className="text-center py-8">
-                  <div className="flex flex-col items-center justify-center">
-                    <Package className="h-12 w-12 text-muted-foreground mb-4" />
-                    <h3 className="text-lg font-medium mb-2">No Products Found</h3>
-                    <p className="text-muted-foreground">
-                      {products.length === 0 
-                        ? "No products have been added yet."
-                        : "No products match the current filter criteria."}
-                    </p>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ) : (
-              filteredProducts.map((product) => (
-                <TableRow key={product.id}>
-                  <TableCell>
-                    <Link href={`/admin/products/${product.id}`} className="hover:underline">
-                      <div className="font-medium">{product.name}</div>
-                      <div className="text-xs text-gray-400">
-                        Created: {new Date(product.created_at).toLocaleDateString()}
+        {/* Products Grid */}
+        {filteredProducts.length === 0 ? (
+          <div className="text-center py-12">
+            <div className="flex flex-col items-center justify-center">
+              <Package className="h-12 w-12 text-muted-foreground mb-4" />
+              <h3 className="text-lg font-medium mb-2">No Products Found</h3>
+              <p className="text-muted-foreground">
+                {products.length === 0 
+                  ? "No products have been added yet."
+                  : "No products match the current filter criteria."}
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {filteredProducts.map((product) => (
+              <Card key={product.id} className="overflow-hidden hover:shadow-md transition-shadow group">
+                <div className="aspect-square relative bg-muted overflow-hidden">
+                  {product.images && product.images.length > 0 ? (
+                    <div className="relative w-full h-full">
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <img
+                          src={product.images.find(img => img.is_primary)?.url || product.images[0].url}
+                          alt={product.images.find(img => img.is_primary)?.alt || product.name}
+                          className="max-w-full max-h-full w-auto h-auto object-contain group-hover:scale-105 transition-transform duration-300"
+                          loading="lazy"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.src = "https://placehold.co/400x400?text=No+Image";
+                          }}
+                        />
                       </div>
-                    </Link>
-                  </TableCell>
-                  <TableCell>{product.manufacturer_name}</TableCell>
-                  <TableCell>{product.product_type || "Uncategorized"}</TableCell>
-                  <TableCell>{product.document_count} {product.document_count === 1 ? 'document' : 'documents'}</TableCell>
-                  <TableCell>
-                    <Badge variant={getStatusVariant(product.document_status)}>
-                      {product.document_status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-right">
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </div>
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-muted to-muted/50">
+                      <Package className="h-12 w-12 text-muted-foreground/50" />
+                    </div>
+                  )}
+                </div>
+                <CardHeader className="p-4 pb-2">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <CardTitle className="text-lg font-medium line-clamp-1">
+                        <Link href={`/admin/products/${product.id}`} className="hover:text-primary transition-colors">
+                          {product.name}
+                        </Link>
+                      </CardTitle>
+                      <CardDescription className="text-xs mt-1">
+                        Created: {new Date(product.created_at).toLocaleDateString()}
+                      </CardDescription>
+                    </div>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
+                        <Button variant="ghost" className="h-8 w-8 p-0 hover:bg-muted">
                           <MoreHorizontal className="h-4 w-4" />
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
+                      <DropdownMenuContent align="end" className="w-[160px]">
+                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
                         <DropdownMenuItem asChild>
-                          <Link href={`/admin/products/${product.id}`}>
+                          <Link href={`/admin/products/${product.id}`} className="flex items-center">
+                            <Eye className="mr-2 h-4 w-4" />
                             View Details
                           </Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem asChild>
-                          <Link href={`/admin/documents?product=${product.id}`}>
+                          <Link href={`/admin/documents?product=${product.id}`} className="flex items-center">
+                            <FileText className="mr-2 h-4 w-4" />
                             View Documents
                           </Link>
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
+                  </div>
+                </CardHeader>
+                <CardContent className="p-4 pt-2">
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">Manufacturer</span>
+                      <span className="text-sm font-medium">{product.manufacturer_name}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">Category</span>
+                      <Badge variant="outline" className="font-normal">
+                        {product.product_type || "Uncategorized"}
+                      </Badge>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">Documents</span>
+                      <div className="flex items-center gap-1">
+                        <FileText className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-sm font-medium">
+                          {product.document_count} {product.document_count === 1 ? 'document' : 'documents'}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">Status</span>
+                      <Badge 
+                        variant={getStatusVariant(product.document_status)}
+                        className="font-medium"
+                      >
+                        {product.document_status}
+                      </Badge>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
       </CardContent>
     </Card>
   );
