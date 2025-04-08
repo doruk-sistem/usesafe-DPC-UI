@@ -1,6 +1,6 @@
 "use client";
 
-import { LayoutDashboard, Users, FileCheck, Shield, Bell } from "lucide-react";
+import { LayoutDashboard, Users, FileCheck, Shield, Bell, Package } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -14,6 +14,11 @@ const sidebarItems = [
     title: "Dashboard",
     href: "/admin",
     icon: LayoutDashboard,
+  },
+  {
+    title: "Products",
+    href: "/admin/products",
+    icon: Package,
   },
   {
     title: "Manufacturers",
