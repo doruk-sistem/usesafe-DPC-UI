@@ -367,9 +367,13 @@ export default async function ProductDetailsPage({ params }: ProductDetailsProps
                               
                               <div className="flex justify-end gap-2 mt-4">
                                 <Button variant="outline" asChild>
-                                  <Link href={`/admin/documents/${doc.id}`}>
-                                    View Full Details
-                                  </Link>
+                                  <a 
+                                    href={doc.url} 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                  >
+                                    View Document
+                                  </a>
                                 </Button>
                               </div>
                             </div>
