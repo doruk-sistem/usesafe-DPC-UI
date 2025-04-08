@@ -10,10 +10,11 @@ import {
   Clock,
   ChevronDown,
   ChevronRight,
+  Download,
 } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 
 import { Badge } from "@/components/ui/badge";
@@ -61,7 +62,12 @@ import { useToast } from "@/components/ui/use-toast";
 import { documentsApiHooks } from "@/lib/hooks/use-documents";
 import type { Document } from "@/lib/types/document";
 
-export function DocumentList() {
+interface DocumentListProps {
+  initialDocuments: Document[];
+  productId?: string;
+}
+
+export function DocumentList({ initialDocuments, productId }: DocumentListProps) {
   const { toast } = useToast();
   const searchParams = useSearchParams();
   const manufacturerId = searchParams.get("manufacturer");
@@ -73,6 +79,7 @@ export function DocumentList() {
   const [documentRejectDialogOpen, setDocumentRejectDialogOpen] = useState<boolean>(false);
   const [documentRejectReason, setDocumentRejectReason] = useState<string>("");
   const [selectedDocumentId, setSelectedDocumentId] = useState<string>("");
+  const [localDocuments, setLocalDocuments] = useState<Document[]>(initialDocuments);
 
   const { data: documents = [], isLoading, error } = documentsApiHooks.useGetDocuments();
   const { data: allProducts = [], isLoading: isLoadingProducts } = documentsApiHooks.useGetProducts();
@@ -80,7 +87,13 @@ export function DocumentList() {
   const { mutate: updateDocumentStatusDirect } = documentsApiHooks.useUpdateDocumentStatusDirect();
   const { mutate: rejectProduct } = documentsApiHooks.useRejectProduct();
   
-  const filteredDocuments = documents
+  // Update local documents when initialDocuments changes
+  useEffect(() => {
+    setLocalDocuments(initialDocuments);
+  }, [initialDocuments]);
+  
+  // Use local documents for filtering
+  const filteredDocuments = localDocuments
     .filter((doc) =>
       manufacturerId ? doc.manufacturerId === manufacturerId : true
     )
@@ -135,6 +148,13 @@ export function DocumentList() {
         status: "approved",
       });
       
+      // Update local document status
+      setLocalDocuments(prevDocs => 
+        prevDocs.map(doc => 
+          doc.id === documentId ? { ...doc, status: "approved" } : doc
+        )
+      );
+      
       toast({
         title: "Success",
         description: "Document approved successfully",
@@ -154,12 +174,7 @@ export function DocumentList() {
     setDocumentRejectDialogOpen(true);
   };
 
-  const submitRejectDocument = async () => {
-    if (!selectedDocumentId || !documentRejectReason) {
-      console.error("Missing document ID or reject reason");
-      return;
-    }
-    
+  const handleRejectConfirm = async () => {
     try {
       const document = filteredDocuments.find(doc => doc.id === selectedDocumentId);
 
@@ -168,25 +183,28 @@ export function DocumentList() {
         return;
       }
       
-      const updatedDocument = {
-        ...document,
-        rejection_reason: documentRejectReason,
-        rejection_date: new Date().toISOString()
-      };
-      
       await updateDocumentStatusDirect({
-        document: updatedDocument,
+        document,
         status: "rejected",
-        reason: documentRejectReason
+        reason: documentRejectReason,
       });
+      
+      // Update local document status
+      setLocalDocuments(prevDocs => 
+        prevDocs.map(doc => 
+          doc.id === selectedDocumentId 
+            ? { ...doc, status: "rejected", rejection_reason: documentRejectReason } 
+            : doc
+        )
+      );
+      
+      setDocumentRejectDialogOpen(false);
+      setDocumentRejectReason("");
       
       toast({
         title: "Success",
         description: "Document rejected successfully",
       });
-      setDocumentRejectReason("");
-      setSelectedDocumentId("");
-      setDocumentRejectDialogOpen(false);
     } catch (error) {
       console.error("Error rejecting document:", error);
       toast({
@@ -231,29 +249,15 @@ export function DocumentList() {
     }
   };
 
-  const getStatusIcon = (status: Document["status"]) => {
-    switch (status) {
-      case "approved":
-        return <CheckCircle className="h-4 w-4" />;
-      case "rejected":
-        return <XCircle className="h-4 w-4" />;
-      case "expired":
-        return <AlertTriangle className="h-4 w-4" />;
-      default:
-        return <Clock className="h-4 w-4" />;
-    }
-  };
-
-  const getStatusVariant = (status: Document["status"]) => {
-    switch (status) {
-      case "approved":
-        return "success";
-      case "rejected":
-        return "destructive";
-      case "expired":
-        return "destructive";
-      default:
-        return "warning";
+  const handleDownload = (document: Document) => {
+    if (document.url) {
+      window.open(document.url, "_blank");
+    } else {
+      toast({
+        title: "Error",
+        description: "Document URL not available",
+        variant: "destructive",
+      });
     }
   };
 
@@ -263,6 +267,38 @@ export function DocumentList() {
       [productId]: !prev[productId]
     }));
   };
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case "approved":
+        return <CheckCircle className="h-3 w-3" />;
+      case "rejected":
+        return <XCircle className="h-3 w-3" />;
+      case "expired":
+        return <AlertTriangle className="h-3 w-3" />;
+      default:
+        return <Clock className="h-3 w-3" />;
+    }
+  };
+
+  const getStatusVariant = (status: string) => {
+    switch (status) {
+      case "approved":
+        return "success";
+      case "rejected":
+        return "destructive";
+      case "expired":
+        return "warning";
+      default:
+        return "secondary";
+    }
+  };
+
+  // Log document count for debugging
+  console.log("Initial documents:", initialDocuments.length);
+  console.log("Local documents:", localDocuments.length);
+  console.log("Filtered documents:", filteredDocuments.length);
+  console.log("Documents by product:", Object.keys(documentsByProduct).length);
 
   if (isLoading || isLoadingProducts) {
     return (
@@ -316,7 +352,7 @@ export function DocumentList() {
             <FileText className="h-12 w-12 text-muted-foreground mb-4" />
             <h2 className="text-xl font-semibold mb-2">No Documents Found</h2>
             <p className="text-muted-foreground mb-4">
-              {documents.length === 0 
+              {localDocuments.length === 0 
                 ? "No documents have been uploaded yet."
                 : "No documents match the current filter criteria."}
             </p>
@@ -452,21 +488,20 @@ export function DocumentList() {
                                         View Details
                                       </Link>
                                     </DropdownMenuItem>
-                                    <DropdownMenuItem onClick={() => window.open(doc.url, '_blank')}>Download</DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => handleDownload(doc)}>
+                                      <Download className="mr-2 h-4 w-4" />
+                                      Download
+                                    </DropdownMenuItem>
                                     <DropdownMenuItem>View History</DropdownMenuItem>
+                                    <DropdownMenuSeparator />
                                     {doc.status === "pending" && (
                                       <>
-                                        <DropdownMenuSeparator />
-                                        <DropdownMenuItem
-                                          className="text-green-600"
-                                          onClick={() => handleApprove(doc.id)}
-                                        >
+                                        <DropdownMenuItem onClick={() => handleApprove(doc.id)}>
+                                          <CheckCircle className="mr-2 h-4 w-4 text-green-500" />
                                           Approve
                                         </DropdownMenuItem>
-                                        <DropdownMenuItem
-                                          className="text-red-600"
-                                          onClick={() => handleReject(doc.id)}
-                                        >
+                                        <DropdownMenuItem onClick={() => handleReject(doc.id)}>
+                                          <XCircle className="mr-2 h-4 w-4 text-red-500" />
                                           Reject
                                         </DropdownMenuItem>
                                       </>
@@ -479,18 +514,8 @@ export function DocumentList() {
                         </TableBody>
                       </Table>
                     ) : (
-                      <div className="p-4 text-center">
-                        <p className="text-muted-foreground mb-4">
-                          No documents available for this product.
-                        </p>
-                        <Button 
-                          variant="destructive" 
-                          size="sm"
-                          onClick={() => handleRejectProduct(productId)}
-                        >
-                          <XCircle className="h-4 w-4 mr-2" />
-                          Reject Product
-                        </Button>
+                      <div className="p-4 text-center text-muted-foreground">
+                        No documents available for this product
                       </div>
                     )
                   )}
@@ -542,17 +567,14 @@ export function DocumentList() {
               Please provide a reason for rejecting this document.
             </DialogDescription>
           </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="documentReason" className="text-right">
-                Reason
-              </Label>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="reject-reason">Rejection Reason</Label>
               <Textarea
-                id="documentReason"
+                id="reject-reason"
+                placeholder="Enter the reason for rejection..."
                 value={documentRejectReason}
                 onChange={(e) => setDocumentRejectReason(e.target.value)}
-                className="col-span-3"
-                placeholder="Enter the reason for rejection..."
               />
             </div>
           </div>
@@ -560,8 +582,8 @@ export function DocumentList() {
             <Button variant="outline" onClick={() => setDocumentRejectDialogOpen(false)}>
               Cancel
             </Button>
-            <Button variant="destructive" onClick={submitRejectDocument}>
-              Reject
+            <Button variant="destructive" onClick={handleRejectConfirm}>
+              Reject Document
             </Button>
           </DialogFooter>
         </DialogContent>

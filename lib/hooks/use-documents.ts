@@ -3,6 +3,26 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase/client";
 import { Document, DocumentStatus, DocumentType } from "@/lib/types/document";
 
+interface ProductDocument {
+  id: string;
+  name: string;
+  type: DocumentType;
+  status: DocumentStatus;
+  validUntil?: string;
+  rejection_reason?: string;
+  created_at: string;
+  url: string;
+  manufacturer: string;
+  version?: string;
+  fileSize?: string;
+}
+
+interface ProductWithDocuments {
+  id: string;
+  manufacturer_id: string;
+  documents: ProductDocument[] | Record<string, ProductDocument[]>;
+}
+
 export const documentsApiHooks = {
   useGetProducts: () => {
     return useQuery({
@@ -29,32 +49,97 @@ export const documentsApiHooks = {
 
   useGetDocuments: () => {
     return useQuery({
-      queryKey: ["getDocuments"],
+      queryKey: ["documents"],
       queryFn: async () => {
-        try {
-          const products = await supabase
-            .from("products")
-            .select("id, name, documents, manufacturer_id, created_at")
-            .order("created_at", { ascending: false });
+        console.log("Fetching documents...");
+        
+        const { data: products, error } = await supabase
+          .from("products")
+          .select(`
+            id,
+            manufacturer_id,
+            documents (
+              id,
+              name,
+              type,
+              status,
+              validUntil,
+              rejection_reason,
+              created_at,
+              url,
+              manufacturer,
+              version,
+              fileSize
+            )
+          `)
+          .order("created_at", { ascending: false });
 
-          if (products.error) {
-            console.error("Error fetching products:", products.error);
-            throw products.error;
-          }
-
-          const allDocuments: Document[] = [];
-          products.data.forEach(product => {
-            if (product.documents) {
-              const productDocuments = extractDocumentsFromProduct(product);
-              allDocuments.push(...productDocuments);
-            }
-          });
-
-          return allDocuments;
-        } catch (error) {
+        if (error) {
           console.error("Error fetching documents:", error);
           throw error;
         }
+
+        console.log("Fetched products with documents:", products?.length);
+        
+        if (!products) {
+          console.log("No products found");
+          return [] as Document[];
+        }
+
+        const allDocuments = (products as ProductWithDocuments[]).flatMap((product) => {
+          console.log("Processing product:", product.id, "Documents:", product.documents);
+          
+          if (!product.documents) {
+            console.log("No documents found for product:", product.id);
+            return [] as Document[];
+          }
+
+          const documents: Document[] = [];
+          
+          // Handle array of documents
+          if (Array.isArray(product.documents)) {
+            console.log("Processing array of documents for product:", product.id);
+            product.documents.forEach((doc: ProductDocument) => {
+              if (doc && doc.id) {
+                documents.push({
+                  ...doc,
+                  productId: product.id,
+                  manufacturerId: product.manufacturer_id,
+                  uploadedAt: doc.created_at,
+                });
+              }
+            });
+          }
+          // Handle object of document arrays
+          else if (typeof product.documents === "object") {
+            console.log("Processing object of documents for product:", product.id);
+            Object.entries(product.documents).forEach(([docType, docList]) => {
+              if (Array.isArray(docList)) {
+                docList.forEach((doc: ProductDocument) => {
+                  if (doc && doc.id) {
+                    documents.push({
+                      ...doc,
+                      type: docType as DocumentType,
+                      productId: product.id,
+                      manufacturerId: product.manufacturer_id,
+                      uploadedAt: doc.created_at,
+                    });
+                  }
+                });
+              }
+            });
+          }
+
+          console.log("Extracted documents for product:", product.id, "Count:", documents.length);
+          return documents;
+        });
+
+        console.log("Total documents found:", allDocuments.length);
+        if (allDocuments.length > 0) {
+          console.log("Sample document:", allDocuments[0]);
+        }
+        
+        return allDocuments;
       },
     });
   },
