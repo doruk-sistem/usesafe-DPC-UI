@@ -90,6 +90,9 @@ export default function NewProductPageClient() {
         ],
       };
 
+      console.log("Product Data before creation:", productData);
+      console.log("Documents before creation:", data.documents);
+
       const response = await ProductService.createProduct(productData);
 
       if (response.error) {

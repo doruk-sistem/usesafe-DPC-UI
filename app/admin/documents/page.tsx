@@ -43,45 +43,45 @@ export default async function DocumentsPage({ searchParams }: DocumentsPageProps
     }
 
     // Fetch manufacturers separately
-    const { data: manufacturers, error: manufacturersError } = await supabase
-      .from("manufacturers")
-      .select("id, name");
-      
-    if (manufacturersError) {
-      console.error("Error fetching manufacturers:", manufacturersError);
+    let manufacturerMap = new Map();
+    try {
+      const { data: manufacturers, error: manufacturersError } = await supabase
+        .from("manufacturers")
+        .select("id, name");
+        
+      if (manufacturersError) {
+        console.error("Error fetching manufacturers:", manufacturersError);
+        // Continue without manufacturers
+      } else if (manufacturers) {
+        manufacturers.forEach(mfr => {
+          manufacturerMap.set(mfr.id, mfr.name);
+        });
+      }
+    } catch (error) {
+      console.error("Error accessing manufacturers table:", error);
       // Continue without manufacturers
-    }
-    
-    // Create a map of manufacturer IDs to names
-    const manufacturerMap = new Map();
-    if (manufacturers) {
-      manufacturers.forEach(mfr => {
-        manufacturerMap.set(mfr.id, mfr.name);
-      });
     }
 
     // Extract documents from products
     const allDocuments = products.flatMap((product) => {
-      console.log("Processing product:", product.id, "Documents:", product.documents);
-      
+      console.log("Processing product:", product.id);
+      console.log("Product documents structure:", JSON.stringify(product.documents, null, 2));
+      const documents: any[] = [];
+
       if (!product.documents) {
         console.log("No documents found for product:", product.id);
         return [];
       }
-      
-      const documents = [];
-      
+
       // Handle array of documents
       if (Array.isArray(product.documents)) {
-        console.log("Processing array of documents for product:", product.id);
+        console.log("Documents is an array");
         product.documents.forEach((doc) => {
           if (doc && doc.id) {
-            // Ensure status is a valid DocumentStatus
-            const status = doc.status as DocumentStatus || "pending";
-            
             documents.push({
               ...doc,
-              status,
+              type: doc.type || "unknown",
+              status: doc.status || "pending",
               productId: product.id,
               manufacturer: product.manufacturer_id ? manufacturerMap.get(product.manufacturer_id) || "" : "",
               manufacturerId: product.manufacturer_id || "",
@@ -90,24 +90,24 @@ export default async function DocumentsPage({ searchParams }: DocumentsPageProps
         });
       }
       // Handle object of document arrays
-      else if (typeof product.documents === "object") {
-        console.log("Processing object of documents for product:", product.id);
+      else if (typeof product.documents === "object" && product.documents !== null) {
+        console.log("Documents is an object");
         Object.entries(product.documents).forEach(([docType, docList]) => {
           if (Array.isArray(docList)) {
+            console.log(`Processing ${docType} documents:`, docList);
             docList.forEach((doc) => {
-              if (doc && doc.id) {
-                // Ensure status is a valid DocumentStatus
-                const status = doc.status as DocumentStatus || "pending";
-                
-                documents.push({
-                  ...doc,
-                  type: docType,
-                  status,
-                  productId: product.id,
-                  manufacturer: product.manufacturer_id ? manufacturerMap.get(product.manufacturer_id) || "" : "",
-                  manufacturerId: product.manufacturer_id || "",
-                });
-              }
+              // Generate an ID if it doesn't exist
+              const documentId = doc.id || `${docType}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+              
+              documents.push({
+                ...doc,
+                id: documentId,
+                type: docType,
+                status: doc.status || "pending",
+                productId: product.id,
+                manufacturer: product.manufacturer_id ? manufacturerMap.get(product.manufacturer_id) || "" : "",
+                manufacturerId: product.manufacturer_id || "",
+              });
             });
           }
         });
@@ -118,7 +118,7 @@ export default async function DocumentsPage({ searchParams }: DocumentsPageProps
     });
 
     console.log("Total documents found:", allDocuments.length);
-    console.log("Sample document:", allDocuments[0]);
+    console.log("Sample document structure:", JSON.stringify(allDocuments[0], null, 2));
 
     // If a specific product is requested, filter documents for that product
     const filteredDocuments = searchParams.product 

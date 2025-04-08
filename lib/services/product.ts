@@ -47,10 +47,13 @@ export class ProductService {
     try {
       // Extract documents if they exist, otherwise use empty object
       const { documents = {}, manufacturer_id, ...productData } = product;
+      console.log("Documents received in service:", documents);
+      
       // Validate and map documents with type assertion to fix lint error
       const validatedDocuments = validateAndMapDocuments(
         documents as Record<string, any[]>
       );
+      console.log("Validated documents:", validatedDocuments);
 
       // Create the product with document URLs
       const { data, error } = await supabase
@@ -67,6 +70,8 @@ export class ProductService {
         ])
         .select()
         .single();
+
+      console.log("Product created with documents:", data?.documents);
 
       if (error) {
         console.error("Product creation error:", error);
@@ -198,10 +203,13 @@ export const productService = createService({
     try {
       // Extract documents if they exist, otherwise use empty object
       const { documents = {}, manufacturer_id, ...productData } = product;
+      console.log("Documents received in service:", documents);
+      
       // Validate and map documents with type assertion to fix lint error
       const validatedDocuments = validateAndMapDocuments(
         documents as Record<string, any[]>
       );
+      console.log("Validated documents:", validatedDocuments);
 
       // Create the product with document URLs
       const { data, error } = await supabase
@@ -218,6 +226,8 @@ export const productService = createService({
         ])
         .select()
         .single();
+
+      console.log("Product created with documents:", data?.documents);
 
       if (error) {
         console.error("Product creation error:", error);
