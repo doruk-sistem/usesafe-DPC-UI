@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { PRODUCT_TYPE_OPTIONS } from "@/lib/constants/product-types";
+import { PRODUCT_TYPE_OPTIONS, type SubcategoryOption } from "@/lib/constants/product-types";
 import type { KeyFeature, NewProduct } from "@/lib/types/product";
 import type { Json } from "@/lib/types/supabase";
 
@@ -47,6 +47,33 @@ const selectClassNames = {
 };
 
 export function BasicInfoStep({ form }: BasicInfoStepProps) {
+  const [subcategories, setSubcategories] = useState<SubcategoryOption[]>([]);
+  
+  const productType = form.watch("product_type");
+  
+  useEffect(() => {
+    // Find the selected product type and get its subcategories
+    const selectedProductType = PRODUCT_TYPE_OPTIONS.find(
+      (option) => option.value === productType
+    );
+    
+    if (selectedProductType) {
+      setSubcategories(selectedProductType.subcategories);
+      
+      // Clear subcategory selection if the product type changes and there's no matching subcategory
+      const currentSubcategory = form.getValues("product_subcategory");
+      const subcategoryExists = selectedProductType.subcategories.some(
+        (sub) => sub.value === currentSubcategory
+      );
+      
+      if (!subcategoryExists && currentSubcategory) {
+        form.setValue("product_subcategory", "");
+      }
+    } else {
+      setSubcategories([]);
+    }
+  }, [productType, form]);
+
   const convertToKeyFeature = (json: Json): KeyFeature => {
     if (typeof json === "object" && json !== null && !Array.isArray(json)) {
       const obj = json as Record<string, Json>;
@@ -159,9 +186,34 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
                   onChange={(selectedOption: OptionType | null) => {
                     const newValue = selectedOption?.value || "";
                     field.onChange(newValue);
+                    form.setValue("product_subcategory", "");
                   }}
                   placeholder="Select Product Type"
                   classNames={selectClassNames}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="product_subcategory"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Product Subcategory</FormLabel>
+              <FormControl>
+                <Select
+                  options={subcategories}
+                  value={subcategories.find((option) => option.value === field.value)}
+                  onChange={(selectedOption: OptionType | null) => {
+                    field.onChange(selectedOption?.value || "");
+                  }}
+                  placeholder="Select Subcategory"
+                  className="w-full"
+                  classNames={selectClassNames}
+                  isDisabled={subcategories.length === 0}
                 />
               </FormControl>
               <FormMessage />
@@ -187,17 +239,13 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
           control={form.control}
           name="description"
           render={({ field }) => (
-            <FormItem className={PRODUCT_TYPE_OPTIONS.length > 0 ? "md:col-span-1" : "col-span-2"}>
+            <FormItem className={subcategories.length > 0 ? "md:col-span-1" : "col-span-2"}>
               <FormLabel>Description</FormLabel>
               <FormControl>
-                <Textarea 
+                <Textarea
                   placeholder="Enter product description"
                   className="min-h-[100px]"
-                  value={field.value || ""}
-                  onChange={field.onChange}
-                  onBlur={field.onBlur}
-                  name={field.name}
-                  ref={field.ref}
+                  {...field}
                 />
               </FormControl>
               <FormMessage />
@@ -221,7 +269,7 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
                             placeholder="Feature name"
                             value={feature.name}
                             onChange={(e) => {
-                              const newFeatures = [...field.value || []];
+                              const newFeatures = [...field.value];
                               newFeatures[index] = {
                                 ...feature,
                                 name: e.target.value,
@@ -233,7 +281,7 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
                             placeholder="Value"
                             value={feature.value}
                             onChange={(e) => {
-                              const newFeatures = [...field.value || []];
+                              const newFeatures = [...field.value];
                               newFeatures[index] = {
                                 ...feature,
                                 value: e.target.value,
@@ -245,7 +293,7 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
                             placeholder="Unit (optional)"
                             value={feature.unit || ""}
                             onChange={(e) => {
-                              const newFeatures = [...field.value || []];
+                              const newFeatures = [...field.value];
                               newFeatures[index] = {
                                 ...feature,
                                 unit: e.target.value || undefined,
@@ -258,7 +306,7 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
                             variant="destructive"
                             size="icon"
                             onClick={() => {
-                              const newFeatures = [...field.value || []];
+                              const newFeatures = [...field.value];
                               newFeatures.splice(index, 1);
                               field.onChange(newFeatures);
                             }}
