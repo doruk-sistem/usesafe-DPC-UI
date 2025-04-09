@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Download, Shield } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -13,6 +14,8 @@ import {
 } from "@/components/ui/select";
 
 export function DashboardHeader() {
+  const t = useTranslations("adminDashboard");
+
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex items-center gap-3">
@@ -30,7 +33,7 @@ export function DashboardHeader() {
             animate={{ x: 0, opacity: 1 }}
             className="text-3xl font-bold"
           >
-            Admin Dashboard
+            {t("title")}
           </motion.h1>
           <motion.p 
             initial={{ x: -20, opacity: 0 }}
@@ -38,7 +41,7 @@ export function DashboardHeader() {
             transition={{ delay: 0.1 }}
             className="text-muted-foreground"
           >
-            Monitor and manage system-wide operations
+            {t("description")}
           </motion.p>
         </div>
       </div>
@@ -50,13 +53,13 @@ export function DashboardHeader() {
       >
         <Select defaultValue="today">
           <SelectTrigger className="w-[160px]">
-            <SelectValue placeholder="Select period" />
+            <SelectValue placeholder={t("period.select")} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="today">Today</SelectItem>
-            <SelectItem value="week">This Week</SelectItem>
-            <SelectItem value="month">This Month</SelectItem>
-            <SelectItem value="quarter">This Quarter</SelectItem>
+            <SelectItem value="today">{t("period.today")}</SelectItem>
+            <SelectItem value="week">{t("period.thisWeek")}</SelectItem>
+            <SelectItem value="month">{t("period.thisMonth")}</SelectItem>
+            <SelectItem value="quarter">{t("period.thisQuarter")}</SelectItem>
           </SelectContent>
         </Select>
         <Button 

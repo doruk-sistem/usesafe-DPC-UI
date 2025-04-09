@@ -1,6 +1,7 @@
 "use client";
 
-import { Eye, MoreHorizontal, Box, CheckCircle, XCircle, Clock } from "lucide-react";
+import { Box, CheckCircle, Clock, Download, Eye, MoreHorizontal, XCircle } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 
@@ -17,8 +18,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -70,6 +69,7 @@ const certifications = [
 ];
 
 export function CertificationList() {
+  const t = useTranslations("admin.dpc");
   const searchParams = useSearchParams();
   const manufacturerId = searchParams.get('manufacturer');
 
@@ -102,21 +102,21 @@ export function CertificationList() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>DPC Applications</CardTitle>
+        <CardTitle>{t("title")}</CardTitle>
         <CardDescription>
-          Review and manage product certification requests
+          {t("description")}
         </CardDescription>
       </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Product</TableHead>
-              <TableHead>Category</TableHead>
-              <TableHead>Manufacturer</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Score</TableHead>
-              <TableHead>Documents</TableHead>
+              <TableHead>{t("columns.product")}</TableHead>
+              <TableHead>{t("columns.category")}</TableHead>
+              <TableHead>{t("columns.manufacturer")}</TableHead>
+              <TableHead>{t("columns.status")}</TableHead>
+              <TableHead>{t("columns.score")}</TableHead>
+              <TableHead>{t("columns.documents")}</TableHead>
               <TableHead></TableHead>
             </TableRow>
           </TableHeader>
@@ -142,13 +142,11 @@ export function CertificationList() {
                     className="flex w-fit items-center gap-1"
                   >
                     {getStatusIcon(cert.status)}
-                    {cert.status}
+                    {t(`status.${cert.status}`)}
                   </Badge>
                 </TableCell>
                 <TableCell>
-                  <Badge variant={cert.sustainabilityScore >= 80 ? "success" : "warning"}>
-                    {cert.sustainabilityScore}%
-                  </Badge>
+                  <Badge variant="outline">{cert.sustainabilityScore}%</Badge>
                 </TableCell>
                 <TableCell>
                   <span className="text-sm text-muted-foreground">
@@ -160,31 +158,19 @@ export function CertificationList() {
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" size="icon">
                         <MoreHorizontal className="h-4 w-4" />
-                        <span className="sr-only">Open menu</span>
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem asChild>
-                        <Link href={`/admin/certifications/${cert.id}`}>
-                          <Eye className="h-4 w-4 mr-2" />
-                          View Details
-                        </Link>
+                      <Link href={`/admin/certifications/${cert.id}`}>
+                        <DropdownMenuItem>
+                          <Eye className="mr-2 h-4 w-4" />
+                          {t("actions.view")}
+                        </DropdownMenuItem>
+                      </Link>
+                      <DropdownMenuItem>
+                        <Download className="mr-2 h-4 w-4" />
+                        {t("actions.download")}
                       </DropdownMenuItem>
-                      <DropdownMenuItem>Review Documents</DropdownMenuItem>
-                      <DropdownMenuItem>View Test Reports</DropdownMenuItem>
-                      {cert.status === "pending" && (
-                        <>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem className="text-green-600">
-                            Approve
-                          </DropdownMenuItem>
-                          <DropdownMenuItem className="text-red-600">
-                            Reject
-                          </DropdownMenuItem>
-                        </>
-                      )}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>

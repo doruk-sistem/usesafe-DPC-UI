@@ -1,4 +1,7 @@
+"use client";
+
 import { Download, FileText } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -43,12 +46,13 @@ interface ManufacturerDocumentsProps {
 }
 
 export function ManufacturerDocuments({ manufacturerId }: ManufacturerDocumentsProps) {
+  const t = useTranslations("adminDashboard.sections.manufacturers.details");
   const documents = documentsData[manufacturerId] || [];
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Required Documents</CardTitle>
+        <CardTitle>{t("documents.title")}</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
@@ -65,7 +69,7 @@ export function ManufacturerDocuments({ manufacturerId }: ManufacturerDocumentsP
                     <span>{doc.type}</span>
                     <span>·</span>
                     <span>
-                      Uploaded {new Date(doc.uploadedAt).toLocaleDateString()}
+                      {t("documents.uploadedAt")} {new Date(doc.uploadedAt).toLocaleDateString()}
                     </span>
                   </div>
                 </div>
@@ -80,7 +84,7 @@ export function ManufacturerDocuments({ manufacturerId }: ManufacturerDocumentsP
                       : "warning"
                   }
                 >
-                  {doc.status}
+                  {t(`documents.status.${doc.status}`)}
                 </Badge>
                 <Button variant="ghost" size="icon">
                   <Download className="h-4 w-4" />

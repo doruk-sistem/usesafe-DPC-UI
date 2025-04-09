@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { ManufacturerDetails } from "@/components/admin/manufacturers/manufacturer-details";
 import { ManufacturerDocuments } from "@/components/admin/manufacturers/manufacturer-documents";
 import { ManufacturerProducts } from "@/components/admin/manufacturers/manufacturer-products";
@@ -18,13 +19,15 @@ export function generateStaticParams() {
 
 export default async function ManufacturerPage(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
+  const t = await getTranslations("dashboard.menu");
+
   return (
     <div className="space-y-6">
       <ManufacturerDetails manufacturerId={params.id} />
       <Tabs defaultValue="documents" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="documents">Documents</TabsTrigger>
-          <TabsTrigger value="products">Products</TabsTrigger>
+          <TabsTrigger value="documents">{t("documents")}</TabsTrigger>
+          <TabsTrigger value="products">{t("products")}</TabsTrigger>
         </TabsList>
         <TabsContent value="documents" className="space-y-4">
           <ManufacturerDocuments manufacturerId={params.id} />

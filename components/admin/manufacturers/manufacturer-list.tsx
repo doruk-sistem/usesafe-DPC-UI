@@ -1,6 +1,7 @@
 "use client";
 
 import { MoreHorizontal, CheckCircle, XCircle, Clock } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 
 import { Badge } from "@/components/ui/badge";
@@ -60,25 +61,25 @@ const manufacturers = [
 ];
 
 export function ManufacturerList() {
+  const t = useTranslations("adminDashboard.manufacturers");
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Registered Manufacturers</CardTitle>
-        <CardDescription>
-          View and manage manufacturer registrations
-        </CardDescription>
+        <CardTitle>{t("list.title")}</CardTitle>
+        <CardDescription>{t("list.description")}</CardDescription>
       </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead>ID</TableHead>
-              <TableHead>Name</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Documents</TableHead>
-              <TableHead>Products</TableHead>
-              <TableHead>Registered</TableHead>
-              <TableHead></TableHead>
+              <TableHead>{t("list.columns.company")}</TableHead>
+              <TableHead>{t("list.columns.status")}</TableHead>
+              <TableHead>{t("list.columns.documents")}</TableHead>
+              <TableHead>{t("list.columns.products")}</TableHead>
+              <TableHead>{t("list.columns.date")}</TableHead>
+              <TableHead>{t("list.columns.actions")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -113,7 +114,7 @@ export function ManufacturerList() {
                     ) : (
                       <Clock className="h-3 w-3" />
                     )}
-                    {manufacturer.status}
+                    {t(`list.status.${manufacturer.status}`)}
                   </Badge>
                 </TableCell>
                 <TableCell>{manufacturer.documents}</TableCell>
@@ -126,35 +127,35 @@ export function ManufacturerList() {
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" size="icon">
                         <MoreHorizontal className="h-4 w-4" />
-                        <span className="sr-only">Open menu</span>
+                        <span className="sr-only">{t("list.columns.actions")}</span>
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                      <DropdownMenuLabel>{t("list.columns.actions")}</DropdownMenuLabel>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem asChild>
                         <Link href={`/admin/manufacturers/${manufacturer.id}`}>
-                          View Details
+                          {t("list.actions.viewDetails")}
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
                         <Link href={`/admin/documents?manufacturer=${manufacturer.id}`}>
-                          Review Documents
+                          {t("list.actions.reviewDocuments")}
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
                         <Link href={`/admin/manufacturers/${manufacturer.id}?tab=products`}>
-                          View Products
+                          {t("list.actions.viewProducts")}
                         </Link>
                       </DropdownMenuItem>
                       {manufacturer.status === "pending" && (
                         <>
                           <DropdownMenuSeparator />
                           <DropdownMenuItem className="text-green-600">
-                            Approve
+                            {t("list.actions.approve")}
                           </DropdownMenuItem>
                           <DropdownMenuItem className="text-red-600">
-                            Reject
+                            {t("list.actions.reject")}
                           </DropdownMenuItem>
                         </>
                       )}

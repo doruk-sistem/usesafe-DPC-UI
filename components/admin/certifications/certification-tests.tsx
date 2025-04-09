@@ -1,4 +1,7 @@
+"use client";
+
 import { FileSpreadsheet, Download, CheckCircle, AlertTriangle } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -49,98 +52,103 @@ interface CertificationTestsProps {
 }
 
 export function CertificationTests({ certificationId }: CertificationTestsProps) {
+  const t = useTranslations("admin.dpc");
   const tests = testsData[certificationId] || [];
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Test Reports</CardTitle>
+        <CardTitle>{t("tabs.testReports")}</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-6">
-          {tests.map((test) => (
-            <div
-              key={test.id}
-              className="rounded-lg border"
-            >
-              <div className="flex items-center justify-between border-b p-4">
-                <div className="flex items-start gap-4">
-                  <FileSpreadsheet className="h-8 w-8 text-muted-foreground" />
-                  <div>
-                    <p className="font-medium">{test.name}</p>
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <span>{test.lab}</span>
-                      {test.completedAt && (
-                        <>
-                          <span>·</span>
-                          <span>
-                            Completed {new Date(test.completedAt).toLocaleDateString()}
-                          </span>
-                        </>
-                      )}
+          {tests.length === 0 ? (
+            <p className="text-muted-foreground">{t("tests.noTests")}</p>
+          ) : (
+            tests.map((test) => (
+              <div
+                key={test.id}
+                className="rounded-lg border"
+              >
+                <div className="flex items-center justify-between border-b p-4">
+                  <div className="flex items-start gap-4">
+                    <FileSpreadsheet className="h-8 w-8 text-muted-foreground" />
+                    <div>
+                      <p className="font-medium">{test.name}</p>
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <span>{test.lab}</span>
+                        {test.completedAt && (
+                          <>
+                            <span>·</span>
+                            <span>
+                              {t("tests.completed")} {new Date(test.completedAt).toLocaleDateString()}
+                            </span>
+                          </>
+                        )}
+                      </div>
                     </div>
                   </div>
+                  <div className="flex items-center gap-2">
+                    <Badge
+                      variant={
+                        test.status === "passed"
+                          ? "success"
+                          : test.status === "failed"
+                          ? "destructive"
+                          : "warning"
+                      }
+                    >
+                      {t(`details.status.${test.status}`)}
+                    </Badge>
+                    <Button variant="ghost" size="icon">
+                      <Download className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Badge
-                    variant={
-                      test.status === "passed"
-                        ? "success"
-                        : test.status === "failed"
-                        ? "destructive"
-                        : "warning"
-                    }
-                  >
-                    {test.status}
-                  </Badge>
-                  <Button variant="ghost" size="icon">
-                    <Download className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
 
-              {test.status === "in_progress" ? (
-                <div className="p-4">
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span>Test Progress</span>
-                      <span>{test.progress}%</span>
+                {test.status === "in_progress" ? (
+                  <div className="p-4">
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span>{t("tests.progress")}</span>
+                        <span>{test.progress}%</span>
+                      </div>
+                      <Progress value={test.progress} className="h-2" />
                     </div>
-                    <Progress value={test.progress} className="h-2" />
                   </div>
-                </div>
-              ) : (
-                <div className="p-4">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="text-sm text-muted-foreground">
-                        <th className="text-left font-medium">Parameter</th>
-                        <th className="text-left font-medium">Result</th>
-                        <th className="text-left font-medium">Limit</th>
-                        <th className="text-left font-medium">Status</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y">
-                      {test.results.map((result, index) => (
-                        <tr key={index} className="text-sm">
-                          <td className="py-2">{result.parameter}</td>
-                          <td className="py-2">{result.value}</td>
-                          <td className="py-2">{result.limit}</td>
-                          <td className="py-2">
-                            {result.passed ? (
-                              <CheckCircle className="h-4 w-4 text-green-500" />
-                            ) : (
-                              <AlertTriangle className="h-4 w-4 text-yellow-500" />
-                            )}
-                          </td>
+                ) : (
+                  <div className="p-4">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="text-sm text-muted-foreground">
+                          <th className="text-left font-medium">{t("tests.table.parameter")}</th>
+                          <th className="text-left font-medium">{t("tests.table.result")}</th>
+                          <th className="text-left font-medium">{t("tests.table.limit")}</th>
+                          <th className="text-left font-medium">{t("tests.table.status")}</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </div>
-          ))}
+                      </thead>
+                      <tbody className="divide-y">
+                        {test.results.map((result, index) => (
+                          <tr key={index} className="text-sm">
+                            <td className="py-2">{result.parameter}</td>
+                            <td className="py-2">{result.value}</td>
+                            <td className="py-2">{result.limit}</td>
+                            <td className="py-2">
+                              {result.passed ? (
+                                <CheckCircle className="h-4 w-4 text-green-500" />
+                              ) : (
+                                <AlertTriangle className="h-4 w-4 text-yellow-500" />
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            ))
+          )}
         </div>
       </CardContent>
     </Card>

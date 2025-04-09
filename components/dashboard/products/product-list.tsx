@@ -6,6 +6,7 @@ import { Battery, FileText, ImageOff, MoreHorizontal, Trash } from "lucide-react
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
@@ -25,6 +26,7 @@ interface ProductListProps {
 export function ProductList({ products, isLoading }: ProductListProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const t = useTranslations();
   const [productToDelete, setProductToDelete] = useState<Product | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
@@ -164,7 +166,7 @@ export function ProductList({ products, isLoading }: ProductListProps) {
                   </TableCell>
                   <TableCell>
                     <Badge variant="secondary">
-                      {product.product_type}
+                      {t(`productTypes.${product.product_type.toLowerCase()}`)}
                     </Badge>
                   </TableCell>
                   <TableCell>
@@ -194,7 +196,7 @@ export function ProductList({ products, isLoading }: ProductListProps) {
                           : "destructive"
                       }
                     >
-                      {product.status.toLowerCase()}
+                      {t(`common.status.${product.status.toLowerCase()}`)}
                     </Badge>
                   </TableCell>
                   <TableCell>

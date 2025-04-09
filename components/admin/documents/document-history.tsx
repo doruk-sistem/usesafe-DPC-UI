@@ -1,4 +1,5 @@
 import { History, ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -7,34 +8,34 @@ const historyData = {
   "DOC-001": [
     {
       id: 1,
-      action: "Document Uploaded",
+      action: "uploaded",
       user: "John Smith",
       timestamp: "2024-03-15T10:30:00",
-      details: "Initial document upload",
+      details: "İlk belge yüklemesi",
       version: "1.0",
     },
     {
       id: 2,
-      action: "Authenticity Verified",
+      action: "verified",
       user: "System",
       timestamp: "2024-03-15T10:31:00",
-      details: "Document signature validated",
+      details: "Belge imzası doğrulandı",
       version: "1.0",
     },
     {
       id: 3,
-      action: "Completeness Check",
+      action: "checked",
       user: "System",
       timestamp: "2024-03-15T10:32:00",
-      details: "All required fields verified",
+      details: "Tüm gerekli alanlar doğrulandı",
       version: "1.0",
     },
     {
       id: 4,
-      action: "Manual Review Started",
+      action: "reviewed",
       user: "Sarah Johnson",
       timestamp: "2024-03-15T11:15:00",
-      details: "Document under review by certification team",
+      details: "Belge sertifikasyon ekibi tarafından inceleniyor",
       version: "1.0",
     },
   ],
@@ -45,14 +46,30 @@ interface DocumentHistoryProps {
 }
 
 export function DocumentHistory({ documentId }: DocumentHistoryProps) {
+  const t = useTranslations("adminDashboard.documents.repository");
   const history = historyData[documentId] || [];
+
+  const getActionText = (action: string) => {
+    switch (action) {
+      case "uploaded":
+        return "Belge Yüklendi";
+      case "verified":
+        return "Orijinallik Doğrulandı";
+      case "checked":
+        return "Tamlık Kontrolü";
+      case "reviewed":
+        return "Manuel İnceleme Başladı";
+      default:
+        return action;
+    }
+  };
 
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <History className="h-5 w-5" />
-          Document History
+          Belge Geçmişi
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -71,12 +88,12 @@ export function DocumentHistory({ documentId }: DocumentHistoryProps) {
               </div>
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <p className="font-medium">{event.action}</p>
+                  <p className="font-medium">{getActionText(event.action)}</p>
                   <span className="text-sm text-muted-foreground">v{event.version}</span>
                 </div>
                 <p className="text-sm text-muted-foreground">{event.details}</p>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <span>{event.user}</span>
+                  <span>{event.user === "System" ? "Sistem" : event.user}</span>
                   <span>·</span>
                   <span>{new Date(event.timestamp).toLocaleString()}</span>
                 </div>
