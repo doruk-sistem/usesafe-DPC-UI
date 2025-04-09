@@ -166,16 +166,10 @@ export function DocumentList() {
                 <TableCell>{doc.category}</TableCell>
                 <TableCell>
                   <Badge
-                    variant={
-                      doc.status === "approved"
-                        ? "success"
-                        : doc.status === "expiringSoon"
-                        ? "warning"
-                        : doc.status === "rejected"
-                        ? "destructive"
-                        : "default"
-                    }
+                    variant={getStatusVariant(doc.status)}
+                    className="flex w-fit items-center gap-1"
                   >
+                    {getStatusIcon(doc.status)}
                     {t(`documentManagement.status.${doc.status}`)}
                   </Badge>
                 </TableCell>

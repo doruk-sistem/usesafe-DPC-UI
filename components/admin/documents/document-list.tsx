@@ -8,17 +8,14 @@ import {
   CheckCircle,
   XCircle,
   Clock,
-  History,
   ChevronDown,
   ChevronRight,
 } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { useToast } from "@/components/ui/use-toast";
-import { documentsApiHooks } from "@/lib/hooks/use-documents";
-import type { Document } from "@/lib/types/document";
+import { useState } from "react";
+
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -61,6 +58,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useToast } from "@/components/ui/use-toast";
+import { documentsApiHooks } from "@/lib/hooks/use-documents";
+import type { Document } from "@/lib/types/document";
 
 export function DocumentList() {
   const t = useTranslations("documentManagement");
