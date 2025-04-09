@@ -1,24 +1,19 @@
 import { productService } from "@/lib/services/product";
-
 import { createApiHooks } from "../create-api-hooks";
-
-import { useAuth } from "./use-auth";
 
 export const productsApiHooks = createApiHooks(productService);
 
-export function useProducts() {
-  const { company } = useAuth();
-
+export function useProducts(companyId: string) {
   const {
     data: products = [],
     isLoading,
     error,
   } = productsApiHooks.useGetProductsQuery(
     {
-      companyId: company?.id,
+      companyId: companyId, // Parametre olarak gelen companyId'yi kullanıyoruz
     },
     {
-      enabled: !!company?.id,
+      enabled: !!companyId, // companyId varsa sorguyu etkinleştiriyoruz
     }
   );
 

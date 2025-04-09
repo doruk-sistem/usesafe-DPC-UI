@@ -1,13 +1,27 @@
 import { supabase } from "@/lib/supabase/client";
-import type { Company } from "@/lib/types/company";
-
+import type { Company, CompanyStats } from "@/lib/types/company";
 import { createService } from "../api-client";
 
+interface SupplierResponse {
+  supplier: {
+    id: string;
+    name: string;
+    companyType: string;
+    taxInfo: {
+      taxNumber: string;
+      tradeRegistryNo?: string;
+      mersisNo?: string;
+    };
+    status: string;
+  };
+}
+
+// Static metodlar için class
 export class CompanyService {
   static async getCompany(id: string): Promise<Company | null> {
     const { data, error } = await supabase
       .from("companies")
-      .select("id, name, taxInfo, companyType")
+      .select("id, name, taxInfo, companyType, status")
       .eq("id", id)
       .single();
 
@@ -28,7 +42,8 @@ export class CompanyService {
           id,
           name,
           companyType,
-          taxInfo
+          taxInfo,
+          status
         )
       `
       )
@@ -39,8 +54,8 @@ export class CompanyService {
       throw error;
     }
 
-    // Extract supplier data from the nested structure
-    return data.map((item) => item.supplier);
+    const suppliers = (data as unknown as { supplier: Company }[]).map(item => item.supplier);
+    return suppliers;
   }
 
   static async createManufacturer(
@@ -58,7 +73,6 @@ export class CompanyService {
     mainCompany: Company
   ): Promise<{ success: boolean; message?: string; companyId?: string }> {
     try {
-      // Create company record
       const { data: company, error: companyError } = await supabase
         .from("companies")
         .insert([
@@ -80,7 +94,7 @@ export class CompanyService {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({ 
-            email:data.contact.email, 
+            email: data.contact.email, 
             company_name: mainCompany?.name,
             full_name: data.contact.name,
             company_id: company.id,
@@ -115,7 +129,7 @@ export class CompanyService {
   static async searchManufacturers(query: string): Promise<Company[]> {
     const { data, error } = await supabase
       .from("companies")
-      .select("id, name, taxInfo")
+      .select("id, name, taxInfo, companyType, status")
       .or(`name.ilike.%${query}%, taxInfo->>'taxNumber'.ilike.%${query}%`)
       .in("companyType", ["manufacturer", "factory"])
       .limit(10);
@@ -131,7 +145,7 @@ export class CompanyService {
   static async getManufacturer(id: string): Promise<Company | null> {
     const { data, error } = await supabase
       .from("companies")
-      .select("id, name, taxInfo, companyType")
+      .select("id, name, taxInfo, companyType, status")
       .eq("id", id)
       .in("companyType", ["manufacturer", "factory"])
       .single();
@@ -143,13 +157,59 @@ export class CompanyService {
 
     return data;
   }
+
+  static async getProductStats(companyId: string): Promise<CompanyStats | null> {
+    const { data, error } = await supabase
+      .from("productStats")
+      .select("total, active, pending, categories")
+      .eq("company_id", companyId)
+      .single();
+
+    if (error) {
+      console.error("Error fetching product stats:", error);
+      return null;
+    }
+
+    return data;
+  }
+
+  static async getProducts(companyId: string): Promise<any[]> {
+    const { data, error } = await supabase
+      .from("products")
+      .select("*")
+      .eq("company_id", companyId);
+
+    if (error) {
+      console.error("Error fetching products:", error);
+      return [];
+    }
+
+    return data;
+  }
 }
 
+// API client için service object
 export const companyService = createService({
+  // Tüm şirketleri getir
+  getCompanies: async (_: {}): Promise<Company[]> => {
+    const { data, error } = await supabase
+      .from("companies")
+      .select("id, name, taxInfo, companyType, status")
+      .order("createdAt", { ascending: false });
+
+    if (error) {
+      console.error("Error fetching companies:", error.message, error.details, error.hint);
+      throw error;
+    }
+
+    return data || [];
+  },
+
+  // Tek bir şirketi getir
   getCompany: async ({ id }: { id: string }): Promise<Company | null> => {
     const { data, error } = await supabase
       .from("companies")
-      .select("id, name, taxInfo, companyType")
+      .select("id, name, taxInfo, companyType, status")
       .eq("id", id)
       .single();
 
@@ -160,7 +220,9 @@ export const companyService = createService({
 
     return data;
   },
-  async getSuppliers(companyId: string): Promise<Company[]> {
+
+  // Tedarikçileri getir
+  getSuppliers: async ({ companyId }: { companyId: string }): Promise<Company[]> => {
     const { data, error } = await supabase
       .from("company_suppliers")
       .select(
@@ -169,7 +231,8 @@ export const companyService = createService({
           id,
           name,
           companyType,
-          taxInfo
+          taxInfo,
+          status
         )
       `
       )
@@ -180,10 +243,12 @@ export const companyService = createService({
       throw error;
     }
 
-    // Extract supplier data from the nested structure
-    return data.map((item) => item.supplier);
+    const suppliers = (data as unknown as { supplier: Company }[]).map(item => item.supplier);
+    return suppliers;
   },
-  async createManufacturer(data: {
+
+  // Üretici oluştur
+  createManufacturer: async (data: {
     name: string;
     taxInfo: {
       taxNumber: string;
@@ -193,9 +258,8 @@ export const companyService = createService({
       name: string;
       email: string;
     };
-  }): Promise<{ success: boolean; message?: string; companyId?: string }> {
+  }): Promise<{ success: boolean; message?: string; companyId?: string }> => {
     try {
-      // Create company record
       const { data: company, error: companyError } = await supabase
         .from("companies")
         .insert([
@@ -210,10 +274,9 @@ export const companyService = createService({
 
       if (companyError) throw companyError;
 
-      // Create user for contact person
       const { data: auth, error: authError } = await supabase.auth.signUp({
         email: data.contact.email,
-        password: Math.random().toString(36).slice(-8), // Generate random password
+        password: Math.random().toString(36).slice(-8),
         options: {
           data: {
             full_name: data.contact.name,
@@ -240,10 +303,12 @@ export const companyService = createService({
       };
     }
   },
-  async searchManufacturers(query: string): Promise<Company[]> {
+
+  // Üreticileri ara
+  searchManufacturers: async (query: string): Promise<Company[]> => {
     const { data, error } = await supabase
       .from("companies")
-      .select("id, name, taxInfo")
+      .select("id, name, taxInfo, companyType, status")
       .or(`name.ilike.%${query}%, taxInfo->>'taxNumber'.ilike.%${query}%`)
       .in("companyType", ["manufacturer", "factory"])
       .limit(10);
@@ -255,10 +320,12 @@ export const companyService = createService({
 
     return data || [];
   },
-  async getManufacturer(id: string): Promise<Company | null> {
+
+  // Üretici getir
+  getManufacturer: async (id: string): Promise<Company | null> => {
     const { data, error } = await supabase
       .from("companies")
-      .select("id, name, taxInfo, companyType")
+      .select("id, name, taxInfo, companyType, status")
       .eq("id", id)
       .in("companyType", ["manufacturer", "factory"])
       .single();

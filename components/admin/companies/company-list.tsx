@@ -1,0 +1,187 @@
+"use client";
+
+import { Building2, Package, MoreHorizontal } from "lucide-react";
+import Link from "next/link";
+import { useCompanies } from "../../../lib/hooks/use-company";
+import { Company, CompanyStatus, CompanyType } from "../../../lib/types/company";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useTranslations } from "next-intl";
+
+const getStatusBadgeVariant = (status: CompanyStatus) => {
+  switch (status) {
+    case CompanyStatus.ACTIVE:
+      return "success";
+    case CompanyStatus.INACTIVE:
+      return "secondary";
+    case CompanyStatus.PENDING:
+      return "warning";
+    default:
+      return "secondary";
+  }
+};
+
+const getCompanyTypeLabel = (type: CompanyType) => {
+  switch (type) {
+    case CompanyType.MANUFACTURER:
+      return "Üretici";
+    case CompanyType.BRAND_OWNER:
+      return "Marka Sahibi";
+    case CompanyType.MATERIAL_SUPPLIER:
+      return "Malzeme Tedarikçisi";
+    case CompanyType.FACTORY:
+      return "Fabrika";
+    default:
+      return type;
+  }
+};
+
+const getStatusLabel = (status: CompanyStatus) => {
+  switch (status) {
+    case CompanyStatus.ACTIVE:
+      return "Aktif";
+    case CompanyStatus.INACTIVE:
+      return "Pasif";
+    case CompanyStatus.PENDING:
+      return "Beklemede";
+    default:
+      return status;
+  }
+};
+
+export function CompanyList() {
+  const { data: companies = [], isLoading, error } = useCompanies({});
+  const t = useTranslations("admin.companies");
+
+  if (error) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>{t("list.error.title")}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p>{t("list.error.description")}</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>{t("list.loading.title")}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p>{t("list.loading.description")}</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <Card>
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <CardTitle>{t("list.title")}</CardTitle>
+          <Button variant="outline" size="sm">
+            <Building2 className="mr-2 h-4 w-4" />
+            {t("list.total", { count: companies.length })}
+          </Button>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>{t("list.columns.name")}</TableHead>
+              <TableHead>{t("list.columns.type")}</TableHead>
+              <TableHead>{t("list.columns.email")}</TableHead>
+              <TableHead>{t("list.columns.phone")}</TableHead>
+              <TableHead>{t("list.columns.taxNumber")}</TableHead>
+              <TableHead>{t("list.columns.status")}</TableHead>
+              <TableHead>{t("list.columns.products")}</TableHead>
+              <TableHead className="text-right">{t("list.columns.actions")}</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {companies.map((company: Company) => (
+              <TableRow key={company.id}>
+                <TableCell>
+                  <div className="flex items-center gap-2">
+                    <Building2 className="h-4 w-4 text-muted-foreground" />
+                    <span className="font-medium">{company.name}</span>
+                  </div>
+                </TableCell>
+                <TableCell>{getCompanyTypeLabel(company.companyType)}</TableCell>
+                <TableCell>{company.email || "-"}</TableCell>
+                <TableCell>{company.phone || "-"}</TableCell>
+                <TableCell>{company.taxInfo.taxNumber}</TableCell>
+                <TableCell>
+                  <Badge variant={getStatusBadgeVariant(company.status)}>
+                    {getStatusLabel(company.status)}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <Link
+                    href={`/admin/companies/${company.id}?tab=products`}
+                    className="flex items-center gap-2 text-primary hover:underline"
+                  >
+                    <Package className="h-4 w-4" />
+                    <span>{t("list.actions.viewProducts")}</span>
+                  </Link>
+                </TableCell>
+                <TableCell className="text-right">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon">
+                        <MoreHorizontal className="h-4 w-4" />
+                        <span className="sr-only">İşlemler</span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuLabel>İşlemler</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem asChild>
+                        <Link href={`/admin/companies/${company.id}`}>
+                          Detayları Görüntüle
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link href={`/admin/companies/${company.id}?tab=products`}>
+                          Ürünleri Görüntüle
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link href={`/admin/companies/${company.id}?tab=documents`}>
+                          Belgeleri Görüntüle
+                        </Link>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </CardContent>
+    </Card>
+  );
+}

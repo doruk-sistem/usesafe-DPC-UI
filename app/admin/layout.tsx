@@ -1,6 +1,6 @@
 "use client";
 
-import { LayoutDashboard, Users, FileCheck, Shield, Bell } from "lucide-react";
+import { LayoutDashboard, Users, FileCheck, Shield, Bell, Building2 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -28,6 +28,11 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       title: t("manufacturers"),
       href: "/admin/manufacturers",
       icon: Users,
+    },
+    {
+      title: t("companies"),
+      href: "/admin/companies",
+      icon: Building2,
     },
     {
       title: t("documents"),
