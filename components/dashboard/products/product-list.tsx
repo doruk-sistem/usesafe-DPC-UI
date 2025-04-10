@@ -93,7 +93,6 @@ export function ProductList({ products, isLoading }: ProductListProps) {
   });
 
   const handleDeleteClick = (product: Product) => {
-    console.log("Product to delete:", product);
     setProductToDelete(product);
     setIsDeleteDialogOpen(true);
   };
@@ -188,7 +187,6 @@ export function ProductList({ products, isLoading }: ProductListProps) {
             </TableHeader>
             <TableBody>
               {products.map((product) => {
-                console.log("Rendering product:", product);
                 const documents = Array.isArray(product.documents)
                   ? product.documents
                   : Object.values(product.documents || {}).flat();

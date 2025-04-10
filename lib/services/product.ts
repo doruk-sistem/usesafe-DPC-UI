@@ -47,13 +47,11 @@ export class ProductService {
     try {
       // Extract documents if they exist, otherwise use empty object
       const { documents = {}, manufacturer_id, ...productData } = product;
-      console.log("Documents received in service:", documents);
-      
+
       // Validate and map documents with type assertion to fix lint error
       const validatedDocuments = validateAndMapDocuments(
         documents as Record<string, any[]>
       );
-      console.log("Validated documents:", validatedDocuments);
 
       // Create the product with document URLs
       const { data, error } = await supabase
@@ -71,8 +69,6 @@ export class ProductService {
         .select()
         .single();
 
-      console.log("Product created with documents:", data?.documents);
-
       if (error) {
         console.error("Product creation error:", error);
         return {
@@ -89,8 +85,9 @@ export class ProductService {
       console.error("Error in createProduct:", error);
       return {
         error: {
-          message: error instanceof Error ? error.message : "Unknown error occurred",
-          details: error instanceof Error ? error.stack : undefined,
+          message:
+            error instanceof Error ? error.message : "Unknown error occurred",
+          details: error instanceof Error ? error.stack : undefined,  
         },
       };
     }
@@ -134,9 +131,13 @@ export class ProductService {
       }
 
       // Delete associated images if they exist
-      if (product?.images && Array.isArray(product.images) && product.images.length > 0) {
+      if (
+        product?.images &&
+        Array.isArray(product.images) &&
+        product.images.length > 0
+      ) {
         const { StorageService } = await import("./storage");
-        
+
         // Delete each product image from storage
         for (const image of product.images) {
           if (image?.url) {
@@ -163,8 +164,6 @@ export class ProductService {
 
 export const productService = createService({
   getProducts: async ({ companyId }: { companyId: string }) => {
-    console.log("Fetching products for company:", companyId);
-    
     const { data, error } = await supabase
       .from("products")
       .select("*")
@@ -176,7 +175,6 @@ export const productService = createService({
       throw new Error("Failed to fetch products");
     }
 
-    console.log("Raw products data:", data);
     return data || [];
   },
   getProduct: async ({
@@ -203,13 +201,11 @@ export const productService = createService({
     try {
       // Extract documents if they exist, otherwise use empty object
       const { documents = {}, manufacturer_id, ...productData } = product;
-      console.log("Documents received in service:", documents);
-      
+
       // Validate and map documents with type assertion to fix lint error
       const validatedDocuments = validateAndMapDocuments(
         documents as Record<string, any[]>
       );
-      console.log("Validated documents:", validatedDocuments);
 
       // Create the product with document URLs
       const { data, error } = await supabase
@@ -226,8 +222,6 @@ export const productService = createService({
         ])
         .select()
         .single();
-
-      console.log("Product created with documents:", data?.documents);
 
       if (error) {
         console.error("Product creation error:", error);
@@ -246,7 +240,8 @@ export const productService = createService({
 
       return {
         error: {
-          message: error instanceof Error ? error.message : "Unknown error occurred",
+          message:
+            error instanceof Error ? error.message : "Unknown error occurred",
           details: error instanceof Error ? error.stack : undefined,
         },
       };

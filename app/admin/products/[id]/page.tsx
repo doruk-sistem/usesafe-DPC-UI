@@ -1,5 +1,12 @@
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { FileText, Package, CheckCircle, XCircle, Clock, AlertCircle } from "lucide-react";
+import {
+  FileText,
+  Package,
+  CheckCircle,
+  XCircle,
+  Clock,
+  AlertCircle,
+} from "lucide-react";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -7,13 +14,13 @@ import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogDescription, 
-  DialogHeader, 
-  DialogTitle, 
-  DialogTrigger 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import { DocumentStatus } from "@/lib/types/document";
 
@@ -33,20 +40,24 @@ interface Document {
   [key: string]: any;
 }
 
-export default async function ProductDetailsPage({ params }: ProductDetailsProps) {
+export default async function ProductDetailsPage({
+  params,
+}: ProductDetailsProps) {
   const cookieStore = cookies();
   const supabase = createServerComponentClient({ cookies: () => cookieStore });
 
   try {
     const { data: product, error } = await supabase
       .from("products")
-      .select(`
+      .select(
+        `
         *,
         manufacturer:manufacturer_id (
           id,
           name
         )
-      `)
+      `
+      )
       .eq("id", params.id)
       .single();
 
@@ -71,23 +82,23 @@ export default async function ProductDetailsPage({ params }: ProductDetailsProps
       } else if (typeof product.documents === "object") {
         Object.entries(product.documents).forEach(([docType, docList]) => {
           if (Array.isArray(docList)) {
-            const typedDocs = (docList as Document[]).map(doc => ({
+            const typedDocs = (docList as Document[]).map((doc) => ({
               ...doc,
-              type: docType
+              type: docType,
             }));
             allDocuments.push(...typedDocs);
           }
         });
       }
-      
+
       documentCount = allDocuments.length;
-      
+
       if (documentCount > 0) {
         // Döküman durumlarını kontrol et
-        allDocuments.forEach(doc => {
+        allDocuments.forEach((doc) => {
           // Durumu küçük harfe çevirerek kontrol et
           const status = (doc.status || "").toLowerCase();
-          
+
           if (status === "rejected") {
             hasRejectedDocuments = true;
           } else if (status === "pending") {
@@ -98,7 +109,7 @@ export default async function ProductDetailsPage({ params }: ProductDetailsProps
             hasApprovedDocuments = true;
           }
         });
-        
+
         // Genel durumu belirle
         if (hasRejectedDocuments) {
           documentStatus = "Has Rejected Documents";
@@ -113,31 +124,6 @@ export default async function ProductDetailsPage({ params }: ProductDetailsProps
         }
       }
     }
-
-    // Debug için döküman durumlarını konsola yazdır
-    console.log("Document Status Debug:", {
-      documentCount,
-      documentStatus,
-      hasRejectedDocuments,
-      hasPendingDocuments,
-      hasExpiredDocuments,
-      hasApprovedDocuments,
-      allDocuments: allDocuments.map(doc => ({
-        id: doc.id,
-        name: doc.name,
-        type: doc.type,
-        status: doc.status,
-        statusLower: (doc.status || "").toLowerCase()
-      }))
-    });
-
-    // Debug için ürün durumunu konsola yazdır
-    console.log("Product Status Debug:", {
-      productId: product.id,
-      status: product.status,
-      statusType: typeof product.status,
-      statusUpperCase: product.status ? product.status.toUpperCase() : null
-    });
 
     // Ürün durumunu döküman durumlarına göre güncelle
     const updateProductStatus = () => {
@@ -267,9 +253,7 @@ export default async function ProductDetailsPage({ params }: ProductDetailsProps
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <span>Total Documents</span>
-                  <Badge variant="secondary">
-                    {documentCount} documents
-                  </Badge>
+                  <Badge variant="secondary">{documentCount} documents</Badge>
                 </div>
                 <div className="flex items-center justify-between">
                   <span>Document Status</span>
@@ -289,7 +273,7 @@ export default async function ProductDetailsPage({ params }: ProductDetailsProps
                     {documentStatus}
                   </Badge>
                 </div>
-                
+
                 {documentCount > 0 && (
                   <div className="mt-6">
                     <h3 className="text-sm font-medium mb-3">Documents</h3>
@@ -297,17 +281,18 @@ export default async function ProductDetailsPage({ params }: ProductDetailsProps
                       {allDocuments.map((doc, index) => (
                         <Dialog key={`${doc.id}-${index}`}>
                           <DialogTrigger asChild>
-                            <Button 
-                              variant="outline" 
-                              className={`w-full justify-start ${getStatusColor(doc.status)}`}
+                            <Button
+                              variant="outline"
+                              className={`w-full justify-start ${getStatusColor(
+                                doc.status
+                              )}`}
                             >
                               <div className="flex items-center gap-2 w-full">
                                 {getStatusIcon(doc.status)}
-                                <span className="truncate">{doc.name || doc.type || "Unnamed Document"}</span>
-                                <Badge 
-                                  variant="outline" 
-                                  className="ml-auto"
-                                >
+                                <span className="truncate">
+                                  {doc.name || doc.type || "Unnamed Document"}
+                                </span>
+                                <Badge variant="outline" className="ml-auto">
                                   {doc.status}
                                 </Badge>
                               </div>
@@ -315,7 +300,9 @@ export default async function ProductDetailsPage({ params }: ProductDetailsProps
                           </DialogTrigger>
                           <DialogContent>
                             <DialogHeader>
-                              <DialogTitle>{doc.name || doc.type || "Document Details"}</DialogTitle>
+                              <DialogTitle>
+                                {doc.name || doc.type || "Document Details"}
+                              </DialogTitle>
                               <DialogDescription>
                                 Document information and status
                               </DialogDescription>
@@ -323,15 +310,23 @@ export default async function ProductDetailsPage({ params }: ProductDetailsProps
                             <div className="space-y-4 py-4">
                               <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                  <p className="text-sm text-muted-foreground">Document ID</p>
+                                  <p className="text-sm text-muted-foreground">
+                                    Document ID
+                                  </p>
                                   <div className="font-medium">{doc.id}</div>
                                 </div>
                                 <div>
-                                  <p className="text-sm text-muted-foreground">Type</p>
-                                  <div className="font-medium">{doc.type || "N/A"}</div>
+                                  <p className="text-sm text-muted-foreground">
+                                    Type
+                                  </p>
+                                  <div className="font-medium">
+                                    {doc.type || "N/A"}
+                                  </div>
                                 </div>
                                 <div>
-                                  <p className="text-sm text-muted-foreground">Status</p>
+                                  <p className="text-sm text-muted-foreground">
+                                    Status
+                                  </p>
                                   <div className="font-medium">
                                     <Badge
                                       variant={
@@ -348,28 +343,34 @@ export default async function ProductDetailsPage({ params }: ProductDetailsProps
                                 </div>
                                 {doc.validUntil && (
                                   <div>
-                                    <p className="text-sm text-muted-foreground">Valid Until</p>
+                                    <p className="text-sm text-muted-foreground">
+                                      Valid Until
+                                    </p>
                                     <div className="font-medium">
-                                      {new Date(doc.validUntil).toLocaleDateString()}
+                                      {new Date(
+                                        doc.validUntil
+                                      ).toLocaleDateString()}
                                     </div>
                                   </div>
                                 )}
                               </div>
-                              
+
                               {doc.rejection_reason && (
                                 <div>
-                                  <p className="text-sm text-muted-foreground">Rejection Reason</p>
+                                  <p className="text-sm text-muted-foreground">
+                                    Rejection Reason
+                                  </p>
                                   <div className="mt-1 p-2 bg-red-50 text-red-800 rounded-md">
                                     {doc.rejection_reason}
                                   </div>
                                 </div>
                               )}
-                              
+
                               <div className="flex justify-end gap-2 mt-4">
                                 <Button variant="outline" asChild>
-                                  <a 
-                                    href={doc.url} 
-                                    target="_blank" 
+                                  <a
+                                    href={doc.url}
+                                    target="_blank"
                                     rel="noopener noreferrer"
                                   >
                                     View Document
@@ -393,11 +394,15 @@ export default async function ProductDetailsPage({ params }: ProductDetailsProps
     console.error("Error in ProductDetailsPage:", error);
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4">
-        <h2 className="text-2xl font-semibold text-destructive">Error Loading Product</h2>
+        <h2 className="text-2xl font-semibold text-destructive">
+          Error Loading Product
+        </h2>
         <p className="text-muted-foreground">
-          {error instanceof Error ? error.message : "An unexpected error occurred"}
+          {error instanceof Error
+            ? error.message
+            : "An unexpected error occurred"}
         </p>
       </div>
     );
   }
-} 
+}
