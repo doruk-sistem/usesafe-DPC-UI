@@ -286,6 +286,7 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
                   placeholder="Enter product description"
                   className="min-h-[100px]"
                   {...field}
+                  value={field.value || ''}
                 />
               </FormControl>
               <FormMessage />
@@ -302,14 +303,14 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
                 <FormLabel>Key Features</FormLabel>
                 <FormControl>
                   <div className="space-y-4">
-                    {(Array.isArray(field.value) ? field.value : []).map(
+                    {((field.value || []) as KeyFeature[]).map(
                       (feature: KeyFeature, index: number) => (
                         <div key={index} className="flex gap-4">
                           <Input
                             placeholder="Feature name"
                             value={feature.name}
                             onChange={(e) => {
-                              const newFeatures = [...field.value];
+                              const newFeatures = [...(field.value || []) as KeyFeature[]];
                               newFeatures[index] = {
                                 ...feature,
                                 name: e.target.value,
@@ -321,7 +322,7 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
                             placeholder="Value"
                             value={feature.value}
                             onChange={(e) => {
-                              const newFeatures = [...field.value];
+                              const newFeatures = [...(field.value || []) as KeyFeature[]];
                               newFeatures[index] = {
                                 ...feature,
                                 value: e.target.value,
@@ -333,7 +334,7 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
                             placeholder="Unit (optional)"
                             value={feature.unit || ""}
                             onChange={(e) => {
-                              const newFeatures = [...field.value];
+                              const newFeatures = [...(field.value || []) as KeyFeature[]];
                               newFeatures[index] = {
                                 ...feature,
                                 unit: e.target.value || undefined,
@@ -346,7 +347,7 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
                             variant="destructive"
                             size="icon"
                             onClick={() => {
-                              const newFeatures = [...field.value];
+                              const newFeatures = [...(field.value || []) as KeyFeature[]];
                               newFeatures.splice(index, 1);
                               field.onChange(newFeatures);
                             }}
@@ -366,7 +367,7 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
                           unit: undefined,
                         };
                         field.onChange([
-                          ...(Array.isArray(field.value) ? field.value : []),
+                          ...((field.value || []) as KeyFeature[]),
                           newFeature,
                         ]);
                       }}
