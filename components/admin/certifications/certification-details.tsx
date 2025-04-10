@@ -1,4 +1,7 @@
+"use client";
+
 import { ArrowLeft, Box, Download } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 
 import { Badge } from "@/components/ui/badge";
@@ -39,10 +42,11 @@ interface CertificationDetailsProps {
 }
 
 export function CertificationDetails({ certificationId }: CertificationDetailsProps) {
+  const t = useTranslations("admin.dpc");
   const certification = certificationsData[certificationId];
 
   if (!certification) {
-    return <div>Certification not found</div>;
+    return <div>{t("details.notFound")}</div>;
   }
 
   return (
@@ -52,7 +56,7 @@ export function CertificationDetails({ certificationId }: CertificationDetailsPr
           <Link href="/admin/certifications">
             <Button variant="ghost" size="sm">
               <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Certifications
+              {t("details.backButton")}
             </Button>
           </Link>
           <h1 className="text-2xl font-semibold">{certification.productName}</h1>
@@ -65,16 +69,16 @@ export function CertificationDetails({ certificationId }: CertificationDetailsPr
                 : "warning"
             }
           >
-            {certification.status}
+            {t(`status.${certification.status}`)}
           </Badge>
         </div>
         <div className="flex gap-2">
           <Button variant="outline">
             <Download className="mr-2 h-4 w-4" />
-            Export DPC
+            {t("details.exportDPC")}
           </Button>
-          <Button variant="outline">Reject</Button>
-          <Button>Approve</Button>
+          <Button variant="outline">{t("details.reject")}</Button>
+          <Button>{t("details.approve")}</Button>
         </div>
       </div>
 
@@ -83,31 +87,31 @@ export function CertificationDetails({ certificationId }: CertificationDetailsPr
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Box className="h-5 w-5" />
-              Product Information
+              {t("details.productInfo.title")}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-sm text-muted-foreground">Category</p>
+                <p className="text-sm text-muted-foreground">{t("details.productInfo.category")}</p>
                 <p className="font-medium">{certification.category}</p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Manufacturer</p>
+                <p className="text-sm text-muted-foreground">{t("details.productInfo.manufacturer")}</p>
                 <p className="font-medium">{certification.manufacturer}</p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Production Method</p>
+                <p className="text-sm text-muted-foreground">{t("details.productInfo.productionMethod")}</p>
                 <p className="font-medium">{certification.productionMethod}</p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Dyeing Process</p>
+                <p className="text-sm text-muted-foreground">{t("details.productInfo.dyeingProcess")}</p>
                 <p className="font-medium">{certification.dyeingProcess}</p>
               </div>
             </div>
 
             <div>
-              <p className="text-sm text-muted-foreground mb-2">Materials</p>
+              <p className="text-sm text-muted-foreground mb-2">{t("details.productInfo.materials")}</p>
               <div className="space-y-2">
                 {certification.materials.map((material, index) => (
                   <div key={index} className="flex items-center justify-between">
@@ -126,12 +130,12 @@ export function CertificationDetails({ certificationId }: CertificationDetailsPr
 
         <Card>
           <CardHeader>
-            <CardTitle>Certification Status</CardTitle>
+            <CardTitle>{t("details.certificationStatus.title")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             <div>
               <div className="flex justify-between text-sm mb-2">
-                <span>Sustainability Score</span>
+                <span>{t("details.certificationStatus.sustainabilityScore")}</span>
                 <span>{certification.sustainabilityScore}%</span>
               </div>
               <Progress value={certification.sustainabilityScore} className="h-2" />
@@ -139,7 +143,7 @@ export function CertificationDetails({ certificationId }: CertificationDetailsPr
 
             <div className="space-y-4">
               <div>
-                <p className="text-sm text-muted-foreground mb-2">Required Certifications</p>
+                <p className="text-sm text-muted-foreground mb-2">{t("details.certificationStatus.requiredCertifications")}</p>
                 <div className="space-y-2">
                   {certification.certifications.map((cert, index) => (
                     <div key={index} className="flex items-center justify-between">
@@ -147,7 +151,7 @@ export function CertificationDetails({ certificationId }: CertificationDetailsPr
                       <Badge
                         variant={cert.status === "verified" ? "success" : "warning"}
                       >
-                        {cert.status}
+                        {t(`details.status.${cert.status}`)}
                       </Badge>
                     </div>
                   ))}
@@ -155,7 +159,7 @@ export function CertificationDetails({ certificationId }: CertificationDetailsPr
               </div>
 
               <div>
-                <p className="text-sm text-muted-foreground mb-2">Test Reports</p>
+                <p className="text-sm text-muted-foreground mb-2">{t("details.certificationStatus.testReports")}</p>
                 <div className="space-y-2">
                   {certification.testReports.map((test, index) => (
                     <div key={index} className="flex items-center justify-between">
@@ -163,7 +167,7 @@ export function CertificationDetails({ certificationId }: CertificationDetailsPr
                       <Badge
                         variant={test.status === "passed" ? "success" : "warning"}
                       >
-                        {test.status}
+                        {t(`details.status.${test.status}`)}
                       </Badge>
                     </div>
                   ))}

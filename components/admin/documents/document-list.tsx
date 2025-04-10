@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 
@@ -62,6 +63,7 @@ import { documentsApiHooks } from "@/lib/hooks/use-documents";
 import type { Document } from "@/lib/types/document";
 
 export function DocumentList() {
+  const t = useTranslations("documentManagement");
   const { toast } = useToast();
   const searchParams = useSearchParams();
   const manufacturerId = searchParams.get("manufacturer");
@@ -251,9 +253,9 @@ export function DocumentList() {
       case "rejected":
         return "destructive";
       case "expired":
-        return "destructive";
-      default:
         return "warning";
+      default:
+        return "default";
     }
   };
 
@@ -265,25 +267,11 @@ export function DocumentList() {
   };
 
   if (isLoading || isLoadingProducts) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Document Repository</CardTitle>
-          <CardDescription>Loading documents...</CardDescription>
-        </CardHeader>
-        <CardContent>
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="flex items-center space-x-4">
-              <div className="w-12 h-12 bg-gray-200 animate-pulse" />
-              <div className="space-y-2">
-                <div className="w-48 h-4 bg-gray-200 animate-pulse" />
-                <div className="w-36 h-4 bg-gray-200 animate-pulse" />
-              </div>
-            </div>
-          ))}
-        </CardContent>
-      </Card>
-    );
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error loading documents</div>;
   }
 
   return (
@@ -291,23 +279,23 @@ export function DocumentList() {
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle>Document Repository</CardTitle>
-            <CardDescription>
-              View and manage all uploaded documents
-            </CardDescription>
+            <CardTitle>{t("title")}</CardTitle>
+            <CardDescription>{t("description")}</CardDescription>
           </div>
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Filter by status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Statuses</SelectItem>
-              <SelectItem value="pending">Pending Review</SelectItem>
-              <SelectItem value="approved">Approved</SelectItem>
-              <SelectItem value="rejected">Rejected</SelectItem>
-              <SelectItem value="expired">Expired</SelectItem>
-            </SelectContent>
-          </Select>
+          <div className="flex items-center gap-2">
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Filter by status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Statuses</SelectItem>
+                <SelectItem value="pending">Pending Review</SelectItem>
+                <SelectItem value="approved">Approved</SelectItem>
+                <SelectItem value="rejected">Rejected</SelectItem>
+                <SelectItem value="expired">Expired</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
       </CardHeader>
       <CardContent>
@@ -506,19 +494,16 @@ export function DocumentList() {
           <DialogHeader>
             <DialogTitle>Reject Product</DialogTitle>
             <DialogDescription>
-              Please provide a reason for rejecting this product due to missing documents.
+              Please provide a reason for rejecting this product.
             </DialogDescription>
           </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="reason" className="text-right">
-                Reason
-              </Label>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="reason">Reason</Label>
               <Textarea
                 id="reason"
                 value={rejectReason}
                 onChange={(e) => setRejectReason(e.target.value)}
-                className="col-span-3"
                 placeholder="Enter the reason for rejection..."
               />
             </div>
@@ -542,16 +527,13 @@ export function DocumentList() {
               Please provide a reason for rejecting this document.
             </DialogDescription>
           </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="documentReason" className="text-right">
-                Reason
-              </Label>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="documentReason">Reason</Label>
               <Textarea
                 id="documentReason"
                 value={documentRejectReason}
                 onChange={(e) => setDocumentRejectReason(e.target.value)}
-                className="col-span-3"
                 placeholder="Enter the reason for rejection..."
               />
             </div>

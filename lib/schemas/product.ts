@@ -15,6 +15,7 @@ export const productSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   description: z.string().min(5, "Product description is required"),
   product_type: z.string().min(1, "Product type is required"),
+  product_subcategory: z.string().min(1, "Product subcategory is required"),
   model: z.string().min(1, "Product model is required"),
   images: z
     .array(

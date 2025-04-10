@@ -1,4 +1,7 @@
+"use client";
+
 import { FileText, Download } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -42,45 +45,50 @@ interface CertificationDocumentsProps {
 }
 
 export function CertificationDocuments({ certificationId }: CertificationDocumentsProps) {
+  const t = useTranslations("admin.dpc");
   const documents = documentsData[certificationId] || [];
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Supporting Documents</CardTitle>
+        <CardTitle>{t("documents.title")}</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          {documents.map((doc) => (
-            <div
-              key={doc.id}
-              className="flex items-center justify-between rounded-lg border p-4"
-            >
-              <div className="flex items-start gap-4">
-                <FileText className="h-8 w-8 text-muted-foreground" />
-                <div>
-                  <p className="font-medium">{doc.name}</p>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <span>{doc.type}</span>
-                    <span>·</span>
-                    <span>{doc.fileSize}</span>
-                    <span>·</span>
-                    <span>Issued by {doc.issuer}</span>
+          {documents.length === 0 ? (
+            <p className="text-muted-foreground">{t("documents.noDocuments")}</p>
+          ) : (
+            documents.map((doc) => (
+              <div
+                key={doc.id}
+                className="flex items-center justify-between rounded-lg border p-4"
+              >
+                <div className="flex items-start gap-4">
+                  <FileText className="h-8 w-8 text-muted-foreground" />
+                  <div>
+                    <p className="font-medium">{doc.name}</p>
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <span>{doc.type}</span>
+                      <span>·</span>
+                      <span>{doc.fileSize}</span>
+                      <span>·</span>
+                      <span>Issued by {doc.issuer}</span>
+                    </div>
                   </div>
                 </div>
+                <div className="flex items-center gap-2">
+                  <Badge
+                    variant={doc.status === "verified" ? "success" : "warning"}
+                  >
+                    {t(`details.status.${doc.status}`)}
+                  </Badge>
+                  <Button variant="ghost" size="icon">
+                    <Download className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <Badge
-                  variant={doc.status === "verified" ? "success" : "warning"}
-                >
-                  {doc.status}
-                </Badge>
-                <Button variant="ghost" size="icon">
-                  <Download className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </CardContent>
     </Card>

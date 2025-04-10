@@ -36,57 +36,57 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-// Sample data - In a real app, this would come from an API
-const documents = [
-  {
-    id: "DOC-001",
-    name: "ISO 9001:2015 Certificate",
-    type: "Quality Management",
-    category: "ISO 9001",
-    status: "approved",
-    validUntil: "2025-03-15",
-    uploadedAt: "2024-03-15T10:30:00",
-    fileSize: "2.4 MB",
-    issuer: "TSE",
-  },
-  {
-    id: "DOC-002",
-    name: "ISO 45001 Certificate",
-    type: "Safety & Health",
-    category: "ISO 45001",
-    status: "expiring",
-    validUntil: "2024-04-15",
-    uploadedAt: "2023-04-15T15:45:00",
-    fileSize: "1.8 MB",
-    issuer: "TSE",
-  },
-  {
-    id: "DOC-003",
-    name: "TS EN 50342-1 Test Report",
-    type: "Battery Standards",
-    category: "TS EN 50342-1",
-    status: "pending",
-    validUntil: "2025-06-30",
-    uploadedAt: "2024-03-14T09:15:00",
-    fileSize: "3.2 MB",
-    issuer: "TSE",
-  },
-  {
-    id: "DOC-004",
-    name: "ISO 14001 Certificate",
-    type: "Quality Management",
-    category: "ISO 14001",
-    status: "rejected",
-    validUntil: null,
-    uploadedAt: "2024-03-13T11:20:00",
-    fileSize: "1.5 MB",
-    issuer: "TSE",
-    rejectionReason: "Document signature verification failed",
-  },
-];
-
 export function DocumentList() {
   const t = useTranslations();
+
+  // Sample data - In a real app, this would come from an API
+  const documents = [
+    {
+      id: "DOC-001",
+      name: "ISO 9001:2015 Certificate",
+      type: t("documentManagement.categories.qualityManagement"),
+      category: "ISO 9001",
+      status: "approved",
+      validUntil: "2025-03-15",
+      uploadedAt: "2024-03-15T10:30:00",
+      fileSize: "2.4 MB",
+      issuer: "TSE",
+    },
+    {
+      id: "DOC-002",
+      name: "ISO 45001 Certificate",
+      type: t("documentManagement.categories.safetyAndHealth"),
+      category: "ISO 45001",
+      status: "expiringSoon",
+      validUntil: "2024-04-15",
+      uploadedAt: "2023-04-15T15:45:00",
+      fileSize: "1.8 MB",
+      issuer: "TSE",
+    },
+    {
+      id: "DOC-003",
+      name: "TS EN 50342-1 Test Report",
+      type: t("documentManagement.categories.batteryStandards"),
+      category: "TS EN 50342-1",
+      status: "pending",
+      validUntil: "2025-06-30",
+      uploadedAt: "2024-03-14T09:15:00",
+      fileSize: "3.2 MB",
+      issuer: "TSE",
+    },
+    {
+      id: "DOC-004",
+      name: "ISO 14001 Certificate",
+      type: t("documentManagement.categories.qualityManagement"),
+      category: "ISO 14001",
+      status: "rejected",
+      validUntil: null,
+      uploadedAt: "2024-03-13T11:20:00",
+      fileSize: "1.5 MB",
+      issuer: "TSE",
+      rejectionReason: "Document signature verification failed",
+    },
+  ];
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -170,7 +170,7 @@ export function DocumentList() {
                     className="flex w-fit items-center gap-1"
                   >
                     {getStatusIcon(doc.status)}
-                    {t(`documents.repository.status.${doc.status}`)}
+                    {t(`documentManagement.status.${doc.status}`)}
                   </Badge>
                 </TableCell>
                 <TableCell>
