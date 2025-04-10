@@ -551,10 +551,6 @@
     "addProduct": {
       "title": "Yeni Ürün Ekle",
       "description": "Yeni bir ürün eklemek için formu doldurun",
-      "error": {
-        "title": "Hata",
-        "description": "Ürün eklenirken bir hata oluştu"
-      },
       "form": {
         "steps": {
           "manufacturer": "Üretici"

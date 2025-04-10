@@ -138,7 +138,7 @@ export default async function DocumentsPage({ searchParams }: DocumentsPageProps
           </div>
         </div>
 
-        <DocumentList initialDocuments={filteredDocuments} productId={searchParams.product} />
+        <DocumentList />
       </div>
     );
   } catch (error) {

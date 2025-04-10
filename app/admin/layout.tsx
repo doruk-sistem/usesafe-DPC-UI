@@ -43,6 +43,11 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       icon: Users,
     },
     {
+      title: t("products"),
+      href: "/admin/products",
+      icon: Package,
+    },
+    {
       title: t("documents"),
       href: "/admin/documents",
       icon: FileCheck,

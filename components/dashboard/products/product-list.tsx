@@ -1,18 +1,54 @@
 "use client";
 
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuItem,
+} from "@radix-ui/react-dropdown-menu";
 import { useQueryClient } from "@tanstack/react-query";
-import { Battery, FileText, ImageOff, MoreHorizontal, Trash, Pencil } from "lucide-react";
+import {
+  Battery,
+  FileText,
+  ImageOff,
+  MoreHorizontal,
+  Trash,
+  Pencil,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { useToast } from "@/components/ui/use-toast";
 import { useProduct } from "@/lib/hooks/use-product";
 import { productsApiHooks } from "@/lib/hooks/use-products";
@@ -32,7 +68,6 @@ export function ProductList({ products, isLoading }: ProductListProps) {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const { determineProductStatus } = useProduct("");
 
-
   const { mutate: deleteProduct } = productsApiHooks.useDeleteProductMutation({
     onSuccess: () => {
       toast({
@@ -46,7 +81,10 @@ export function ProductList({ products, isLoading }: ProductListProps) {
     onError: (error) => {
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to delete product. Please try again.",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Failed to delete product. Please try again.",
         variant: "destructive",
       });
       setIsDeleteDialogOpen(false);
@@ -125,29 +163,38 @@ export function ProductList({ products, isLoading }: ProductListProps) {
       <Card>
         <CardHeader>
           <CardTitle>{t("title")}</CardTitle>
-          <CardDescription>
-            {t("description")}
-          </CardDescription>
+          <CardDescription>{t("description")}</CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>{t("table.productName")}</TableHead>
-                <TableHead>{t("table.model")}</TableHead>
-                <TableHead>{t("table.status")}</TableHead>
-                <TableHead>{t("table.actions")}</TableHead>
+                <TableHead>
+                  {t("productManagement.list.columns.product")}
+                </TableHead>
+                <TableHead>
+                  {t("productManagement.list.columns.category")}
+                </TableHead>
+                <TableHead>
+                  {t("productManagement.list.columns.basicInfo")}
+                </TableHead>
+                <TableHead>
+                  {t("productManagement.list.columns.status")}
+                </TableHead>
+                <TableHead>
+                  {t("productManagement.list.columns.actions")}
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {products.map((product) => {
                 console.log("Rendering product:", product);
-                const documents = Array.isArray(product.documents) 
-                  ? product.documents 
+                const documents = Array.isArray(product.documents)
+                  ? product.documents
                   : Object.values(product.documents || {}).flat();
-                
+
                 const status = determineProductStatus(documents);
-                
+
                 return (
                   <TableRow key={product.id}>
                     <TableCell>
@@ -177,15 +224,22 @@ export function ProductList({ products, isLoading }: ProductListProps) {
                     </TableCell>
                     <TableCell>
                       <Badge variant="secondary">
-                        {t(`productTypes.${product.product_type.toLowerCase()}`)}
+                        {t(
+                          `productTypes.${product.product_type.toLowerCase()}`
+                        )}
                       </Badge>
                     </TableCell>
                     <TableCell>
                       <div className="space-y-2">
                         <div className="space-y-1">
                           {product.key_features.slice(0, 3).map((feature) => (
-                            <div key={feature.name} className="flex items-center text-sm">
-                              <span className="text-muted-foreground w-20">{feature.name}:</span>
+                            <div
+                              key={feature.name}
+                              className="flex items-center text-sm"
+                            >
+                              <span className="text-muted-foreground w-20">
+                                {feature.name}:
+                              </span>
                               <span>{feature.value}</span>
                             </div>
                           ))}
@@ -200,14 +254,16 @@ export function ProductList({ products, isLoading }: ProductListProps) {
                     <TableCell>
                       <Badge
                         variant={
-                          product.status === "NEW"
+                          status === "APPROVED"
                             ? "success"
-                            : product.status === "DRAFT"
+                            : status === "PENDING"
                             ? "warning"
-                            : "destructive"
+                            : status === "REJECTED"
+                            ? "destructive"
+                            : "secondary"
                         }
                       >
-                        {t(`common.status.${product.status.toLowerCase()}`)}
+                        {status || "PENDING"}
                       </Badge>
                     </TableCell>
                     <TableCell>
@@ -228,18 +284,22 @@ export function ProductList({ products, isLoading }: ProductListProps) {
                             </Link>
                           </DropdownMenuItem>
                           <DropdownMenuItem asChild>
-                            <Link href={`/dashboard/products/${product.id}/edit`}>
+                            <Link
+                              href={`/dashboard/products/${product.id}/edit`}
+                            >
                               Edit Product
                             </Link>
                           </DropdownMenuItem>
                           <DropdownMenuItem asChild>
-                            <Link href={`/dashboard/products/${product.id}/documents`}>
+                            <Link
+                              href={`/dashboard/products/${product.id}/documents`}
+                            >
                               <FileText className="h-4 w-4 mr-2" />
                               View Documents
                             </Link>
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem 
+                          <DropdownMenuItem
                             className="text-destructive focus:text-destructive"
                             onClick={() => handleDeleteClick(product)}
                           >
@@ -257,19 +317,20 @@ export function ProductList({ products, isLoading }: ProductListProps) {
         </CardContent>
       </Card>
 
-      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+      <AlertDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>{t("delete.title")}</AlertDialogTitle>
             <AlertDialogDescription>
-
               {t("delete.description", { name: productToDelete?.name || "" })}
-
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>{t("delete.cancel")}</AlertDialogCancel>
-            <AlertDialogAction 
+            <AlertDialogAction
               onClick={handleConfirmDelete}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
