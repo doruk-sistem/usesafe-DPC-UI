@@ -3,22 +3,22 @@
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Card } from "@/components/ui/card";
-import { MetricsService, type SystemAlert } from "@/api/metrics";
+import { MetricsService, type RecentApproval } from "@/api/metrics";
 import { supabase } from "@/lib/supabase/client";
 import { motion } from "framer-motion";
-import { AlertTriangle, AlertCircle, Info } from "lucide-react";
+import { CheckCircle } from "lucide-react";
 
-export function SystemAlerts() {
+export function RecentApprovals() {
   const t = useTranslations("adminDashboard");
-  const [alerts, setAlerts] = useState<SystemAlert[]>([]);
+  const [approvals, setApprovals] = useState<RecentApproval[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchAlerts = async () => {
+    const fetchApprovals = async () => {
       try {
-        const data = await MetricsService.getSystemAlerts();
-        setAlerts(data);
+        const data = await MetricsService.getRecentApprovals();
+        setApprovals(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred');
       } finally {
@@ -26,17 +26,17 @@ export function SystemAlerts() {
       }
     };
 
-    fetchAlerts();
+    fetchApprovals();
 
     // Set up real-time subscription
     const subscription = supabase
-      .channel('system-alerts')
+      .channel('recent-approvals')
       .on('postgres_changes', { 
         event: '*', 
         schema: 'public',
-        table: 'system_alerts'
+        table: 'companies'
       }, () => {
-        fetchAlerts();
+        fetchApprovals();
       })
       .subscribe();
 
@@ -44,28 +44,6 @@ export function SystemAlerts() {
       subscription.unsubscribe();
     };
   }, []);
-
-  const getSeverityIcon = (severity: string) => {
-    switch (severity) {
-      case 'high':
-        return <AlertTriangle className="w-4 h-4 text-red-600" />;
-      case 'medium':
-        return <AlertCircle className="w-4 h-4 text-amber-600" />;
-      default:
-        return <Info className="w-4 h-4 text-blue-600" />;
-    }
-  };
-
-  const getSeverityColor = (severity: string) => {
-    switch (severity) {
-      case 'high':
-        return 'bg-red-100';
-      case 'medium':
-        return 'bg-amber-100';
-      default:
-        return 'bg-blue-100';
-    }
-  };
 
   if (error) {
     return (
@@ -77,7 +55,7 @@ export function SystemAlerts() {
 
   return (
     <Card className="p-6">
-      <h3 className="text-lg font-semibold mb-4">{t("systemAlerts.title")}</h3>
+      <h3 className="text-lg font-semibold mb-4">{t("recentApprovals.title")}</h3>
       <div className="space-y-4">
         {isLoading ? (
           Array(3).fill(0).map((_, index) => (
@@ -89,26 +67,26 @@ export function SystemAlerts() {
               </div>
             </div>
           ))
-        ) : alerts.length === 0 ? (
+        ) : approvals.length === 0 ? (
           <p className="text-muted-foreground text-sm">
-            {t("systemAlerts.noAlerts")}
+            {t("recentApprovals.noApprovals")}
           </p>
         ) : (
-          alerts.map((alert, index) => (
+          approvals.map((approval, index) => (
             <motion.div
-              key={alert.id}
+              key={approval.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
               className="flex items-center gap-3"
             >
-              <div className={`w-8 h-8 rounded-full ${getSeverityColor(alert.severity)} flex items-center justify-center`}>
-                {getSeverityIcon(alert.severity)}
+              <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
+                <CheckCircle className="w-4 h-4 text-green-600" />
               </div>
               <div>
-                <p className="font-medium">{alert.message}</p>
+                <p className="font-medium">{approval.name}</p>
                 <p className="text-sm text-muted-foreground">
-                  {new Date(alert.timestamp).toLocaleTimeString()} • {t(`systemAlerts.severity.${alert.severity}`)}
+                  {approval.code} • {new Date(approval.timestamp).toLocaleDateString()}
                 </p>
               </div>
             </motion.div>
@@ -117,4 +95,4 @@ export function SystemAlerts() {
       </div>
     </Card>
   );
-}
+} 

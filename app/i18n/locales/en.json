@@ -253,7 +253,7 @@
       },
       "certifications": {
         "title": "Verified Certifications",
-        "description": "Authenticated sustainability credentials"
+        "description": "Authenticated sustainability information"
       }
     },
     "verify": "Verify Product",
@@ -615,8 +615,8 @@
       "documentVerifications": "Document Verifications",
       "systemAlerts": "System Alerts",
       "verificationRate": "Verification Rate",
-      "activeDPCs": "Active DPCs",
-      "vsLastMonth": "vs Last Month"
+      "vsLastMonth": "vs Last Month",
+      "activeDPCs": "Active DPCs"
     },
     "sections": {
       "pendingApprovals": {
@@ -681,6 +681,45 @@
       "edit": "Edit",
       "view": "View",
       "download": "Download"
+    },
+    "recentApprovals": {
+      "title": "Recent Approvals",
+      "noApprovals": "No approvals yet"
+    },
+    "systemAlerts": {
+      "title": "System Alerts",
+      "noAlerts": "No active alerts",
+      "severity": {
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low"
+      }
+    },
+    "manufacturers": {
+      "list": {
+        "title": "Manufacturer List",
+        "description": "List of all registered manufacturers",
+        "columns": {
+          "company": "Company",
+          "status": "Status",
+          "documents": "Documents",
+          "products": "Products",
+          "actions": "Actions",
+          "date": "Date"
+        },
+        "status": {
+          "pending": "Pending",
+          "approved": "Approved",
+          "rejected": "Rejected"
+        },
+        "actions": {
+          "viewDetails": "View Details",
+          "reviewDocuments": "Review Documents",
+          "viewProducts": "View Products",
+          "approve": "Approve",
+          "reject": "Reject"
+        }
+      }
     }
   },
   "verify": {
@@ -892,5 +931,6 @@
         "label": "Company Name *"
       }
     }
-  }
+  },
+  "manufacturers": "Manufacturers"
 } 

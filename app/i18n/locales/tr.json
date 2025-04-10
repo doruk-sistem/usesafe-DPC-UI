@@ -113,30 +113,96 @@
       }
     },
     "dpc": {
-      "title": "DPC Başlığı",
-      "description": "DPC Açıklaması",
+      "title": "DPC Başvurular",
+      "description": "DPC başvurularını görüntüleyin ve yönetin",
       "columns": {
+        "name": "Belge Adı",
+        "type": "Belge Tipi",
+        "status": "Durum",
+        "uploadDate": "Yükleme Tarihi",
+        "actions": "İşlemler",
         "product": "Ürün",
         "category": "Kategori",
         "manufacturer": "Üretici",
-        "status": "Durum",
         "score": "Puan",
         "documents": "Belgeler"
+      },
+      "actions": {
+        "view": "Görüntüle",
+        "edit": "Düzenle",
+        "delete": "Sil",
+        "download": "İndir",
+        "newDPC": "Yeni DPC"
+      },
+      "empty": "Belge bulunamadı",
+      "loading": "Belgeler yükleniyor...",
+      "filters": {
+        "allCategories": "Tüm Kategoriler",
+        "allStatus": "Tüm Durumlar"
       },
       "status": {
         "pending": "Beklemede",
         "approved": "Onaylandı",
         "rejected": "Reddedildi"
+      }
+    },
+    "filters": {
+      "allDocuments": "Tüm Belgeler",
+      "allStatuses": "Tüm Durumlar",
+      "byType": "Belge Tipine Göre",
+      "byStatus": "Duruma Göre",
+      "byDate": "Tarihe Göre",
+      "types": {
+        "quality_cert": "Kalite Sertifikası",
+        "safety_cert": "Güvenlik Sertifikası",
+        "test_reports": "Test Raporları",
+        "technical_docs": "Teknik Dokümanlar",
+        "compliance_docs": "Uygunluk Belgeleri"
+      },
+      "status": {
+        "all": "Tüm Durumlar",
+        "pending": "Beklemede",
+        "approved": "Onaylandı",
+        "rejected": "Reddedildi",
+        "expired": "Süresi Doldu"
+      }
+    },
+    "upload": {
+      "title": "Belge Yükle",
+      "description": "Yeni bir belge yükleyin",
+      "dragDrop": "Belgeleri buraya sürükleyin veya seçmek için tıklayın",
+      "maxSize": "Maksimum dosya boyutu: 5MB",
+      "supportedFormats": "Desteklenen formatlar: PDF, DOC, DOCX, XLS, XLSX",
+      "button": "Belge Yükle"
+    },
+    "details": {
+      "title": "Belge Detayları",
+      "basicInfo": {
+        "title": "Temel Bilgiler",
+        "name": "Belge Adı",
+        "type": "Belge Tipi",
+        "uploadDate": "Yükleme Tarihi",
+        "expiryDate": "Son Geçerlilik Tarihi",
+        "status": "Durum"
       },
       "actions": {
-        "newDPC": "Yeni DPC",
+        "edit": "Düzenle",
+        "delete": "Sil",
         "download": "İndir",
-        "view": "Görüntüle"
-      },
-      "filters": {
-        "allCategories": "Tüm Kategoriler",
-        "allStatus": "Tüm Durumlar"
+        "approve": "Onayla",
+        "reject": "Reddet"
       }
+    },
+    "messages": {
+      "uploadSuccess": "Belge başarıyla yüklendi",
+      "uploadError": "Belge yüklenirken bir hata oluştu",
+      "deleteSuccess": "Belge başarıyla silindi",
+      "deleteError": "Belge silinirken bir hata oluştu",
+      "approveSuccess": "Belge başarıyla onaylandı",
+      "approveError": "Belge onaylanırken bir hata oluştu",
+      "rejectSuccess": "Belge başarıyla reddedildi",
+      "rejectError": "Belge reddedilirken bir hata oluştu",
+      "deleteConfirm": "Bu belgeyi silmek istediğinizden emin misiniz?"
     }
   },
   "home": {
@@ -353,27 +419,11 @@
     }
   },
   "dashboard": {
+    "title": "Kontrol Paneli",
+    "welcome": "Hoş Geldiniz",
     "overview": {
-      "title": "Gösterge Paneli",
-      "description": "Ürünlerinizin ve sertifikalarınızın genel görünümü",
-      "stats": {
-        "totalProducts": "Toplam Ürün",
-        "certifiedProducts": "Sertifikalı Ürünler",
-        "pendingCertifications": "Bekleyen Sertifikalar",
-        "totalCertifications": "Toplam Sertifika"
-      },
-      "recentActivity": {
-        "title": "Son Aktiviteler",
-        "description": "Son ürün ve sertifika aktiviteleriniz",
-        "noActivity": "Son aktivite yok"
-      },
-      "quickActions": {
-        "title": "Hızlı İşlemler",
-        "addProduct": "Ürün Ekle",
-        "viewProducts": "Ürünleri Görüntüle",
-        "manageCertifications": "Sertifikaları Yönet",
-        "viewAnalytics": "Analizleri Görüntüle"
-      }
+      "title": "Panel Genel Bakış",
+      "description": "Ürünlerinizi, sertifikalarınızı ve belgelerinizi takip edin"
     },
     "products": {
       "title": "Ürün Yönetimi",
@@ -493,7 +543,9 @@
       "certifiedProducts": "Sertifikalı Ürünler",
       "pendingCertifications": "Bekleyen Sertifikalar",
       "approvedDocuments": "Onaylanmış Belgeler",
-      "complianceRate": "Uyum Oranı"
+      "complianceRate": "Uyum Oranı",
+      "activeDPCs": "Aktif DPC'ler",
+      "vsLastMonth": "Geçen Aya Göre"
     },
     "applications": {
       "title": "Bekleyen Başvurular",
@@ -700,7 +752,9 @@
       "expired": "Süresi Doldu",
       "expiringSoon": "Süresi Yakında Doluyor",
       "deleted": "Silindi"
-    }
+    },
+    "verifyProducts": "Ürün Doğrula",
+    "signIn": "Giriş Yap"
   },
   "adminDashboard": {
     "title": "Yönetici Gösterge Paneli",
@@ -797,25 +851,26 @@
       "list": {
         "title": "Üretici Listesi",
         "description": "Tüm kayıtlı üreticilerin listesi",
-        "search": "Üretici ara...",
-        "filter": "Filtrele",
-        "sort": "Sırala",
         "columns": {
-          "name": "Üretici Adı",
-          "type": "Üretici Tipi",
+          "company": "Şirket",
           "status": "Durum",
-          "registrationDate": "Kayıt Tarihi",
-          "actions": "İşlemler"
+          "documents": "Belgeler",
+          "products": "Ürünler",
+          "actions": "İşlemler",
+          "date": "Tarih"
+        },
+        "status": {
+          "pending": "Beklemede",
+          "approved": "Onaylandı",
+          "rejected": "Reddedildi"
         },
         "actions": {
-          "view": "Görüntüle",
-          "edit": "Düzenle",
-          "delete": "Sil",
+          "viewDetails": "Detayları Görüntüle",
+          "reviewDocuments": "Belgeleri İncele",
+          "viewProducts": "Ürünleri Görüntüle",
           "approve": "Onayla",
           "reject": "Reddet"
-        },
-        "empty": "Üretici bulunamadı",
-        "loading": "Üreticiler yükleniyor..."
+        }
       },
       "status": {
         "active": "Aktif",
@@ -832,6 +887,19 @@
       },
       "actions": {
         "addNew": "Yeni Ekle"
+      }
+    },
+    "recentApprovals": {
+      "title": "Son Onaylar",
+      "noApprovals": "Henüz onay yok"
+    },
+    "systemAlerts": {
+      "title": "Sistem Uyarıları",
+      "noAlerts": "Aktif uyarı yok",
+      "severity": {
+        "high": "Yüksek",
+        "medium": "Orta",
+        "low": "Düşük"
       }
     }
   },
@@ -940,80 +1008,69 @@
       "description": "Tüm belgelerin listesi",
       "search": "Belge ara...",
       "filter": "Filtrele",
-      "sort": "Sırala",
-      "columns": {
-        "name": "Belge Adı",
-        "type": "Belge Tipi",
-        "status": "Durum",
-        "uploadDate": "Yükleme Tarihi",
-        "actions": "İşlemler"
+      "sort": "Sırala"
+    },
+    "toast": {
+      "approved": {
+        "title": "Belge Onaylandı",
+        "description": "Belge başarıyla onaylandı."
       },
-      "actions": {
-        "view": "Görüntüle",
-        "edit": "Düzenle",
-        "delete": "Sil",
-        "download": "İndir"
+      "rejected": {
+        "title": "Belge Reddedildi",
+        "description": "Belge reddedildi."
       },
-      "empty": "Belge bulunamadı",
-      "loading": "Belgeler yükleniyor..."
+      "error": {
+        "title": "Hata",
+        "approveDescription": "Belge onaylanırken bir hata oluştu. Lütfen tekrar deneyin.",
+        "rejectDescription": "Belge reddedilirken bir hata oluştu. Lütfen tekrar deneyin."
+      }
+    },
+    "history": {
+      "title": "Belge Geçmişi",
+      "events": {
+        "uploaded": "Belge Yüklendi",
+        "verified": "Orijinallik Doğrulandı",
+        "checked": "Tamlık Kontrolü",
+        "reviewed": "Manuel İnceleme Başladı"
+      },
+      "user": "Kullanıcı",
+      "system": "Sistem",
+      "details": {
+        "initialUpload": "İlk belge yüklemesi",
+        "signatureValidated": "Belge imzası doğrulandı",
+        "fieldsVerified": "Tüm gerekli alanlar doğrulandı",
+        "underReview": "Belge sertifikasyon ekibi tarafından inceleniyor"
+      }
+    },
+    "validation": {
+      "title": "Doğrulama Kontrolleri",
+      "progress": "İlerleme",
+      "checks": {
+        "authenticity": {
+          "title": "Orijinallik",
+          "verified": "Dijital imza başarıyla doğrulandı"
+        },
+        "completeness": {
+          "title": "Tamlık",
+          "verified": "Tüm gerekli alanlar mevcut"
+        },
+        "format": {
+          "title": "Format",
+          "verified": "Belge formatı gereksinimleri karşılıyor"
+        },
+        "expiration": {
+          "title": "Geçerlilik",
+          "valid": "Belge geçerlilik süresi içinde"
+        },
+        "issuer": {
+          "title": "Düzenleyen",
+          "pending": "Düzenleyen doğrulaması devam ediyor"
+        }
+      }
     },
     "filters": {
       "allDocuments": "Tüm Belgeler",
-      "allStatuses": "Tüm Durumlar",
-      "byType": "Belge Tipine Göre",
-      "byStatus": "Duruma Göre",
-      "byDate": "Tarihe Göre",
-      "types": {
-        "quality_cert": "Kalite Sertifikası",
-        "safety_cert": "Güvenlik Sertifikası",
-        "test_reports": "Test Raporları",
-        "technical_docs": "Teknik Dokümanlar",
-        "compliance_docs": "Uygunluk Belgeleri"
-      },
-      "status": {
-        "all": "Tüm Durumlar",
-        "pending": "Beklemede",
-        "approved": "Onaylandı",
-        "rejected": "Reddedildi",
-        "expired": "Süresi Doldu"
-      }
-    },
-    "upload": {
-      "title": "Belge Yükle",
-      "description": "Yeni bir belge yükleyin",
-      "dragDrop": "Belgeleri buraya sürükleyin veya seçmek için tıklayın",
-      "maxSize": "Maksimum dosya boyutu: 5MB",
-      "supportedFormats": "Desteklenen formatlar: PDF, DOC, DOCX, XLS, XLSX",
-      "button": "Belge Yükle"
-    },
-    "details": {
-      "title": "Belge Detayları",
-      "basicInfo": {
-        "title": "Temel Bilgiler",
-        "name": "Belge Adı",
-        "type": "Belge Tipi",
-        "uploadDate": "Yükleme Tarihi",
-        "expiryDate": "Son Geçerlilik Tarihi",
-        "status": "Durum"
-      },
-      "actions": {
-        "edit": "Düzenle",
-        "delete": "Sil",
-        "download": "İndir",
-        "approve": "Onayla",
-        "reject": "Reddet"
-      }
-    },
-    "messages": {
-      "uploadSuccess": "Belge başarıyla yüklendi",
-      "uploadError": "Belge yüklenirken bir hata oluştu",
-      "deleteSuccess": "Belge başarıyla silindi",
-      "deleteError": "Belge silinirken bir hata oluştu",
-      "approveSuccess": "Belge başarıyla onaylandı",
-      "approveError": "Belge onaylanırken bir hata oluştu",
-      "rejectSuccess": "Belge başarıyla reddedildi",
-      "rejectError": "Belge reddedilirken bir hata oluştu",
-      "deleteConfirm": "Bu belgeyi silmek istediğinizden emin misiniz?"
+      "allStatuses": "Tüm Durumlar"
     }
   },
   "companyDetails": "Şirket Detayları ve İstatistikleri",
@@ -1042,6 +1099,13 @@
       "companyName": {
         "label": "Şirket Adı *"
       }
+    }
+  },
+  "error": {
+    "404": {
+      "title": "404",
+      "description": "Sayfa bulunamadı.",
+      "backHome": "Ana Sayfaya Dön"
     }
   }
 } 
