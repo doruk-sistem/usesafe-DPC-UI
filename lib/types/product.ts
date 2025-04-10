@@ -1,4 +1,3 @@
-import { Document } from "./document";
 import { Database } from "./supabase";
 
 export type DPPFieldType =
@@ -55,15 +54,16 @@ export type DPPConfig = {
 export type BaseProduct = Database["public"]["Tables"]["products"]["Row"];
 export type NewProduct = Database["public"]["Tables"]["products"]["Insert"];
 export type UpdateProduct = Database["public"]["Tables"]["products"]["Update"];
-export type ProductStatus = "DRAFT" | "NEW" | "DELETED" | "ARCHIVED";
-
-export interface Product extends BaseProduct {
-  dpp_config?: DPPConfig;
-  images: ProductImage[];
-  key_features: KeyFeature[];
-  status_history: StatusTransition[];
-  documents?: Document[];
-}
+export type ProductStatus =
+  | "DRAFT"
+  | "NEW"
+  | "DELETED"
+  | "ARCHIVED"
+  | "approved"
+  | "pending"
+  | "rejected"
+  | "expired"
+  | null;
 
 export interface StatusTransition {
   from: ProductStatus;
@@ -101,6 +101,6 @@ export interface ProductValidationResult {
 }
 
 export interface ProductResponse {
-  data?: Product;
+  data?: BaseProduct;
   error?: ProductError;
 }

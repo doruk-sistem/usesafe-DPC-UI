@@ -11,61 +11,64 @@ import {
   TrendingUp,
   TrendingDown,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { Card } from "@/components/ui/card";
 
-const metrics = [
-  {
-    title: "Total Manufacturers",
-    value: "1,284",
-    change: "+12.3%",
-    trend: "up",
-    icon: Users,
-    gradient: "from-blue-500 to-blue-600",
-  },
-  {
-    title: "Pending Approvals",
-    value: "23",
-    change: "-4.5%",
-    trend: "down",
-    icon: Clock,
-    gradient: "from-amber-500 to-amber-600",
-  },
-  {
-    title: "Active DPCs",
-    value: "3,891",
-    change: "+23.1%",
-    trend: "up",
-    icon: Shield,
-    gradient: "from-green-500 to-green-600",
-  },
-  {
-    title: "Document Verifications",
-    value: "156",
-    change: "+8.2%",
-    trend: "up",
-    icon: FileCheck,
-    gradient: "from-purple-500 to-purple-600",
-  },
-  {
-    title: "System Alerts",
-    value: "12",
-    change: "-2.4%",
-    trend: "down",
-    icon: AlertTriangle,
-    gradient: "from-red-500 to-red-600",
-  },
-  {
-    title: "Verification Rate",
-    value: "98.3%",
-    change: "+1.2%",
-    trend: "up",
-    icon: CheckCircle2,
-    gradient: "from-indigo-500 to-indigo-600",
-  },
-];
-
 export function DashboardMetrics() {
+  const t = useTranslations("adminDashboard");
+
+  const metrics = [
+    {
+      title: t("metrics.totalManufacturers"),
+      value: "1,284",
+      change: "+12.3%",
+      trend: "up",
+      icon: Users,
+      gradient: "from-blue-500 to-blue-600",
+    },
+    {
+      title: t("metrics.pendingApprovals"),
+      value: "23",
+      change: "-4.5%",
+      trend: "down",
+      icon: Clock,
+      gradient: "from-amber-500 to-amber-600",
+    },
+    {
+      title: t("metrics.activeDPCs"),
+      value: "3,891",
+      change: "+23.1%",
+      trend: "up",
+      icon: Shield,
+      gradient: "from-green-500 to-green-600",
+    },
+    {
+      title: t("metrics.documentVerifications"),
+      value: "156",
+      change: "+8.2%",
+      trend: "up",
+      icon: FileCheck,
+      gradient: "from-purple-500 to-purple-600",
+    },
+    {
+      title: t("metrics.systemAlerts"),
+      value: "12",
+      change: "-2.4%",
+      trend: "down",
+      icon: AlertTriangle,
+      gradient: "from-red-500 to-red-600",
+    },
+    {
+      title: t("metrics.verificationRate"),
+      value: "98.3%",
+      change: "+1.2%",
+      trend: "up",
+      icon: CheckCircle2,
+      gradient: "from-indigo-500 to-indigo-600",
+    },
+  ];
+
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       {metrics.map((metric, index) => (
@@ -100,7 +103,7 @@ export function DashboardMetrics() {
                 }`}>
                   {metric.change}
                 </span>
-                <span className="text-sm text-muted-foreground">vs last month</span>
+                <span className="text-sm text-muted-foreground">{t("metrics.vsLastMonth")}</span>
               </div>
             </div>
           </Card>

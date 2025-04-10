@@ -16,7 +16,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useToast } from "@/components/ui/use-toast";
 import { useProduct } from "@/lib/hooks/use-product";
 import { productsApiHooks } from "@/lib/hooks/use-products";
-import type { Product } from "@/lib/types/product";
+import { BaseProduct as Product } from "@/lib/types/product";
 import { StorageHelper } from "@/lib/utils/storage";
 
 interface ProductListProps {
@@ -27,12 +27,11 @@ interface ProductListProps {
 export function ProductList({ products, isLoading }: ProductListProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const t = useTranslations();
   const [productToDelete, setProductToDelete] = useState<Product | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const { determineProductStatus } = useProduct("");
-  const t = useTranslations("productManagement");
 
-  console.log("Products received:", products);
 
   const { mutate: deleteProduct } = productsApiHooks.useDeleteProductMutation({
     onSuccess: () => {
@@ -178,18 +177,37 @@ export function ProductList({ products, isLoading }: ProductListProps) {
                     </TableCell>
                     <TableCell>
                       <Badge variant="secondary">
-                        {product.model}
+                        {t(`productTypes.${product.product_type.toLowerCase()}`)}
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      <Badge variant={
-                        status === "APPROVED" ? "success" :
-                        status === "REJECTED" ? "destructive" :
-                        "warning"
-                      }>
-                        {status === "APPROVED" ? "Approved" :
-                         status === "REJECTED" ? "Rejected" :
-                         "Pending"}
+                      <div className="space-y-2">
+                        <div className="space-y-1">
+                          {product.key_features.slice(0, 3).map((feature) => (
+                            <div key={feature.name} className="flex items-center text-sm">
+                              <span className="text-muted-foreground w-20">{feature.name}:</span>
+                              <span>{feature.value}</span>
+                            </div>
+                          ))}
+                          {product.key_features.length > 3 && (
+                            <Badge variant="secondary" className="text-xs">
+                              +{product.key_features.length - 3} more
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Badge
+                        variant={
+                          product.status === "NEW"
+                            ? "success"
+                            : product.status === "DRAFT"
+                            ? "warning"
+                            : "destructive"
+                        }
+                      >
+                        {t(`common.status.${product.status.toLowerCase()}`)}
                       </Badge>
                     </TableCell>
                     <TableCell>
@@ -200,34 +218,33 @@ export function ProductList({ products, isLoading }: ProductListProps) {
                             <span className="sr-only">Open menu</span>
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-[220px] bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden">
-                          <DropdownMenuLabel className="font-medium px-4 py-3 bg-gray-50 dark:bg-gray-700/50">Actions</DropdownMenuLabel>
-                          <DropdownMenuSeparator className="bg-gray-200 dark:bg-gray-700" />
-                          <DropdownMenuItem asChild className="hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2.5 cursor-pointer">
-                            <Link href={`/dashboard/products/${product.id}`} className="flex items-center">
-                              <Battery className="h-4 w-4 mr-2 text-blue-500" />
-                              <span className="font-medium">View Details</span>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem asChild>
+                            <Link href={`/dashboard/products/${product.id}`}>
+                              <Battery className="h-4 w-4 mr-2" />
+                              View Details
                             </Link>
                           </DropdownMenuItem>
-                          <DropdownMenuItem asChild className="hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2.5 cursor-pointer">
-                            <Link href={`/dashboard/products/${product.id}/edit`} className="flex items-center">
-                              <Pencil className="h-4 w-4 mr-2 text-amber-500" />
-                              <span className="font-medium">Edit Product</span>
+                          <DropdownMenuItem asChild>
+                            <Link href={`/dashboard/products/${product.id}/edit`}>
+                              Edit Product
                             </Link>
                           </DropdownMenuItem>
-                          <DropdownMenuItem asChild className="hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2.5 cursor-pointer">
-                            <Link href={`/dashboard/products/${product.id}/documents`} className="flex items-center">
-                              <FileText className="h-4 w-4 mr-2 text-green-500" />
-                              <span className="font-medium">View Documents</span>
+                          <DropdownMenuItem asChild>
+                            <Link href={`/dashboard/products/${product.id}/documents`}>
+                              <FileText className="h-4 w-4 mr-2" />
+                              View Documents
                             </Link>
                           </DropdownMenuItem>
-                          <DropdownMenuSeparator className="bg-gray-200 dark:bg-gray-700" />
+                          <DropdownMenuSeparator />
                           <DropdownMenuItem 
-                            className="text-destructive focus:text-destructive flex items-center hover:bg-red-50 dark:hover:bg-red-900/20 px-4 py-2.5 cursor-pointer"
+                            className="text-destructive focus:text-destructive"
                             onClick={() => handleDeleteClick(product)}
                           >
                             <Trash className="h-4 w-4 mr-2" />
-                            <span className="font-medium">Delete Product</span>
+                            Delete Product
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
@@ -245,7 +262,9 @@ export function ProductList({ products, isLoading }: ProductListProps) {
           <AlertDialogHeader>
             <AlertDialogTitle>{t("delete.title")}</AlertDialogTitle>
             <AlertDialogDescription>
+
               {t("delete.description", { name: productToDelete?.name || "" })}
+
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

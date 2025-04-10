@@ -97,7 +97,7 @@ export function RecentActivities() {
       <div className="divide-y divide-border rounded-md border">
         {activities.length === 0 ? (
           <p className="p-4 text-center text-sm text-muted-foreground">
-            {t("empty")}
+            {t("noActivities")}
           </p>
         ) : (
           activities.map((activity) => (

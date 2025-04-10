@@ -1,5 +1,6 @@
-import { Download, Plus, Filter } from "lucide-react";
+import { Download, Plus } from "lucide-react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -11,44 +12,43 @@ import {
 } from "@/components/ui/select";
 
 export function CertificationHeader() {
+  const t = useTranslations("admin.dpc");
+  
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
-        <h1 className="text-2xl font-semibold">Digital Product Certifications</h1>
+        <h1 className="text-2xl font-semibold">{t("title")}</h1>
         <p className="text-sm text-muted-foreground">
-          Review and manage product certification requests
+          {t("description")}
         </p>
       </div>
       <div className="flex items-center gap-2">
         <Select defaultValue="all">
           <SelectTrigger className="w-[160px]">
-            <SelectValue placeholder="Filter by category" />
+            <SelectValue placeholder={t("filters.allCategories")} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Categories</SelectItem>
-            <SelectItem value="textile">Textile</SelectItem>
-            <SelectItem value="electronics">Electronics</SelectItem>
-            <SelectItem value="furniture">Furniture</SelectItem>
+            <SelectItem value="all">{t("filters.allCategories")}</SelectItem>
           </SelectContent>
         </Select>
-        <Select defaultValue="all-status">
+        <Select defaultValue="all">
           <SelectTrigger className="w-[160px]">
-            <SelectValue placeholder="Filter by status" />
+            <SelectValue placeholder={t("filters.allStatus")} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all-status">All Status</SelectItem>
-            <SelectItem value="pending">Pending Review</SelectItem>
-            <SelectItem value="approved">Approved</SelectItem>
-            <SelectItem value="rejected">Rejected</SelectItem>
+            <SelectItem value="all">{t("filters.allStatus")}</SelectItem>
+            <SelectItem value="pending">{t("status.pending")}</SelectItem>
+            <SelectItem value="approved">{t("status.approved")}</SelectItem>
+            <SelectItem value="rejected">{t("status.rejected")}</SelectItem>
           </SelectContent>
         </Select>
-        <Button variant="outline" size="icon">
+        <Button variant="outline" size="icon" title={t("actions.download")}>
           <Download className="h-4 w-4" />
         </Button>
         <Button asChild>
           <Link href="/admin/certifications/new">
             <Plus className="h-4 w-4 mr-2" />
-            New DPC
+            {t("actions.newDPC")}
           </Link>
         </Button>
       </div>

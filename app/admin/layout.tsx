@@ -1,46 +1,27 @@
 "use client";
 
-import { LayoutDashboard, Users, FileCheck, Shield, Bell, Package } from "lucide-react";
+import {
+  LayoutDashboard,
+  Users,
+  FileCheck,
+  Shield,
+  Bell,
+  Package,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
-
-const sidebarItems = [
-  {
-    title: "Dashboard",
-    href: "/admin",
-    icon: LayoutDashboard,
-  },
-  {
-    title: "Products",
-    href: "/admin/products",
-    icon: Package,
-  },
-  {
-    title: "Manufacturers",
-    href: "/admin/manufacturers",
-    icon: Users,
-  },
-  {
-    title: "Documents",
-    href: "/admin/documents",
-    icon: FileCheck,
-  },
-  {
-    title: "Certifications",
-    href: "/admin/certifications",
-    icon: Shield,
-  },
-  {
-    title: "DPP Templates",
-    href: "/admin/templates",
-    icon: Shield,
-  }
-];
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -48,6 +29,35 @@ interface AdminLayoutProps {
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
   const pathname = usePathname();
+  const t = useTranslations("admin.sidebar");
+
+  const sidebarItems = [
+    {
+      title: t("dashboard"),
+      href: "/admin",
+      icon: LayoutDashboard,
+    },
+    {
+      title: t("manufacturers"),
+      href: "/admin/manufacturers",
+      icon: Users,
+    },
+    {
+      title: t("documents"),
+      href: "/admin/documents",
+      icon: FileCheck,
+    },
+    {
+      title: t("certifications"),
+      href: "/admin/certifications",
+      icon: Shield,
+    },
+    {
+      title: t("dppTemplates"),
+      href: "/admin/templates",
+      icon: Shield,
+    },
+  ];
 
   return (
     <div className="flex min-h-screen">
