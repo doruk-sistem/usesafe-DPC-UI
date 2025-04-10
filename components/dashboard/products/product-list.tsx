@@ -245,7 +245,7 @@ export function ProductList({ products, isLoading }: ProductListProps) {
           <AlertDialogHeader>
             <AlertDialogTitle>{t("delete.title")}</AlertDialogTitle>
             <AlertDialogDescription>
-              {t("delete.description", { name: productToDelete?.name })}
+              {t("delete.description", { name: productToDelete?.name || "" })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
