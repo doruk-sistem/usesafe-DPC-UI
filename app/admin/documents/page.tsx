@@ -15,19 +15,8 @@ export default async function DocumentsPage({ searchParams }: DocumentsPageProps
   const supabase = createServerComponentClient({ cookies: () => cookieStore });
 
   try {
-    // First, let's check if the products table exists and what columns it has
-    const { data: tableInfo, error: tableError } = await supabase
-      .from('products')
-      .select('*')
-      .limit(1);
-      
-    if (tableError) {
-      console.error("Error checking products table:", tableError);
-      throw new Error(`Database error: ${tableError.message}`);
-    }
-    
     // Fetch products with their documents
-    const { data: products, error } = await supabase
+    const { data: products, error: productsError } = await supabase
       .from("products")
       .select(`
         id, 
@@ -37,88 +26,42 @@ export default async function DocumentsPage({ searchParams }: DocumentsPageProps
       `)
       .order("created_at", { ascending: false });
 
-    if (error) {
-      console.error("Error fetching products:", error);
-      throw new Error(`Error fetching products: ${error.message}`);
-    }
-
-    // Fetch manufacturers separately
-    let manufacturerMap = new Map();
-    try {
-      const { data: manufacturers, error: manufacturersError } = await supabase
-        .from("manufacturers")
-        .select("id, name");
-        
-      if (manufacturersError) {
-        console.error("Error fetching manufacturers:", manufacturersError);
-        // Continue without manufacturers
-      } else if (manufacturers) {
-        manufacturers.forEach(mfr => {
-          manufacturerMap.set(mfr.id, mfr.name);
-        });
-      }
-    } catch (error) {
-      console.error("Error accessing manufacturers table:", error);
-      // Continue without manufacturers
+    if (productsError) {
+      console.error("Error fetching products:", productsError);
+      throw new Error(`Error fetching products: ${productsError.message}`);
     }
 
     // Extract documents from products
     const allDocuments = products.flatMap((product) => {
-      console.log("Processing product:", product.id);
-      console.log("Product documents structure:", JSON.stringify(product.documents, null, 2));
+      if (!product.documents) return [];
+
       const documents: any[] = [];
-
-      if (!product.documents) {
-        console.log("No documents found for product:", product.id);
-        return [];
-      }
-
-      // Handle array of documents
-      if (Array.isArray(product.documents)) {
-        console.log("Documents is an array");
-        product.documents.forEach((doc) => {
-          if (doc && doc.id) {
-            documents.push({
-              ...doc,
-              type: doc.type || "unknown",
-              status: doc.status || "pending",
-              productId: product.id,
-              manufacturer: product.manufacturer_id ? manufacturerMap.get(product.manufacturer_id) || "" : "",
-              manufacturerId: product.manufacturer_id || "",
-            });
-          }
-        });
-      }
-      // Handle object of document arrays
-      else if (typeof product.documents === "object" && product.documents !== null) {
-        console.log("Documents is an object");
-        Object.entries(product.documents).forEach(([docType, docList]) => {
-          if (Array.isArray(docList)) {
-            console.log(`Processing ${docType} documents:`, docList);
-            docList.forEach((doc) => {
-              // Generate an ID if it doesn't exist
+      Object.entries(product.documents).forEach(([docType, docList]) => {
+        if (Array.isArray(docList)) {
+          docList.forEach((doc) => {
+            if (doc) {
               const documentId = doc.id || `${docType}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-              
               documents.push({
-                ...doc,
                 id: documentId,
+                url: doc.url || "",
+                name: doc.name || "",
                 type: docType,
                 status: doc.status || "pending",
+                rejection_reason: doc.rejectionReason || doc.rejection_reason || "",
+                rejection_date: doc.rejectionDate || doc.rejection_date || null,
                 productId: product.id,
-                manufacturer: product.manufacturer_id ? manufacturerMap.get(product.manufacturer_id) || "" : "",
+                productName: product.name || "",
                 manufacturerId: product.manufacturer_id || "",
+                manufacturer: "Unknown", // Manufacturers tablosu olmadığı için sabit değer
+                createdAt: doc.created_at || new Date().toISOString(),
+                updatedAt: doc.updated_at || new Date().toISOString()
               });
-            });
-          }
-        });
-      }
-      
-      console.log("Extracted documents for product:", product.id, "Count:", documents.length);
+            }
+          });
+        }
+      });
       return documents;
     });
-
-    console.log("Total documents found:", allDocuments.length);
-    console.log("Sample document structure:", JSON.stringify(allDocuments[0], null, 2));
 
     // If a specific product is requested, filter documents for that product
     const filteredDocuments = searchParams.product 
@@ -138,7 +81,7 @@ export default async function DocumentsPage({ searchParams }: DocumentsPageProps
           </div>
         </div>
 
-        <DocumentList />
+        <DocumentList initialDocuments={filteredDocuments} />
       </div>
     );
   } catch (error) {

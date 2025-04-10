@@ -667,7 +667,8 @@
       "manufacturers": "Üreticiler",
       "documents": "Belgeler",
       "certifications": "Sertifikalar",
-      "dppTemplates": "DPP Şablonları"
+      "dppTemplates": "DPP Şablonları",
+      "products": "Ürünler"
     },
     "dpc": {
       "title": "Dijital Ürün Sertifikası",

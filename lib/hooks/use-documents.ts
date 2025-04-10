@@ -1,3 +1,5 @@
+"use client";
+
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { supabase } from "@/lib/supabase/client";
@@ -51,99 +53,65 @@ export const documentsApiHooks = {
     return useQuery({
       queryKey: ["documents"],
       queryFn: async () => {
-        console.log("Fetching documents...");
-        
-        const { data: products, error } = await supabase
-          .from("products")
-          .select(`
-            id,
-            manufacturer_id,
-            documents (
-              id,
-              name,
-              type,
-              status,
-              validUntil,
-              rejection_reason,
-              created_at,
-              url,
-              manufacturer,
-              version,
-              fileSize
-            )
-          `)
-          .order("created_at", { ascending: false });
+        try {
+          console.log("Fetching documents...");
+          
+          // Basit sorgu ile başlayalım
+          const { data, error } = await supabase
+            .from("products")
+            .select("*");
 
-        if (error) {
-          console.error("Error fetching documents:", error);
+          if (error) {
+            console.error("Supabase error:", error);
+            throw error;
+          }
+
+          if (!data) {
+            console.log("No data returned from Supabase");
+            return [];
+          }
+
+          console.log("Raw products data:", data);
+
+          // Belgeleri düzleştir
+          const allDocuments = data.flatMap((product: any) => {
+            if (!product.documents) {
+              return [];
+            }
+
+            const docs = Array.isArray(product.documents) 
+              ? product.documents 
+              : Object.values(product.documents).flat();
+
+            return docs.map((doc: any) => ({
+              id: doc.id || `doc-${Date.now()}-${Math.random()}`,
+              name: doc.name || "Unnamed Document",
+              type: doc.type || "unknown",
+              url: doc.url || "",
+              status: doc.status || "pending",
+              productId: product.id,
+              manufacturerId: product.manufacturer_id,
+              manufacturer: product.manufacturer || "",
+              uploadedAt: doc.created_at || new Date().toISOString(),
+              fileSize: doc.fileSize || "",
+              version: doc.version || "1.0",
+              validUntil: doc.validUntil || null,
+              rejection_reason: doc.rejection_reason || null
+            }));
+          });
+
+          console.log("Processed documents:", allDocuments);
+          return allDocuments;
+
+        } catch (error) {
+          console.error("Error in useGetDocuments:", error);
           throw error;
         }
-
-        console.log("Fetched products with documents:", products?.length);
-        
-        if (!products) {
-          console.log("No products found");
-          return [] as Document[];
-        }
-
-        const allDocuments = (products as ProductWithDocuments[]).flatMap((product) => {
-          console.log("Processing product:", product.id, "Documents:", product.documents);
-          
-          if (!product.documents) {
-            console.log("No documents found for product:", product.id);
-            return [] as Document[];
-          }
-
-          const documents: Document[] = [];
-          
-          // Handle array of documents
-          if (Array.isArray(product.documents)) {
-            console.log("Processing array of documents for product:", product.id);
-            product.documents.forEach((doc: ProductDocument) => {
-              if (doc && doc.id) {
-                documents.push({
-                  ...doc,
-                  productId: product.id,
-                  manufacturerId: product.manufacturer_id,
-                  uploadedAt: doc.created_at,
-                });
-              }
-            });
-          }
-          // Handle object of document arrays
-          else if (typeof product.documents === "object") {
-            console.log("Processing object of documents for product:", product.id);
-            Object.entries(product.documents).forEach(([docType, docList]) => {
-              if (Array.isArray(docList)) {
-                docList.forEach((doc: ProductDocument) => {
-                  if (doc && doc.id) {
-                    documents.push({
-                      ...doc,
-                      type: docType as DocumentType,
-                      productId: product.id,
-                      manufacturerId: product.manufacturer_id,
-                      uploadedAt: doc.created_at,
-                    });
-                  }
-                });
-              }
-            });
-          }
-
-          console.log("Extracted documents for product:", product.id, "Count:", documents.length);
-          return documents;
-        });
-
-        console.log("Total documents found:", allDocuments.length);
-        if (allDocuments.length > 0) {
-          console.log("Sample document:", allDocuments[0]);
-        }
-        
-        return allDocuments;
       },
+      retry: 1, // Hata durumunda sadece bir kez yeniden dene
+      refetchOnWindowFocus: false, // Pencere odağı değiştiğinde yeniden sorgu yapma
     });
   },
-
   useDeleteDocument: () => {
     const queryClient = useQueryClient();
     return useMutation({

@@ -682,7 +682,8 @@
       "manufacturers": "Manufacturers",
       "documents": "Documents",
       "certifications": "Certifications",
-      "dppTemplates": "DPP Templates"
+      "dppTemplates": "DPP Templates",
+      "products": "Products"
     },
     "dpc": {
       "details": {

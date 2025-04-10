@@ -70,7 +70,11 @@ import { useToast } from "@/components/ui/use-toast";
 import { documentsApiHooks } from "@/lib/hooks/use-documents";
 import type { Document } from "@/lib/types/document";
 
-export function DocumentList() {
+interface DocumentListProps {
+  initialDocuments?: Document[];
+}
+
+export function DocumentList({ initialDocuments = [] }: DocumentListProps) {
   const t = useTranslations("documentManagement");
   const { toast } = useToast();
   const searchParams = useSearchParams();
@@ -86,7 +90,7 @@ export function DocumentList() {
     useState<boolean>(false);
   const [documentRejectReason, setDocumentRejectReason] = useState<string>("");
   const [selectedDocumentId, setSelectedDocumentId] = useState<string>("");
-  const [localDocuments, setLocalDocuments] = useState<Document[]>([]);
+  const [localDocuments, setLocalDocuments] = useState<Document[]>(initialDocuments);
 
   const {
     data: documents = [],
@@ -101,10 +105,14 @@ export function DocumentList() {
     documentsApiHooks.useUpdateDocumentStatusDirect();
   const { mutate: rejectProduct } = documentsApiHooks.useRejectProduct();
 
-  // Update local documents when initialDocuments changes
+  // Update local documents when initialDocuments or documents changes
   useEffect(() => {
-    setLocalDocuments(documents);
-  }, [documents]);
+    if (initialDocuments && initialDocuments.length > 0) {
+      setLocalDocuments(initialDocuments);
+    } else if (documents && documents.length > 0) {
+      setLocalDocuments(documents);
+    }
+  }, [documents, initialDocuments]);
 
   // Use local documents for filtering
   const filteredDocuments = localDocuments
@@ -326,11 +334,13 @@ export function DocumentList() {
     }));
   };
 
-  if (isLoading || isLoadingProducts) {
+  // Show loading state only if we don't have initial documents
+  if ((isLoading || isLoadingProducts) && (!initialDocuments || initialDocuments.length === 0)) {
     return <div>Loading...</div>;
   }
 
-  if (error) {
+  // Show error only if we don't have initial documents
+  if (error && (!initialDocuments || initialDocuments.length === 0)) {
     return <div>Error loading documents</div>;
   }
 
