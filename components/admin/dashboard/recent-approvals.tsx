@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Card } from "@/components/ui/card";
-import { MetricsService, type RecentApproval } from "@/lib/services/metrics";
+import { getRecentApprovals, type RecentApproval } from "@/app/api/metrics/route";
 import { supabase } from "@/lib/supabase/client";
 import { motion } from "framer-motion";
 import { CheckCircle } from "lucide-react";
@@ -17,7 +17,7 @@ export function RecentApprovals() {
   useEffect(() => {
     const fetchApprovals = async () => {
       try {
-        const data = await MetricsService.getRecentApprovals();
+        const data = await getRecentApprovals();
         setApprovals(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred');

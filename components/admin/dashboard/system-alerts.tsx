@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Card } from "@/components/ui/card";
-import { MetricsService, type SystemAlert } from "@/lib/services/metrics";
+import { getSystemAlerts, type SystemAlert } from "@/app/api/metrics/route";
 import { supabase } from "@/lib/supabase/client";
 import { motion } from "framer-motion";
 import { AlertTriangle, AlertCircle, Info } from "lucide-react";
@@ -17,10 +17,10 @@ export function SystemAlerts() {
   useEffect(() => {
     const fetchAlerts = async () => {
       try {
-        const data = await MetricsService.getSystemAlerts();
-        setAlerts(data);
+        const alerts = await getSystemAlerts();
+        setAlerts(alerts);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
+        console.error(err);
       } finally {
         setIsLoading(false);
       }

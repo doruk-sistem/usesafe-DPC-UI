@@ -14,7 +14,7 @@ import {
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
-import { MetricsService, type DashboardMetrics } from "@/lib/services/metrics";
+import { getRecentApprovals, getSystemAlerts, type DashboardMetrics, type RecentApproval, type SystemAlert } from "@/app/api/metrics/route";
 import { supabase } from "@/lib/supabase/client";
 
 export function DashboardMetrics() {
@@ -26,10 +26,12 @@ export function DashboardMetrics() {
   useEffect(() => {
     const fetchMetrics = async () => {
       try {
-        const data = await MetricsService.getDashboardMetrics();
-        setMetrics(data);
+        const recentApprovals = await getRecentApprovals();
+        const systemAlerts = await getSystemAlerts();
+        // Handle the data as needed
+        console.log(recentApprovals, systemAlerts);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
+        console.error(err);
       } finally {
         setIsLoading(false);
       }
