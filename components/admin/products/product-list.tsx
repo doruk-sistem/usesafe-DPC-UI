@@ -4,7 +4,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Package, Search, Filter, MoreHorizontal, FileText, Eye } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-
+import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -48,6 +48,7 @@ interface Document {
 }
 
 export function ProductList() {
+  const t = useTranslations();
   const { toast } = useToast();
   const supabase = createClientComponentClient();
   const [products, setProducts] = useState<Product[]>([]);
@@ -189,8 +190,8 @@ export function ProductList() {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Products</CardTitle>
-          <CardDescription>Loading products...</CardDescription>
+        <CardTitle>{t("admin.products.title")}</CardTitle>
+        <CardDescription>{t("admin.products.loading")}</CardDescription>
         </CardHeader>
       </Card>
     );
@@ -201,15 +202,15 @@ export function ProductList() {
       <CardHeader className="bg-gradient-to-r from-primary/5 to-primary/10 pb-4">
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle className="text-2xl font-bold">Products</CardTitle>
+            <CardTitle className="text-2xl font-bold">{t("admin.products.title")}</CardTitle>
             <CardDescription className="text-base mt-1">
-              Manage and review all products in the system
+              {t("admin.products.description")}
             </CardDescription>
           </div>
           <Button asChild className="bg-primary hover:bg-primary/90">
             <Link href="/admin/products/new">
               <Package className="mr-2 h-4 w-4" />
-              Add New Product
+              {t("admin.products.addNewProduct")}
             </Link>
           </Button>
         </div>
@@ -222,7 +223,7 @@ export function ProductList() {
               <div className="relative">
                 <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Search products..."
+                  placeholder={t("admin.products.searchPlaceholder")}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-9 bg-background"
@@ -231,10 +232,10 @@ export function ProductList() {
             </div>
             <Select value={manufacturerFilter} onValueChange={setManufacturerFilter}>
               <SelectTrigger className="w-[200px] bg-background">
-                <SelectValue placeholder="Filter by manufacturer" />
+                <SelectValue placeholder={t("admin.products.filterByManufacturer")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Manufacturers</SelectItem>
+                <SelectItem value="all">{t("admin.products.allManufacturers")}</SelectItem>
                 {Object.entries(manufacturers).map(([id, name]) => (
                   <SelectItem key={id} value={id}>
                     {name}
@@ -244,14 +245,14 @@ export function ProductList() {
             </Select>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className="w-[200px] bg-background">
-                <SelectValue placeholder="Filter by status" />
+                <SelectValue placeholder={t("admin.products.filterByStatus")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="All Approved">All Approved</SelectItem>
-                <SelectItem value="Pending Review">Pending Review</SelectItem>
-                <SelectItem value="Has Rejected Documents">Has Rejected Documents</SelectItem>
-                <SelectItem value="No Documents">No Documents</SelectItem>
+                <SelectItem value="all">{t("admin.products.allStatus")}</SelectItem>
+                <SelectItem value="All Approved">{t("admin.products.allApproved")}</SelectItem>
+                <SelectItem value="Pending Review">{t("admin.products.pendingReview")}</SelectItem>
+                <SelectItem value="Has Rejected Documents">{t("admin.products.hasRejectedDocuments")}</SelectItem>
+                <SelectItem value="No Documents">{t("admin.products.noDocuments")}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -262,11 +263,11 @@ export function ProductList() {
           <div className="text-center py-12">
             <div className="flex flex-col items-center justify-center">
               <Package className="h-12 w-12 text-muted-foreground mb-4" />
-              <h3 className="text-lg font-medium mb-2">No Products Found</h3>
+              <h3 className="text-lg font-medium mb-2">{t("admin.products.noProductsFound")}</h3>
               <p className="text-muted-foreground">
                 {products.length === 0 
-                  ? "No products have been added yet."
-                  : "No products match the current filter criteria."}
+                  ? t("admin.products.noProductsAdded")
+                  : t("admin.products.noProductsMatchFilter")}
               </p>
             </div>
           </div>
@@ -321,13 +322,13 @@ export function ProductList() {
                         <DropdownMenuItem asChild>
                           <Link href={`/admin/products/${product.id}`} className="flex items-center">
                             <Eye className="mr-2 h-4 w-4" />
-                            View Details
+                            {t("admin.products.viewDetails")}
                           </Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem asChild>
                           <Link href={`/admin/documents?product=${product.id}`} className="flex items-center">
                             <FileText className="mr-2 h-4 w-4" />
-                            View Documents
+                            {t("admin.products.viewDocuments")}
                           </Link>
                         </DropdownMenuItem>
                       </DropdownMenuContent>
@@ -337,17 +338,17 @@ export function ProductList() {
                 <CardContent className="p-4 pt-2">
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-muted-foreground">Manufacturer</span>
+                      <span className="text-sm text-muted-foreground">{t("admin.products.manufacturer")}</span>
                       <span className="text-sm font-medium">{product.manufacturer_name}</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-muted-foreground">Category</span>
+                      <span className="text-sm text-muted-foreground">{t("admin.products.category")}</span>
                       <Badge variant="outline" className="font-normal">
-                        {product.product_type || "Uncategorized"}
+                        {product.product_type || t("admin.products.uncategorized")}
                       </Badge>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-muted-foreground">Documents</span>
+                      <span className="text-sm text-muted-foreground">{t("admin.products.documents")}</span>
                       <div className="flex items-center gap-1">
                         <FileText className="h-4 w-4 text-muted-foreground" />
                         <span className="text-sm font-medium">
@@ -356,7 +357,7 @@ export function ProductList() {
                       </div>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-muted-foreground">Status</span>
+                      <span className="text-sm text-muted-foreground">{t("admin.products.status")}</span>
                       <Badge 
                         variant={getStatusVariant(product.document_status)}
                         className="font-medium"
