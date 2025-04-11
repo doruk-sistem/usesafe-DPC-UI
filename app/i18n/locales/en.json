@@ -563,8 +563,8 @@
       "description": "Review and manage pending applications",
       "empty": "No pending applications",
       "loading": "Loading applications...",
-      "submitted": "Submitted on",
-    },
+      "submitted": "Submitted on"
+    }
   },
   "productManagement": {
     "title": "Product Management",
@@ -634,7 +634,7 @@
       "status": {
         "new": "New",
         "draft": "Draft",
-        "deleted": "Deleted"
+        "deleted": "Deleted",
         "category": "Category",
         "status": "Status",
         "createdAt": "Created At",
@@ -893,8 +893,7 @@
       "name": {
         "label": "Company Name",
         "description": "Contact support to update company name"
-=======
-      "vsLastMonth": "vs Last Month"
+      }
     },
     "recentApprovals": {
       "title": "Recent Approvals",
@@ -1042,108 +1041,10 @@
       }
     }
   },
-  "admin": {
-    "sidebar": {
-      "dashboard": "Dashboard",
-      "manufacturers": "Manufacturers",
-      "documents": "Documents",
-      "certifications": "Certifications",
-      "dppTemplates": "DPP Templates"
-    },
-    "dpc": {
-      "title": "DPC Applications",
-      "description": "View and manage DPC applications",
-      "columns": {
-        "product": "Product",
-        "category": "Category",
-        "manufacturer": "Manufacturer",
-        "status": "Status",
-        "score": "Score",
-        "documents": "Documents"
-      },
-      "status": {
-        "pending": "Pending",
-        "approved": "Approved",
-        "rejected": "Rejected",
-        "verified": "Verified",
-        "passed": "Passed"
-      },
-      "actions": {
-        "title": "Actions",
-        "newDPC": "New DPC Application",
-        "download": "Download",
-        "view": "View",
-        "approve": "Approve",
-        "reject": "Reject",
-        "back": "Back"
-      }
-    }
-  },
-  "common": {
-    "status": {
-      "new": "New",
-      "draft": "Draft",
-      "active": "Active",
-      "pending": "Pending",
-      "approved": "Approved",
-      "rejected": "Rejected",
-      "expired": "Expired",
-      "expiringSoon": "Expiring Soon",
-      "deleted": "Deleted"
-    }
-  },
-  "documentManagement": {
-    "title": "Document Management",
-    "description": "View and manage documents",
-    "categories": {
-      "qualityManagement": "Quality Management",
-      "safetyAndHealth": "Safety and Health",
-      "batteryStandards": "Battery Standards"
-    },
-    "actions": {
-      "upload": "Upload",
-      "view": "View",
-      "edit": "Edit",
-      "delete": "Delete",
-      "download": "Download",
-      "approve": "Approve",
-      "reject": "Reject"
-    },
-    "status": {
-      "pending": "Pending",
-      "approved": "Approved",
-      "rejected": "Rejected",
-      "expired": "Expired",
-      "expiringSoon": "Expiring Soon"
-    },
-    "filters": {
-      "allDocuments": "All Documents",
-      "allStatuses": "All Statuses",
-      "byType": "By Type",
-      "byStatus": "By Status",
-      "byDate": "By Date",
-      "types": {
-        "quality_cert": "Quality Certificate",
-        "safety_cert": "Safety Certificate",
-        "test_reports": "Test Reports",
-        "technical_docs": "Technical Documents",
-        "compliance_docs": "Compliance Documents"
-      },
-      "status": {
-        "all": "All Statuses",
-        "pending": "Pending",
-        "approved": "Approved",
-        "rejected": "Rejected",
-        "expired": "Expired"
-      },
-      "allCategories": "All Categories"
-    }
-  },
   "companyDetails": "Company Details and Statistics",
   "totalProducts": "Total Products",
   "activeProducts": "Active Products",
   "pendingProducts": "Pending Products",
-  "productCategories": "Product Categories",
   "taxInfo": "Tax Information",
   "addressInfo": "Address Information",
   "contactPerson": "Contact Person",
@@ -1166,6 +1067,5 @@
         "label": "Company Name *"
       }
     }
-  "auth": {
   }
-} 
+}
