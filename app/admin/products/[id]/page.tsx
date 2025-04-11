@@ -1,4 +1,5 @@
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+"use client";
+
 import {
   FileText,
   Package,
@@ -7,10 +8,10 @@ import {
   Clock,
   AlertCircle,
 } from "lucide-react";
-import { cookies } from "next/headers";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getTranslations } from "next-intl/server";
+import { useTranslations } from "next-intl";
+import { use, useState , useEffect } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -24,10 +25,13 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { DocumentStatus } from "@/lib/types/document";
+
+import { getProductDetails } from "./actions";
 interface ProductDetailsProps {
-  params: {
+  params: Promise<{
+    // Promise olarak tanımlıyoruz
     id: string;
-  };
+  }>;
 }
 
 interface Document {
@@ -40,39 +44,24 @@ interface Document {
   [key: string]: any;
 }
 
-// Veri çekme işlemini ayrı bir fonksiyona taşıyalım
-async function getProductDetails(id: string) {
-  const cookieStore = cookies();
-  const supabase = createServerComponentClient({ cookies: () => cookieStore });
+export default function ProductDetailsPage({ params }: ProductDetailsProps) {
+  const { id } = use(params);
+  const t = useTranslations();
+  const [product, setProduct] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
-  const { data: product, error } = await supabase
-    .from("products")
-    .select(
-      `
-      *,
-      manufacturer:manufacturer_id (
-        id,
-        name
-      )
-    `
-    )
-    .eq("id", id)
-    .single();
+  useEffect(() => {
+    async function loadProduct() {
+      const data = await getProductDetails(id);
+      setProduct(data);
+      setLoading(false);
+    }
+    loadProduct();
+  }, [id]);
 
-  if (error || !product) {
-    console.error("Error fetching product:", error);
-    return null;
+  if (loading) {
+    return <div>Loading...</div>;
   }
-
-  return product;
-}
-
-// Ana component
-export default async function ProductDetailsPage({
-  params,
-}: ProductDetailsProps) {
-  const t = await getTranslations();
-  const product = await getProductDetails(params.id);
 
   if (!product) {
     notFound();
