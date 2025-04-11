@@ -10,6 +10,7 @@ import {
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -23,7 +24,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { DocumentStatus } from "@/lib/types/document";
-
 interface ProductDetailsProps {
   params: {
     id: string;
@@ -40,35 +40,50 @@ interface Document {
   [key: string]: any;
 }
 
-export default async function ProductDetailsPage({
-  params,
-}: ProductDetailsProps) {
+// Veri çekme işlemini ayrı bir fonksiyona taşıyalım
+async function getProductDetails(id: string) {
   const cookieStore = cookies();
   const supabase = createServerComponentClient({ cookies: () => cookieStore });
 
-  try {
-    const { data: product, error } = await supabase
-      .from("products")
-      .select(
-        `
-        *,
-        manufacturer:manufacturer_id (
-          id,
-          name
-        )
+  const { data: product, error } = await supabase
+    .from("products")
+    .select(
       `
+      *,
+      manufacturer:manufacturer_id (
+        id,
+        name
       )
-      .eq("id", params.id)
-      .single();
+    `
+    )
+    .eq("id", id)
+    .single();
 
-    if (error || !product) {
-      console.error("Error fetching product:", error);
-      notFound();
-    }
+  if (error || !product) {
+    console.error("Error fetching product:", error);
+    return null;
+  }
 
+  return product;
+}
+
+// Ana component
+export default async function ProductDetailsPage({
+  params,
+}: ProductDetailsProps) {
+  const t = await getTranslations();
+  const product = await getProductDetails(params.id);
+
+  if (!product) {
+    notFound();
+  }
+
+  try {
     // Döküman durumunu ve sayısını hesapla
     let documentCount = 0;
-    let documentStatus = "No Documents";
+    let documentStatus = t(
+      "admin.products.details.documents.documentStatuses.noDocuments"
+    );
     let hasRejectedDocuments = false;
     let hasPendingDocuments = false;
     let hasExpiredDocuments = false;
@@ -94,52 +109,67 @@ export default async function ProductDetailsPage({
       documentCount = allDocuments.length;
 
       if (documentCount > 0) {
+        // Döküman durumlarını enum olarak tanımlayalım
+        const DocumentStatuses = {
+          REJECTED: "rejected",
+          PENDING: "pending",
+          EXPIRED: "expired",
+          APPROVED: "approved",
+        } as const;
+
+        // Durumları bir Map ile kontrol edelim
+        const statusFlags = {
+          [DocumentStatuses.REJECTED]: () => (hasRejectedDocuments = true),
+          [DocumentStatuses.PENDING]: () => (hasPendingDocuments = true),
+          [DocumentStatuses.EXPIRED]: () => (hasExpiredDocuments = true),
+          [DocumentStatuses.APPROVED]: () => (hasApprovedDocuments = true),
+        };
+
         // Döküman durumlarını kontrol et
         allDocuments.forEach((doc) => {
-          // Durumu küçük harfe çevirerek kontrol et
           const status = (doc.status || "").toLowerCase();
-
-          if (status === "rejected") {
-            hasRejectedDocuments = true;
-          } else if (status === "pending") {
-            hasPendingDocuments = true;
-          } else if (status === "expired") {
-            hasExpiredDocuments = true;
-          } else if (status === "approved") {
-            hasApprovedDocuments = true;
-          }
+          // Eğer geçerli bir status varsa ilgili flag'i güncelle
+          statusFlags[status]?.();
         });
+        // Durum öncelik sırası (en önemliden en önemsize)
+        const statusPriority = [
+          {
+            condition: hasRejectedDocuments,
+            status: "hasRejected",
+            productStatus: "REJECTED",
+          },
+          {
+            condition: hasPendingDocuments,
+            status: "pending",
+            productStatus: "PENDING",
+          },
+          {
+            condition: hasExpiredDocuments,
+            status: "hasExpired",
+            productStatus: "EXPIRED",
+          },
+          {
+            condition: hasApprovedDocuments,
+            status: "allApproved",
+            productStatus: "APPROVED",
+          },
+        ];
 
-        // Genel durumu belirle
-        if (hasRejectedDocuments) {
-          documentStatus = "Has Rejected Documents";
-        } else if (hasPendingDocuments) {
-          documentStatus = "Pending Review";
-        } else if (hasExpiredDocuments) {
-          documentStatus = "Has Expired Documents";
-        } else if (hasApprovedDocuments) {
-          documentStatus = "All Approved";
-        } else {
-          documentStatus = "Unknown Status";
-        }
+        // İlk eşleşen durumu bul
+        const currentStatus = statusPriority.find(
+          (status) => status.condition
+        ) || {
+          status: "unknown",
+          productStatus: "NEW",
+        };
+
+        // Döküman durumunu ve ürün durumunu güncelle
+        documentStatus = t(
+          `admin.products.details.documents.documentStatuses.${currentStatus.status}`
+        );
+        product.status = currentStatus.productStatus;
       }
     }
-
-    // Ürün durumunu döküman durumlarına göre güncelle
-    const updateProductStatus = () => {
-      if (hasRejectedDocuments) {
-        product.status = "REJECTED";
-      } else if (hasPendingDocuments) {
-        product.status = "PENDING";
-      } else if (hasApprovedDocuments) {
-        product.status = "APPROVED";
-      } else {
-        product.status = "NEW";
-      }
-    };
-
-    updateProductStatus();
-
     // Döküman durumuna göre ikon ve renk belirleme
     const getStatusIcon = (status: DocumentStatus | string) => {
       const statusLower = (status || "").toLowerCase();
@@ -179,7 +209,7 @@ export default async function ProductDetailsPage({
           <div className="flex items-center gap-4">
             <Link href="/admin/products">
               <Button variant="ghost" size="sm">
-                Back to Products
+                {t("admin.products.details.backButton")}
               </Button>
             </Link>
             <h1 className="text-2xl font-semibold">{product.name}</h1>
@@ -189,7 +219,7 @@ export default async function ProductDetailsPage({
             <Button asChild>
               <Link href={`/admin/documents?product=${product.id}`}>
                 <FileText className="mr-2 h-4 w-4" />
-                View Documents
+                {t("admin.products.details.viewDocuments")}
               </Link>
             </Button>
           </div>
@@ -200,25 +230,33 @@ export default async function ProductDetailsPage({
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Package className="h-5 w-5" />
-                Product Information
+                {t("admin.products.details.productInfo.title")}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-sm text-muted-foreground">Product ID</p>
+                  <p className="text-sm text-muted-foreground">
+                    {t("admin.products.details.productInfo.id")}
+                  </p>
                   <p className="font-medium">{product.id}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Manufacturer</p>
+                  <p className="text-sm text-muted-foreground">
+                    {t("admin.products.details.productInfo.manufacturer")}
+                  </p>
                   <p className="font-medium">{product.manufacturer?.name}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Type</p>
+                  <p className="text-sm text-muted-foreground">
+                    {t("admin.products.details.productInfo.type")}
+                  </p>
                   <p className="font-medium">{product.product_type}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Status</p>
+                  <p className="text-sm text-muted-foreground">
+                    {t("admin.products.details.productInfo.status")}
+                  </p>
                   <div className="font-medium">
                     {product.status ? (
                       <Badge variant="outline" className="capitalize">
@@ -230,7 +268,9 @@ export default async function ProductDetailsPage({
                   </div>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Created</p>
+                  <p className="text-sm text-muted-foreground">
+                    {t("admin.products.details.productInfo.created")}
+                  </p>
                   <p className="font-medium">
                     {new Date(product.created_at).toLocaleDateString()}
                   </p>
@@ -238,7 +278,9 @@ export default async function ProductDetailsPage({
               </div>
               {product.description && (
                 <div>
-                  <p className="text-sm text-muted-foreground">Description</p>
+                  <p className="text-sm text-muted-foreground">
+                    {t("admin.products.details.productInfo.description")}
+                  </p>
                   <p className="mt-1">{product.description}</p>
                 </div>
               )}
@@ -247,16 +289,25 @@ export default async function ProductDetailsPage({
 
           <Card>
             <CardHeader>
-              <CardTitle>Document Status</CardTitle>
+              <CardTitle>
+                {t("admin.products.details.documents.title")}
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <span>Total Documents</span>
-                  <Badge variant="secondary">{documentCount} documents</Badge>
+                  <span>
+                    {t("admin.products.details.documents.totalDocuments")}
+                  </span>
+                  <Badge variant="secondary">
+                    {documentCount}{" "}
+                    {t("admin.products.details.documents.totalDocuments")}
+                  </Badge>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span>Document Status</span>
+                  <span>
+                    {t("admin.products.details.documents.documentStatus")}
+                  </span>
                   <Badge
                     variant={
                       documentStatus === "All Approved"
@@ -276,7 +327,9 @@ export default async function ProductDetailsPage({
 
                 {documentCount > 0 && (
                   <div className="mt-6">
-                    <h3 className="text-sm font-medium mb-3">Documents</h3>
+                    <h3 className="text-sm font-medium mb-3">
+                      {t("admin.products.details.documents.title")}
+                    </h3>
                     <div className="grid grid-cols-1 gap-2">
                       {allDocuments.map((doc, index) => (
                         <Dialog key={`${doc.id}-${index}`}>
@@ -304,20 +357,22 @@ export default async function ProductDetailsPage({
                                 {doc.name || doc.type || "Document Details"}
                               </DialogTitle>
                               <DialogDescription>
-                                Document information and status
+                                {t(
+                                  "admin.products.details.documents.description"
+                                )}
                               </DialogDescription>
                             </DialogHeader>
                             <div className="space-y-4 py-4">
                               <div className="grid grid-cols-2 gap-4">
                                 <div>
                                   <p className="text-sm text-muted-foreground">
-                                    Document ID
+                                    {t("admin.products.details.documents.id")}
                                   </p>
                                   <div className="font-medium">{doc.id}</div>
                                 </div>
                                 <div>
                                   <p className="text-sm text-muted-foreground">
-                                    Type
+                                    {t("admin.products.details.documents.type")}
                                   </p>
                                   <div className="font-medium">
                                     {doc.type || "N/A"}
@@ -325,7 +380,9 @@ export default async function ProductDetailsPage({
                                 </div>
                                 <div>
                                   <p className="text-sm text-muted-foreground">
-                                    Status
+                                    {t(
+                                      "admin.products.details.documents.documentStatus"
+                                    )}{" "}
                                   </p>
                                   <div className="font-medium">
                                     <Badge
@@ -344,7 +401,9 @@ export default async function ProductDetailsPage({
                                 {doc.validUntil && (
                                   <div>
                                     <p className="text-sm text-muted-foreground">
-                                      Valid Until
+                                      {t(
+                                        "admin.products.details.documents.validUntil"
+                                      )}
                                     </p>
                                     <div className="font-medium">
                                       {new Date(
@@ -358,7 +417,9 @@ export default async function ProductDetailsPage({
                               {doc.rejection_reason && (
                                 <div>
                                   <p className="text-sm text-muted-foreground">
-                                    Rejection Reason
+                                    {t(
+                                      "admin.products.details.documents.rejectionReason"
+                                    )}
                                   </p>
                                   <div className="mt-1 p-2 bg-red-50 text-red-800 rounded-md">
                                     {doc.rejection_reason}
@@ -373,7 +434,9 @@ export default async function ProductDetailsPage({
                                     target="_blank"
                                     rel="noopener noreferrer"
                                   >
-                                    View Document
+                                    {t(
+                                      "admin.products.details.documents.viewDocument"
+                                    )}
                                   </a>
                                 </Button>
                               </div>

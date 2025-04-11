@@ -671,6 +671,44 @@
       "dppTemplates": "DPP Şablonları",
       "products": "Ürünler"
     },
+    "products": {
+      "title": "Ürünler",
+      "description": "Sistemdeki tüm ürünleri yönetin ve inceleyin",
+      "details": {
+        "backButton": "Ürünlere Dön",
+        "viewDocuments": "Dökümanları Görüntüle",
+        "productInfo": {
+          "title": "Ürün Bilgileri",
+          "id": "Ürün ID",
+          "manufacturer": "Üretici",
+          "type": "Tip",
+          "status": "Durum",
+          "created": "Oluşturulma Tarihi",
+          "description": "Açıklama"
+        },
+        "documents": {
+          "title": "Dökümanlar",
+          "totalDocuments": "Toplam Döküman",
+          "documentStatus": "Döküman Durumu",
+          "description": "Döküman bilgileri ve durumu",
+          "id": "Döküman ID",
+          "type": "Tip",
+          "validUntil": "Geçerlilik Tarihi",
+          "rejectionReason": "Red Nedeni",
+          "viewDocument": "Dökümanı Görüntüle",
+          "documentStatuses": {
+            "noDocuments": "Döküman Yok",
+            "hasRejected": "Reddedilmiş Dökümanlar Var",
+            "pending": "İnceleme Bekliyor",
+            "hasExpired": "Süresi Dolmuş Dökümanlar Var",
+            "allApproved": "Tümü Onaylandı",
+            "unknown": "Bilinmeyen Durum"
+          }
+        },
+        "errorLoadingProduct": "Ürün Yüklenirken Hata Oluştu",
+        "unexpectedError": "Beklenmeyen bir hata oluştu"
+      }
+    },
     "dpc": {
       "title": "Dijital Ürün Sertifikası",
       "description": "Ürün sertifikalarını görüntüleyin ve yönetin",

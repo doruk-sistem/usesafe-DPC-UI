@@ -271,47 +271,67 @@ export function ProductList({ products, isLoading }: ProductListProps) {
                     <TableCell>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon">
-                            <MoreHorizontal className="h-4 w-4" />
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 p-0 rounded-full bg-gradient-to-br from-primary/5 via-primary/10 to-primary/5 hover:from-primary/10 hover:via-primary/15 hover:to-primary/10 border border-border/50 shadow-sm transition-all duration-200"
+                          >
+                            <MoreHorizontal className="h-4 w-4 text-primary/70 hover:text-primary transition-colors" />
                             <span className="sr-only">
                               {t("productManagement.actions.openMenu")}
                             </span>
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuLabel>
+                        <DropdownMenuContent
+                          align="end"
+                          className="w-[200px] p-2 rounded-xl border border-border/50 shadow-lg bg-gradient-to-b from-background to-muted/30 backdrop-blur-sm"
+                        >
+                          <DropdownMenuLabel className="px-2 py-1.5 text-xs font-medium text-muted-foreground">
                             {t("productManagement.actions.menu")}
                           </DropdownMenuLabel>
-                          <DropdownMenuSeparator />
+                          <DropdownMenuSeparator className="my-1 bg-border/50" />
                           <DropdownMenuItem asChild>
-                            <Link href={`/dashboard/products/${product.id}`}>
-                              <Battery className="h-4 w-4 mr-2" />
-                              {t("productManagement.actions.viewDetails")}
+                            <Link
+                              href={`/dashboard/products/${product.id}`}
+                              className="flex items-center px-2 py-1.5 text-sm rounded-md cursor-pointer hover:bg-primary/5 transition-colors"
+                            >
+                              <Battery className="h-4 w-4 mr-2 text-primary/70" />
+                              <span>
+                                {t("productManagement.actions.viewDetails")}
+                              </span>
                             </Link>
                           </DropdownMenuItem>
                           <DropdownMenuItem asChild>
                             <Link
                               href={`/dashboard/products/${product.id}/edit`}
+                              className="flex items-center px-2 py-1.5 text-sm rounded-md cursor-pointer hover:bg-primary/5 transition-colors"
                             >
-                              {t("productManagement.actions.editProduct")}
+                              <Pencil className="h-4 w-4 mr-2 text-primary/70" />
+                              <span>
+                                {t("productManagement.actions.editProduct")}
+                              </span>
                             </Link>
                           </DropdownMenuItem>
                           <DropdownMenuItem asChild>
                             <Link
                               href={`/dashboard/products/${product.id}/documents`}
+                              className="flex items-center px-2 py-1.5 text-sm rounded-md cursor-pointer hover:bg-primary/5 transition-colors"
                             >
-                              <FileText className="h-4 w-4 mr-2" />
-                              {t("productManagement.actions.viewDocuments")}
+                              <FileText className="h-4 w-4 mr-2 text-primary/70" />
+                              <span>
+                                {t("productManagement.actions.viewDocuments")}
+                              </span>
                             </Link>
                           </DropdownMenuItem>
                           <DropdownMenuSeparator className="my-1 bg-border/50" />
                           <DropdownMenuItem
                             onClick={() => handleDeleteClick(product)}
-                            className="flex items-center px-2 py-1.5 text-sm rounded-md text-destructive hover:text-destructive focus:text-destructive focus:bg-destructive/5 transition-colors"
+                            className="flex items-center px-2 py-1.5 text-sm rounded-md cursor-pointer text-destructive hover:text-destructive hover:bg-destructive/5 transition-colors"
                           >
                             <Trash className="h-4 w-4 mr-2" />
-
-                            {t("productManagement.actions.deleteProduct")}
+                            <span>
+                              {t("productManagement.actions.deleteProduct")}
+                            </span>
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
