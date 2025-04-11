@@ -1,12 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
-import { Card } from "@/components/ui/card";
-import { getRecentApprovals, type RecentApproval } from "@/app/api/metrics/route";
-import { supabase } from "@/lib/supabase/client";
 import { motion } from "framer-motion";
 import { CheckCircle } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
+
+import { getRecentApprovals, type RecentApproval } from "@/app/api/metrics/route";
+import { Card } from "@/components/ui/card";
+import { supabase } from "@/lib/supabase/client";
+
 
 export function RecentApprovals() {
   const t = useTranslations("adminDashboard");
