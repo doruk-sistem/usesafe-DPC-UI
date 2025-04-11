@@ -408,10 +408,9 @@
           "document": "Document"
         },
         "status": {
-          "active": "Active",
-          "expired": "Expired",
-          "pending": "Pending",
-          "unknown": "Unknown"
+          "statusPending": "Pending",
+          "statusApproved": "Approved",
+          "statusRejected": "Rejected"
         },
         "actions": {
           "download": "Download"
@@ -439,8 +438,61 @@
   "productManagement": {
     "title": "Product Management",
     "description": "Manage and track all your products",
-    "loading": "Loading products...",
-    "noProducts": "No products found",
+    "search": {
+      "placeholder": "Search products..."
+    },
+    "filters": {
+      "type": {
+        "label": "Product Type",
+        "all": "All Types",
+        "agm": "AGM",
+        "efb": "EFB",
+        "standard": "Standard",
+        "marine": "Marine"
+      },
+      "status": {
+        "label": "Status",
+        "all": "All Statuses",
+        "active": "Active",
+        "pending": "Pending",
+        "draft": "Draft"
+      }
+    },
+    "actions": {
+      "download": "Download",
+      "addProduct": "New Product",
+      "menu": "Actions",
+      "viewDetails": "View Details",
+      "editProduct": "Edit Product",
+      "viewDocuments": "View Documents",
+      "deleteProduct": "Delete Product"
+    },
+    "list": {
+      "title": "Product List",
+      "description": "View and manage all your products",
+      "loading": "Loading products...",
+      "empty": {
+        "title": "No Products Found",
+        "description": "You don't have any products yet. Use the 'New Product' button to add one."
+      },
+      "columns": {
+        "product": "Product",
+        "type": "Type",
+        "category": "Category",
+        "status": "Status",
+        "createdAt": "Created At",
+        "actions": "Actions",
+        "basicInfo": "Basic Info"
+      }
+    },
+    "delete": {
+      "confirm": {
+        "title": "Delete Product",
+        "description": "Are you sure you want to delete this product? This action cannot be undone.",
+        "cancel": "Cancel",
+        "confirm": "Delete"
+      }
+    },
     "addProduct": {
       "title": "Add New Product",
       "description": "Fill in the form to add a new product",
@@ -462,85 +514,6 @@
         }
       }
     },
-    "editProduct": "Edit Product",
-    "deleteProduct": "Delete Product",
-    "search": {
-      "placeholder": "Search products..."
-    },
-    "filters": {
-      "type": {
-        "label": "Product Type",
-        "all": "All Types",
-        "agm": "AGM Batteries",
-        "efb": "EFB Batteries",
-        "standard": "Standard Batteries",
-        "marine": "Marine Batteries"
-      },
-      "status": {
-        "label": "Status",
-        "all": "All Status",
-        "active": "Active",
-        "pending": "Pending",
-        "draft": "Draft"
-      }
-    },
-    "list": {
-      "title": "Product List",
-      "description": "View and manage your products",
-      "loading": "Loading products...",
-      "empty": {
-        "title": "No Products Found",
-        "description": "No products have been added yet. Use the button below to add a new product."
-      },
-      "columns": {
-        "product": "Product",
-        "type": "Type",
-        "category": "Category",
-        "basicInfo": "Basic Info",
-        "status": "Status",
-        "createdAt": "Created At",
-        "actions": "Actions"
-      }
-    },
-    "actions": {
-      "menu": "Actions",
-      "viewDetails": "View Details",
-      "editProduct": "Edit Product",
-      "viewDocuments": "View Documents",
-      "deleteProduct": "Delete Product",
-      "addProduct": "Add Product",
-      "download": "Download"
-    },
-    "table": {
-      "name": "Name",
-      "model": "Model",
-      "status": "Status",
-      "actions": "Actions"
-    },
-    "pagination": {
-      "previous": "Previous",
-      "next": "Next",
-      "showing": "Showing {start} to {end} of {total} products"
-    },
-    "status": {
-      "draft": "Draft",
-      "published": "Published",
-      "archived": "Archived"
-    },
-    "delete": {
-      "title": "Delete Product",
-      "description": "Product deleted successfully",
-      "confirm": {
-        "title": "Delete Product",
-        "description": "Are you sure you want to delete this product? This action cannot be undone.",
-        "cancel": "Cancel",
-        "confirm": "Delete"
-      },
-      "error": {
-        "title": "Error",
-        "description": "Failed to delete product"
-      }
-    },
     "productTypes": {
       "detergents": "Detergents",
       "textile": "Textile",
@@ -552,18 +525,22 @@
       "efb": "EFB",
       "standard": "Standard",
       "marine": "Marine"
+    },
+    "common": {
+      "status": {
+        "new": "NEW",
+        "draft": "Draft",
+        "active": "Active",
+        "pending": "Pending"
+      }
     }
   },
   "common": {
     "status": {
-      "new": "New",
+      "new": "NEW",
       "draft": "Draft",
-      "pending": "Pending",
-      "approved": "Approved",
-      "rejected": "Rejected",
-      "expired": "Expired",
-      "expiringSoon": "Expiring Soon",
-      "deleted": "Deleted"
+      "active": "Active",
+      "pending": "Pending"
     }
   },
   "productCategories": {
@@ -619,16 +596,13 @@
   },
   "adminDashboard": {
     "title": "Admin Dashboard",
-    "description": "View activities and metrics across the system",
+    "description": "Monitor and manage system-wide operations",
     "period": {
       "select": "Select period",
       "today": "Today",
       "thisWeek": "This Week",
       "thisMonth": "This Month",
-      "thisQuarter": "This Quarter",
-      "lastMonth": "Last Month",
-      "lastQuarter": "Last Quarter",
-      "custom": "Custom"
+      "thisQuarter": "This Quarter"
     },
     "metrics": {
       "totalManufacturers": "Total Manufacturers",
@@ -637,42 +611,151 @@
       "documentVerifications": "Document Verifications",
       "systemAlerts": "System Alerts",
       "verificationRate": "Verification Rate",
-      "vsLastMonth": "vs last month",
-      "pendingApplications": "Pending Applications",
-      "activeProducts": "Active Products",
-      "totalCertifications": "Total Certifications"
+      "vsLastMonth": "vs Last Month"
     },
-    "recentActivities": {
-      "title": "Recent Activities",
-      "noActivities": "No activities yet",
-      "viewAll": "View All",
-      "types": {
-        "manufacturerRegistration": "Manufacturer Registration",
-        "productCertification": "Product Certification",
-        "documentVerification": "Document Verification",
-        "systemUpdate": "System Update"
+    "recentApprovals": {
+      "title": "Recent Approvals",
+      "noApprovals": "No approvals yet"
+    },
+    "systemAlerts": {
+      "title": "System Alerts",
+      "noAlerts": "No active alerts",
+      "severity": {
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low"
       }
     },
-    "pendingApprovals": {
-      "title": "Pending Approvals",
-      "noPending": "No pending approvals",
-      "viewAll": "View All",
-      "types": {
-        "manufacturer": "Manufacturer",
-        "product": "Product",
-        "document": "Document",
-        "certification": "Certification"
+    "manufacturers": {
+      "list": {
+        "title": "Registered Manufacturers",
+        "description": "View and manage manufacturer registrations",
+        "columns": {
+          "company": "Company",
+          "status": "Status",
+          "documents": "Documents",
+          "products": "Products",
+          "date": "Registration Date",
+          "actions": "Actions"
+        },
+        "actions": {
+          "viewDetails": "View Details",
+          "reviewDocuments": "Review Documents",
+          "viewProducts": "View Products",
+          "approve": "Approve",
+          "reject": "Reject"
+        },
+        "status": {
+          "pending": "Pending",
+          "approved": "Approved",
+          "rejected": "Rejected"
+        }
+      },
+      "filters": {
+        "status": "Filter by status",
+        "allManufacturers": "All Manufacturers",
+        "pendingApproval": "Pending Approval",
+        "approved": "Approved",
+        "rejected": "Rejected"
+      },
+      "actions": {
+        "addNew": "Add New",
+        "reject": "Reject",
+        "approve": "Approve"
+      },
+      "details": {
+        "backToList": "Back to List",
+        "actions": {
+          "reject": "Reject",
+          "approve": "Approve"
+        },
+        "status": {
+          "approved": "Approved",
+          "rejected": "Rejected",
+          "pending": "Pending"
+        },
+        "companyInfo": {
+          "title": "Company Information",
+          "email": "Email",
+          "phone": "Phone",
+          "address": "Address",
+          "taxId": "Tax ID",
+          "registrationDate": "Registration Date"
+        },
+        "verification": {
+          "title": "Verification Status",
+          "document": "Document Verification",
+          "taxId": "Tax ID Verification",
+          "address": "Address Verification",
+          "contact": "Contact Verification",
+          "status": {
+            "inProgress": "In Progress",
+            "verified": "Verified",
+            "pending": "Pending"
+          }
+        }
       }
     },
-    "manufacturerList": {
-      "title": "Manufacturers",
-      "noManufacturers": "No manufacturers yet",
-      "viewAll": "View All",
-      "columns": {
-        "name": "Name",
-        "products": "Products",
-        "status": "Status",
-        "joinDate": "Join Date"
+    "sections": {
+      "pendingApprovals": {
+        "title": "Pending Approvals",
+        "description": "Recent approval requests requiring attention"
+      },
+      "systemAlerts": {
+        "title": "System Alerts",
+        "description": "Recent system notifications and alerts",
+        "alerts": {
+          "highVolume": "High volume of pending approvals detected",
+          "failedVerification": "Blockchain verification attempt failed",
+          "maintenance": "System maintenance scheduled for tonight"
+        }
+      }
+    },
+    "labels": {
+      "manufacturer": "Manufacturer",
+      "document": "Document",
+      "dpc": "DPC",
+      "minutes": "minutes",
+      "hour": "hour",
+      "ago": "ago"
+    },
+    "actions": {
+      "review": "Review"
+    },
+    "documents": {
+      "title": "Document Management",
+      "description": "Review and manage document submissions",
+      "repository": {
+        "title": "Document Repository",
+        "description": "View and manage all uploaded documents",
+        "columns": {
+          "document": "Document",
+          "type": "Type",
+          "manufacturer": "Manufacturer",
+          "status": "Status",
+          "validUntil": "Valid Until",
+          "version": "Version",
+          "actions": "Actions"
+        },
+        "status": {
+          "pending": "Pending",
+          "approved": "Approved",
+          "rejected": "Rejected",
+          "expired": "Expired"
+        },
+        "types": {
+          "certification": "Certification",
+          "compliance": "Compliance",
+          "quality": "Quality",
+          "legal": "Legal"
+        }
+      },
+      "filters": {
+        "allDocuments": "All Documents",
+        "allStatus": "All Status"
+      },
+      "actions": {
+        "upload": "Upload"
       }
     }
   },
@@ -685,128 +768,34 @@
       "dppTemplates": "DPP Templates"
     },
     "dpc": {
-      "details": {
-        "notFound": "Certification not found",
-        "backButton": "Back to Certifications",
-        "exportDPC": "Export DPC",
-        "reject": "Reject",
+      "title": "DPC Applications",
+      "description": "View and manage DPC applications",
+      "columns": {
+        "product": "Product",
+        "category": "Category",
+        "manufacturer": "Manufacturer",
+        "status": "Status",
+        "score": "Score",
+        "documents": "Documents"
+      },
+      "status": {
+        "pending": "Pending",
+        "approved": "Approved",
+        "rejected": "Rejected",
+        "verified": "Verified",
+        "passed": "Passed"
+      },
+      "actions": {
+        "title": "Actions",
+        "newDPC": "New DPC Application",
+        "download": "Download",
+        "view": "View",
         "approve": "Approve",
-        "productInfo": {
-          "title": "Product Information",
-          "category": "Category",
-          "manufacturer": "Manufacturer",
-          "productionMethod": "Production Method",
-          "dyeingProcess": "Dyeing Process",
-          "materials": "Materials"
-        },
-        "certificationStatus": {
-          "title": "Certification Status",
-          "sustainabilityScore": "Sustainability Score",
-          "requiredCertifications": "Required Certifications",
-          "testReports": "Test Reports",
-          "supportingDocuments": "Supporting Documents"
-        },
-        "status": {
-          "verified": "Verified",
-          "pending": "Pending",
-          "passed": "Passed"
-        }
+        "reject": "Reject",
+        "back": "Back"
       }
     }
   },
-  "verify": {
-    "title": "Product Verification",
-    "description": "Enter the product ID or scan QR code to verify authenticity",
-    "input": {
-      "label": "Product ID",
-      "placeholder": "Enter product ID",
-      "submit": "Verify"
-    },
-    "scan": {
-      "title": "Scan QR Code",
-      "description": "Use your camera to scan the product QR code"
-    },
-    "result": {
-      "title": "Verification Result",
-      "authentic": "Product is authentic",
-      "notFound": "Product not found",
-      "invalid": "Invalid product ID"
-    }
-  },
-  "settings": {
-    "title": "Settings",
-    "description": "Manage your company profile and preferences",
-    "saveChanges": "Save Changes",
-    "tabs": {
-      "company": "Company",
-      "contact": "Contact",
-      "notifications": "Notifications",
-      "security": "Security"
-    },
-    "company": {
-      "title": "Company Information",
-      "name": {
-        "label": "Company Name",
-        "description": "Contact support to update company name"
-      },
-      "taxId": {
-        "label": "Tax ID",
-        "description": "Contact support to update tax ID"
-      },
-      "tradeRegisterNumber": {
-        "label": "Trade Register Number"
-      },
-      "mersisNumber": {
-        "label": "MERSIS Number"
-      }
-    },
-    "contact": {
-      "title": "Contact Information",
-      "email": "Email",
-      "phone": "Phone",
-      "fax": "Fax",
-      "website": "Website",
-      "address": {
-        "title": "Address Information",
-        "headquarters": "Headquarters Address",
-        "factory": "Factory Address",
-        "branches": "Branch Addresses"
-      },
-      "authorized": {
-        "title": "Authorized Person",
-        "name": "Full Name",
-        "position": "Title",
-        "department": "Department",
-        "email": "Email",
-        "phone": "Phone"
-      }
-    },
-    "notifications": {
-      "title": "Notification Preferences",
-      "email": {
-        "label": "Email Notifications",
-        "description": "Receive email notifications for important updates and reminders"
-      },
-      "sms": {
-        "label": "SMS Notifications",
-        "description": "Receive SMS notifications for urgent matters and important reminders"
-      },
-      "system": {
-        "label": "System Alerts",
-        "description": "Receive in-platform notifications and alerts"
-      },
-      "documents": {
-        "label": "Document Reminders",
-        "description": "Receive reminders for document uploads and updates"
-      },
-      "certifications": {
-        "label": "Certification Alerts",
-        "description": "Receive notifications for certification renewals and expiration dates"
-      }
-    },
-    "success": {
-      "title": "Settings updated",
-      "description": "Your settings have been saved successfully."
-    }
+  "auth": {
   }
 }
