@@ -16,6 +16,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
 
 interface ProductDocumentsProps {
@@ -261,7 +267,30 @@ export function ProductDocuments({ productId }: ProductDocumentsProps) {
             <TableBody>
               {documents.map((document, index) => (
                 <TableRow key={index}>
-                  <TableCell className="font-medium">{document.name}</TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      <FileText className="h-4 w-4 text-muted-foreground" />
+                      <div>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <p className="font-medium truncate max-w-[200px]">
+                                {document.name.length > 25 
+                                  ? `${document.name.slice(0, 25)}...` 
+                                  : document.name}
+                              </p>
+                            </TooltipTrigger>
+                            <TooltipContent side="top" align="start">
+                              <p className="max-w-[300px] break-words text-xs">{document.name}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                        <p className="text-sm text-muted-foreground">
+                          {document.id} · {document.fileSize}
+                        </p>
+                      </div>
+                    </div>
+                  </TableCell>
                   <TableCell>
                     <Badge variant="secondary">
                       {documentTypeLabels[document.type] || document.type}

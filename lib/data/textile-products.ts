@@ -245,7 +245,6 @@ export const textileProducts: Product[] = [
         }
       ]
     },
-    product_subcategory: "",
     manufacturer_id: ""
   },
   {
@@ -517,7 +516,6 @@ export const textileProducts: Product[] = [
         }
       ]
     },
-    product_subcategory: "",
     manufacturer_id: ""
   }
 ]; 

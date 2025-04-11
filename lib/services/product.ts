@@ -46,7 +46,7 @@ export class ProductService {
   static async createProduct(product: NewProduct): Promise<ProductResponse> {
     try {
       // Extract documents if they exist, otherwise use empty object
-      const { documents = {}, ...productData } = product;
+      const { documents = {}, manufacturer_id, ...productData } = product;
       // Validate and map documents with type assertion to fix lint error
       const validatedDocuments = validateAndMapDocuments(
         documents as Record<string, any[]>
@@ -58,6 +58,7 @@ export class ProductService {
         .insert([
           {
             ...productData,
+            manufacturer_id: manufacturer_id || null, // Set to null if empty
             documents:
               Object.keys(validatedDocuments).length > 0
                 ? validatedDocuments
@@ -71,8 +72,9 @@ export class ProductService {
         console.error("Product creation error:", error);
         return {
           error: {
-            message: "Failed to create product",
+            message: error.message || "Failed to create product",
             field: error.details,
+            code: error.code,
           },
         };
       }
@@ -82,8 +84,8 @@ export class ProductService {
       console.error("Error in createProduct:", error);
       return {
         error: {
-          message:
-            error instanceof Error ? error.message : "Unknown error occurred",
+          message: error instanceof Error ? error.message : "Unknown error occurred",
+          details: error instanceof Error ? error.stack : undefined,
         },
       };
     }
@@ -133,7 +135,6 @@ export class ProductService {
         // Delete each product image from storage
         for (const image of product.images) {
           if (image?.url) {
-            console.log(`Attempting to delete product image: ${image.url}`);
             await StorageService.deleteProductImage(image.url);
           }
         }
@@ -193,7 +194,7 @@ export const productService = createService({
   createProduct: async (product: NewProduct) => {
     try {
       // Extract documents if they exist, otherwise use empty object
-      const { documents = {}, ...productData } = product;
+      const { documents = {}, manufacturer_id, ...productData } = product;
       // Validate and map documents with type assertion to fix lint error
       const validatedDocuments = validateAndMapDocuments(
         documents as Record<string, any[]>
@@ -205,6 +206,7 @@ export const productService = createService({
         .insert([
           {
             ...productData,
+            manufacturer_id: manufacturer_id || null, // Set to null if empty
             documents:
               Object.keys(validatedDocuments).length > 0
                 ? validatedDocuments
@@ -218,8 +220,9 @@ export const productService = createService({
         console.error("Product creation error:", error);
         return {
           error: {
-            message: "Failed to create product",
+            message: error.message || "Failed to create product",
             field: error.details,
+            code: error.code,
           },
         };
       }
@@ -230,8 +233,8 @@ export const productService = createService({
 
       return {
         error: {
-          message:
-            error instanceof Error ? error.message : "Unknown error occurred",
+          message: error instanceof Error ? error.message : "Unknown error occurred",
+          details: error instanceof Error ? error.stack : undefined,
         },
       };
     }

@@ -408,10 +408,9 @@
           "document": "Document"
         },
         "status": {
-          "active": "Active",
-          "expired": "Expired",
-          "pending": "Pending",
-          "unknown": "Unknown"
+          "statusPending": "Pending",
+          "statusApproved": "Approved",
+          "statusRejected": "Rejected"
         },
         "actions": {
           "download": "Download"
@@ -769,33 +768,34 @@
       "dppTemplates": "DPP Templates"
     },
     "dpc": {
-      "details": {
-        "notFound": "Certification not found",
-        "backButton": "Back to Certifications",
-        "exportDPC": "Export DPC",
-        "reject": "Reject",
+      "title": "DPC Applications",
+      "description": "View and manage DPC applications",
+      "columns": {
+        "product": "Product",
+        "category": "Category",
+        "manufacturer": "Manufacturer",
+        "status": "Status",
+        "score": "Score",
+        "documents": "Documents"
+      },
+      "status": {
+        "pending": "Pending",
+        "approved": "Approved",
+        "rejected": "Rejected",
+        "verified": "Verified",
+        "passed": "Passed"
+      },
+      "actions": {
+        "title": "Actions",
+        "newDPC": "New DPC Application",
+        "download": "Download",
+        "view": "View",
         "approve": "Approve",
-        "productInfo": {
-          "title": "Product Information",
-          "category": "Category",
-          "manufacturer": "Manufacturer",
-          "productionMethod": "Production Method",
-          "dyeingProcess": "Dyeing Process",
-          "materials": "Materials"
-        },
-        "certificationStatus": {
-          "title": "Certification Status",
-          "sustainabilityScore": "Sustainability Score",
-          "requiredCertifications": "Required Certifications",
-          "testReports": "Test Reports",
-          "supportingDocuments": "Supporting Documents"
-        },
-        "status": {
-          "verified": "Verified",
-          "pending": "Pending",
-          "passed": "Passed"
-        }
+        "reject": "Reject",
+        "back": "Back"
       }
     }
+  },
+  "auth": {
   }
 }

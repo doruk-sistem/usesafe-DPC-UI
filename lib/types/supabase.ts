@@ -1,4 +1,4 @@
-import { StatusTransition, ProductImage, KeyFeature } from "./product"
+import { StatusTransition, ProductImage, KeyFeature, DPPConfig } from "./product"
 
 export type Json =
   | string
@@ -13,22 +13,21 @@ export interface Database {
     Tables: {
       products: {
         Row: {
-          dpp_config?: any
           id: string
           name: string
           description: string
           company_id: string
           product_type: string
           product_subcategory: string
-          model: string
+          model?: string
           status: "DRAFT" | "NEW" | "DELETED" | "ARCHIVED"
           status_history: StatusTransition[]
           images: ProductImage[]
           key_features: KeyFeature[]
           created_at: string
           updated_at: string
-          documents?: Json
           manufacturer_id: string
+          documents?: Json[]
         }
         Insert: {
           id?: string
@@ -36,7 +35,7 @@ export interface Database {
           description: string | null
           company_id: string
           product_type: string
-          product_subcategory?: string
+          product_subcategory: string
           model: string
           status?: 'DRAFT' | 'NEW' | 'DELETED' | 'ARCHIVED'
           status_history?: StatusTransition[]
@@ -48,7 +47,7 @@ export interface Database {
           key_features?: KeyFeature[]
           created_at?: string
           updated_at?: string
-          documents?: Json
+          documents?: Json[];
           manufacturer_id: string
         }
         Update: {
@@ -69,7 +68,7 @@ export interface Database {
           product_type?: string
           product_subcategory?: string
           model?: string
-          documents?: Json
+          documents?: Json[]
           manufacturer_id?: string
         }
       }

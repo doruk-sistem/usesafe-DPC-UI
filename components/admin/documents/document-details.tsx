@@ -10,34 +10,28 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { toast, useToast } from "@/components/ui/use-toast";
-
-// Mock data - In a real app, this would come from an API
-const documentsData = {
-  "DOC-001": {
-    id: "DOC-001",
-    name: "ISO 9001:2015 Certificate",
-    type: "Certification",
-    manufacturer: "TechFabrics Ltd",
-    status: "pending",
-    validUntil: "2025-03-15",
-    uploadedAt: "2024-03-15T10:30:00",
-    fileSize: "2.4 MB",
-    version: "1.0",
-    description: "Quality Management System certification for textile manufacturing processes",
-    issuer: "International Standards Organization",
-    verificationStatus: {
-      authenticity: "verified",
-      completeness: "verified",
-      signature: "pending",
-      expiration: "valid",
-    },
-  },
-};
+import { useToast } from "@/components/ui/use-toast";
 
 interface DocumentDetailsProps {
   documentId: string;
 }
+
+interface Document {
+  id: string;
+  name: string;
+  status: "approved" | "rejected" | "pending";
+  // Add other document properties as needed
+}
+
+// Temporary mock data - replace with API call
+const documentsData: Record<string, Document> = {
+  "1": {
+    id: "1",
+    name: "Document 1",
+    status: "pending",
+  },
+  // Add more mock documents as needed
+};
 
 export function DocumentDetails({ documentId }: DocumentDetailsProps) {
   const t = useTranslations("documentManagement.repository");
@@ -131,98 +125,38 @@ export function DocumentDetails({ documentId }: DocumentDetailsProps) {
         </div>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <FileText className="h-5 w-5" />
-            {t("details.documentInfo.title")}
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <p className="text-sm text-muted-foreground">{t("details.documentInfo.id")}</p>
-              <p className="font-medium">{document.id}</p>
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground">{t("details.documentInfo.version")}</p>
-              <p className="font-medium">v{document.version}</p>
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground">{t("details.documentInfo.type")}</p>
-              <p className="font-medium">{document.type}</p>
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground">{t("details.documentInfo.fileSize")}</p>
-              <p className="font-medium">{document.fileSize}</p>
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground">{t("details.documentInfo.uploadDate")}</p>
-              <p className="font-medium">
-                {new Date(document.uploadedAt).toLocaleDateString()}
-              </p>
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground">{t("details.documentInfo.validUntil")}</p>
-              <p className="font-medium">
-                {new Date(document.validUntil).toLocaleDateString()}
-              </p>
-            </div>
-          </div>
-          <div>
-            <p className="text-sm text-muted-foreground">{t("details.documentInfo.description")}</p>
-            <p className="mt-1">{document.description}</p>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("details.verificationStatus.title")}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {Object.entries(document.verificationStatus).map(([key, value]) => (
-              <div key={key} className="flex items-center justify-between">
-                <span>{t(`details.verificationStatus.${key}`)}</span>
-                <Badge
-                  variant={
-                    value === "verified"
-                      ? "success"
-                      : value === "invalid"
-                      ? "destructive"
-                      : "warning"
-                  }
-                >
-                  {t(`details.verificationStatus.${value}`)}
-                </Badge>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      {document.status === "pending" && (
+      <div className="grid grid-cols-2 gap-6">
         <Card>
           <CardHeader>
-            <CardTitle>{t("details.adminReview.title")}</CardTitle>
+            <CardTitle>{t("details.documentInfo")}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="comment">{t("details.adminReview.comment")}</Label>
-                <Textarea
-                  id="comment"
-                  placeholder={t("details.adminReview.commentPlaceholder")}
-                  value={comment}
-                  onChange={(e) => setComment(e.target.value)}
-                  className="min-h-[100px]"
-                />
+              <div>
+                <Label>{t("details.name")}</Label>
+                <p className="text-sm text-muted-foreground">{document.name}</p>
               </div>
+              <div>
+                <Label>{t("details.status")}</Label>
+                <p className="text-sm text-muted-foreground">
+                  {t(`status.${document.status}`)}
+                </p>
+              </div>
+              {document.status === "pending" && (
+                <div>
+                  <Label htmlFor="comment">{t("details.comment")}</Label>
+                  <Textarea
+                    id="comment"
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                    placeholder={t("details.commentPlaceholder")}
+                  />
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
-      )}
+      </div>
     </div>
   );
 }

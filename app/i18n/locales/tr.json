@@ -1462,6 +1462,13 @@
         "score": "Puan",
         "documents": "Belgeler"
       },
+      "status": {
+        "pending": "Beklemede",
+        "approved": "Onaylandı",
+        "rejected": "Reddedildi",
+        "verified": "Doğrulandı",
+        "passed": "Geçti"
+      },
       "actions": {
         "title": "İşlemler",
         "newDPC": "Yeni DPC Başvurusu",
@@ -1474,13 +1481,6 @@
       "filters": {
         "allCategories": "Tüm Kategoriler",
         "allStatus": "Tüm Durumlar"
-      },
-      "status": {
-        "pending": "Beklemede",
-        "approved": "Onaylandı",
-        "rejected": "Reddedildi",
-        "verified": "Doğrulandı",
-        "passed": "Geçti"
       },
       "new": {
         "title": "Yeni DPC Başvurusu",
