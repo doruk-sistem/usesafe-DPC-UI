@@ -7,6 +7,7 @@ import { DashboardHeader } from "@/components/admin/dashboard/header";
 import { DashboardMetrics } from "@/components/admin/dashboard/metrics";
 import { PendingApprovals } from "@/components/admin/dashboard/pending-approvals";
 import { SystemAlerts } from "@/components/admin/dashboard/system-alerts";
+import { RecentApprovals } from "@/components/admin/dashboard/recent-approvals";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -52,6 +53,12 @@ export default function AdminDashboard() {
         </motion.div>
         <motion.div variants={itemVariants}>
           <SystemAlerts />
+        </motion.div>
+      </div>
+
+      <div className="grid gap-6 md:grid-cols-2">
+        <motion.div variants={itemVariants}>
+          <RecentApprovals />
         </motion.div>
       </div>
     </motion.div>

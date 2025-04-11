@@ -360,7 +360,22 @@
         }
       },
       "certifications": {
-        "title": "Certifications"
+        "title": "Certifications",
+        "table": {
+          "name": "Certificate",
+          "issuedBy": "Issued By",
+          "validUntil": "Valid Until",
+          "status": "Status",
+          "document": "Document"
+        },
+        "status": {
+          "statusPending": "Pending",
+          "statusApproved": "Approved",
+          "statusRejected": "Rejected"
+        },
+        "actions": {
+          "download": "Download"
+        }
       },
       "sustainability": {
         "title": "Sustainability Metrics",
@@ -549,6 +564,48 @@
       "empty": "No pending applications",
       "loading": "Loading applications...",
       "submitted": "Submitted on",
+    },
+  },
+  "productManagement": {
+    "title": "Product Management",
+    "description": "Manage and track all your products",
+    "search": {
+      "placeholder": "Search products..."
+    },
+    "filters": {
+      "type": {
+        "label": "Product Type",
+        "all": "All Types",
+        "agm": "AGM",
+        "efb": "EFB",
+        "standard": "Standard",
+        "marine": "Marine"
+      },
+      "status": {
+        "label": "Status",
+        "all": "All Statuses",
+        "active": "Active",
+        "pending": "Pending",
+        "draft": "Draft"
+      }
+    },
+    "actions": {
+      "download": "Download",
+      "addProduct": "New Product",
+      "menu": "Actions",
+      "viewDetails": "View Details",
+      "editProduct": "Edit Product",
+      "viewDocuments": "View Documents",
+      "deleteProduct": "Delete Product"
+    },
+    "list": {
+      "title": "Product List",
+      "description": "View and manage all your products",
+      "loading": "Loading products...",
+      "empty": {
+        "title": "No Products Found",
+        "description": "You don't have any products yet. Use the 'New Product' button to add one."
+      },
       "columns": {
         "name": "Name",
         "type": "Type",
@@ -578,6 +635,101 @@
         "new": "New",
         "draft": "Draft",
         "deleted": "Deleted"
+        "category": "Category",
+        "status": "Status",
+        "createdAt": "Created At",
+        "actions": "Actions",
+        "basicInfo": "Basic Info"
+      }
+    },
+    "delete": {
+      "confirm": {
+        "title": "Delete Product",
+        "description": "Are you sure you want to delete this product? This action cannot be undone.",
+        "cancel": "Cancel",
+        "confirm": "Delete"
+      }
+    },
+    "addProduct": {
+      "title": "Add New Product",
+      "description": "Fill in the form to add a new product",
+      "form": {
+        "steps": {
+          "manufacturer": "Manufacturer"
+        },
+        "fields": {
+          "manufacturer": {
+            "label": "Manufacturer",
+            "placeholder": "Select or enter manufacturer",
+            "description": "Select the product manufacturer or add a new one"
+          }
+        },
+        "navigation": {
+          "next": "Next",
+          "back": "Back",
+          "finish": "Finish"
+        }
+      }
+    },
+    "productTypes": {
+      "detergents": "Detergents",
+      "textile": "Textile",
+      "battery": "Battery",
+      "automotive": "Automotive",
+      "electronics": "Electronics",
+      "clothing": "Clothing",
+      "agm": "AGM",
+      "efb": "EFB",
+      "standard": "Standard",
+      "marine": "Marine"
+    },
+    "common": {
+      "status": {
+        "new": "NEW",
+        "draft": "Draft",
+        "active": "Active",
+        "pending": "Pending"
+      }
+    }
+  },
+  "common": {
+    "status": {
+      "new": "NEW",
+      "draft": "Draft",
+      "active": "Active",
+      "pending": "Pending"
+    }
+  },
+  "productCategories": {
+    "detergents": "Detergents",
+    "textile": "Textile",
+    "battery": "Battery",
+    "automotive": "Automotive",
+    "electronics": "Electronics",
+    "clothing": "Clothing"
+  },
+  "productTypes": {
+    "detergents": "Detergents",
+    "textile": "Textile",
+    "battery": "Battery",
+    "automotive": "Automotive",
+    "electronics": "Electronics",
+    "clothing": "Clothing"
+  },
+  "documentManagement": {
+    "title": "Document Management",
+    "description": "Manage your company documents and certificates",
+    "repository": {
+      "title": "Document Repository",
+      "description": "View and manage your company documents and certificates",
+      "columns": {
+        "document": "Document",
+        "type": "Type",
+        "category": "Category",
+        "status": "Status",
+        "expiryDate": "Expiry Date",
+        "updatedBy": "Updated By",
+        "actions": "Actions"
       }
     },
     "menu": {
@@ -595,16 +747,13 @@
   },
   "adminDashboard": {
     "title": "Admin Dashboard",
-    "description": "View activities and metrics across the system",
+    "description": "Monitor and manage system-wide operations",
     "period": {
       "select": "Select period",
       "today": "Today",
       "thisWeek": "This Week",
       "thisMonth": "This Month",
-      "thisQuarter": "This Quarter",
-      "lastMonth": "Last Month",
-      "lastQuarter": "Last Quarter",
-      "custom": "Custom"
+      "thisQuarter": "This Quarter"
     },
     "metrics": {
       "totalManufacturers": "Total Manufacturers",
@@ -744,65 +893,190 @@
       "name": {
         "label": "Company Name",
         "description": "Contact support to update company name"
-      },
-      "taxId": {
-        "label": "Tax ID",
-        "description": "Contact support to update tax ID"
-      },
-      "tradeRegisterNumber": {
-        "label": "Trade Register Number"
-      },
-      "mersisNumber": {
-        "label": "MERSIS Number"
+=======
+      "vsLastMonth": "vs Last Month"
+    },
+    "recentApprovals": {
+      "title": "Recent Approvals",
+      "noApprovals": "No approvals yet"
+    },
+    "systemAlerts": {
+      "title": "System Alerts",
+      "noAlerts": "No active alerts",
+      "severity": {
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low"
       }
     },
-    "contact": {
-      "title": "Contact Information",
-      "email": "Email",
-      "phone": "Phone",
-      "fax": "Fax",
-      "website": "Website",
-      "address": {
-        "title": "Address Information",
-        "headquarters": "Headquarters Address",
-        "factory": "Factory Address",
-        "branches": "Branch Addresses"
+    "manufacturers": {
+      "list": {
+        "title": "Registered Manufacturers",
+        "description": "View and manage manufacturer registrations",
+        "columns": {
+          "company": "Company",
+          "status": "Status",
+          "documents": "Documents",
+          "products": "Products",
+          "date": "Registration Date",
+          "actions": "Actions"
+        },
+        "actions": {
+          "viewDetails": "View Details",
+          "reviewDocuments": "Review Documents",
+          "viewProducts": "View Products",
+          "approve": "Approve",
+          "reject": "Reject"
+        },
+        "status": {
+          "pending": "Pending",
+          "approved": "Approved",
+          "rejected": "Rejected"
+        }
       },
-      "authorized": {
-        "title": "Authorized Person",
-        "name": "Full Name",
-        "position": "Title",
-        "department": "Department",
-        "email": "Email",
-        "phone": "Phone"
+      "filters": {
+        "status": "Filter by status",
+        "allManufacturers": "All Manufacturers",
+        "pendingApproval": "Pending Approval",
+        "approved": "Approved",
+        "rejected": "Rejected"
+      },
+      "actions": {
+        "addNew": "Add New",
+        "reject": "Reject",
+        "approve": "Approve"
+      },
+      "details": {
+        "backToList": "Back to List",
+        "actions": {
+          "reject": "Reject",
+          "approve": "Approve"
+        },
+        "status": {
+          "approved": "Approved",
+          "rejected": "Rejected",
+          "pending": "Pending"
+        },
+        "companyInfo": {
+          "title": "Company Information",
+          "email": "Email",
+          "phone": "Phone",
+          "address": "Address",
+          "taxId": "Tax ID",
+          "registrationDate": "Registration Date"
+        },
+        "verification": {
+          "title": "Verification Status",
+          "document": "Document Verification",
+          "taxId": "Tax ID Verification",
+          "address": "Address Verification",
+          "contact": "Contact Verification",
+          "status": {
+            "inProgress": "In Progress",
+            "verified": "Verified",
+            "pending": "Pending"
+          }
+        }
       }
     },
-    "notifications": {
-      "title": "Notification Preferences",
-      "email": {
-        "label": "Email Notifications",
-        "description": "Receive email notifications for important updates and reminders"
+    "sections": {
+      "pendingApprovals": {
+        "title": "Pending Approvals",
+        "description": "Recent approval requests requiring attention"
       },
-      "sms": {
-        "label": "SMS Notifications",
-        "description": "Receive SMS notifications for urgent matters and important reminders"
-      },
-      "system": {
-        "label": "System Alerts",
-        "description": "Receive in-platform notifications and alerts"
-      },
-      "documents": {
-        "label": "Document Reminders",
-        "description": "Receive reminders for document uploads and updates"
-      },
-      "certifications": {
-        "label": "Certification Alerts",
-        "description": "Receive notifications for certification renewals and expiration dates"
+      "systemAlerts": {
+        "title": "System Alerts",
+        "description": "Recent system notifications and alerts",
+        "alerts": {
+          "highVolume": "High volume of pending approvals detected",
+          "failedVerification": "Blockchain verification attempt failed",
+          "maintenance": "System maintenance scheduled for tonight"
+        }
       }
     },
-    "success": {
-      "title": "Settings updated",
-      "description": "Your settings have been saved successfully."
+    "labels": {
+      "manufacturer": "Manufacturer",
+      "document": "Document",
+      "dpc": "DPC",
+      "minutes": "minutes",
+      "hour": "hour",
+      "ago": "ago"
+    },
+    "actions": {
+      "review": "Review"
+    },
+    "documents": {
+      "title": "Document Management",
+      "description": "Review and manage document submissions",
+      "repository": {
+        "title": "Document Repository",
+        "description": "View and manage all uploaded documents",
+        "columns": {
+          "document": "Document",
+          "type": "Type",
+          "manufacturer": "Manufacturer",
+          "status": "Status",
+          "validUntil": "Valid Until",
+          "version": "Version",
+          "actions": "Actions"
+        },
+        "status": {
+          "pending": "Pending",
+          "approved": "Approved",
+          "rejected": "Rejected",
+          "expired": "Expired"
+        },
+        "types": {
+          "certification": "Certification",
+          "compliance": "Compliance",
+          "quality": "Quality",
+          "legal": "Legal"
+        }
+      },
+      "filters": {
+        "allDocuments": "All Documents",
+        "allStatus": "All Status"
+      },
+      "actions": {
+        "upload": "Upload"
+      }
+    }
+  },
+  "admin": {
+    "sidebar": {
+      "dashboard": "Dashboard",
+      "manufacturers": "Manufacturers",
+      "documents": "Documents",
+      "certifications": "Certifications",
+      "dppTemplates": "DPP Templates"
+    },
+    "dpc": {
+      "title": "DPC Applications",
+      "description": "View and manage DPC applications",
+      "columns": {
+        "product": "Product",
+        "category": "Category",
+        "manufacturer": "Manufacturer",
+        "status": "Status",
+        "score": "Score",
+        "documents": "Documents"
+      },
+      "status": {
+        "pending": "Pending",
+        "approved": "Approved",
+        "rejected": "Rejected",
+        "verified": "Verified",
+        "passed": "Passed"
+      },
+      "actions": {
+        "title": "Actions",
+        "newDPC": "New DPC Application",
+        "download": "Download",
+        "view": "View",
+        "approve": "Approve",
+        "reject": "Reject",
+        "back": "Back"
+      }
     }
   },
   "common": {
@@ -892,5 +1166,6 @@
         "label": "Company Name *"
       }
     }
+  "auth": {
   }
 } 
