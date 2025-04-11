@@ -75,7 +75,6 @@ export class ProductService {
           error: {
             message: error.message || "Failed to create product",
             field: error.details,
-            code: error.code,
           },
         };
       }
@@ -87,7 +86,6 @@ export class ProductService {
         error: {
           message:
             error instanceof Error ? error.message : "Unknown error occurred",
-          details: error instanceof Error ? error.stack : undefined,  
         },
       };
     }
@@ -174,7 +172,6 @@ export const productService = createService({
       console.error("Error fetching products:", error);
       throw new Error("Failed to fetch products");
     }
-
     return data || [];
   },
   getProduct: async ({

@@ -586,9 +586,9 @@
       "status": {
         "label": "Durum",
         "all": "Tüm Durumlar",
-        "active": "Aktif",
-        "pending": "Beklemede",
-        "draft": "Taslak"
+        "APPROVED": "Onaylandı",
+        "REJECTED": "Reddedildi",
+        "PENDING": "Beklemede"
       }
     },
     "list": {
@@ -610,6 +610,7 @@
       }
     },
     "actions": {
+      "openMenu": "Menüyü Aç",
       "menu": "İşlemler",
       "viewDetails": "Detayları Görüntüle",
       "editProduct": "Ürünü Düzenle",
@@ -619,7 +620,7 @@
       "download": "İndir"
     },
     "table": {
-      "name": "İsim",
+      "productName": "Ürün Adı",
       "model": "Model",
       "status": "Durum",
       "actions": "İşlemler"

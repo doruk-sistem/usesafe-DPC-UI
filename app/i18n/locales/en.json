@@ -479,9 +479,9 @@
       "status": {
         "label": "Status",
         "all": "All Status",
-        "active": "Active",
-        "pending": "Pending",
-        "draft": "Draft"
+        "APPROVED": "Approved",
+        "REJECTED": "Rejected",
+        "PENDING": "Pending"
       }
     },
     "list": {
@@ -503,6 +503,7 @@
       }
     },
     "actions": {
+      "openMenu": "Open menu",
       "menu": "Actions",
       "viewDetails": "View Details",
       "editProduct": "Edit Product",
@@ -512,7 +513,7 @@
       "download": "Download"
     },
     "table": {
-      "name": "Name",
+      "productName": "Product Name",
       "model": "Model",
       "status": "Status",
       "actions": "Actions"

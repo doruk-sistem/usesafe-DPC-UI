@@ -7,7 +7,13 @@ import { useState, useEffect, useRef } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface ProductHeaderProps {
   onSearch?: (term: string) => void;
@@ -37,7 +43,7 @@ export function ProductHeader({
       if (onSearch) {
         onSearch(searchTerm);
       }
-    }, 300); 
+    }, 300);
 
     return () => clearTimeout(delayDebounceFn);
   }, [searchTerm, onSearch]);
@@ -60,9 +66,7 @@ export function ProductHeader({
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
         <h1 className="text-2xl font-semibold">{t("title")}</h1>
-        <p className="text-sm text-muted-foreground">
-          {t("description")}
-        </p>
+        <p className="text-sm text-muted-foreground">{t("description")}</p>
       </div>
 
       <div className="flex flex-col sm:flex-row items-center gap-2">
@@ -81,7 +85,9 @@ export function ProductHeader({
             <SelectItem value="all">{t("filters.type.all")}</SelectItem>
             <SelectItem value="agm">{t("filters.type.agm")}</SelectItem>
             <SelectItem value="efb">{t("filters.type.efb")}</SelectItem>
-            <SelectItem value="standard">{t("filters.type.standard")}</SelectItem>
+            <SelectItem value="standard">
+              {t("filters.type.standard")}
+            </SelectItem>
             <SelectItem value="marine">{t("filters.type.marine")}</SelectItem>
           </SelectContent>
         </Select>
@@ -91,10 +97,18 @@ export function ProductHeader({
             <SelectValue placeholder="All Statuses" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all-status">All Statuses</SelectItem>
-            <SelectItem value="APPROVED">Approved</SelectItem>
-            <SelectItem value="REJECTED">Rejected</SelectItem>
-            <SelectItem value="PENDING">Pending</SelectItem>
+            <SelectItem value="all-status">
+              {t("filters.status.all")}
+            </SelectItem>
+            <SelectItem value="APPROVED">
+              {t("filters.status.APPROVED")}
+            </SelectItem>
+            <SelectItem value="REJECTED">
+              {t("filters.status.REJECTED")}
+            </SelectItem>
+            <SelectItem value="PENDING">
+              {t("filters.status.PENDING")}
+            </SelectItem>
           </SelectContent>
         </Select>
 

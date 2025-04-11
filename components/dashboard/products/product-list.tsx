@@ -122,8 +122,8 @@ export function ProductList({ products, isLoading }: ProductListProps) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Products</CardTitle>
-          <CardDescription>Loading your products...</CardDescription>
+          <CardTitle>{t("products.title")}</CardTitle>
+          <CardDescription>{t("products.loading")}</CardDescription>
         </CardHeader>
         <CardContent>
           {[1, 2, 3].map((i) => (
@@ -145,12 +145,16 @@ export function ProductList({ products, isLoading }: ProductListProps) {
       <Card>
         <CardContent className="flex flex-col items-center justify-center py-12">
           <Battery className="h-12 w-12 text-muted-foreground mb-4" />
-          <h2 className="text-xl font-semibold mb-2">No Products Found</h2>
+          <h2 className="text-xl font-semibold mb-2">
+            {t("products.empty.title")}
+          </h2>
           <p className="text-muted-foreground mb-4">
-            Start by adding your first product.
+            {t("products.empty.description")}
           </p>
           <Button asChild>
-            <Link href="/dashboard/products/new">Add Product</Link>
+            <Link href="/dashboard/products/new">
+              {t("products.empty.addButton")}
+            </Link>
           </Button>
         </CardContent>
       </Card>
@@ -161,8 +165,8 @@ export function ProductList({ products, isLoading }: ProductListProps) {
     <>
       <Card>
         <CardHeader>
-          <CardTitle>{t("title")}</CardTitle>
-          <CardDescription>{t("description")}</CardDescription>
+          <CardTitle>{t("products.title")}</CardTitle>
+          <CardDescription>{t("products.description")}</CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
@@ -267,57 +271,37 @@ export function ProductList({ products, isLoading }: ProductListProps) {
                     <TableCell>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 p-0 rounded-full bg-gradient-to-br from-primary/5 via-primary/10 to-primary/5 hover:from-primary/10 hover:via-primary/15 hover:to-primary/10 border border-border/50 shadow-sm transition-all duration-200"
-                          >
-                            <MoreHorizontal className="h-4 w-4 text-primary/70 hover:text-primary transition-colors" />
-                            <span className="sr-only">Open menu</span>
+                          <Button variant="ghost" size="icon">
+                            <MoreHorizontal className="h-4 w-4" />
+                            <span className="sr-only">
+                              {t("productManagement.actions.openMenu")}
+                            </span>
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent
-                          align="end"
-                          className="w-[200px] p-2 rounded-xl border border-border/50 shadow-lg bg-gradient-to-b from-background to-muted/30 backdrop-blur-sm"
-                        >
-                          <DropdownMenuLabel className="px-2 py-1.5 text-xs font-medium text-muted-foreground">
-                            Product Actions
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuLabel>
+                            {t("productManagement.actions.menu")}
                           </DropdownMenuLabel>
-                          <DropdownMenuSeparator className="my-1 bg-border/50" />
-                          <DropdownMenuItem
-                            asChild
-                            className="focus:bg-primary/5"
-                          >
-                            <Link
-                              href={`/dashboard/products/${product.id}`}
-                              className="flex items-center px-2 py-1.5 text-sm rounded-md transition-colors"
-                            >
-                              <Battery className="h-4 w-4 mr-2 text-primary/70" />
-                              <span>View Details</span>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem asChild>
+                            <Link href={`/dashboard/products/${product.id}`}>
+                              <Battery className="h-4 w-4 mr-2" />
+                              {t("productManagement.actions.viewDetails")}
                             </Link>
                           </DropdownMenuItem>
-                          <DropdownMenuItem
-                            asChild
-                            className="focus:bg-primary/5"
-                          >
+                          <DropdownMenuItem asChild>
                             <Link
                               href={`/dashboard/products/${product.id}/edit`}
-                              className="flex items-center px-2 py-1.5 text-sm rounded-md transition-colors"
                             >
-                              <Pencil className="h-4 w-4 mr-2 text-primary/70" />
-                              <span>Edit Product</span>
+                              {t("productManagement.actions.editProduct")}
                             </Link>
                           </DropdownMenuItem>
-                          <DropdownMenuItem
-                            asChild
-                            className="focus:bg-primary/5"
-                          >
+                          <DropdownMenuItem asChild>
                             <Link
                               href={`/dashboard/products/${product.id}/documents`}
-                              className="flex items-center px-2 py-1.5 text-sm rounded-md transition-colors"
                             >
-                              <FileText className="h-4 w-4 mr-2 text-primary/70" />
-                              <span>View Documents</span>
+                              <FileText className="h-4 w-4 mr-2" />
+                              {t("productManagement.actions.viewDocuments")}
                             </Link>
                           </DropdownMenuItem>
                           <DropdownMenuSeparator className="my-1 bg-border/50" />
@@ -326,7 +310,8 @@ export function ProductList({ products, isLoading }: ProductListProps) {
                             className="flex items-center px-2 py-1.5 text-sm rounded-md text-destructive hover:text-destructive focus:text-destructive focus:bg-destructive/5 transition-colors"
                           >
                             <Trash className="h-4 w-4 mr-2" />
-                            <span>Delete Product</span>
+
+                            {t("productManagement.actions.deleteProduct")}
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
