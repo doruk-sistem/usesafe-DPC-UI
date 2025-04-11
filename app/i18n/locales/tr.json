@@ -1518,73 +1518,123 @@
     }
   },
   "adminDashboard": {
-    "title": "Yönetici Gösterge Paneli",
-    "description": "Sistem genelindeki etkinlikleri ve metrikleri görüntüleyin",
-    "actions": {
-      "title": "İşlemler",
-      "upload": "Yükle",
-      "download": "İndir",
-      "approve": "Onayla",
-      "reject": "Reddet",
-      "viewDetails": "Detayları Görüntüle",
-      "viewHistory": "Geçmişi Görüntüle"
+    "title": "Yönetici Paneli",
+    "description": "Sistem genelindeki işlemleri izleyin ve yönetin",
+    "period": {
+      "select": "Dönem seçin",
+      "today": "Bugün",
+      "thisWeek": "Bu Hafta",
+      "thisMonth": "Bu Ay",
+      "thisQuarter": "Bu Çeyrek"
     },
-    "toast": {
-      "approved": {
-        "title": "Belge Onaylandı",
-        "description": "Belge başarıyla onaylandı."
-      },
-      "rejected": {
-        "title": "Belge Reddedildi",
-        "description": "Belge reddedildi."
-      },
-      "error": {
-        "title": "Hata",
-        "approveDescription": "Belge onaylanırken bir hata oluştu. Lütfen tekrar deneyin.",
-        "rejectDescription": "Belge reddedilirken bir hata oluştu. Lütfen tekrar deneyin."
+    "metrics": {
+      "totalManufacturers": "Toplam Üretici",
+      "pendingApprovals": "Bekleyen Onaylar",
+      "activeDPCs": "Aktif DPC'ler",
+      "documentVerifications": "Belge Doğrulamaları",
+      "systemAlerts": "Sistem Uyarıları",
+      "verificationRate": "Doğrulama Oranı",
+      "vsLastMonth": "Geçen Aya Göre",
+      "noDataAvailable": "Henüz veri bulunmamaktadır"
+    },
+    "recentApprovals": {
+      "title": "Son Onaylananlar",
+      "noApprovals": "Henüz onaylanan yok"
+    },
+    "systemAlerts": {
+      "title": "Sistem Uyarıları",
+      "noAlerts": "Aktif uyarı yok",
+      "severity": {
+        "high": "Yüksek",
+        "medium": "Orta",
+        "low": "Düşük"
       }
     },
-    "history": {
-      "title": "Belge Geçmişi",
-      "events": {
-        "uploaded": "Belge Yüklendi",
-        "verified": "Orijinallik Doğrulandı",
-        "checked": "Tamlık Kontrolü",
-        "reviewed": "Manuel İnceleme Başladı"
-      },
-      "user": "Kullanıcı",
-      "system": "Sistem",
-      "details": {
-        "initialUpload": "İlk belge yüklemesi",
-        "signatureValidated": "Belge imzası doğrulandı",
-        "fieldsVerified": "Tüm gerekli alanlar doğrulandı",
-        "underReview": "Belge sertifikasyon ekibi tarafından inceleniyor"
-      }
-    },
-    "validation": {
-      "title": "Doğrulama Kontrolleri",
-      "progress": "İlerleme",
-      "checks": {
-        "authenticity": {
-          "title": "Orijinallik",
-          "verified": "Dijital imza başarıyla doğrulandı"
+    "manufacturers": {
+      "list": {
+        "title": "Kayıtlı Üreticiler",
+        "description": "Üretici kayıtlarını görüntüleyin ve yönetin",
+        "columns": {
+          "company": "Firma",
+          "status": "Durum",
+          "documents": "Belgeler",
+          "products": "Ürünler",
+          "date": "Kayıt Tarihi",
+          "actions": "İşlemler"
         },
-        "completeness": {
-          "title": "Tamlık",
-          "verified": "Tüm gerekli alanlar mevcut"
+        "actions": {
+          "viewDetails": "Detayları Görüntüle",
+          "reviewDocuments": "Belgeleri İncele",
+          "viewProducts": "Ürünleri Görüntüle",
+          "approve": "Onayla",
+          "reject": "Reddet"
         },
-        "format": {
-          "title": "Format",
-          "verified": "Belge formatı gereksinimleri karşılıyor"
+        "status": {
+          "pending": "Beklemede",
+          "approved": "Onaylandı",
+          "rejected": "Reddedildi"}
         },
-        "expiration": {
-          "title": "Geçerlilik",
-          "valid": "Belge geçerlilik süresi içinde"
+        "filters": {
+          "status": "Duruma göre filtrele",
+          "allManufacturers": "Tüm Üreticiler",
+          "pendingApproval": "Onay Bekleyenler",
+          "approved": "Onaylananlar",
+          "rejected": "Reddedilenler"
         },
-        "issuer": {
-          "title": "Düzenleyen",
-          "pending": "Düzenleyen doğrulaması devam ediyor"
+        "actions": {
+          "addNew": "Yeni Ekle",
+          "reject": "Reddet",
+          "approve": "Onayla"
+        },
+        "details": {
+          "backToList": "Listeye Dön",
+          "actions": {
+            "reject": "Reddet",
+            "approve": "Onayla"
+          },
+          "status": {
+            "approved": "Onaylandı",
+            "rejected": "Reddedildi",
+            "pending": "Beklemede"
+          },
+          "companyInfo": {
+            "title": "Firma Bilgileri",
+            "email": "E-posta",
+            "phone": "Telefon",
+            "address": "Adres",
+            "taxId": "Vergi No",
+            "registrationDate": "Kayıt Tarihi"
+          },
+          "verification": {
+            "title": "Doğrulama Durumu",
+            "document": "Belge Doğrulama",
+            "taxId": "Vergi No Doğrulama",
+            "address": "Adres Doğrulama",
+            "contact": "İletişim Doğrulama",
+            "status": {
+              "inProgress": "İşlemde",
+              "verified": "Doğrulandı",
+              "pending": "Beklemede"
+            }
+          }
         }
+      },
+      "sections": {
+      "pendingApprovals": {
+        "title": "Bekleyen Onaylar",
+        "description": "Dikkat gerektiren son onay istekleri"
+      },
+      "systemAlerts": {
+        "title": "Sistem Uyarıları",
+        "description": "Son sistem bildirimleri ve uyarıları",
+        "alerts": {
+          "highVolume": "Yüksek sayıda bekleyen onay tespit edildi",
+          "failedVerification": "Blockchain doğrulama denemesi başarısız",
+          "maintenance": "Sistem bakımı bu gece için planlandı"
+        }
+      },
+      "companyName": {
+        "label": "Şirket Adı *"
       }
     }
   },
