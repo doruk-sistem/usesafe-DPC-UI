@@ -47,6 +47,7 @@ export class ProductService {
     try {
       // Extract documents if they exist, otherwise use empty object
       const { documents = {}, manufacturer_id, ...productData } = product;
+
       // Validate and map documents with type assertion to fix lint error
       const validatedDocuments = validateAndMapDocuments(
         documents as Record<string, any[]>
@@ -197,6 +198,7 @@ export const productService = createService({
     try {
       // Extract documents if they exist, otherwise use empty object
       const { documents = {}, manufacturer_id, ...productData } = product;
+
       // Validate and map documents with type assertion to fix lint error
       const validatedDocuments = validateAndMapDocuments(
         documents as Record<string, any[]>

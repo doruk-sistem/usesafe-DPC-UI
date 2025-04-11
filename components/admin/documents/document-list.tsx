@@ -10,12 +10,12 @@ import {
   Clock,
   ChevronDown,
   ChevronRight,
+  Download,
 } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -26,7 +26,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -62,27 +70,52 @@ import { useToast } from "@/components/ui/use-toast";
 import { documentsApiHooks } from "@/lib/hooks/use-documents";
 import type { Document } from "@/lib/types/document";
 
-export function DocumentList() {
+interface DocumentListProps {
+  initialDocuments?: Document[];
+}
+
+export function DocumentList({ initialDocuments = [] }: DocumentListProps) {
   const t = useTranslations("documentManagement");
   const { toast } = useToast();
   const searchParams = useSearchParams();
   const manufacturerId = searchParams.get("manufacturer");
   const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [expandedProducts, setExpandedProducts] = useState<Record<string, boolean>>({});
+  const [expandedProducts, setExpandedProducts] = useState<
+    Record<string, boolean>
+  >({});
   const [rejectDialogOpen, setRejectDialogOpen] = useState<boolean>(false);
   const [rejectReason, setRejectReason] = useState<string>("");
   const [selectedProductId, setSelectedProductId] = useState<string>("");
-  const [documentRejectDialogOpen, setDocumentRejectDialogOpen] = useState<boolean>(false);
+  const [documentRejectDialogOpen, setDocumentRejectDialogOpen] =
+    useState<boolean>(false);
   const [documentRejectReason, setDocumentRejectReason] = useState<string>("");
   const [selectedDocumentId, setSelectedDocumentId] = useState<string>("");
+  const [localDocuments, setLocalDocuments] = useState<Document[]>(initialDocuments);
 
-  const { data: documents = [], isLoading, error } = documentsApiHooks.useGetDocuments();
-  const { data: allProducts = [], isLoading: isLoadingProducts } = documentsApiHooks.useGetProducts();
-  const { mutate: updateDocumentStatus } = documentsApiHooks.useUpdateDocumentStatus();
-  const { mutate: updateDocumentStatusDirect } = documentsApiHooks.useUpdateDocumentStatusDirect();
+  const {
+    data: documents = [],
+    isLoading,
+    error,
+  } = documentsApiHooks.useGetDocuments();
+  const { data: allProducts = [], isLoading: isLoadingProducts } =
+    documentsApiHooks.useGetProducts();
+  const { mutate: updateDocumentStatus } =
+    documentsApiHooks.useUpdateDocumentStatus();
+  const { mutate: updateDocumentStatusDirect } =
+    documentsApiHooks.useUpdateDocumentStatusDirect();
   const { mutate: rejectProduct } = documentsApiHooks.useRejectProduct();
-  
-  const filteredDocuments = documents
+
+  // Update local documents when initialDocuments or documents changes
+  useEffect(() => {
+    if (initialDocuments && initialDocuments.length > 0) {
+      setLocalDocuments(initialDocuments);
+    } else if (documents && documents.length > 0) {
+      setLocalDocuments(documents);
+    }
+  }, [documents, initialDocuments]);
+
+  // Use local documents for filtering
+  const filteredDocuments = localDocuments
     .filter((doc) =>
       manufacturerId ? doc.manufacturerId === manufacturerId : true
     )
@@ -91,15 +124,18 @@ export function DocumentList() {
     );
 
   // Group documents by product
-  const documentsByProduct = filteredDocuments.reduce<Record<string, Document[]>>((acc, doc) => {
+  const documentsByProduct = filteredDocuments.reduce<
+    Record<string, Document[]>
+  >((acc, doc) => {
     const productId = doc.productId;
-    
+
     if (productId) {
       if (!acc[productId]) {
         acc[productId] = [];
       }
-      const isDuplicate = acc[productId].some(existingDoc => 
-        existingDoc.id === doc.id && existingDoc.type === doc.type
+      const isDuplicate = acc[productId].some(
+        (existingDoc) =>
+          existingDoc.id === doc.id && existingDoc.type === doc.type
       );
       if (!isDuplicate) {
         acc[productId].push(doc);
@@ -109,34 +145,47 @@ export function DocumentList() {
   }, {});
 
   // Add products with no documents
-  allProducts.forEach(product => {
+  allProducts.forEach((product) => {
     if (product.id && !documentsByProduct[product.id]) {
       documentsByProduct[product.id] = [];
     }
   });
 
   // Create a mapping of product IDs to product names for display
-  const productNameMap = allProducts.reduce<Record<string, string>>((acc, product) => {
-    if (product.id) {
-      acc[product.id] = product.name;
-    }
-    return acc;
-  }, {});
+  const productNameMap = allProducts.reduce<Record<string, string>>(
+    (acc, product) => {
+      if (product.id) {
+        acc[product.id] = product.name;
+      }
+      return acc;
+    },
+    {}
+  );
 
   const handleApprove = async (documentId: string) => {
     try {
-      const document = filteredDocuments.find(doc => doc.id === documentId);
+      const document = filteredDocuments.find((doc) => doc.id === documentId);
 
       if (!document) {
-        console.error("Document not found in filtered documents. Document ID:", documentId);
+        console.error(
+          "Document not found in filtered documents. Document ID:",
+          documentId
+        );
         return;
       }
-      
+
       await updateDocumentStatusDirect({
         document,
         status: "approved",
       });
-      
+
+      // Update local document status
+      setLocalDocuments((prevDocs) =>
+        prevDocs.map((doc) =>
+          doc.id === documentId ? { ...doc, status: "approved" } : doc
+        )
+      );
+
       toast({
         title: "Success",
         description: "Document approved successfully",
@@ -156,39 +205,46 @@ export function DocumentList() {
     setDocumentRejectDialogOpen(true);
   };
 
-  const submitRejectDocument = async () => {
-    if (!selectedDocumentId || !documentRejectReason) {
-      console.error("Missing document ID or reject reason");
-      return;
-    }
-    
+  const handleRejectConfirm = async () => {
     try {
-      const document = filteredDocuments.find(doc => doc.id === selectedDocumentId);
+      const document = filteredDocuments.find(
+        (doc) => doc.id === selectedDocumentId
+      );
 
       if (!document) {
-        console.error("Document not found in filtered documents. Document ID:", selectedDocumentId);
+        console.error(
+          "Document not found in filtered documents. Document ID:",
+          selectedDocumentId
+        );
         return;
       }
-      
-      const updatedDocument = {
-        ...document,
-        rejection_reason: documentRejectReason,
-        rejection_date: new Date().toISOString()
-      };
-      
+
       await updateDocumentStatusDirect({
-        document: updatedDocument,
+        document,
         status: "rejected",
-        reason: documentRejectReason
+        reason: documentRejectReason,
       });
-      
+
+      // Update local document status
+      setLocalDocuments((prevDocs) =>
+        prevDocs.map((doc) =>
+          doc.id === selectedDocumentId
+            ? {
+                ...doc,
+                status: "rejected",
+                rejection_reason: documentRejectReason,
+              }
+            : doc
+        )
+      );
+
+      setDocumentRejectDialogOpen(false);
+      setDocumentRejectReason("");
+
       toast({
         title: "Success",
         description: "Document rejected successfully",
       });
-      setDocumentRejectReason("");
-      setSelectedDocumentId("");
-      setDocumentRejectDialogOpen(false);
     } catch (error) {
       console.error("Error rejecting document:", error);
       toast({
@@ -209,13 +265,13 @@ export function DocumentList() {
       console.error("Missing product ID or reject reason");
       return;
     }
-    
+
     try {
       await rejectProduct({
         productId: selectedProductId,
         reason: rejectReason,
       });
-      
+
       toast({
         title: "Success",
         description: "Product rejected successfully",
@@ -228,6 +284,18 @@ export function DocumentList() {
       toast({
         title: "Error",
         description: "Failed to reject product. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleDownload = (document: Document) => {
+    if (document.url) {
+      window.open(document.url, "_blank");
+    } else {
+      toast({
+        title: "Error",
+        description: "Document URL not available",
         variant: "destructive",
       });
     }
@@ -260,17 +328,19 @@ export function DocumentList() {
   };
 
   const toggleProductExpansion = (productId: string) => {
-    setExpandedProducts(prev => ({
+    setExpandedProducts((prev) => ({
       ...prev,
-      [productId]: !prev[productId]
+      [productId]: !prev[productId],
     }));
   };
 
-  if (isLoading || isLoadingProducts) {
+  // Show loading state only if we don't have initial documents
+  if ((isLoading || isLoadingProducts) && (!initialDocuments || initialDocuments.length === 0)) {
     return <div>Loading...</div>;
   }
 
-  if (error) {
+  // Show error only if we don't have initial documents
+  if (error && (!initialDocuments || initialDocuments.length === 0)) {
     return <div>Error loading documents</div>;
   }
 
@@ -304,187 +374,228 @@ export function DocumentList() {
             <FileText className="h-12 w-12 text-muted-foreground mb-4" />
             <h2 className="text-xl font-semibold mb-2">No Documents Found</h2>
             <p className="text-muted-foreground mb-4">
-              {documents.length === 0 
+              {localDocuments.length === 0
                 ? "No documents have been uploaded yet."
                 : "No documents match the current filter criteria."}
             </p>
           </div>
         ) : (
           <div className="space-y-4">
-            {Object.entries(documentsByProduct).map(([productId, productDocs]) => {
-              const isExpanded = expandedProducts[productId] || false;
-              const productName = productNameMap[productId] || "Unknown Product";
-              const documentCount = productDocs.length;
-              
-              return (
-                <div key={productId} className="border rounded-lg overflow-hidden">
-                  <div 
-                    className="flex items-center justify-between p-4 bg-muted/50 cursor-pointer"
-                    onClick={() => toggleProductExpansion(productId)}
+            {Object.entries(documentsByProduct).map(
+              ([productId, productDocs]) => {
+                const isExpanded = expandedProducts[productId] || false;
+                const productName =
+                  productNameMap[productId] || "Unknown Product";
+                const documentCount = productDocs.length;
+
+                return (
+                  <div
+                    key={productId}
+                    className="border rounded-lg overflow-hidden"
                   >
-                    <div className="flex items-center gap-2">
-                      {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-                      <h3 className="font-medium">{productName}</h3>
-                      <Badge variant="outline">{documentCount} {documentCount === 1 ? 'document' : 'documents'}</Badge>
-                    </div>
-                    <div className="flex gap-2">
-                      {productDocs.length > 0 ? (
-                        <>
-                          {productDocs.some(doc => doc.status === "pending") && (
-                            <Badge variant="warning">Pending Review</Badge>
-                          )}
-                          {productDocs.every(doc => doc.status === "approved") && (
-                            <Badge variant="success">All Approved</Badge>
-                          )}
-                          {productDocs.some(doc => doc.status === "rejected") && (
-                            <Badge variant="destructive">Has Rejected Documents</Badge>
-                          )}
-                          {!productDocs.some(doc => doc.status === "pending") && 
-                           !productDocs.every(doc => doc.status === "approved") && 
-                           !productDocs.some(doc => doc.status === "rejected") && (
-                            <Badge variant="outline">Other Status</Badge>
-                          )}
-                        </>
-                      ) : (
-                        <Badge variant="outline">No Documents</Badge>
-                      )}
-                    </div>
-                  </div>
-                  
-                  {isExpanded && (
-                    productDocs.length > 0 ? (
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead>Document</TableHead>
-                            <TableHead>Type</TableHead>
-                            <TableHead>Status</TableHead>
-                            <TableHead>Valid Until</TableHead>
-                            <TableHead>Version</TableHead>
-                            <TableHead></TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {productDocs.map((doc) => (
-                            <TableRow key={`${doc.id}-${doc.type}`}>
-                              <TableCell>
-                                <div className="flex items-center gap-2">
-                                  <FileText className="h-4 w-4 text-muted-foreground" />
-                                  <div>
-                                    <TooltipProvider>
-                                      <Tooltip>
-                                        <TooltipTrigger asChild>
-                                          <p className="font-medium truncate max-w-[200px]">
-                                            {doc.name.length > 25 
-                                              ? `${doc.name.slice(0, 25)}...` 
-                                              : doc.name}
-                                          </p>
-                                        </TooltipTrigger>
-                                        <TooltipContent side="top" align="start">
-                                          <p className="max-w-[300px] break-words text-xs">{doc.name}</p>
-                                        </TooltipContent>
-                                      </Tooltip>
-                                    </TooltipProvider>
-                                    <p className="text-sm text-muted-foreground">
-                                      {doc.id} · {doc.fileSize}
-                                    </p>
-                                  </div>
-                                </div>
-                              </TableCell>
-                              <TableCell>{doc.type}</TableCell>
-                              <TableCell>
-                                <Badge
-                                  variant={getStatusVariant(doc.status)}
-                                  className="flex w-fit items-center gap-1"
-                                >
-                                  {getStatusIcon(doc.status)}
-                                  {(() => {
-                                    switch (doc.status) {
-                                      case "rejected":
-                                        return "REJECTED";
-                                      case "pending":
-                                        return "PENDING";
-                                      case "approved":
-                                        return "APPROVED";
-                                      case "expired":
-                                        return "EXPIRED";
-                                      default:
-                                        return String(doc.status).toUpperCase();
-                                    }
-                                  })()}
-                                </Badge>
-                                {doc.status === "rejected" && doc.rejection_reason && (
-                                  <div className="mt-1 text-xs text-red-500">
-                                    Reason: {doc.rejection_reason}
-                                  </div>
-                                )}
-                              </TableCell>
-                              <TableCell>
-                                {doc.validUntil ? new Date(doc.validUntil).toLocaleDateString() : "N/A"}
-                              </TableCell>
-                              <TableCell>v{doc.version}</TableCell>
-                              <TableCell>
-                                <DropdownMenu>
-                                  <DropdownMenuTrigger asChild>
-                                    <Button variant="ghost" size="icon">
-                                      <MoreHorizontal className="h-4 w-4" />
-                                      <span className="sr-only">Open menu</span>
-                                    </Button>
-                                  </DropdownMenuTrigger>
-                                  <DropdownMenuContent align="end">
-                                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                    <DropdownMenuSeparator />
-                                    <DropdownMenuItem asChild>
-                                      <Link href={`/admin/documents/${doc.id}`}>
-                                        <Eye className="h-4 w-4 mr-2" />
-                                        View Details
-                                      </Link>
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem onClick={() => window.open(doc.url, '_blank')}>Download</DropdownMenuItem>
-                                    <DropdownMenuItem>View History</DropdownMenuItem>
-                                    {doc.status === "pending" && (
-                                      <>
-                                        <DropdownMenuSeparator />
-                                        <DropdownMenuItem
-                                          className="text-green-600"
-                                          onClick={() => handleApprove(doc.id)}
-                                        >
-                                          Approve
-                                        </DropdownMenuItem>
-                                        <DropdownMenuItem
-                                          className="text-red-600"
-                                          onClick={() => handleReject(doc.id)}
-                                        >
-                                          Reject
-                                        </DropdownMenuItem>
-                                      </>
-                                    )}
-                                  </DropdownMenuContent>
-                                </DropdownMenu>
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    ) : (
-                      <div className="p-4 text-center">
-                        <p className="text-muted-foreground mb-4">
-                          No documents available for this product.
-                        </p>
-                        <Button 
-                          variant="destructive" 
-                          size="sm"
-                          onClick={() => handleRejectProduct(productId)}
-                        >
-                          <XCircle className="h-4 w-4 mr-2" />
-                          Reject Product
-                        </Button>
+                    <div
+                      className="flex items-center justify-between p-4 bg-muted/50 cursor-pointer"
+                      onClick={() => toggleProductExpansion(productId)}
+                    >
+                      <div className="flex items-center gap-2">
+                        {isExpanded ? (
+                          <ChevronDown className="h-4 w-4" />
+                        ) : (
+                          <ChevronRight className="h-4 w-4" />
+                        )}
+                        <h3 className="font-medium">{productName}</h3>
+                        <Badge variant="outline">
+                          {documentCount}{" "}
+                          {documentCount === 1 ? "document" : "documents"}
+                        </Badge>
                       </div>
-                    )
-                  )}
-                </div>
-              );
-            })}
+                      <div className="flex gap-2">
+                        {productDocs.length > 0 ? (
+                          <>
+                            {productDocs.some(
+                              (doc) => doc.status === "pending"
+                            ) && (
+                              <Badge variant="warning">Pending Review</Badge>
+                            )}
+                            {productDocs.every(
+                              (doc) => doc.status === "approved"
+                            ) && <Badge variant="success">All Approved</Badge>}
+                            {productDocs.some(
+                              (doc) => doc.status === "rejected"
+                            ) && (
+                              <Badge variant="destructive">
+                                Has Rejected Documents
+                              </Badge>
+                            )}
+                            {!productDocs.some(
+                              (doc) => doc.status === "pending"
+                            ) &&
+                              !productDocs.every(
+                                (doc) => doc.status === "approved"
+                              ) &&
+                              !productDocs.some(
+                                (doc) => doc.status === "rejected"
+                              ) && (
+                                <Badge variant="outline">Other Status</Badge>
+                              )}
+                          </>
+                        ) : (
+                          <Badge variant="outline">No Documents</Badge>
+                        )}
+                      </div>
+                    </div>
+
+                    {isExpanded &&
+                      (productDocs.length > 0 ? (
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead>Document</TableHead>
+                              <TableHead>Type</TableHead>
+                              <TableHead>Status</TableHead>
+                              <TableHead>Valid Until</TableHead>
+                              <TableHead>Version</TableHead>
+                              <TableHead></TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {productDocs.map((doc) => (
+                              <TableRow key={`${doc.id}-${doc.type}`}>
+                                <TableCell>
+                                  <div className="flex items-center gap-2">
+                                    <FileText className="h-4 w-4 text-muted-foreground" />
+                                    <div>
+                                      <TooltipProvider>
+                                        <Tooltip>
+                                          <TooltipTrigger asChild>
+                                            <p className="font-medium truncate max-w-[200px]">
+                                              {doc.name.length > 25
+                                                ? `${doc.name.slice(0, 25)}...`
+                                                : doc.name}
+                                            </p>
+                                          </TooltipTrigger>
+                                          <TooltipContent
+                                            side="top"
+                                            align="start"
+                                          >
+                                            <p className="max-w-[300px] break-words text-xs">
+                                              {doc.name}
+                                            </p>
+                                          </TooltipContent>
+                                        </Tooltip>
+                                      </TooltipProvider>
+                                      <p className="text-sm text-muted-foreground">
+                                        {doc.id} · {doc.fileSize}
+                                      </p>
+                                    </div>
+                                  </div>
+                                </TableCell>
+                                <TableCell>{doc.type}</TableCell>
+                                <TableCell>
+                                  <Badge
+                                    variant={getStatusVariant(doc.status)}
+                                    className="flex w-fit items-center gap-1"
+                                  >
+                                    {getStatusIcon(doc.status)}
+                                    {(() => {
+                                      switch (doc.status) {
+                                        case "rejected":
+                                          return "REJECTED";
+                                        case "pending":
+                                          return "PENDING";
+                                        case "approved":
+                                          return "APPROVED";
+                                        case "expired":
+                                          return "EXPIRED";
+                                        default:
+                                          return String(
+                                            doc.status
+                                          ).toUpperCase();
+                                      }
+                                    })()}
+                                  </Badge>
+                                  {doc.status === "rejected" &&
+                                    doc.rejection_reason && (
+                                      <div className="mt-1 text-xs text-red-500">
+                                        Reason: {doc.rejection_reason}
+                                      </div>
+                                    )}
+                                </TableCell>
+                                <TableCell>
+                                  {doc.validUntil
+                                    ? new Date(
+                                        doc.validUntil
+                                      ).toLocaleDateString()
+                                    : "N/A"}
+                                </TableCell>
+                                <TableCell>v{doc.version}</TableCell>
+                                <TableCell>
+                                  <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                      <Button variant="ghost" size="icon">
+                                        <MoreHorizontal className="h-4 w-4" />
+                                        <span className="sr-only">
+                                          Open menu
+                                        </span>
+                                      </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent align="end">
+                                      <DropdownMenuLabel>
+                                        Actions
+                                      </DropdownMenuLabel>
+                                      <DropdownMenuSeparator />
+                                      <DropdownMenuItem asChild>
+                                        <Link
+                                          href={`/admin/documents/${doc.id}`}
+                                        >
+                                          <Eye className="h-4 w-4 mr-2" />
+                                          View Details
+                                        </Link>
+                                      </DropdownMenuItem>
+                                      <DropdownMenuItem
+                                        onClick={() => handleDownload(doc)}
+                                      >
+                                        <Download className="mr-2 h-4 w-4" />
+                                        Download
+                                      </DropdownMenuItem>
+                                      <DropdownMenuItem>
+                                        View History
+                                      </DropdownMenuItem>
+                                      <DropdownMenuSeparator />
+                                      {doc.status === "pending" && (
+                                        <>
+                                          <DropdownMenuItem
+                                            onClick={() =>
+                                              handleApprove(doc.id)
+                                            }
+                                          >
+                                            <CheckCircle className="mr-2 h-4 w-4 text-green-500" />
+                                            Approve
+                                          </DropdownMenuItem>
+                                          <DropdownMenuItem
+                                            onClick={() => handleReject(doc.id)}
+                                          >
+                                            <XCircle className="mr-2 h-4 w-4 text-red-500" />
+                                            Reject
+                                          </DropdownMenuItem>
+                                        </>
+                                      )}
+                                    </DropdownMenuContent>
+                                  </DropdownMenu>
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      ) : (
+                        <div className="p-4 text-center text-muted-foreground">
+                          No documents available for this product
+                        </div>
+                      ))}
+                  </div>
+                );
+              }
+            )}
           </div>
         )}
       </CardContent>
@@ -509,7 +620,10 @@ export function DocumentList() {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setRejectDialogOpen(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setRejectDialogOpen(false)}
+            >
               Cancel
             </Button>
             <Button variant="destructive" onClick={submitRejectProduct}>
@@ -519,7 +633,10 @@ export function DocumentList() {
         </DialogContent>
       </Dialog>
 
-      <Dialog open={documentRejectDialogOpen} onOpenChange={setDocumentRejectDialogOpen}>
+      <Dialog
+        open={documentRejectDialogOpen}
+        onOpenChange={setDocumentRejectDialogOpen}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Reject Document</DialogTitle>
@@ -527,23 +644,27 @@ export function DocumentList() {
               Please provide a reason for rejecting this document.
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-4">
+          <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="documentReason">Reason</Label>
+              <Label htmlFor="reject-reason">Rejection Reason</Label>
+
               <Textarea
-                id="documentReason"
+                id="reject-reason"
+                placeholder="Enter the reason for rejection..."
                 value={documentRejectReason}
                 onChange={(e) => setDocumentRejectReason(e.target.value)}
-                placeholder="Enter the reason for rejection..."
               />
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setDocumentRejectDialogOpen(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setDocumentRejectDialogOpen(false)}
+            >
               Cancel
             </Button>
-            <Button variant="destructive" onClick={submitRejectDocument}>
-              Reject
+            <Button variant="destructive" onClick={handleRejectConfirm}>
+              Reject Document
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -551,4 +672,3 @@ export function DocumentList() {
     </Card>
   );
 }
-  
