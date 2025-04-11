@@ -55,7 +55,6 @@ export function ProductList({ products, isLoading }: ProductListProps) {
   });
 
   const handleDeleteClick = (product: Product) => {
-    console.log("Product to delete:", product);
     setProductToDelete(product);
     setIsDeleteDialogOpen(true);
   };
@@ -85,8 +84,8 @@ export function ProductList({ products, isLoading }: ProductListProps) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Products</CardTitle>
-          <CardDescription>Loading your products...</CardDescription>
+        <CardTitle>{t("products.title")}</CardTitle>
+        <CardDescription>{t("products.loading")}</CardDescription>
         </CardHeader>
         <CardContent>
           {[1, 2, 3].map((i) => (
@@ -108,12 +107,12 @@ export function ProductList({ products, isLoading }: ProductListProps) {
       <Card>
         <CardContent className="flex flex-col items-center justify-center py-12">
           <Battery className="h-12 w-12 text-muted-foreground mb-4" />
-          <h2 className="text-xl font-semibold mb-2">No Products Found</h2>
+          <h2 className="text-xl font-semibold mb-2">{t("products.empty.title")}</h2>
           <p className="text-muted-foreground mb-4">
-            Start by adding your first product.
+          {t("products.empty.description")}
           </p>
           <Button asChild>
-            <Link href="/dashboard/products/new">Add Product</Link>
+          <Link href="/dashboard/products/new">{t("products.empty.addButton")}</Link>
           </Button>
         </CardContent>
       </Card>
@@ -124,24 +123,23 @@ export function ProductList({ products, isLoading }: ProductListProps) {
     <>
       <Card>
         <CardHeader>
-          <CardTitle>{t("title")}</CardTitle>
+          <CardTitle>{t("products.title")}</CardTitle>
           <CardDescription>
-            {t("description")}
+            {t("products.description")}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>{t("table.productName")}</TableHead>
-                <TableHead>{t("table.model")}</TableHead>
-                <TableHead>{t("table.status")}</TableHead>
-                <TableHead>{t("table.actions")}</TableHead>
+                <TableHead>{t("productManagement.table.productName")}</TableHead>
+                <TableHead>{t("productManagement.table.model")}</TableHead>
+                <TableHead>{t("productManagement.table.status")}</TableHead>
+                <TableHead>{t("productManagement.table.actions")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {products.map((product) => {
-                console.log("Rendering product:", product);
                 const documents = Array.isArray(product.documents) 
                   ? product.documents 
                   : Object.values(product.documents || {}).flat();
@@ -215,28 +213,28 @@ export function ProductList({ products, isLoading }: ProductListProps) {
                         <DropdownMenuTrigger asChild>
                           <Button variant="ghost" size="icon">
                             <MoreHorizontal className="h-4 w-4" />
-                            <span className="sr-only">Open menu</span>
+                            <span className="sr-only">{t("productManagement.actions.openMenu")}</span>
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuSeparator />
+                        <DropdownMenuLabel>{t("productManagement.actions.menu")}</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
                           <DropdownMenuItem asChild>
                             <Link href={`/dashboard/products/${product.id}`}>
                               <Battery className="h-4 w-4 mr-2" />
-                              View Details
-                            </Link>
+                              {t("productManagement.actions.viewDetails")}
+                              </Link>
                           </DropdownMenuItem>
                           <DropdownMenuItem asChild>
                             <Link href={`/dashboard/products/${product.id}/edit`}>
-                              Edit Product
+                            {t("productManagement.actions.editProduct")}
                             </Link>
                           </DropdownMenuItem>
                           <DropdownMenuItem asChild>
                             <Link href={`/dashboard/products/${product.id}/documents`}>
                               <FileText className="h-4 w-4 mr-2" />
-                              View Documents
-                            </Link>
+                              {t("productManagement.actions.viewDocuments")}
+                              </Link>
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
                           <DropdownMenuItem 
@@ -244,8 +242,8 @@ export function ProductList({ products, isLoading }: ProductListProps) {
                             onClick={() => handleDeleteClick(product)}
                           >
                             <Trash className="h-4 w-4 mr-2" />
-                            Delete Product
-                          </DropdownMenuItem>
+                            {t("productManagement.actions.deleteProduct")}
+                            </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </TableCell>
