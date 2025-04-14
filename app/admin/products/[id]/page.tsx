@@ -11,7 +11,7 @@ import {
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { use, useState , useEffect } from "react";
+import { use } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -25,11 +25,12 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { DocumentStatus } from "@/lib/types/document";
+import { useProduct } from "@/lib/hooks/use-product";
+import { BaseProduct, ProductStatus } from "@/lib/types/product";
+import { useAuth } from "@/lib/hooks/use-auth";
 
-import { getProductDetails } from "./actions";
 interface ProductDetailsProps {
   params: Promise<{
-    // Promise olarak tanımlıyoruz
     id: string;
   }>;
 }
@@ -47,25 +48,83 @@ interface Document {
 export default function ProductDetailsPage({ params }: ProductDetailsProps) {
   const { id } = use(params);
   const t = useTranslations();
-  const [product, setProduct] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const { user, company, isLoading: isAuthLoading, isCompanyLoading, companyError } = useAuth();
+  const { product, isLoading: isProductLoading, error: productError } = useProduct(id);
 
-  useEffect(() => {
-    async function loadProduct() {
-      const data = await getProductDetails(id);
-      setProduct(data);
-      setLoading(false);
-    }
-    loadProduct();
-  }, [id]);
-
-  if (loading) {
-    return <div>Loading...</div>;
+  // Auth yükleniyorsa loading göster
+  if (isAuthLoading) {
+    return <div className="flex items-center justify-center min-h-screen">Loading authentication...</div>;
   }
 
-  if (!product) {
-    notFound();
+  // Kullanıcı giriş yapmamışsa login sayfasına yönlendir
+  if (!user) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <h2 className="text-2xl font-semibold mb-4">Authentication Required</h2>
+        <p className="text-muted-foreground mb-4">Please log in to view this page.</p>
+        <Button asChild>
+          <Link href="/login">Go to Login</Link>
+        </Button>
+      </div>
+    );
   }
+
+  // Şirket bilgisi yükleniyorsa loading göster
+  if (isCompanyLoading) {
+    return <div className="flex items-center justify-center min-h-screen">Loading company information...</div>;
+  }
+
+  // Şirket bilgisi yoksa veya hata varsa detaylı hata göster
+  if (!company || companyError) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <h2 className="text-2xl font-semibold mb-4">Company Information Not Found</h2>
+        <p className="text-muted-foreground mb-4">
+          {companyError ? (
+            <>Error: {companyError.message}</>
+          ) : (
+            <>Please make sure you are associated with a company. Your user ID: {user.id}</>
+          )}
+        </p>
+        <div className="text-sm text-muted-foreground mb-4">
+          <p>User Metadata:</p>
+          <pre className="bg-muted p-2 rounded mt-2">
+            {JSON.stringify(user.user_metadata, null, 2)}
+          </pre>
+        </div>
+        <Button asChild>
+          <Link href="/admin">Go to Dashboard</Link>
+        </Button>
+      </div>
+    );
+  }
+
+  // Ürün yükleniyorsa loading göster
+  if (isProductLoading) {
+    return <div className="flex items-center justify-center min-h-screen">Loading product information...</div>;
+  }
+
+  // Hata varsa veya ürün bulunamadıysa 404
+  if (productError || !product?.data) {
+    console.error("Product error:", productError);
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <h2 className="text-2xl font-semibold mb-4">Product Not Found</h2>
+        <p className="text-muted-foreground mb-4">
+          {productError ? (
+            <>Error: {productError.message}</>
+          ) : (
+            <>The requested product could not be found.</>
+          )}
+        </p>
+        <Button asChild>
+          <Link href="/admin/products">Back to Products</Link>
+        </Button>
+      </div>
+    );
+  }
+
+  const productData = product.data;
 
   try {
     // Döküman durumunu ve sayısını hesapla
@@ -79,12 +138,12 @@ export default function ProductDetailsPage({ params }: ProductDetailsProps) {
     let hasApprovedDocuments = false;
     const allDocuments: Document[] = [];
 
-    if (product.documents) {
+    if (productData.documents) {
       // Dökümanları düzleştir
-      if (Array.isArray(product.documents)) {
-        allDocuments.push(...(product.documents as Document[]));
-      } else if (typeof product.documents === "object") {
-        Object.entries(product.documents).forEach(([docType, docList]) => {
+      if (Array.isArray(productData.documents)) {
+        allDocuments.push(...(productData.documents as Document[]));
+      } else if (typeof productData.documents === "object") {
+        Object.entries(productData.documents).forEach(([docType, docList]) => {
           if (Array.isArray(docList)) {
             const typedDocs = (docList as Document[]).map((doc) => ({
               ...doc,
@@ -120,27 +179,28 @@ export default function ProductDetailsPage({ params }: ProductDetailsProps) {
           // Eğer geçerli bir status varsa ilgili flag'i güncelle
           statusFlags[status]?.();
         });
+
         // Durum öncelik sırası (en önemliden en önemsize)
         const statusPriority = [
           {
             condition: hasRejectedDocuments,
             status: "hasRejected",
-            productStatus: "REJECTED",
+            productStatus: "REJECTED" as ProductStatus,
           },
           {
             condition: hasPendingDocuments,
             status: "pending",
-            productStatus: "PENDING",
+            productStatus: "PENDING" as ProductStatus,
           },
           {
             condition: hasExpiredDocuments,
             status: "hasExpired",
-            productStatus: "EXPIRED",
+            productStatus: "EXPIRED" as ProductStatus,
           },
           {
             condition: hasApprovedDocuments,
             status: "allApproved",
-            productStatus: "APPROVED",
+            productStatus: "APPROVED" as ProductStatus,
           },
         ];
 
@@ -149,14 +209,15 @@ export default function ProductDetailsPage({ params }: ProductDetailsProps) {
           (status) => status.condition
         ) || {
           status: "unknown",
-          productStatus: "NEW",
+          productStatus: "NEW" as ProductStatus,
         };
 
         // Döküman durumunu ve ürün durumunu güncelle
         documentStatus = t(
           `admin.products.details.documents.documentStatuses.${currentStatus.status}`
         );
-        product.status = currentStatus.productStatus;
+        // Status'u güncellemek yerine sadece görüntüleme için kullanıyoruz
+        const displayStatus = currentStatus.productStatus;
       }
     }
     // Döküman durumuna göre ikon ve renk belirleme
@@ -201,12 +262,12 @@ export default function ProductDetailsPage({ params }: ProductDetailsProps) {
                 {t("admin.products.details.backButton")}
               </Button>
             </Link>
-            <h1 className="text-2xl font-semibold">{product.name}</h1>
-            <Badge variant="outline">{product.product_type}</Badge>
+            <h1 className="text-2xl font-semibold">{productData.name}</h1>
+            <Badge variant="outline">{productData.product_type}</Badge>
           </div>
           <div className="flex gap-2">
             <Button asChild>
-              <Link href={`/admin/documents?product=${product.id}`}>
+              <Link href={`/admin/documents?product=${productData.id}`}>
                 <FileText className="mr-2 h-4 w-4" />
                 {t("admin.products.details.viewDocuments")}
               </Link>
@@ -228,28 +289,30 @@ export default function ProductDetailsPage({ params }: ProductDetailsProps) {
                   <p className="text-sm text-muted-foreground">
                     {t("admin.products.details.productInfo.id")}
                   </p>
-                  <p className="font-medium">{product.id}</p>
+                  <p className="font-medium">{productData.id}</p>
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">
                     {t("admin.products.details.productInfo.manufacturer")}
                   </p>
-                  <p className="font-medium">{product.manufacturer?.name}</p>
+                  <p className="font-medium">
+                    {productData.manufacturer_id ? productData.manufacturer_id : "N/A"}
+                  </p>
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">
                     {t("admin.products.details.productInfo.type")}
                   </p>
-                  <p className="font-medium">{product.product_type}</p>
+                  <p className="font-medium">{productData.product_type}</p>
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">
                     {t("admin.products.details.productInfo.status")}
                   </p>
                   <div className="font-medium">
-                    {product.status ? (
+                    {productData.status ? (
                       <Badge variant="outline" className="capitalize">
-                        {product.status}
+                        {productData.status}
                       </Badge>
                     ) : (
                       "N/A"
@@ -261,16 +324,16 @@ export default function ProductDetailsPage({ params }: ProductDetailsProps) {
                     {t("admin.products.details.productInfo.created")}
                   </p>
                   <p className="font-medium">
-                    {new Date(product.created_at).toLocaleDateString()}
+                    {new Date(productData.created_at).toLocaleDateString()}
                   </p>
                 </div>
               </div>
-              {product.description && (
+              {productData.description && (
                 <div>
                   <p className="text-sm text-muted-foreground">
                     {t("admin.products.details.productInfo.description")}
                   </p>
-                  <p className="mt-1">{product.description}</p>
+                  <p className="mt-1">{productData.description}</p>
                 </div>
               )}
             </CardContent>
@@ -278,160 +341,54 @@ export default function ProductDetailsPage({ params }: ProductDetailsProps) {
 
           <Card>
             <CardHeader>
-              <CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <FileText className="h-5 w-5" />
                 {t("admin.products.details.documents.title")}
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <span>
-                    {t("admin.products.details.documents.totalDocuments")}
-                  </span>
-                  <Badge variant="secondary">
-                    {documentCount}{" "}
-                    {t("admin.products.details.documents.totalDocuments")}
-                  </Badge>
+                  <p className="text-sm text-muted-foreground">
+                    {t("admin.products.details.documents.status")}
+                  </p>
+                  <Badge variant="outline">{documentStatus}</Badge>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span>
-                    {t("admin.products.details.documents.documentStatus")}
-                  </span>
-                  <Badge
-                    variant={
-                      documentStatus === "All Approved"
-                        ? "success"
-                        : documentStatus === "Pending Review"
-                        ? "warning"
-                        : documentStatus === "Has Rejected Documents"
-                        ? "destructive"
-                        : documentStatus === "Has Expired Documents"
-                        ? "destructive"
-                        : "secondary"
-                    }
-                  >
-                    {documentStatus}
-                  </Badge>
+                  <p className="text-sm text-muted-foreground">
+                    {t("admin.products.details.documents.count")}
+                  </p>
+                  <p className="font-medium">{documentCount}</p>
                 </div>
-
-                {documentCount > 0 && (
-                  <div className="mt-6">
-                    <h3 className="text-sm font-medium mb-3">
-                      {t("admin.products.details.documents.title")}
-                    </h3>
-                    <div className="grid grid-cols-1 gap-2">
-                      {allDocuments.map((doc, index) => (
-                        <Dialog key={`${doc.id}-${index}`}>
-                          <DialogTrigger asChild>
-                            <Button
-                              variant="outline"
-                              className={`w-full justify-start ${getStatusColor(
-                                doc.status
-                              )}`}
-                            >
-                              <div className="flex items-center gap-2 w-full">
-                                {getStatusIcon(doc.status)}
-                                <span className="truncate">
-                                  {doc.name || doc.type || "Unnamed Document"}
-                                </span>
-                                <Badge variant="outline" className="ml-auto">
-                                  {doc.status}
-                                </Badge>
-                              </div>
-                            </Button>
-                          </DialogTrigger>
-                          <DialogContent>
-                            <DialogHeader>
-                              <DialogTitle>
-                                {doc.name || doc.type || "Document Details"}
-                              </DialogTitle>
-                              <DialogDescription>
-                                {t(
-                                  "admin.products.details.documents.description"
-                                )}
-                              </DialogDescription>
-                            </DialogHeader>
-                            <div className="space-y-4 py-4">
-                              <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                  <p className="text-sm text-muted-foreground">
-                                    {t("admin.products.details.documents.id")}
-                                  </p>
-                                  <div className="font-medium">{doc.id}</div>
-                                </div>
-                                <div>
-                                  <p className="text-sm text-muted-foreground">
-                                    {t("admin.products.details.documents.type")}
-                                  </p>
-                                  <div className="font-medium">
-                                    {doc.type || "N/A"}
-                                  </div>
-                                </div>
-                                <div>
-                                  <p className="text-sm text-muted-foreground">
-                                    {t(
-                                      "admin.products.details.documents.documentStatus"
-                                    )}{" "}
-                                  </p>
-                                  <div className="font-medium">
-                                    <Badge
-                                      variant={
-                                        doc.status === "approved"
-                                          ? "success"
-                                          : doc.status === "pending"
-                                          ? "warning"
-                                          : "destructive"
-                                      }
-                                    >
-                                      {doc.status}
-                                    </Badge>
-                                  </div>
-                                </div>
-                                {doc.validUntil && (
-                                  <div>
-                                    <p className="text-sm text-muted-foreground">
-                                      {t(
-                                        "admin.products.details.documents.validUntil"
-                                      )}
-                                    </p>
-                                    <div className="font-medium">
-                                      {new Date(
-                                        doc.validUntil
-                                      ).toLocaleDateString()}
-                                    </div>
-                                  </div>
-                                )}
-                              </div>
-
-                              {doc.rejection_reason && (
-                                <div>
-                                  <p className="text-sm text-muted-foreground">
-                                    {t(
-                                      "admin.products.details.documents.rejectionReason"
-                                    )}
-                                  </p>
-                                  <div className="mt-1 p-2 bg-red-50 text-red-800 rounded-md">
-                                    {doc.rejection_reason}
-                                  </div>
-                                </div>
+                {allDocuments.length > 0 && (
+                  <div className="space-y-2">
+                    <p className="text-sm text-muted-foreground">
+                      {t("admin.products.details.documents.list")}
+                    </p>
+                    <div className="space-y-2">
+                      {allDocuments.map((doc) => (
+                        <div
+                          key={doc.id}
+                          className="flex items-center justify-between rounded-lg border p-3"
+                        >
+                          <div className="flex items-center gap-2">
+                            {getStatusIcon(doc.status)}
+                            <div>
+                              <p className="font-medium">{doc.name}</p>
+                              {doc.type && (
+                                <p className="text-sm text-muted-foreground">
+                                  {doc.type}
+                                </p>
                               )}
-
-                              <div className="flex justify-end gap-2 mt-4">
-                                <Button variant="outline" asChild>
-                                  <a
-                                    href={doc.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                  >
-                                    {t(
-                                      "admin.products.details.documents.viewDocument"
-                                    )}
-                                  </a>
-                                </Button>
-                              </div>
                             </div>
-                          </DialogContent>
-                        </Dialog>
+                          </div>
+                          <Badge
+                            variant="outline"
+                            className={getStatusColor(doc.status)}
+                          >
+                            {doc.status}
+                          </Badge>
+                        </div>
                       ))}
                     </div>
                   </div>
@@ -443,18 +400,7 @@ export default function ProductDetailsPage({ params }: ProductDetailsProps) {
       </div>
     );
   } catch (error) {
-    console.error("Error in ProductDetailsPage:", error);
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4">
-        <h2 className="text-2xl font-semibold text-destructive">
-          Error Loading Product
-        </h2>
-        <p className="text-muted-foreground">
-          {error instanceof Error
-            ? error.message
-            : "An unexpected error occurred"}
-        </p>
-      </div>
-    );
+    console.error("Error rendering product details:", error);
+    return <div>Error loading product details</div>;
   }
 }

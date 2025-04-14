@@ -12,6 +12,7 @@ import { supabase } from "@/lib/supabase/client";
 import type { User } from "../types/auth";
 
 import { companyApiHooks } from "./use-company";
+import { ADMIN_COMPANY_ID } from "../services/company";
 
 export function useAuth() {
   const [user, setUser] = useState<SupabaseUser | null>(null);
@@ -22,21 +23,41 @@ export function useAuth() {
     data: company,
     isLoading: isCompanyLoading,
     isFetched: isCompanyFetched,
+    error: companyError,
   } = companyApiHooks.useGetCompanyQuery(
-    { id: user?.user_metadata?.company_id },
-    { enabled: !!user?.user_metadata?.company_id }
+    { 
+      id: user?.user_metadata?.company_id || 
+          (user?.user_metadata?.role === "admin" ? ADMIN_COMPANY_ID : undefined)
+    },
+    { 
+      enabled: !!user?.user_metadata?.company_id || user?.user_metadata?.role === "admin",
+      retry: false,
+      onError: (error) => {
+        console.error("Company fetch error:", error);
+      }
+    }
   );
 
   useEffect(() => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
+      console.log("Auth state changed:", { 
+        user: session?.user,
+        companyId: session?.user?.user_metadata?.company_id || 
+                  (session?.user?.user_metadata?.role === "admin" ? ADMIN_COMPANY_ID : undefined)
+      });
       setUser(session?.user ?? null);
       setIsLoading(false);
     });
 
     // Initial session check
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log("Initial session:", { 
+        user: session?.user,
+        companyId: session?.user?.user_metadata?.company_id || 
+                  (session?.user?.user_metadata?.role === "admin" ? ADMIN_COMPANY_ID : undefined)
+      });
       setUser(session?.user ?? null);
       setIsLoading(false);
     });
@@ -117,6 +138,7 @@ export function useAuth() {
     isCompanyLoading,
     isCompanyFetched,
     isLoading,
+    companyError,
     signIn,
     signUp,
     signOut,

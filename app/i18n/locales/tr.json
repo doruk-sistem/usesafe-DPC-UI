@@ -285,16 +285,16 @@
       "button": "Ürün Doğrula"
     },
     "features": {
-      "traceability": {
-        "title": "Ürün İzlenebilirliği",
-        "description": "Kaynaktan mağazaya ürün yolculuğunu takip edin"
-      },
-      "supplyChain": {
-        "title": "Tedarik Zinciri Geçmişi",
-        "description": "Ürün yaşam döngüsünün tam şeffaflığı"
-      },
-      "certifications": {
-        "title": "Doğrulanmış Sertifikalar",
+        "traceability": {
+          "title": "Ürün İzlenebilirliği",
+          "description": "Kaynaktan mağazaya ürün yolculuğunu takip edin"
+        },
+        "supplyChain": {
+          "title": "Tedarik Zinciri Geçmişi",
+          "description": "Ürün yaşam döngüsünün tam şeffaflığı"
+        },
+        "certifications": {
+          "title": "Doğrulanmış Sertifikalar",
         "description": "Onaylanmış sürdürülebilirlik belgeleri"
       }
     },
@@ -1109,8 +1109,8 @@
       "columns": {
         "document": "Belge",
         "type": "Tür",
-        "manufacturer": "Üretici",
-        "status": "Durum",
+          "manufacturer": "Üretici",
+          "status": "Durum",
         "validUntil": "Geçerlilik",
         "version": "Versiyon",
         "actions": "İşlemler",
@@ -1259,7 +1259,7 @@
         }
       }
     },
-    "filters": {
+      "filters": {
       "allDocuments": "Tüm Belgeler",
       "allStatuses": "Tüm Durumlar",
       "type": "Türe Göre Filtrele",
@@ -1273,18 +1273,18 @@
       "compliance": "Uygunluk",
       "quality": "Kalite",
       "legal": "Yasal"
-    },
-    "status": {
-      "pending": "Beklemede",
-      "approved": "Onaylandı",
+      },
+      "status": {
+        "pending": "Beklemede",
+        "approved": "Onaylandı",
       "rejected": "Reddedildi",
       "expired": "Süresi Dolmuş",
       "expiringSoon": "Süresi Yakında Dolacak"
-    },
-    "actions": {
+      },
+      "actions": {
       "title": "İşlemler",
       "upload": "Yükle",
-      "download": "İndir",
+        "download": "İndir",
       "approve": "Onayla",
       "reject": "Reddet",
       "viewDetails": "Detayları Görüntüle",
@@ -1413,10 +1413,10 @@
         "pendingApproval": "Onay Bekleyenler",
         "approved": "Onaylananlar",
         "rejected": "Reddedilenler"
-      },
-      "actions": {
+    },
+    "actions": {
         "addNew": "Yeni Ekle",
-        "reject": "Reddet",
+      "reject": "Reddet",
         "approve": "Onayla"
       },
       "details": {
@@ -1468,8 +1468,8 @@
       }
     },
     "labels": {
-      "manufacturer": "Üretici",
-      "document": "Belge",
+        "manufacturer": "Üretici",
+        "document": "Belge",
       "dpc": "DPC",
       "minutes": "dakika",
       "hour": "saat",
@@ -1479,27 +1479,27 @@
       "review": "İncele"
     },
     "documents": {
-      "title": "Belge Yönetimi",
+    "title": "Belge Yönetimi",
       "description": "Belge yüklemelerini inceleyin ve yönetin",
-      "repository": {
-        "title": "Belge Deposu",
+    "repository": {
+      "title": "Belge Deposu",
         "description": "Tüm belgeleri görüntüleyin ve yönetin",
-        "columns": {
-          "document": "Belge",
+      "columns": {
+        "document": "Belge",
           "type": "Tür",
-          "category": "Kategori",
-          "status": "Durum",
+        "category": "Kategori",
+        "status": "Durum",
           "expiryDate": "Geçerlilik Tarihi",
           "updatedBy": "Versiyon",
-          "actions": "İşlemler"
+        "actions": "İşlemler"
         },
         "filters": {
           "allStatuses": "Duruma göre filtrele",
           "allDocuments": "Tüm Belgeler"
-        },
-        "status": {
+    },
+    "status": {
           "pending": "Beklemede",
-          "approved": "Onaylandı",
+      "approved": "Onaylandı",
           "rejected": "Reddedildi",
           "expired": "Süresi Dolmuş",
           "expiringSoon": "Süresi Yakında Dolacak"
@@ -1614,7 +1614,7 @@
         "documents": "Belgeler"
       },
       "status": {
-        "pending": "Beklemede",
+      "pending": "Beklemede",
         "approved": "Onaylandı",
         "rejected": "Reddedildi",
         "verified": "Doğrulandı",
@@ -1628,8 +1628,8 @@
         "approve": "Onayla",
         "reject": "Reddet",
         "back": "Geri"
-      },
-      "filters": {
+    },
+    "filters": {
         "allCategories": "Tüm Kategoriler",
         "allStatus": "Tüm Durumlar"
       },

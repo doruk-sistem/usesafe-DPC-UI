@@ -2,6 +2,7 @@ import type { Product } from "@/lib/types/product";
 
 import { useAuth } from "./use-auth";
 import { productsApiHooks } from "./use-products";
+import { ADMIN_COMPANY_ID } from "../services/company";
 
 export function useProduct(productId: string) {
   const { company } = useAuth();
@@ -16,7 +17,7 @@ export function useProduct(productId: string) {
       id: productId,
     },
     {
-      enabled: !!company?.id && !!productId,
+      enabled: !!productId && (!!company?.id || company?.id === ADMIN_COMPANY_ID),
     }
   );
   const { mutate: _updateProduct } =

@@ -3,8 +3,24 @@ import type { Company } from "@/lib/types/company";
 
 import { createService } from "../api-client";
 
+// Admin şirketi için sabit UUID
+// Bu UUID'yi veritabanında oluşturduğumuz admin şirketinin ID'si ile değiştirin
+export const ADMIN_COMPANY_ID = "00000000-0000-0000-0000-000000000000";
+
 export class CompanyService {
   static async getCompany(id: string): Promise<Company | null> {
+    // Admin şirketi için özel durum
+    if (id === ADMIN_COMPANY_ID) {
+      return {
+        id: ADMIN_COMPANY_ID,
+        name: "Admin Company",
+        taxInfo: {
+          taxNumber: "ADMIN",
+        },
+        companyType: "admin",
+      };
+    }
+
     const { data, error } = await supabase
       .from("companies")
       .select("id, name, taxInfo, companyType")
@@ -12,7 +28,10 @@ export class CompanyService {
       .single();
 
     if (error) {
-      console.error("Error fetching company:", error);
+      // Admin şirketi için hata mesajını gösterme
+      if (id !== ADMIN_COMPANY_ID) {
+        console.error("Error fetching company:", error);
+      }
       return null;
     }
 
@@ -147,6 +166,18 @@ export class CompanyService {
 
 export const companyService = createService({
   getCompany: async ({ id }: { id: string }): Promise<Company | null> => {
+    // Admin şirketi için özel durum
+    if (id === ADMIN_COMPANY_ID) {
+      return {
+        id: ADMIN_COMPANY_ID,
+        name: "Admin Company",
+        taxInfo: {
+          taxNumber: "ADMIN",
+        },
+        companyType: "admin",
+      };
+    }
+
     const { data, error } = await supabase
       .from("companies")
       .select("id, name, taxInfo, companyType")
@@ -154,7 +185,10 @@ export const companyService = createService({
       .single();
 
     if (error) {
-      console.error("Error fetching company:", error);
+      // Admin şirketi için hata mesajını gösterme
+      if (id !== ADMIN_COMPANY_ID) {
+        console.error("Error fetching company:", error);
+      }
       return null;
     }
 

@@ -8,6 +8,7 @@ import type {
 import { validateAndMapDocuments } from "@/lib/utils/document-mapper";
 
 import { createService } from "../api-client";
+import { ADMIN_COMPANY_ID } from "./company";
 
 export class ProductService {
   static async getProducts(companyId: string): Promise<Product[]> {
@@ -29,6 +30,21 @@ export class ProductService {
     id: string,
     companyId: string
   ): Promise<ProductResponse> {
+    // Admin şirketi için özel durum - tüm ürünleri göster
+    if (companyId === ADMIN_COMPANY_ID) {
+      const { data, error } = await supabase
+        .from("products")
+        .select("*")
+        .eq("id", id)
+        .single();
+
+      if (error) {
+        return { error: { message: "Product not found" } };
+      }
+
+      return { data };
+    }
+
     const { data, error } = await supabase
       .from("products")
       .select("*")
@@ -181,6 +197,21 @@ export const productService = createService({
     id: string;
     companyId: string;
   }): Promise<ProductResponse> => {
+    // Admin şirketi için özel durum - tüm ürünleri göster
+    if (companyId === ADMIN_COMPANY_ID) {
+      const { data, error } = await supabase
+        .from("products")
+        .select("*")
+        .eq("id", id)
+        .single();
+
+      if (error) {
+        return { error: { message: "Product not found" } };
+      }
+
+      return { data };
+    }
+
     const { data, error } = await supabase
       .from("products")
       .select("*")
