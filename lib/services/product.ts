@@ -8,6 +8,7 @@ import type {
 import { validateAndMapDocuments } from "@/lib/utils/document-mapper";
 
 import { createService } from "../api-client";
+
 import { ADMIN_COMPANY_ID } from "./company";
 
 export class ProductService {

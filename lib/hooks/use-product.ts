@@ -1,8 +1,9 @@
 import type { BaseProduct } from "@/lib/types/product";
 
+import { ADMIN_COMPANY_ID } from "../services/company";
+
 import { useAuth } from "./use-auth";
 import { productsApiHooks } from "./use-products";
-import { ADMIN_COMPANY_ID } from "../services/company";
 
 export function useProduct(productId: string) {
   const { company, user } = useAuth();

@@ -9,10 +9,10 @@ import { useEffect, useState } from "react";
 
 import { supabase } from "@/lib/supabase/client";
 
+import { ADMIN_COMPANY_ID } from "../services/company";
 import type { User } from "../types/auth";
 
 import { companyApiHooks } from "./use-company";
-import { ADMIN_COMPANY_ID } from "../services/company";
 
 export function useAuth() {
   const [user, setUser] = useState<SupabaseUser | null>(null);

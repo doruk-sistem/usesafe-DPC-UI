@@ -13,8 +13,9 @@ import {
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
-import { Card } from "@/components/ui/card";
+
 import { getRecentApprovals, getSystemAlerts, type DashboardMetrics, type RecentApproval, type SystemAlert } from "@/app/api/metrics/route";
+import { Card } from "@/components/ui/card";
 import { supabase } from "@/lib/supabase/client";
 
 export function DashboardMetrics() {

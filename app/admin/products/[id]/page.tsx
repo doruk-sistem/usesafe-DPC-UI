@@ -15,10 +15,10 @@ import { use } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { DocumentStatus } from "@/lib/types/document";
-import { useProduct } from "@/lib/hooks/use-product";
-import { ProductStatus } from "@/lib/types/product";
 import { useAuth } from "@/lib/hooks/use-auth";
+import { useProduct } from "@/lib/hooks/use-product";
+import { DocumentStatus } from "@/lib/types/document";
+import { ProductStatus } from "@/lib/types/product";
 
 interface ProductDetailsProps {
   params: Promise<{

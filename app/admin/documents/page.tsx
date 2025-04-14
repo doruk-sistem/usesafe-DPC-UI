@@ -1,9 +1,10 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { documentsApiHooks } from "@/lib/hooks/use-documents";
+
 import { DocumentHeader } from "@/components/admin/documents/document-header";
 import { DocumentList } from "@/components/admin/documents/document-list";
+import { documentsApiHooks } from "@/lib/hooks/use-documents";
 
 export const dynamic = "force-dynamic";
 

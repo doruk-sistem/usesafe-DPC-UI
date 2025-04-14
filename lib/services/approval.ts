@@ -1,5 +1,6 @@
-import { NotificationService } from './notifications';
 import { supabase } from '@/lib/supabase/client';
+
+import { NotificationService } from './notifications';
 export class ApprovalService {
   static async approveManufacturer(manufacturerId: string): Promise<void> {
     try {

@@ -1,12 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
-import { Card } from "@/components/ui/card";
-import { getSystemAlerts, type SystemAlert } from "@/app/api/metrics/route";
-import { supabase } from "@/lib/supabase/client";
 import { motion } from "framer-motion";
 import { AlertTriangle, AlertCircle, Info } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
+
+import { getSystemAlerts, type SystemAlert } from "@/app/api/metrics/route";
+import { Card } from "@/components/ui/card";
+import { supabase } from "@/lib/supabase/client";
+
 
 export function SystemAlerts() {
   const t = useTranslations("adminDashboard");
