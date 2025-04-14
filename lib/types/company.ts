@@ -11,6 +11,7 @@ export enum CompanyType {
   BRAND_OWNER = "brand_owner",
   MATERIAL_SUPPLIER = "material_supplier",
   FACTORY = "factory",
+  ADMIN = "admin",
 }
 
 export enum DocumentType {

@@ -48,8 +48,8 @@ interface Document {
 export default function ProductDetailsPage({ params }: ProductDetailsProps) {
   const { id } = use(params);
   const t = useTranslations();
-  const { user, company, isLoading: isAuthLoading, isCompanyLoading, companyError } = useAuth();
-  const { product, isLoading: isProductLoading, error: productError } = useProduct(id);
+  const { user, company, isLoading: isAuthLoading, isCompanyLoading } = useAuth();
+  const { product, isLoading: isProductLoading, error } = useProduct(id);
 
   // Auth yükleniyorsa loading göster
   if (isAuthLoading) {
@@ -74,24 +74,12 @@ export default function ProductDetailsPage({ params }: ProductDetailsProps) {
     return <div className="flex items-center justify-center min-h-screen">Loading company information...</div>;
   }
 
-  // Şirket bilgisi yoksa veya hata varsa detaylı hata göster
-  if (!company || companyError) {
+  // Şirket bilgisi yoksa hata göster
+  if (!company) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen">
         <h2 className="text-2xl font-semibold mb-4">Company Information Not Found</h2>
-        <p className="text-muted-foreground mb-4">
-          {companyError ? (
-            <>Error: {companyError.message}</>
-          ) : (
-            <>Please make sure you are associated with a company. Your user ID: {user.id}</>
-          )}
-        </p>
-        <div className="text-sm text-muted-foreground mb-4">
-          <p>User Metadata:</p>
-          <pre className="bg-muted p-2 rounded mt-2">
-            {JSON.stringify(user.user_metadata, null, 2)}
-          </pre>
-        </div>
+        <p className="text-muted-foreground mb-4">Please make sure you are associated with a company.</p>
         <Button asChild>
           <Link href="/admin">Go to Dashboard</Link>
         </Button>
@@ -105,18 +93,12 @@ export default function ProductDetailsPage({ params }: ProductDetailsProps) {
   }
 
   // Hata varsa veya ürün bulunamadıysa 404
-  if (productError || !product?.data) {
-    console.error("Product error:", productError);
+  if (error || !product?.data) {
+    console.error("Product error:", error);
     return (
       <div className="flex flex-col items-center justify-center min-h-screen">
         <h2 className="text-2xl font-semibold mb-4">Product Not Found</h2>
-        <p className="text-muted-foreground mb-4">
-          {productError ? (
-            <>Error: {productError.message}</>
-          ) : (
-            <>The requested product could not be found.</>
-          )}
-        </p>
+        <p className="text-muted-foreground mb-4">The requested product could not be found.</p>
         <Button asChild>
           <Link href="/admin/products">Back to Products</Link>
         </Button>

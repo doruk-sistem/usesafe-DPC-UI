@@ -31,10 +31,7 @@ export function useAuth() {
     },
     { 
       enabled: !!user?.user_metadata?.company_id || user?.user_metadata?.role === "admin",
-      retry: false,
-      onError: (error) => {
-        console.error("Company fetch error:", error);
-      }
+      retry: false
     }
   );
 
@@ -42,22 +39,12 @@ export function useAuth() {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
-      console.log("Auth state changed:", { 
-        user: session?.user,
-        companyId: session?.user?.user_metadata?.company_id || 
-                  (session?.user?.user_metadata?.role === "admin" ? ADMIN_COMPANY_ID : undefined)
-      });
       setUser(session?.user ?? null);
       setIsLoading(false);
     });
 
     // Initial session check
     supabase.auth.getSession().then(({ data: { session } }) => {
-      console.log("Initial session:", { 
-        user: session?.user,
-        companyId: session?.user?.user_metadata?.company_id || 
-                  (session?.user?.user_metadata?.role === "admin" ? ADMIN_COMPANY_ID : undefined)
-      });
       setUser(session?.user ?? null);
       setIsLoading(false);
     });
@@ -89,7 +76,11 @@ export function useAuth() {
   const signUp = async (
     email: string,
     password: string,
-    metadata: Pick<User["user_metadata"], "role" | "full_name" | "company_id">
+    metadata: {
+      role: "admin" | "manufacturer";
+      full_name: string;
+      company_id: string;
+    }
   ) => {
     const { error } = await supabase.auth.signUp({
       email,
@@ -100,7 +91,6 @@ export function useAuth() {
     });
     if (error) throw error;
   };
-
   const signOut = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) throw error;

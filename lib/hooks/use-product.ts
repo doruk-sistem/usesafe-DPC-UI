@@ -5,20 +5,18 @@ import { productsApiHooks } from "./use-products";
 import { ADMIN_COMPANY_ID } from "../services/company";
 
 export function useProduct(productId: string) {
-  const { company } = useAuth();
-
+  const { company, user } = useAuth();  // Düzeltilmiş hali
   const {
     data: product,
     isLoading,
     error,
   } = productsApiHooks.useGetProductQuery(
     {
-      companyId: company?.id,
+      companyId: company?.id || (user?.user_metadata?.role === "admin" ? ADMIN_COMPANY_ID : "") as string, 
       id: productId,
     },
     {
-      enabled: !!productId && (!!company?.id || company?.id === ADMIN_COMPANY_ID),
-    }
+      enabled: !!productId && (!!company?.id || user?.user_metadata?.role === "admin"),    }
   );
   const { mutate: _updateProduct } =
     productsApiHooks.useUpdateProductMutation();
@@ -42,7 +40,7 @@ export function useProduct(productId: string) {
     };
 
     _updateProduct({
-      id: product.data?.id,
+      id: product.data?.id || "",
       product: updateData as any,
     });
   };
