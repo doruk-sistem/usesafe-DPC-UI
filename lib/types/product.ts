@@ -51,7 +51,17 @@ export type DPPConfig = {
   lastUpdated: string;
 };
 
-export type BaseProduct = Database["public"]["Tables"]["products"]["Row"];
+export type BaseProduct = Database["public"]["Tables"]["products"]["Row"] & {
+  manufacturer?: {
+    id: string;
+    name: string;
+    taxInfo: {
+      taxNumber: string;
+    };
+    companyType: string;
+    status: boolean;
+  };
+};
 export type NewProduct = Database["public"]["Tables"]["products"]["Insert"];
 export type UpdateProduct = Database["public"]["Tables"]["products"]["Update"];
 export type ProductStatus =

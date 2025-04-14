@@ -278,7 +278,7 @@ export default function ProductDetailsPage({ params }: ProductDetailsProps) {
                     {t("admin.products.details.productInfo.manufacturer")}
                   </p>
                   <p className="font-medium">
-                    {productData.manufacturer_id ? productData.manufacturer_id : "N/A"}
+                    {productData.manufacturer?.name || "N/A"}
                   </p>
                 </div>
                 <div>

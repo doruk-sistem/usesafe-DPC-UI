@@ -34,7 +34,16 @@ export class ProductService {
     if (companyId === ADMIN_COMPANY_ID) {
       const { data, error } = await supabase
         .from("products")
-        .select("*")
+        .select(`
+          *,
+          manufacturer:manufacturer_id (
+            id,
+            name,
+            taxInfo,
+            companyType,
+            status
+          )
+        `)
         .eq("id", id)
         .single();
 
@@ -47,7 +56,16 @@ export class ProductService {
 
     const { data, error } = await supabase
       .from("products")
-      .select("*")
+      .select(`
+        *,
+        manufacturer:manufacturer_id (
+          id,
+          name,
+          taxInfo,
+          companyType,
+          status
+        )
+      `)
       .eq("id", id)
       .eq("company_id", companyId)
       .single();
@@ -201,7 +219,16 @@ export const productService = createService({
     if (companyId === ADMIN_COMPANY_ID) {
       const { data, error } = await supabase
         .from("products")
-        .select("*")
+        .select(`
+          *,
+          manufacturer:manufacturer_id (
+            id,
+            name,
+            taxInfo,
+            companyType,
+            status
+          )
+        `)
         .eq("id", id)
         .single();
 
@@ -214,7 +241,16 @@ export const productService = createService({
 
     const { data, error } = await supabase
       .from("products")
-      .select("*")
+      .select(`
+        *,
+        manufacturer:manufacturer_id (
+          id,
+          name,
+          taxInfo,
+          companyType,
+          status
+        )
+      `)
       .eq("id", id)
       .eq("company_id", companyId)
       .single();
