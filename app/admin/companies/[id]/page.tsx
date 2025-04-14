@@ -1,27 +1,36 @@
-import { getTranslations } from "next-intl/server";
+"use client";
+
+import { useCompany } from "@/lib/hooks/use-company";
 import { CompanyDetails } from "@/components/admin/companies/company-details";
-import { CompanyDocuments } from "@/components/admin/companies/company-documents";
 import { CompanyProducts } from "@/components/admin/companies/company-products";
+import { CompanyDocuments } from "@/components/admin/companies/company-documents";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTranslations } from "next-intl";
+import { use } from "react";
 
-export default async function CompanyPage({ params }: { params: { id: string } }) {
-  const t = await getTranslations("dashboard.menu");
-  const companyId = await params.id;
+interface CompanyPageProps {
+  params: Promise<{
+    id: string;
+  }>;
+}
+
+export default function CompanyPage({ params }: CompanyPageProps) {
+  const resolvedParams = use(params);
+  const t = useTranslations("dashboard.menu");
 
   return (
     <div className="space-y-6">
-      <CompanyDetails companyId={companyId} />
+      <CompanyDetails companyId={resolvedParams.id} />
       <Tabs defaultValue="products" className="space-y-4">
         <TabsList>
           <TabsTrigger value="products">{t("products")}</TabsTrigger>
           <TabsTrigger value="documents">{t("documents")}</TabsTrigger>
         </TabsList>
         <TabsContent value="products" className="space-y-4">
-          <CompanyProducts companyId={companyId} />
+          <CompanyProducts companyId={resolvedParams.id} />
         </TabsContent>
         <TabsContent value="documents" className="space-y-4">
-          <CompanyDocuments companyId={companyId} />
+          <CompanyDocuments companyId={resolvedParams.id} />
         </TabsContent>
       </Tabs>
     </div>

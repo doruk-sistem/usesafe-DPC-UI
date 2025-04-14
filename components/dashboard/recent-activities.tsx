@@ -6,6 +6,7 @@ import { Box, CheckCircle2, XCircle , FileText, Trash2, PenLine } from "lucide-r
 import { useTranslations } from "next-intl";
 
 import { useProducts } from "@/lib/hooks/use-products";
+import { useAuth } from "@/lib/hooks/use-auth";
 import { cn } from "@/lib/utils";
 import { getRecentActivities } from "@/lib/utils/metrics";
 
@@ -21,7 +22,9 @@ const containerVariants = {
 
 export function RecentActivities() {
   const t = useTranslations("dashboard.activities");
-  const { products } = useProducts();
+  const { user } = useAuth();
+  const companyId = user?.user_metadata["company_id"] || "7d26ed35-49ca-4c0d-932e-52254fb0e5b8";
+  const { products } = useProducts(companyId);
   const activities = getRecentActivities(products || []);
 
   return (

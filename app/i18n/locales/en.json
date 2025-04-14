@@ -438,6 +438,14 @@
         "viewAnalytics": "View Analytics"
       }
     },
+    "menu": {
+      "dashboard": "Dashboard",
+      "products": "Products",
+      "certifications": "Certifications",
+      "documents": "Documents",
+      "analytics": "Analytics",
+      "settings": "Settings"
+    },
     "products": {
       "title": "Product Management",
       "description": "Manage your battery products and DPPs",
@@ -781,6 +789,26 @@
           "maintenance": "Scheduled Maintenance",
           "highVolume": "High Volume"
         }
+      }
+    },
+    "systemAlerts": {
+      "title": "System Alerts",
+      "noAlerts": "No active alerts",
+      "severity": {
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low"
+      }
+    },
+    "recentApprovals": {
+      "title": "Recent Approvals",
+      "noApprovals": "No approvals yet",
+      "viewAll": "View All",
+      "types": {
+        "manufacturer": "Manufacturer",
+        "product": "Product",
+        "document": "Document",
+        "certification": "Certification"
       }
     },
     "labels": {

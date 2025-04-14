@@ -207,18 +207,45 @@ export const companyService = createService({
 
   // Tek bir şirketi getir
   getCompany: async ({ id }: { id: string }): Promise<Company | null> => {
-    const { data, error } = await supabase
-      .from("companies")
-      .select("id, name, taxInfo, companyType, status")
-      .eq("id", id)
-      .single();
+    try {
+      if (!id) {
+        throw new Error("Company ID is required");
+      }
 
-    if (error) {
-      console.error("Error fetching company:", error);
-      return null;
+      const { data, error } = await supabase
+        .from("companies")
+        .select("*")
+        .eq("id", id)
+        .single();
+
+      if (error) {
+        console.error("Supabase error:", {
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+          code: error.code
+        });
+        throw error;
+      }
+
+      if (!data) {
+        console.warn(`No company found with id: ${id}`);
+        return null;
+      }
+
+      return {
+        id: data.id,
+        name: data.name,
+        companyType: data.companyType,
+        taxInfo: data.taxInfo,
+        status: data.status,
+        email: data.email,
+        phone: data.phone
+      };
+    } catch (error) {
+      console.error("Error in getCompany:", error);
+      throw error;
     }
-
-    return data;
   },
 
   // Tedarikçileri getir

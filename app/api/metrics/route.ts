@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-
 import { supabase } from '@/lib/supabase/client';
 
 export interface DashboardMetrics {
@@ -28,7 +27,6 @@ export interface SystemAlert {
 
 export async function GET() {
   try {
-    // Get total manufacturers and monthly change
     const { count: manufacturersCount } = await supabase
       .from('companies')
       .select('*', { count: 'exact' });
@@ -38,43 +36,36 @@ export async function GET() {
       .select('*', { count: 'exact' })
       .lt('created_at', new Date(new Date().setMonth(new Date().getMonth() - 1)).toISOString());
 
-    // Get pending approvals
     const { count: pendingApprovalsCount } = await supabase
       .from('companies')
       .select('*', { count: 'exact' })
       .eq('status', false);
 
-    // Get active DPCs
     const { count: activeDPCsCount } = await supabase
       .from('dpps')
       .select('*', { count: 'exact' })
       .eq('status', 'active');
 
-    // Get document verifications
     const { count: documentVerificationsCount } = await supabase
       .from('company_documents')
       .select('*', { count: 'exact' });
 
-    // Get system alerts
     const { count: systemAlertsCount } = await supabase
       .from('system_alerts')
       .select('*', { count: 'exact' })
       .eq('status', 'active');
 
-    // Calculate verification rate (example: verified documents / total documents)
     const { count: verifiedDocsCount } = await supabase
       .from('company_documents')
       .select('*', { count: 'exact' })
       .eq('status', 'verified');
 
-    // Safely handle null values for verification rate calculation
     const safeVerifiedDocsCount = verifiedDocsCount ?? 0;
     const safeDocumentVerificationsCount = documentVerificationsCount ?? 0;
     const verificationRate = safeDocumentVerificationsCount > 0
       ? (safeVerifiedDocsCount / safeDocumentVerificationsCount) * 100
       : 0;
 
-    // Safely handle null values for manufacturers change calculation
     const safeManufacturersCount = manufacturersCount ?? 0;
     const safeLastMonthManufacturers = lastMonthManufacturers ?? 0;
     const manufacturersChange = safeLastMonthManufacturers > 0
@@ -82,29 +73,29 @@ export async function GET() {
       : 0;
 
     const metrics: DashboardMetrics = {
-      totalManufacturers: { 
-        count: safeManufacturersCount, 
-        change: manufacturersChange 
+      totalManufacturers: {
+        count: safeManufacturersCount,
+        change: manufacturersChange
       },
-      pendingApprovals: { 
-        count: pendingApprovalsCount ?? 0, 
-        change: -4.5 // This would need historical data comparison
+      pendingApprovals: {
+        count: pendingApprovalsCount ?? 0,
+        change: -4.5
       },
-      activeDPCs: { 
-        count: activeDPCsCount ?? 0, 
-        change: 23.1 // This would need historical data comparison
+      activeDPCs: {
+        count: activeDPCsCount ?? 0,
+        change: 23.1
       },
-      documentVerifications: { 
-        count: safeDocumentVerificationsCount, 
-        change: 8.2 // This would need historical data comparison
+      documentVerifications: {
+        count: safeDocumentVerificationsCount,
+        change: 8.2
       },
-      systemAlerts: { 
-        count: systemAlertsCount ?? 0, 
-        change: -2.4 // This would need historical data comparison
+      systemAlerts: {
+        count: systemAlertsCount ?? 0,
+        change: -2.4
       },
-      verificationRate: { 
-        rate: verificationRate, 
-        change: 1.2 // This would need historical data comparison
+      verificationRate: {
+        rate: verificationRate,
+        change: 1.2
       }
     };
 
@@ -137,7 +128,7 @@ export async function getRecentApprovals(): Promise<RecentApproval[]> {
   }
 }
 
-export async function getSystemAlerts() {
+export async function getSystemAlerts(): Promise<SystemAlert[]> {
   try {
     const { data: alerts } = await supabase
       .from('system_alerts')
@@ -156,4 +147,4 @@ export async function getSystemAlerts() {
     console.error('Error fetching system alerts:', error);
     throw error;
   }
-} 
+}
