@@ -9,24 +9,15 @@ import {
   AlertCircle,
 } from "lucide-react";
 import Link from "next/link";
-import { notFound } from "next/navigation"; 
 import { useTranslations } from "next-intl";
 import { use } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { DocumentStatus } from "@/lib/types/document";
 import { useProduct } from "@/lib/hooks/use-product";
-import { BaseProduct, ProductStatus } from "@/lib/types/product";
+import { ProductStatus } from "@/lib/types/product";
 import { useAuth } from "@/lib/hooks/use-auth";
 
 interface ProductDetailsProps {
@@ -48,7 +39,12 @@ interface Document {
 export default function ProductDetailsPage({ params }: ProductDetailsProps) {
   const { id } = use(params);
   const t = useTranslations();
-  const { user, company, isLoading: isAuthLoading, isCompanyLoading } = useAuth();
+  const {
+    user,
+    company,
+    isLoading: isAuthLoading,
+    isCompanyLoading,
+  } = useAuth();
   const { product, isLoading: isProductLoading, error } = useProduct(id);
 
   // Tüm loading state'leri birleştir
@@ -59,7 +55,7 @@ export default function ProductDetailsPage({ params }: ProductDetailsProps) {
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading...</p>
+          <p className="text-muted-foreground">{t("common.loading")}</p>
         </div>
       </div>
     );
@@ -69,13 +65,17 @@ export default function ProductDetailsPage({ params }: ProductDetailsProps) {
   if (!user || !company) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen">
-        <h2 className="text-2xl font-semibold mb-4">Authentication Required</h2>
+        <h2 className="text-2xl font-semibold mb-4">
+          {t("common.auth.required")}
+        </h2>
         <p className="text-muted-foreground mb-4">
-          {!user ? "Please log in to view this page." : "Please make sure you are associated with a company."}
+          {!user
+            ? t("common.auth.loginRequired")
+            : t("common.auth.companyRequired")}
         </p>
         <Button asChild>
           <Link href={!user ? "/login" : "/admin"}>
-            {!user ? "Go to Login" : "Go to Dashboard"}
+            {!user ? t("common.buttons.login") : t("common.buttons.dashboard")}
           </Link>
         </Button>
       </div>
@@ -88,15 +88,17 @@ export default function ProductDetailsPage({ params }: ProductDetailsProps) {
     if (error && error.message !== "Product not found") {
       console.error("Product error:", error);
     }
-    
+
     return (
       <div className="flex flex-col items-center justify-center min-h-screen">
-        <h2 className="text-2xl font-semibold mb-4">Product Not Found</h2>
+        <h2 className="text-2xl font-semibold mb-4">
+          {t("admin.products.errors.notFound")}
+        </h2>
         <p className="text-muted-foreground mb-4">
-          {error?.message || "The requested product could not be found. Please check if you have the correct permissions."}
+          {error?.message || t("admin.products.errors.notFoundDescription")}
         </p>
         <Button asChild>
-          <Link href="/admin/products">Back to Products</Link>
+          <Link href="/admin/products">{t("common.buttons.back")}</Link>
         </Button>
       </div>
     );
@@ -279,7 +281,8 @@ export default function ProductDetailsPage({ params }: ProductDetailsProps) {
                     {t("admin.products.details.productInfo.manufacturer")}
                   </p>
                   <p className="font-medium">
-                    {productData.manufacturer?.name || "N/A"}
+                    {productData.manufacturer?.name ||
+                      t("common.labels.notAvailable")}
                   </p>
                 </div>
                 <div>
@@ -298,7 +301,7 @@ export default function ProductDetailsPage({ params }: ProductDetailsProps) {
                         {productData.status}
                       </Badge>
                     ) : (
-                      "N/A"
+                      t("common.labels.notAvailable")
                     )}
                   </div>
                 </div>
@@ -351,7 +354,9 @@ export default function ProductDetailsPage({ params }: ProductDetailsProps) {
                     <div className="space-y-2">
                       {allDocuments.map((doc, index) => (
                         <div
-                          key={`${doc.id || 'doc'}-${doc.name}-${doc.type || 'unknown'}-${index}`}
+                          key={`${doc.id || "doc"}-${doc.name}-${
+                            doc.type || "unknown"
+                          }-${index}`}
                           className="flex items-center justify-between rounded-lg border p-3"
                         >
                           <div className="flex items-center gap-2">
@@ -384,6 +389,18 @@ export default function ProductDetailsPage({ params }: ProductDetailsProps) {
     );
   } catch (error) {
     console.error("Error rendering product details:", error);
-    return <div>Error loading product details</div>;
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <h2 className="text-2xl font-semibold mb-4">
+          {t("common.errors.title")}
+        </h2>
+        <p className="text-muted-foreground mb-4">
+          {t("common.errors.unexpectedError")}
+        </p>
+        <Button asChild>
+          <Link href="/admin/products">{t("common.buttons.back")}</Link>
+        </Button>
+      </div>
+    );
   }
 }

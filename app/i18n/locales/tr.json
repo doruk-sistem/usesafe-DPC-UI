@@ -1082,6 +1082,44 @@
       "draft": "Taslak",
       "active": "Aktif",
       "pending": "Beklemede"
+    },
+    "loading": "Yükleniyor...",
+    "buttons": {
+      "back": "Geri",
+      "login": "Giriş Yap",
+      "dashboard": "Panele Git"
+    },
+    "auth": {
+      "required": "Kimlik Doğrulama Gerekli",
+      "loginRequired": "Bu sayfayı görüntülemek için giriş yapmalısınız.",
+      "companyRequired": "Lütfen bir şirketle ilişkilendirildiğinizden emin olun."
+    },
+    "labels": {
+      "notAvailable": "Mevcut Değil"
+    },
+    "error": {
+      "title": "Hata",
+      "description": "Bir hata oluştu",
+      "tryAgain": "Lütfen tekrar deneyin",
+      "notFound": "Bulunamadı",
+      "unauthorized": "Yetkisiz Erişim",
+      "forbidden": "Erişim Reddedildi",
+      "serverError": "Sunucu Hatası"
+    },
+    "success": {
+      "title": "Başarılı",
+      "saved": "Kaydedildi",
+      "updated": "Güncellendi",
+      "deleted": "Silindi",
+      "created": "Oluşturuldu"
+    },
+    "validation": {
+      "required": "Bu alan zorunludur",
+      "email": "Geçerli bir e-posta adresi girin",
+      "minLength": "En az {length} karakter olmalıdır",
+      "maxLength": "En fazla {length} karakter olmalıdır",
+      "password": "Şifre en az 8 karakter olmalıdır",
+      "passwordMatch": "Şifreler eşleşmiyor"
     }
   },
   "productCategories": {
@@ -1600,6 +1638,10 @@
         },
         "errorLoadingProduct": "Ürün Yüklenirken Hata Oluştu",
         "unexpectedError": "Beklenmeyen bir hata oluştu"
+      },
+      "errors": {
+        "notFound": "Ürün Bulunamadı",
+        "notFoundDescription": "İstenen ürün bulunamadı. Silinmiş olabilir veya görüntüleme izniniz olmayabilir."
       }
     },
     "dpc": {
