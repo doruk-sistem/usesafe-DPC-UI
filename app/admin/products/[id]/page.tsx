@@ -51,54 +51,50 @@ export default function ProductDetailsPage({ params }: ProductDetailsProps) {
   const { user, company, isLoading: isAuthLoading, isCompanyLoading } = useAuth();
   const { product, isLoading: isProductLoading, error } = useProduct(id);
 
-  // Auth yükleniyorsa loading göster
-  if (isAuthLoading) {
-    return <div className="flex items-center justify-center min-h-screen">Loading authentication...</div>;
+  // Tüm loading state'leri birleştir
+  const isLoading = isAuthLoading || isCompanyLoading || isProductLoading;
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
   }
 
-  // Kullanıcı giriş yapmamışsa login sayfasına yönlendir
-  if (!user) {
+  // Auth ve company kontrollerini birleştir
+  if (!user || !company) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen">
         <h2 className="text-2xl font-semibold mb-4">Authentication Required</h2>
-        <p className="text-muted-foreground mb-4">Please log in to view this page.</p>
+        <p className="text-muted-foreground mb-4">
+          {!user ? "Please log in to view this page." : "Please make sure you are associated with a company."}
+        </p>
         <Button asChild>
-          <Link href="/login">Go to Login</Link>
+          <Link href={!user ? "/login" : "/admin"}>
+            {!user ? "Go to Login" : "Go to Dashboard"}
+          </Link>
         </Button>
       </div>
     );
   }
 
-  // Şirket bilgisi yükleniyorsa loading göster
-  if (isCompanyLoading) {
-    return <div className="flex items-center justify-center min-h-screen">Loading company information...</div>;
-  }
-
-  // Şirket bilgisi yoksa hata göster
-  if (!company) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen">
-        <h2 className="text-2xl font-semibold mb-4">Company Information Not Found</h2>
-        <p className="text-muted-foreground mb-4">Please make sure you are associated with a company.</p>
-        <Button asChild>
-          <Link href="/admin">Go to Dashboard</Link>
-        </Button>
-      </div>
-    );
-  }
-
-  // Ürün yükleniyorsa loading göster
-  if (isProductLoading) {
-    return <div className="flex items-center justify-center min-h-screen">Loading product information...</div>;
-  }
-
-  // Hata varsa veya ürün bulunamadıysa 404
+  // Hata kontrolünü geliştir
   if (error || !product?.data) {
-    console.error("Product error:", error);
+    // Only log the error if it's not a simple "not found" case
+    if (error && error.message !== "Product not found") {
+      console.error("Product error:", error);
+    }
+    
     return (
       <div className="flex flex-col items-center justify-center min-h-screen">
         <h2 className="text-2xl font-semibold mb-4">Product Not Found</h2>
-        <p className="text-muted-foreground mb-4">The requested product could not be found.</p>
+        <p className="text-muted-foreground mb-4">
+          {error?.message || "The requested product could not be found. Please check if you have the correct permissions."}
+        </p>
         <Button asChild>
           <Link href="/admin/products">Back to Products</Link>
         </Button>
@@ -165,21 +161,25 @@ export default function ProductDetailsPage({ params }: ProductDetailsProps) {
         // Durum öncelik sırası (en önemliden en önemsize)
         const statusPriority = [
           {
+            key: "rejected",
             condition: hasRejectedDocuments,
             status: "hasRejected",
             productStatus: "REJECTED" as ProductStatus,
           },
           {
+            key: "pending",
             condition: hasPendingDocuments,
             status: "pending",
             productStatus: "PENDING" as ProductStatus,
           },
           {
+            key: "expired",
             condition: hasExpiredDocuments,
             status: "hasExpired",
             productStatus: "EXPIRED" as ProductStatus,
           },
           {
+            key: "approved",
             condition: hasApprovedDocuments,
             status: "allApproved",
             productStatus: "APPROVED" as ProductStatus,
@@ -190,6 +190,7 @@ export default function ProductDetailsPage({ params }: ProductDetailsProps) {
         const currentStatus = statusPriority.find(
           (status) => status.condition
         ) || {
+          key: "unknown",
           status: "unknown",
           productStatus: "NEW" as ProductStatus,
         };
@@ -348,9 +349,9 @@ export default function ProductDetailsPage({ params }: ProductDetailsProps) {
                       {t("admin.products.details.documents.description")}
                     </p>
                     <div className="space-y-2">
-                      {allDocuments.map((doc) => (
+                      {allDocuments.map((doc, index) => (
                         <div
-                          key={doc.id}
+                          key={`${doc.id || 'doc'}-${doc.name}-${doc.type || 'unknown'}-${index}`}
                           className="flex items-center justify-between rounded-lg border p-3"
                         >
                           <div className="flex items-center gap-2">

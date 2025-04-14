@@ -1,13 +1,13 @@
-import type { Product } from "@/lib/types/product";
+import type { BaseProduct } from "@/lib/types/product";
 
 import { useAuth } from "./use-auth";
 import { productsApiHooks } from "./use-products";
 import { ADMIN_COMPANY_ID } from "../services/company";
 
 export function useProduct(productId: string) {
-  const { company, user } = useAuth();  // Düzeltilmiş hali
+  const { company, user } = useAuth();
   const {
-    data: product,
+    data: productResponse,
     isLoading,
     error,
   } = productsApiHooks.useGetProductQuery(
@@ -16,13 +16,27 @@ export function useProduct(productId: string) {
       id: productId,
     },
     {
-      enabled: !!productId && (!!company?.id || user?.user_metadata?.role === "admin"),    }
+      enabled: !!productId && (!!company?.id || user?.user_metadata?.role === "admin"),
+      retry: 1, // Limit retries to avoid excessive API calls
+      retryDelay: 1000, // Wait 1 second between retries
+    }
   );
+  
+  // Extract the product data from the response
+  const product = productResponse?.data ? { data: productResponse.data } : null;
+  
+  // Create a more detailed error object
+  const detailedError = error 
+    ? { message: error.message || "An error occurred while fetching the product" } 
+    : productResponse?.error 
+      ? { message: productResponse.error.message || "Product not found" } 
+      : null;
+  
   const { mutate: _updateProduct } =
     productsApiHooks.useUpdateProductMutation();
 
-  const updateProduct = async (updates: Partial<Product>) => {
-    if (!product) return;
+  const updateProduct = async (updates: Partial<BaseProduct>) => {
+    if (!product?.data) return;
 
     const updateData = {
       ...updates,
@@ -40,7 +54,7 @@ export function useProduct(productId: string) {
     };
 
     _updateProduct({
-      id: product.data?.id || "",
+      id: product.data.id || "",
       product: updateData as any,
     });
   };
@@ -66,7 +80,7 @@ export function useProduct(productId: string) {
   return {
     product,
     isLoading,
-    error,
+    error: detailedError,
     updateProduct,
     determineProductStatus,
   };
