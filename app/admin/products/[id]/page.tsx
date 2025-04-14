@@ -9,7 +9,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound } from "next/navigation"; 
 import { useTranslations } from "next-intl";
 import { use } from "react";
 
@@ -332,20 +332,20 @@ export default function ProductDetailsPage({ params }: ProductDetailsProps) {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <p className="text-sm text-muted-foreground">
-                    {t("admin.products.details.documents.status")}
+                    {t("admin.products.details.documents.documentStatus")}
                   </p>
                   <Badge variant="outline">{documentStatus}</Badge>
                 </div>
                 <div className="flex items-center justify-between">
                   <p className="text-sm text-muted-foreground">
-                    {t("admin.products.details.documents.count")}
+                    {t("admin.products.details.documents.totalDocuments")}
                   </p>
                   <p className="font-medium">{documentCount}</p>
                 </div>
                 {allDocuments.length > 0 && (
                   <div className="space-y-2">
                     <p className="text-sm text-muted-foreground">
-                      {t("admin.products.details.documents.list")}
+                      {t("admin.products.details.documents.description")}
                     </p>
                     <div className="space-y-2">
                       {allDocuments.map((doc) => (
