@@ -5,10 +5,8 @@ import { CheckCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
-import { getRecentApprovals, type RecentApproval } from "@/app/api/metrics/route";
+import { getRecentApprovals, type RecentApproval } from "@/lib/hooks/useMetrics";
 import { Card } from "@/components/ui/card";
-import { supabase } from "@/lib/supabase/client";
-
 
 export function RecentApprovals() {
   const t = useTranslations("adminDashboard");
@@ -29,22 +27,6 @@ export function RecentApprovals() {
     };
 
     fetchApprovals();
-
-    // Set up real-time subscription
-    const subscription = supabase
-      .channel('recent-approvals')
-      .on('postgres_changes', { 
-        event: '*', 
-        schema: 'public',
-        table: 'companies'
-      }, () => {
-        fetchApprovals();
-      })
-      .subscribe();
-
-    return () => {
-      subscription.unsubscribe();
-    };
   }, []);
 
   if (error) {

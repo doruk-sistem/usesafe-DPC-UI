@@ -5,10 +5,8 @@ import { AlertTriangle, AlertCircle, Info } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
-import { getSystemAlerts, type SystemAlert } from "@/app/api/metrics/route";
+import { getSystemAlerts, type SystemAlert } from "@/lib/hooks/useMetrics";
 import { Card } from "@/components/ui/card";
-import { supabase } from "@/lib/supabase/client";
-
 
 export function SystemAlerts() {
   const t = useTranslations("adminDashboard");
@@ -29,22 +27,6 @@ export function SystemAlerts() {
     };
 
     fetchAlerts();
-
-    // Set up real-time subscription
-    const subscription = supabase
-      .channel('system-alerts')
-      .on('postgres_changes', { 
-        event: '*', 
-        schema: 'public',
-        table: 'system_alerts'
-      }, () => {
-        fetchAlerts();
-      })
-      .subscribe();
-
-    return () => {
-      subscription.unsubscribe();
-    };
   }, []);
 
   const getSeverityIcon = (severity: string) => {
