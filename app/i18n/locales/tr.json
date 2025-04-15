@@ -1535,6 +1535,30 @@
     }
   },
   "admin": {
+    "products": {
+      "steps": {
+        "documentUpload": {
+          "title": "Ürün Belgelerini Yükle",
+          "description": "Ürününüz için gerekli belgeleri yükleyin",
+          "productDocuments": "Ürün Belgeleri",
+          "addDocument": "Belge Ekle",
+          "uploadDocuments": "Belgeleri Yükle",
+          "verifyDocuments": "Belgeleri Doğrula",
+          "verificationRequired": "Belge doğrulama gerekli",
+          "pleaseVerifyDocuments": "Lütfen belgeleri doğruladıktan sonra devam edin",
+          "invalidUploadParameters": "Geçersiz yükleme parametreleri",
+          "invalidFileType": "Geçersiz dosya türü",
+          "fileSizeExceedsLimit": "Dosya boyutu sınırını aştı",
+          "uploadIssues": "Yükleme Sorunları",
+          "verifyDocumentsDescription": "Tüm yüklenen belgelerin doğruluğunu doğrulayın",
+          "documentTypes": {
+            "testReports": "Test Raporları",
+            "technicalDocumentation": "Teknik Belgeler"  
+          }
+        }
+      }
+    },
+    
     "dpc": {
       "title": "DPC Başvuruları",
       "description": "DPC başvurularını görüntüleyin ve yönetin",

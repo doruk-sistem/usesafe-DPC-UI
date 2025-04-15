@@ -841,6 +841,29 @@
     }
   },
   "admin": {
+    "products": {
+      "steps": {
+       "documentUpload": {
+       "title": "Upload Product Documents",
+       "description": "Upload the required documents for your product",
+       "verifyDocuments": "Verify Documents",
+       "verifyDocumentsDescription": "Verify the authenticity of all uploaded documents",
+       "addDocument": "Add Document",
+       "uploadDocuments": "Upload Documents",
+       "productDocuments": "Product Documents",
+       "verificationRequired": "Document verification required",
+       "pleaseVerifyDocuments": "Please verify the documents before proceeding",
+       "invalidUploadParameters": "Invalid upload parameters",
+       "invalidFileType": "Invalid file type",
+       "fileSizeExceedsLimit": "File size exceeds limit",
+       "uploadIssues": "Upload Issues",
+       "documentTypes": {
+            "testReports": "Test Reports",
+            "technicalDocumentation": "Technical Documentation"
+          }
+        }
+      }
+    },
     "sidebar": {
       "dashboard": "Dashboard",
       "manufacturers": "Manufacturers",

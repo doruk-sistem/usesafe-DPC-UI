@@ -78,7 +78,7 @@ export function ProductHeader({
         />
 
         <Select value={filter} onValueChange={handleFilterChange}>
-          <SelectTrigger className="w-full sm:w-[160px]">
+          <SelectTrigger className="w-[180px]">
             <SelectValue placeholder={t("filters.type.label")} />
           </SelectTrigger>
           <SelectContent>
@@ -94,19 +94,19 @@ export function ProductHeader({
 
         <Select value={status} onValueChange={handleStatusChange}>
           <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="All Statuses" />
+            <SelectValue placeholder={t("filters.status.label")} />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all-status">
               {t("filters.status.all")}
             </SelectItem>
-            <SelectItem value="APPROVED">
+            <SelectItem value="approved">
               {t("filters.status.APPROVED")}
             </SelectItem>
-            <SelectItem value="REJECTED">
+            <SelectItem value="rejected">
               {t("filters.status.REJECTED")}
             </SelectItem>
-            <SelectItem value="PENDING">
+            <SelectItem value="pending">
               {t("filters.status.PENDING")}
             </SelectItem>
           </SelectContent>
