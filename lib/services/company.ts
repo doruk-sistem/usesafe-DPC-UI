@@ -160,7 +160,7 @@ export class CompanyService {
 
   static async getProductStats(companyId: string): Promise<CompanyStats | null> {
     const { data, error } = await supabase
-      .from("productStats")
+      .from("productstats")
       .select("total, active, pending, categories")
       .eq("company_id", companyId)
       .single();
@@ -168,20 +168,6 @@ export class CompanyService {
     if (error) {
       console.error("Error fetching product stats:", error);
       return null;
-    }
-
-    return data;
-  }
-
-  static async getProducts(companyId: string): Promise<any[]> {
-    const { data, error } = await supabase
-      .from("products")
-      .select("*")
-      .eq("company_id", companyId);
-
-    if (error) {
-      console.error("Error fetching products:", error);
-      return [];
     }
 
     return data;

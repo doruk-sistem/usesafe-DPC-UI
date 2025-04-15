@@ -77,9 +77,9 @@ export default async function RootLayout({
         >
           <NextIntlClientProvider messages={messages} locale={locale}>
             <ReactQueryProvider>
-              <div className="flex min-h-screen flex-col">
+              <div className="relative min-h-screen bg-background">
                 <Navbar />
-                <main className="flex-1">{children}</main>
+                <main className="relative">{children}</main>
               </div>
               <Toaster />
             </ReactQueryProvider>

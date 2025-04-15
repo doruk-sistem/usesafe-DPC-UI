@@ -5,6 +5,7 @@ import { Plus, Search, MoreHorizontal } from "lucide-react";
 import { useProducts } from "@/lib/hooks/use-products";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useTranslations } from "next-intl";
 import {
   Table,
   TableBody,
@@ -14,7 +15,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,45 +38,39 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-interface CompanyProductsProps {
-  companyId: string;
-}
-
-export function CompanyProducts({ companyId }: CompanyProductsProps) {
+export function CompanyProducts() {
+  const t = useTranslations("admin.products");
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
-  const { products, isLoading, error } = useProducts(companyId);
+  const { products, isLoading, error } = useProducts();
 
-  // Hata durumu
   if (error) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Hata</CardTitle>
-          <CardDescription>Ürünler yüklenirken bir hata oluştu.</CardDescription>
+          <CardTitle>{t("list.error.title")}</CardTitle>
+          <CardDescription>{t("list.error.description")}</CardDescription>
         </CardHeader>
       </Card>
     );
   }
 
-  // Yükleme durumu
   if (isLoading) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Ürünler</CardTitle>
-          <CardDescription>Yükleniyor...</CardDescription>
+          <CardTitle>{t("title")}</CardTitle>
+          <CardDescription>{t("loading")}</CardDescription>
         </CardHeader>
       </Card>
     );
   }
 
-  // Filtreleme fonksiyonu
   const filteredProducts = products.filter((product) => {
-    const matchesSearch = 
+    const matchesSearch =
       product.name?.toLowerCase().includes(search.toLowerCase()) ||
       product.sku?.toLowerCase().includes(search.toLowerCase());
-    
+
     if (filter === "all") return matchesSearch;
     return matchesSearch && product.status === filter;
   });
@@ -79,25 +80,24 @@ export function CompanyProducts({ companyId }: CompanyProductsProps) {
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle>Ürünler</CardTitle>
+            <CardTitle>{t("title")}</CardTitle>
             <CardDescription>
-              Toplam {products.length} ürün bulundu
+              {t("list.total", { count: products.length })}
             </CardDescription>
           </div>
           <Button className="flex items-center gap-2">
             <Plus className="h-4 w-4" />
-            Yeni Ürün Ekle
+            {t("list.actions.add")}
           </Button>
         </div>
       </CardHeader>
       <CardContent>
-        {/* Arama ve Filtreleme */}
         <div className="mb-4 flex items-center gap-4">
           <div className="flex-1">
             <div className="relative">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Ürün ara..."
+                placeholder={t("list.search")}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="pl-8"
@@ -106,29 +106,28 @@ export function CompanyProducts({ companyId }: CompanyProductsProps) {
           </div>
           <Select value={filter} onValueChange={setFilter}>
             <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Durum Filtrele" />
+              <SelectValue placeholder={t("list.filters.all")} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Tümü</SelectItem>
-              <SelectItem value="active">Aktif</SelectItem>
-              <SelectItem value="pending">Beklemede</SelectItem>
-              <SelectItem value="draft">Taslak</SelectItem>
+              <SelectItem value="all">{t("list.filters.all")}</SelectItem>
+              <SelectItem value="active">{t("list.filters.active")}</SelectItem>
+              <SelectItem value="pending">{t("list.filters.pending")}</SelectItem>
+              <SelectItem value="draft">{t("list.filters.draft")}</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
-        {/* Ürün Tablosu */}
         {filteredProducts.length === 0 ? (
           <div className="flex h-[200px] items-center justify-center rounded-lg border border-dashed">
             <div className="text-center">
               <p className="text-sm text-muted-foreground">
                 {search || filter !== "all"
-                  ? "Arama kriterlerine uygun ürün bulunamadı."
-                  : "Henüz ürün eklenmemiş."}
+                  ? t("list.empty.filtered")
+                  : t("empty.description")}
               </p>
               <Button variant="outline" className="mt-2">
                 <Plus className="mr-2 h-4 w-4" />
-                İlk Ürünü Ekle
+                {t("empty.addFirst")}
               </Button>
             </div>
           </div>
@@ -136,13 +135,15 @@ export function CompanyProducts({ companyId }: CompanyProductsProps) {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Ürün Kodu</TableHead>
-                <TableHead>Ürün Adı</TableHead>
-                <TableHead>SKU</TableHead>
-                <TableHead>Kategori</TableHead>
-                <TableHead>Durum</TableHead>
-                <TableHead>Eklenme Tarihi</TableHead>
-                <TableHead className="text-right">İşlemler</TableHead>
+                <TableHead>{t("list.columns.productCode")}</TableHead>
+                <TableHead>{t("list.columns.productName")}</TableHead>
+                <TableHead>{t("list.columns.sku")}</TableHead>
+                <TableHead>{t("list.columns.category")}</TableHead>
+                <TableHead>{t("list.columns.status")}</TableHead>
+                <TableHead>{t("list.columns.addedDate")}</TableHead>
+                <TableHead className="text-right">
+                  {t("list.columns.actions")}
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -162,11 +163,7 @@ export function CompanyProducts({ companyId }: CompanyProductsProps) {
                           : "secondary"
                       }
                     >
-                      {product.status === "active"
-                        ? "Aktif"
-                        : product.status === "pending"
-                        ? "Beklemede"
-                        : "Taslak"}
+                      {t(`list.status.${product.status}`)}
                     </Badge>
                   </TableCell>
                   <TableCell>
@@ -177,16 +174,20 @@ export function CompanyProducts({ companyId }: CompanyProductsProps) {
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon">
                           <MoreHorizontal className="h-4 w-4" />
-                          <span className="sr-only">İşlemler</span>
+                          <span className="sr-only">
+                            {t("list.actions.title")}
+                          </span>
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>İşlemler</DropdownMenuLabel>
+                        <DropdownMenuLabel>
+                          {t("list.actions.title")}
+                        </DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>Düzenle</DropdownMenuItem>
-                        <DropdownMenuItem>Görüntüle</DropdownMenuItem>
+                        <DropdownMenuItem>{t("list.actions.edit")}</DropdownMenuItem>
+                        <DropdownMenuItem>{t("list.actions.view")}</DropdownMenuItem>
                         <DropdownMenuItem className="text-red-600">
-                          Sil
+                          {t("list.actions.delete")}
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>

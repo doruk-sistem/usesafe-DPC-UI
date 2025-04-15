@@ -20,14 +20,15 @@
     "labels": {
       "manufacturer": "Manufacturer",
       "document": "Document",
-      "dpp": "DPP"
+      "dpp": "DPP",
+      "brand_owner": "Brand Owner"
     },
     "companies": {
       "title": "Companies",
-      "description": "Manage and view registered companies",
+      "description": "View and manage registered companies",
       "list": {
         "title": "Companies",
-        "description": "A comprehensive list of all registered companies",
+        "description": "List of all registered companies",
         "error": {
           "title": "Error",
           "description": "An error occurred while loading companies"
@@ -52,29 +53,43 @@
         }
       },
       "details": {
-        "loading": "Loading...",
-        "error": {
-          "title": "Error: Could not fetch company details"
-        },
+        "title": "Company Details",
         "companyInfo": {
-          "title": "Company Information"
-        },
-        "taxInfo": {
-          "title": "Tax Information",
+          "title": "Company Information",
+          "type": "Company Type",
+          "name": "Company Name",
+          "brand_owner": "Brand Owner",
           "taxNumber": "Tax Number",
-          "tradeRegistryNo": "Trade Registry Number",
-          "mersisNo": "MERSIS Number"
+          "registrationDate": "Registration Date"
         },
-        "addressInfo": {
-          "title": "Address Information",
-          "notAvailable": "Address information not available"
-        },
-        "contactPerson": {
-          "title": "Contact Person",
-          "notAvailable": "Contact information not available"
+        "contactInfo": {
+          "title": "Contact Information",
+          "email": "Email",
+          "phone": "Phone",
+          "website": "Website",
+          "address": "Address"
         },
         "statistics": {
-          "title": "Product Statistics"
+          "title": "Statistics",
+          "totalProducts": "Total Products",
+          "activeProducts": "Active Products",
+          "pendingProducts": "Pending Products",
+          "totalDocuments": "Total Documents",
+          "approvedDocuments": "Approved Documents",
+          "pendingDocuments": "Pending Documents"
+        },
+        "tabs": {
+          "overview": "Overview",
+          "products": "Products",
+          "documents": "Documents",
+          "history": "History"
+        },
+        "actions": {
+          "edit": "Edit",
+          "delete": "Delete",
+          "approve": "Approve",
+          "reject": "Reject",
+          "suspend": "Suspend"
         }
       },
       "status": {
@@ -115,6 +130,44 @@
         "deleteConfirm": "Are you sure you want to delete this company?",
         "deleteSuccess": "Company deleted successfully",
         "deleteError": "Error deleting company"
+      },
+      "documents": {
+        "title": "Documents",
+        "description": "Manage company documents",
+        "loading": "Loading documents...",
+        "empty": {
+          "description": "No documents found for this company",
+          "uploadFirst": "Upload First Document"
+        },
+        "columns": {
+          "id": "Document ID",
+          "name": "Document Name",
+          "type": "Document Type",
+          "status": "Status",
+          "uploadDate": "Upload Date",
+          "actions": "Actions"
+        },
+        "types": {
+          "signature_circular": "Signature Circular",
+          "trade_registry_gazette": "Trade Registry Gazette",
+          "tax_plate": "Tax Plate",
+          "activity_certificate": "Activity Certificate",
+          "iso_certificate": "ISO Certificate"
+        },
+        "status": {
+          "approved": "Approved",
+          "rejected": "Rejected",
+          "pending": "Pending Review"
+        },
+        "actions": {
+          "title": "Actions",
+          "add": "Add Document",
+          "view": "View",
+          "download": "Download",
+          "approve": "Approve",
+          "reject": "Reject",
+          "delete": "Delete"
+        }
       }
     },
     "manufacturers": {
@@ -184,6 +237,130 @@
       "filters": {
         "allCategories": "All Categories",
         "allStatus": "All Status"
+      }
+    },
+    "documents": {
+      "title": "Documents",
+      "description": "List of company documents",
+      "empty": {
+        "description": "No documents found for this company.",
+        "uploadFirst": "Upload First Document"
+      },
+      "columns": {
+        "id": "Document ID",
+        "name": "Document Name",
+        "type": "Document Type",
+        "status": "Status",
+        "uploadDate": "Upload Date",
+        "actions": "Actions"
+      },
+      "types": {
+        "signature_circular": "Signature Circular",
+        "trade_registry_gazette": "Trade Registry Gazette",
+        "tax_plate": "Tax Registration Certificate",
+        "activity_certificate": "Activity Certificate",
+        "iso_certificate": "ISO Certificate",
+        "quality_certificate": "Quality Certificate",
+        "export_certificate": "Export Certificate",
+        "production_permit": "Production Permit"
+      },
+      "status": {
+        "approved": "Approved",
+        "rejected": "Rejected",
+        "pending": "Pending Approval"
+      },
+      "actions": {
+        "add": "Add Document",
+        "view": "View",
+        "download": "Download",
+        "approve": "Approve",
+        "reject": "Reject",
+        "delete": "Delete"
+      }
+    },
+    "products": {
+      "title": "Products",
+      "description": "View and manage products",
+      "list": {
+        "title": "Products",
+        "description": "List of all products",
+        "total": "Total: {count} products found",
+        "search": "Search products...",
+        "filter": "All",
+        "columns": {
+          "productCode": "Product Code",
+          "productName": "Product Name",
+          "sku": "SKU",
+          "category": "Category",
+          "status": "Status",
+          "addedDate": "Added Date",
+          "actions": "Actions"
+        },
+        "status": {
+          "active": "Active",
+          "passive": "Passive",
+          "draft": "Draft",
+          "pending": "Pending Review",
+          "taslak": "Draft",
+          "NEW": "New"
+        },
+        "actions": {
+          "title": "Actions",
+          "add": "Add New Product",
+          "edit": "Edit",
+          "delete": "Delete",
+          "view": "View",
+          "approve": "Approve",
+          "reject": "Reject"
+        },
+        "filters": {
+          "all": "All",
+          "active": "Active Products",
+          "passive": "Passive Products",
+          "draft": "Drafts",
+          "pending": "Pending Review"
+        },
+        "messages": {
+          "deleteConfirm": "Are you sure you want to delete this product?",
+          "deleteSuccess": "Product deleted successfully",
+          "deleteError": "Error deleting product",
+          "addSuccess": "Product added successfully",
+          "addError": "Error adding product",
+          "editSuccess": "Product updated successfully",
+          "editError": "Error updating product"
+        },
+        "empty": {
+          "filtered": "No products found matching your search criteria.",
+          "description": "No products have been added yet."
+        }
+      },
+      "empty": {
+        "description": "No products found",
+        "addFirst": "Add First Product"
+      },
+      "loading": "Loading products...",
+      "details": {
+        "title": "Product Details",
+        "basicInfo": {
+          "title": "Basic Information",
+          "productCode": "Product Code",
+          "productName": "Product Name",
+          "sku": "SKU",
+          "category": "Category",
+          "status": "Status",
+          "addedDate": "Added Date"
+        },
+        "actions": {
+          "edit": "Edit",
+          "delete": "Delete",
+          "approve": "Approve",
+          "reject": "Reject"
+        },
+        "tabs": {
+          "overview": "Overview",
+          "documents": "Documents",
+          "history": "History"
+        }
       }
     }
   },
@@ -706,7 +883,9 @@
       "draft": "Draft",
       "active": "Active",
       "pending": "Pending"
-    }
+    },
+    "loading": "Loading...",
+    "actions": "Actions"
   },
   "productCategories": {
     "detergents": "Detergents",

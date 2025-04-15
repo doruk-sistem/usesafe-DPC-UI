@@ -23,6 +23,7 @@ interface CompanyDetailsProps {
 
 export function CompanyDetails({ companyId }: CompanyDetailsProps) {
   const t = useTranslations("admin.companies.details");
+  const { company, isLoading, error } = useCompany(companyId);
   
   if (!companyId) {
     return (
@@ -37,8 +38,6 @@ export function CompanyDetails({ companyId }: CompanyDetailsProps) {
       </div>
     );
   }
-
-  const { company, isLoading, error } = useCompany(companyId);
 
   if (isLoading) {
     return (
@@ -70,9 +69,7 @@ export function CompanyDetails({ companyId }: CompanyDetailsProps) {
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>Error</AlertTitle>
           <AlertDescription>
-            {error instanceof Error 
-              ? error.message 
-              : "Failed to load company details. Please try again later."}
+            {error instanceof Error ? error.message : "Failed to load company details. Please try again later."}
           </AlertDescription>
         </Alert>
       </div>

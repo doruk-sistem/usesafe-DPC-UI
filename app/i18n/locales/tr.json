@@ -7,8 +7,8 @@
   },
   "admin": {
     "sidebar": {
-      "companies": "Şirketler",
-      "dashboard": "Gösterge Paneli",
+      "companies": "Firmalar",
+      "dashboard": "Kontrol Paneli",
       "products": "Ürünler",
       "users": "Kullanıcılar",
       "settings": "Ayarlar",
@@ -21,61 +21,182 @@
       "manufacturer": "Üretici",
       "document": "Belge",
       "dpp": "DPP",
-      "dpc": "DPC"
+      "brand_owner": "Marka Sahibi"
     },
     "companies": {
-      "title": "Şirketler",
-      "description": "Sistem üzerindeki şirketleri yönetin",
+      "title": "Firmalar",
+      "description": "Kayıtlı firmaları görüntüle ve yönet",
       "list": {
-        "title": "Şirketler",
-        "description": "Tüm kayıtlı şirketlerin listesi",
+        "title": "Firmalar",
+        "description": "Tüm kayıtlı firmaların listesi",
         "error": {
           "title": "Hata",
-          "description": "Şirketler yüklenirken bir hata oluştu"
+          "description": "Firmalar yüklenirken bir hata oluştu"
         },
         "loading": {
           "title": "Yükleniyor",
-          "description": "Şirketler yükleniyor..."
+          "description": "Firmalar yükleniyor..."
         },
-        "total": "Toplam: {count} Şirket",
+        "total": "Toplam: {count} Firma",
+        "empty": {
+          "title": "Firma Bulunamadı",
+          "description": "Henüz kayıtlı firma bulunmuyor."
+        },
         "columns": {
-          "name": "Şirket Adı",
-          "type": "Şirket Tipi",
+          "name": "Firma Adı",
+          "type": "Firma Türü",
           "email": "E-posta",
           "phone": "Telefon",
-          "taxNumber": "Vergi No",
+          "taxNumber": "Vergi Numarası",
           "status": "Durum",
           "products": "Ürünler",
           "actions": "İşlemler"
         },
         "actions": {
-          "viewProducts": "Ürünleri Görüntüle"
+          "viewProducts": "Ürünleri Görüntüle",
+          "edit": "Düzenle",
+          "delete": "Sil",
+          "approve": "Onayla",
+          "reject": "Reddet",
+          "suspend": "Askıya Al"
         }
       },
       "details": {
+        "title": "Firma Detayları",
         "loading": "Yükleniyor...",
         "error": {
-          "title": "Hata: Şirket bilgileri alınamadı"
+          "title": "Hata",
+          "description": "Firma bilgileri alınamadı"
         },
         "companyInfo": {
-          "title": "Şirket Bilgileri"
+          "title": "Firma Bilgileri",
+          "type": "Firma Türü",
+          "name": "Firma Adı",
+          "brand_owner": "Marka Sahibi",
+          "taxNumber": "Vergi Numarası",
+          "registrationDate": "Kayıt Tarihi"
+        },
+        "contactInfo": {
+          "title": "İletişim Bilgileri",
+          "email": "E-posta",
+          "phone": "Telefon",
+          "website": "Web Sitesi",
+          "address": "Adres",
+          "notAvailable": "İletişim bilgisi mevcut değil"
         },
         "taxInfo": {
           "title": "Vergi Bilgileri",
-          "taxNumber": "Vergi No",
-          "tradeRegistryNo": "Ticaret Sicil No",
-          "mersisNo": "MERSİS No"
+          "taxNumber": "Vergi Numarası",
+          "taxOffice": "Vergi Dairesi",
+          "mersisNo": "MERSİS No",
+          "notAvailable": "Vergi bilgisi mevcut değil"
         },
         "addressInfo": {
           "title": "Adres Bilgileri",
-          "notAvailable": "Adres bilgileri mevcut değil"
-        },
-        "contactPerson": {
-          "title": "İletişim Kişisi",
-          "notAvailable": "İletişim bilgileri mevcut değil"
+          "notAvailable": "Adres bilgisi mevcut değil"
         },
         "statistics": {
-          "title": "Ürün İstatistikleri"
+          "title": "İstatistikler",
+          "totalProducts": "Toplam Ürün",
+          "activeProducts": "Aktif Ürün",
+          "pendingProducts": "Bekleyen Ürün",
+          "totalDocuments": "Toplam Belge",
+          "approvedDocuments": "Onaylı Belge",
+          "pendingDocuments": "Bekleyen Belge"
+        },
+        "tabs": {
+          "overview": "Genel Bakış",
+          "products": "Ürünler",
+          "documents": "Belgeler",
+          "history": "Geçmiş"
+        },
+        "actions": {
+          "edit": "Düzenle",
+          "delete": "Sil",
+          "approve": "Onayla",
+          "reject": "Reddet",
+          "suspend": "Askıya Al"
+        }
+      },
+      "status": {
+        "active": "Aktif",
+        "pending": "Beklemede",
+        "suspended": "Askıya Alınmış",
+        "inactive": "Pasif",
+        "approved": "Onaylandı",
+        "rejected": "Reddedildi"
+      },
+      "types": {
+        "manufacturer": "Üretici",
+        "distributor": "Distribütör",
+        "retailer": "Perakendeci",
+        "wholesaler": "Toptancı",
+        "importer": "İthalatçı",
+        "exporter": "İhracatçı",
+        "brand_owner": "Marka Sahibi"
+      },
+      "filters": {
+        "all": "Tüm Firmalar",
+        "active": "Aktif Firmalar",
+        "pending": "Bekleyen Firmalar",
+        "suspended": "Askıya Alınmış Firmalar",
+        "inactive": "Pasif Firmalar",
+        "byType": "Türe Göre Filtrele",
+        "byStatus": "Duruma Göre Filtrele",
+        "byDate": "Tarihe Göre Filtrele"
+      },
+      "messages": {
+        "approveSuccess": "Firma başarıyla onaylandı",
+        "approveError": "Firma onaylanırken hata oluştu",
+        "rejectSuccess": "Firma başarıyla reddedildi",
+        "rejectError": "Firma reddedilirken hata oluştu",
+        "suspendSuccess": "Firma başarıyla askıya alındı",
+        "suspendError": "Firma askıya alınırken hata oluştu",
+        "activateSuccess": "Firma başarıyla aktifleştirildi",
+        "activateError": "Firma aktifleştirilirken hata oluştu",
+        "deleteConfirm": "Bu firmayı silmek istediğinizden emin misiniz?",
+        "deleteSuccess": "Firma başarıyla silindi",
+        "deleteError": "Firma silinirken hata oluştu"
+      },
+      "documents": {
+        "title": "Belgeler",
+        "description": "Firma belgelerini yönetin",
+        "loading": "Belgeler yükleniyor...",
+        "empty": {
+          "description": "Bu firma için belge bulunamadı",
+          "uploadFirst": "İlk Belgeyi Yükle"
+        },
+        "columns": {
+          "id": "Belge ID",
+          "name": "Belge Adı",
+          "type": "Belge Türü",
+          "status": "Durum",
+          "uploadDate": "Yükleme Tarihi",
+          "actions": "İşlemler"
+        },
+        "types": {
+          "signature_circular": "İmza Sirküleri",
+          "trade_registry_gazette": "Ticaret Sicil Gazetesi",
+          "tax_plate": "Vergi Levhası",
+          "activity_certificate": "Faaliyet Belgesi",
+          "iso_certificate": "ISO Sertifikası",
+          "quality_certificate": "Kalite Sertifikası",
+          "export_certificate": "İhracat Sertifikası",
+          "production_permit": "Üretim İzni"
+        },
+        "status": {
+          "approved": "Onaylandı",
+          "rejected": "Reddedildi",
+          "pending": "Onay Bekliyor"
+        },
+        "actions": {
+          "title": "İşlemler",
+          "add": "Belge Ekle",
+          "view": "Görüntüle",
+          "download": "İndir",
+          "approve": "Onayla",
+          "reject": "Reddet",
+          "delete": "Sil"
         }
       }
     },
@@ -136,6 +257,128 @@
       "filters": {
         "allCategories": "Tüm Kategoriler",
         "allStatus": "Tüm Durumlar"
+      }
+    },
+    "documents": {
+      "title": "Belgeler",
+      "description": "Firma belgelerini yönetin",
+      "loading": "Belgeler yükleniyor...",
+      "empty": {
+        "description": "Bu firma için belge bulunamadı",
+        "uploadFirst": "İlk Belgeyi Yükle"
+      },
+      "columns": {
+        "id": "Belge ID",
+        "name": "Belge Adı",
+        "type": "Belge Türü",
+        "status": "Durum",
+        "uploadDate": "Yükleme Tarihi",
+        "actions": "İşlemler"
+      },
+      "types": {
+        "signature_circular": "İmza Sirküleri",
+        "trade_registry_gazette": "Ticaret Sicil Gazetesi",
+        "tax_plate": "Vergi Levhası",
+        "activity_certificate": "Faaliyet Belgesi",
+        "iso_certificate": "ISO Sertifikası"
+      },
+      "status": {
+        "approved": "Onaylandı",
+        "rejected": "Reddedildi",
+        "pending": "Onay Bekliyor"
+      },
+      "actions": {
+        "title": "İşlemler",
+        "add": "Belge Ekle",
+        "view": "Görüntüle",
+        "download": "İndir",
+        "approve": "Onayla",
+        "reject": "Reddet",
+        "delete": "Sil"
+      }
+    },
+    "products": {
+      "title": "Ürünler",
+      "description": "Ürünleri görüntüle ve yönet",
+      "list": {
+        "title": "Ürünler",
+        "description": "Tüm ürünlerin listesi",
+        "total": "Toplam: {count} ürün bulundu",
+        "search": "Ürün ara...",
+        "filter": "Tümü",
+        "columns": {
+          "productCode": "Ürün Kodu",
+          "productName": "Ürün Adı",
+          "sku": "SKU",
+          "category": "Kategori",
+          "status": "Durum",
+          "addedDate": "Eklenme Tarihi",
+          "actions": "İşlemler"
+        },
+        "status": {
+          "active": "Aktif",
+          "passive": "Pasif",
+          "draft": "Taslak",
+          "pending": "Onay Bekliyor",
+          "taslak": "Taslak",
+          "NEW": "Yeni"
+        },
+        "actions": {
+          "add": "Yeni Ürün Ekle",
+          "edit": "Düzenle",
+          "delete": "Sil",
+          "view": "Görüntüle",
+          "approve": "Onayla",
+          "reject": "Reddet"
+        },
+        "filters": {
+          "all": "Tümü",
+          "active": "Aktif Ürünler",
+          "passive": "Pasif Ürünler",
+          "draft": "Taslaklar",
+          "pending": "Onay Bekleyenler"
+        },
+        "messages": {
+          "deleteConfirm": "Bu ürünü silmek istediğinizden emin misiniz?",
+          "deleteSuccess": "Ürün başarıyla silindi",
+          "deleteError": "Ürün silinirken bir hata oluştu",
+          "addSuccess": "Ürün başarıyla eklendi",
+          "addError": "Ürün eklenirken bir hata oluştu",
+          "editSuccess": "Ürün başarıyla güncellendi",
+          "editError": "Ürün güncellenirken bir hata oluştu"
+        },
+        "empty": {
+          "filtered": "Arama kriterlerine uygun ürün bulunamadı.",
+          "description": "Henüz ürün eklenmemiş."
+        }
+      },
+      "empty": {
+        "description": "Ürün bulunamadı",
+        "addFirst": "İlk Ürünü Ekle"
+      },
+      "loading": "Ürünler yükleniyor..."
+    },
+    "details": {
+      "title": "Ürün Detayları",
+      "basicInfo": {
+        "title": "Temel Bilgiler",
+        "productCode": "Ürün Kodu",
+        "productName": "Ürün Adı",
+        "sku": "SKU",
+        "category": "Kategori",
+        "status": "Durum",
+        "addedDate": "Eklenme Tarihi"
+      },
+      "actions": {
+        "edit": "Düzenle",
+        "delete": "Sil",
+        "approve": "Onayla",
+        "reject": "Reddet"
+      },
+      "tabs": {
+        "overview": "Genel Bakış",
+        "documents": "Belgeler",
+        "history": "Geçmiş"
       }
     }
   },
@@ -1515,7 +1758,9 @@
       "expired": "Süresi Doldu",
       "expiringSoon": "Süresi Yakında Doluyor",
       "deleted": "Silindi"
-    }
+    },
+    "loading": "Yükleniyor...",
+    "actions": "İşlemler"
   },
   "adminDashboard": {
     "title": "Yönetici Paneli",
@@ -1638,7 +1883,7 @@
       }
     }
   },
-  "companyDetails": "Şirket Detayları ve İstatistikleri",
+  "companyDetails": "Firma Detayları ve İstatistikleri",
   "totalProducts": "Toplam Ürün",
   "activeProducts": "Aktif Ürün",
   "pendingProducts": "Bekleyen Ürün",
@@ -1650,9 +1895,9 @@
   "auth": {
     "companyInfo": {
       "companyType": {
-        "label": "Şirket Tipi *",
-        "placeholder": "Şirket tipini seçin",
-        "description": "Şirketinizin ana iş türünü seçin",
+        "label": "Firma Türü *",
+        "placeholder": "Firma türü seçin",
+        "description": "Firmanızın ana faaliyet alanını seçin",
         "options": {
           "brandOwner": "Marka Sahibi",
           "factory": "Fabrika",
@@ -1661,7 +1906,7 @@
         }
       },
       "companyName": {
-        "label": "Şirket Adı *"
+        "label": "Firma Adı *"
       }
     },
     "actions": {
