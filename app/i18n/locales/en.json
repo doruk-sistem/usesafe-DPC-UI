@@ -9,6 +9,12 @@
     "verifyProducts": "Verify Products",
     "signIn": "Sign In"
   },
+  "pages": {           
+    "pendingProducts": {
+      "title": "Pending Products",
+      "description": "List of products pending approval"
+    }
+  },
   "error": {
     "404": {
       "title": "404",
@@ -62,7 +68,8 @@
       "dpps": "DPPs",
       "suppliers": "Suppliers",
       "documents": "Documents",
-      "certifications": "Certifications"
+      "certifications": "Certifications",
+      "pendingProducts": "Pending Products"
     },
     "registration": {
       "title": "Registration",
@@ -260,6 +267,7 @@
   "products": {
     "title": "Certified Products",
     "description": "Explore our collection of certified sustainable products with verified Digital Product Passports.",
+    "loading": "Loading products...",
     "list": {
       "categories": {
         "textile": "Textile",
@@ -482,7 +490,8 @@
         "status": "Status",
         "createdAt": "Created At",
         "actions": "Actions",
-        "basicInfo": "Basic Info"
+        "basicInfo": "Basic Info",
+        "manufacturer": "Manufacturer"
       }
     },
     "delete": {
@@ -551,7 +560,8 @@
         "basicInfo": "Basic Info",
         "status": "Status",
         "createdAt": "Created At",
-        "actions": "Actions"
+        "actions": "Actions",
+        "manufacturer": "Manufacturer"
       }
     },
     "actions": {
@@ -627,8 +637,11 @@
     "buttons": {
       "back": "Back",
       "login": "Login",
-      "dashboard": "Go to Dashboard"
+      "dashboard": "Go to Dashboard",
+      "addNew": "Add New",
+      "viewDetails": "View Details"
     },
+
     "auth": {
       "required": "Authentication Required",
       "loginRequired": "You need to login to view this page.",

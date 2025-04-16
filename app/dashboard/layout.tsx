@@ -8,12 +8,13 @@ import {
   FileText,
   ShieldCheck,
   Bell,
+  ClipboardCheck,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from 'next-intl';
 import { useMemo } from 'react';
-
+import { CompanyType } from "@/lib/types/company";
 import { ComplateRegistrationForm } from "@/components/dashboard/complate-registration-form";
 import { Button } from "@/components/ui/button";
 import {
@@ -55,6 +56,12 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       icon: Box,
     },
     {
+      title: t('menu.pendingProducts'),
+      href: "/dashboard/pending-products",
+      icon: ClipboardCheck,
+      show: company?.companyType === CompanyType.MANUFACTURER
+    },
+    {
       title: t('menu.dpps'),
       href: "/dashboard/dpps",
       icon: QrCode,
@@ -74,7 +81,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       href: "/dashboard/certifications",
       icon: ShieldCheck,
     },
-  ], [t]);
+  ].filter(item => item.show === undefined || item.show === true), [t, company]);
 
   return (
     <>

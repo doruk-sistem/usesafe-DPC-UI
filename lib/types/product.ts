@@ -114,3 +114,16 @@ export interface ProductResponse {
   data?: BaseProduct;
   error?: ProductError;
 }
+
+export interface Product {
+  id: string;
+  name: string;
+  sku: string;
+  status: ProductStatus;
+  created_at: string;
+  manufacturer_id: string;
+  manufacturer_email: string;
+  manufacturer?: {
+    name: string;
+  };
+}

@@ -35,7 +35,8 @@ export class ProductService {
     if (companyId === ADMIN_COMPANY_ID) {
       const { data, error } = await supabase
         .from("products")
-        .select(`
+        .select(
+          `
           *,
           manufacturer:manufacturer_id (
             id,
@@ -44,7 +45,8 @@ export class ProductService {
             companyType,
             status
           )
-        `)
+        `
+        )
         .eq("id", id)
         .single();
 
@@ -57,7 +59,8 @@ export class ProductService {
 
     const { data, error } = await supabase
       .from("products")
-      .select(`
+      .select(
+        `
         *,
         manufacturer:manufacturer_id (
           id,
@@ -66,7 +69,8 @@ export class ProductService {
           companyType,
           status
         )
-      `)
+      `
+      )
       .eq("id", id)
       .eq("company_id", companyId)
       .single();
@@ -193,6 +197,87 @@ export class ProductService {
       throw error;
     }
   }
+
+  static async getPendingProducts(
+    email: string,
+    page = 0,
+    pageSize = 10
+  ): Promise<{
+    items: {
+      id: string;
+      name: string;
+      sku: string;
+      status: string;
+      createdAt: string;
+      manufacturer: string;
+    }[];
+    totalPages: number;
+    currentPage: number;
+    totalItems: number;
+  }> {
+    console.log("Fetching pending products with email:", email);
+
+    // Get the current user's session
+    const {
+      data: { session },
+      error: sessionError,
+    } = await supabase.auth.getSession();
+
+    if (sessionError) {
+      console.error("Error getting session:", sessionError);
+      throw new Error("Failed to get user session");
+    }
+
+    if (!session) {
+      console.error("No active session found");
+      throw new Error("No active session found");
+    }
+
+    // Get the user's metadata from the session
+    const userMetadata = session.user.user_metadata;
+    const companyId = userMetadata?.company_id;
+
+    if (!companyId) {
+      console.error("No company ID found in user metadata");
+      return {
+        items: [],
+        totalPages: 0,
+        currentPage: page,
+        totalItems: 0,
+      };
+    }
+
+    console.log("Found company ID:", companyId);
+
+    // Fetch products by manufacturer_id with status DRAFT or NEW
+    const { data, error, count } = await supabase
+      .from("products")
+      .select("*, manufacturer:manufacturer_id (name)", { count: "exact" })
+      .eq("manufacturer_id", companyId)
+      .in("status", ["DRAFT", "NEW"])
+      .range(page * pageSize, (page + 1) * pageSize - 1)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Error fetching pending products:", error);
+      throw new Error("Failed to fetch pending products");
+    }
+
+    return {
+      items:
+        data?.map((product) => ({
+          id: product.id,
+          name: product.name,
+          sku: product.sku,
+          status: product.status,
+          createdAt: product.created_at,
+          manufacturer: product.manufacturer?.name || "Unknown",
+        })) || [],
+      totalPages: Math.ceil((count || 0) / pageSize),
+      currentPage: page,
+      totalItems: count || 0,
+    };
+  }
 }
 
 export const productService = createService({
@@ -220,7 +305,8 @@ export const productService = createService({
     if (companyId === ADMIN_COMPANY_ID) {
       const { data, error } = await supabase
         .from("products")
-        .select(`
+        .select(
+          `
           *,
           manufacturer:manufacturer_id (
             id,
@@ -229,7 +315,8 @@ export const productService = createService({
             companyType,
             status
           )
-        `)
+        `
+        )
         .eq("id", id)
         .single();
 
@@ -242,7 +329,8 @@ export const productService = createService({
 
     const { data, error } = await supabase
       .from("products")
-      .select(`
+      .select(
+        `
         *,
         manufacturer:manufacturer_id (
           id,
@@ -251,7 +339,8 @@ export const productService = createService({
           companyType,
           status
         )
-      `)
+      `
+      )
       .eq("id", id)
       .eq("company_id", companyId)
       .single();
@@ -346,5 +435,73 @@ export const productService = createService({
     }
 
     return true;
+  },
+  getPendingProducts: async ({
+    email,
+    page = 0,
+    pageSize = 10,
+  }: {
+    email: string;
+    page?: number;
+    pageSize?: number;
+  }) => {
+    // Get the current user's session
+    const {
+      data: { session },
+      error: sessionError,
+    } = await supabase.auth.getSession();
+
+    if (sessionError) {
+      console.error("Error getting session:", sessionError);
+      throw new Error("Failed to get user session");
+    }
+
+    if (!session) {
+      console.error("No active session found");
+      throw new Error("No active session found");
+    }
+
+    // Get the user's metadata from the session
+    const userMetadata = session.user.user_metadata;
+    const companyId = userMetadata?.company_id;
+
+    if (!companyId) {
+      console.error("No company ID found in user metadata");
+      return {
+        items: [],
+        totalPages: 0,
+        currentPage: page,
+        totalItems: 0,
+      };
+    }
+
+    // Fetch products by manufacturer_id with status DRAFT or NEW
+    const { data, error, count } = await supabase
+      .from("products")
+      .select("*, manufacturer:manufacturer_id (name)", { count: "exact" })
+      .eq("manufacturer_id", companyId)
+      .in("status", ["DRAFT", "NEW"])
+      .range(page * pageSize, (page + 1) * pageSize - 1)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Error fetching pending products:", error);
+      throw new Error("Failed to fetch pending products");
+    }
+
+    return {
+      items:
+        data?.map((product) => ({
+          id: product.id,
+          name: product.name,
+          sku: product.sku,
+          status: product.status,
+          createdAt: product.created_at,
+          manufacturer: product.manufacturer?.name || "Unknown",
+        })) || [],
+      totalPages: Math.ceil((count || 0) / pageSize),
+      currentPage: page,
+      totalItems: count || 0,
+    };
   },
 });

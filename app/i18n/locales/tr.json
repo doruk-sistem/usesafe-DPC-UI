@@ -9,6 +9,12 @@
     "verifyProducts": "Ürün Doğrula",
     "signIn": "Giriş Yap"
   },
+  "pages": {
+    "pendingProducts": {
+      "title": "Bekleyen Ürünler",
+      "description": "Onay bekleyen ürünlerin listesi"
+    }
+  },
   "error": {
     "404": {
       "title": "404",
@@ -62,7 +68,8 @@
       "dpps": "DPP'ler",
       "suppliers": "Tedarikçiler",
       "documents": "Belgeler",
-      "certifications": "Sertifikalar"
+      "certifications": "Sertifikalar",
+      "pendingProducts": "Bekleyen Ürünler"
     },
     "registration": {
       "title": "Kayıt",
@@ -260,6 +267,7 @@
   "products": {
     "title": "Sertifikalı Ürünler",
     "description": "Dijital Ürün Pasaportu ile doğrulanmış sertifikalı sürdürülebilir ürünlerimizi keşfedin.",
+    "loading": "Ürünler yükleniyor...",
     "list": {
       "categories": {
         "textile": "Tekstil",
@@ -944,6 +952,7 @@
         "createdAt": "Oluşturulma Tarihi",
         "actions": "İşlemler",
         "basicInfo": "Temel Bilgiler"
+     
       }
     },
     "delete": {
@@ -1012,7 +1021,8 @@
         "basicInfo": "Temel Bilgiler",
         "status": "Durum",
         "createdAt": "Oluşturulma Tarihi",
-        "actions": "İşlemler"
+        "actions": "İşlemler",
+        "manufacturer": "Üretici"
       }
     },
     "actions": {
@@ -1087,7 +1097,9 @@
     "buttons": {
       "back": "Geri",
       "login": "Giriş Yap",
-      "dashboard": "Panele Git"
+      "dashboard": "Panele Git",
+      "addNew": "Yeni Ekle",
+      "viewDetails": "Detayları Görüntüle"
     },
     "auth": {
       "required": "Kimlik Doğrulama Gerekli",
