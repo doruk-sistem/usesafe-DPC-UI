@@ -243,17 +243,17 @@ export default function PendingProductsPage() {
       </Card>
 
       <Dialog open={showDocumentsDialog} onOpenChange={setShowDocumentsDialog}>
-  <DialogContent className="max-w-4xl">
-    <DialogHeader>
-      <DialogTitle>Ürün Belgeleri</DialogTitle>
-    </DialogHeader>
-    {selectedProductId && (
-      <div className="space-y-4">
-        <ProductDocuments productId={selectedProductId} showApprovalOptions={true} />
-      </div>
-    )}
-  </DialogContent>
-</Dialog>
+        <DialogContent className="max-w-4xl">
+          <DialogHeader>
+            <DialogTitle>Ürün Belgeleri</DialogTitle>
+          </DialogHeader>
+          {selectedProductId && (
+            <div className="space-y-4">
+              <ProductDocuments productId={selectedProductId} showApprovalOptions={true} />
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

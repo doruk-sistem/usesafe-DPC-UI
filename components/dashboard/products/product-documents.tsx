@@ -13,6 +13,8 @@ import {
   MessageSquare,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { updateDocumentStatus } from "@/lib/hooks/use-documents";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -49,6 +51,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 
 interface ProductDocumentsProps {
   productId: string;
@@ -96,6 +99,7 @@ export function ProductDocuments({
   const [showRejectDialog, setShowRejectDialog] = useState(false);
   const { toast } = useToast();
   const supabase = createClientComponentClient();
+  const queryClient = useQueryClient();
 
   useEffect(() => {}, [showApprovalOptions]);
 
@@ -127,7 +131,7 @@ export function ProductDocuments({
                   name: doc.name,
                   url: doc.url,
                   type: type,
-                  status: "pending",
+                  status: doc.status || "pending",
                   validUntil: doc.validUntil,
                   version: doc.version || "1.0",
                   uploadedAt: doc.uploadedAt || new Date().toISOString(),
@@ -152,7 +156,7 @@ export function ProductDocuments({
     }
 
     fetchProduct();
-  }, [productId, toast, supabase]);
+  }, [productId, supabase, toast]);
 
   const handleDownload = async (doc: Document) => {
     try {
@@ -203,23 +207,54 @@ export function ProductDocuments({
 
   const handleApproveDocument = async (doc: Document) => {
     try {
-      // Update document status in the database
-      const { error } = await supabase
+      // Doğrudan Supabase'e güncelleme yap
+      const supabase = createClientComponentClient();
+
+      // Önce ürünü al
+      const { data: product, error: fetchError } = await supabase
         .from("products")
-        .update({
-          documents: {
-            ...product?.documents,
-            [doc.type]: product?.documents[doc.type].map((d) => {
-              if (d.id === doc.id) {
-                return { ...d, status: "approved" };
-              }
-              return d;
-            }),
-          },
-        })
+        .select("*")
+        .eq("id", productId)
+        .single();
+
+      if (fetchError) throw fetchError;
+      if (!product) throw new Error("Product not found");
+
+      // Belgeleri güncelle
+      const updatedDocuments = { ...product.documents };
+      let documentFound = false;
+
+      // Belge tipine göre arama yap
+      if (doc.type && updatedDocuments[doc.type]) {
+        const documentArray = updatedDocuments[doc.type];
+
+        // Belge adına göre eşleştir
+        const documentIndex = documentArray.findIndex(
+          (d: any) => d.name === doc.name
+        );
+
+        if (documentIndex !== -1) {
+          // Belgeyi güncelle
+          updatedDocuments[doc.type][documentIndex] = {
+            ...updatedDocuments[doc.type][documentIndex],
+            status: "approved",
+            updatedAt: new Date().toISOString(),
+          };
+          documentFound = true;
+        }
+      }
+
+      if (!documentFound) {
+        throw new Error(`Document with name ${doc.name} not found in product`);
+      }
+
+      // Ürünü güncelle
+      const { error: updateError } = await supabase
+        .from("products")
+        .update({ documents: updatedDocuments })
         .eq("id", productId);
 
-      if (error) throw error;
+      if (updateError) throw updateError;
 
       // Update local state
       setDocuments(
@@ -231,6 +266,10 @@ export function ProductDocuments({
         })
       );
 
+      // Invalidate the product query to refresh the data
+      await queryClient.invalidateQueries({ queryKey: ["product", productId] });
+      await queryClient.invalidateQueries({ queryKey: ["products"] });
+
       toast({
         title: "Başarılı",
         description: "Belge onaylandı",
@@ -239,7 +278,9 @@ export function ProductDocuments({
       console.error("Error approving document:", error);
       toast({
         title: "Hata",
-        description: "Belge onaylanırken bir hata oluştu",
+        description:
+          "Belge onaylanırken bir hata oluştu: " +
+          (error instanceof Error ? error.message : JSON.stringify(error)),
         variant: "destructive",
       });
     }
@@ -254,29 +295,58 @@ export function ProductDocuments({
     if (!selectedDocument) return;
 
     try {
-      // Update document status in the database
-      const { error } = await supabase
+      // Doğrudan Supabase'e güncelleme yap
+      const supabase = createClientComponentClient();
+
+      // Önce ürünü al
+      const { data: product, error: fetchError } = await supabase
         .from("products")
-        .update({
-          documents: {
-            ...product?.documents,
-            [selectedDocument.type]: product?.documents[
-              selectedDocument.type
-            ].map((d) => {
-              if (d.id === selectedDocument.id) {
-                return {
-                  ...d,
-                  status: "rejected",
-                  rejection_reason: rejectionReason,
-                };
-              }
-              return d;
-            }),
-          },
-        })
+        .select("*")
+        .eq("id", productId)
+        .single();
+
+      if (fetchError) throw fetchError;
+      if (!product) throw new Error("Product not found");
+
+      // Belgeleri güncelle
+      const updatedDocuments = { ...product.documents };
+      let documentFound = false;
+
+      // Belge tipine göre arama yap
+      if (selectedDocument.type && updatedDocuments[selectedDocument.type]) {
+        const documentArray = updatedDocuments[selectedDocument.type];
+
+        // Belge adına göre eşleştir
+        const documentIndex = documentArray.findIndex(
+          (d: any) => d.name === selectedDocument.name
+        );
+
+        if (documentIndex !== -1) {
+          // Belgeyi güncelle
+          updatedDocuments[selectedDocument.type][documentIndex] = {
+            ...updatedDocuments[selectedDocument.type][documentIndex],
+            status: "rejected",
+            rejection_reason: rejectionReason,
+            rejected_at: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          };
+          documentFound = true;
+        }
+      }
+
+      if (!documentFound) {
+        throw new Error(
+          `Document with name ${selectedDocument.name} not found in product`
+        );
+      }
+
+      // Ürünü güncelle
+      const { error: updateError } = await supabase
+        .from("products")
+        .update({ documents: updatedDocuments })
         .eq("id", productId);
 
-      if (error) throw error;
+      if (updateError) throw updateError;
 
       // Update local state
       setDocuments(
@@ -286,18 +356,22 @@ export function ProductDocuments({
               ...d,
               status: "rejected",
               rejection_reason: rejectionReason,
+              rejected_at: new Date().toISOString(),
             };
           }
           return d;
         })
       );
 
+      // Invalidate the product query to refresh the data
+      await queryClient.invalidateQueries({ queryKey: ["product", productId] });
+      await queryClient.invalidateQueries({ queryKey: ["products"] });
+
       toast({
         title: "Başarılı",
         description: "Belge reddedildi",
       });
 
-      // Reset state
       setShowRejectDialog(false);
       setSelectedDocument(null);
       setRejectionReason("");
@@ -305,7 +379,9 @@ export function ProductDocuments({
       console.error("Error rejecting document:", error);
       toast({
         title: "Hata",
-        description: "Belge reddedilirken bir hata oluştu",
+        description:
+          "Belge reddedilirken bir hata oluştu: " +
+          (error instanceof Error ? error.message : JSON.stringify(error)),
         variant: "destructive",
       });
     }
@@ -543,15 +619,16 @@ export function ProductDocuments({
             <DialogHeader>
               <DialogTitle>Belgeyi Reddet</DialogTitle>
               <DialogDescription>
-                Lütfen belgeyi reddetme nedeninizi belirtin.
+                Lütfen reddetme sebebini belirtin.
               </DialogDescription>
             </DialogHeader>
-            <div className="py-4">
+            <div className="space-y-4">
+              <Label htmlFor="rejection-reason">Reddetme Sebebi</Label>
               <Textarea
-                placeholder="Reddetme nedeni..."
+                id="rejection-reason"
                 value={rejectionReason}
                 onChange={(e) => setRejectionReason(e.target.value)}
-                className="min-h-[100px]"
+                placeholder="Reddetme sebebini girin..."
               />
             </div>
             <DialogFooter>

@@ -734,15 +734,36 @@ const updateDocumentStatus = async (
 
     let updatedDocuments = { ...product.documents };
     let documentFound = false;
+    let documentLocation = null;
+
+    // Extract document name from documentId if it's a generated ID
+    let documentName = "";
+    if (documentId.startsWith("doc-")) {
+      // Try to find the document in the UI state to get its name
+      const documentElement = document.querySelector(
+        `[data-document-id="${documentId}"]`
+      );
+      if (documentElement) {
+        documentName = documentElement.getAttribute("data-document-name") || "";
+      }
+    }
 
     if (
       typeof updatedDocuments === "object" &&
       !Array.isArray(updatedDocuments)
     ) {
+      // Handle documents as an object with arrays
       for (const docTypeKey in updatedDocuments) {
         if (Array.isArray(updatedDocuments[docTypeKey])) {
+          // Try to find the document by name or URL
           const documentIndex = updatedDocuments[docTypeKey].findIndex(
-            (doc: any) => doc.id === documentId
+            (doc: any) => {
+              // Match by name if available, otherwise try to match by URL
+              return (
+                (documentName && doc.name === documentName) ||
+                (doc.url && documentId.includes(doc.url))
+              );
+            }
           );
 
           if (documentIndex !== -1) {
@@ -752,14 +773,20 @@ const updateDocumentStatus = async (
               updatedAt: new Date().toISOString(),
             };
             documentFound = true;
+            documentLocation = `${docTypeKey}[${documentIndex}]`;
             break;
           }
         }
       }
     } else if (Array.isArray(updatedDocuments)) {
-      const documentIndex = updatedDocuments.findIndex(
-        (doc: any) => doc.id === documentId
-      );
+      // Try to find the document by name or URL
+      const documentIndex = updatedDocuments.findIndex((doc: any) => {
+        // Match by name if available, otherwise try to match by URL
+        return (
+          (documentName && doc.name === documentName) ||
+          (doc.url && documentId.includes(doc.url))
+        );
+      });
 
       if (documentIndex !== -1) {
         updatedDocuments[documentIndex] = {
@@ -768,7 +795,9 @@ const updateDocumentStatus = async (
           updatedAt: new Date().toISOString(),
         };
         documentFound = true;
+        documentLocation = `[${documentIndex}]`;
       }
+    } else {
     }
 
     if (!documentFound) {
@@ -927,3 +956,5 @@ const rejectProduct = async (productId: string, reason: string) => {
     throw error;
   }
 };
+
+export { updateDocumentStatus };
