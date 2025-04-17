@@ -10,6 +10,7 @@ import {
   CheckCircle,
   XCircle,
   Clock,
+  MessageSquare,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -39,9 +40,19 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
 
 interface ProductDocumentsProps {
   productId: string;
+  showApprovalOptions?: boolean;
 }
 
 interface Document {
@@ -71,12 +82,22 @@ const documentTypeLabels: Record<string, string> = {
   compliance_docs: "Compliance Documents",
 };
 
-export function ProductDocuments({ productId }: ProductDocumentsProps) {
+export function ProductDocuments({
+  productId,
+  showApprovalOptions = false,
+}: ProductDocumentsProps) {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [product, setProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedDocument, setSelectedDocument] = useState<Document | null>(
+    null
+  );
+  const [rejectionReason, setRejectionReason] = useState("");
+  const [showRejectDialog, setShowRejectDialog] = useState(false);
   const { toast } = useToast();
   const supabase = createClientComponentClient();
+
+  useEffect(() => {}, [showApprovalOptions]);
 
   useEffect(() => {
     async function fetchProduct() {
@@ -106,11 +127,7 @@ export function ProductDocuments({ productId }: ProductDocumentsProps) {
                   name: doc.name,
                   url: doc.url,
                   type: type,
-                  status: (doc.status || "pending").toLowerCase() as
-                    | "approved"
-                    | "pending"
-                    | "rejected"
-                    | "expired",
+                  status: "pending",
                   validUntil: doc.validUntil,
                   version: doc.version || "1.0",
                   uploadedAt: doc.uploadedAt || new Date().toISOString(),
@@ -184,6 +201,116 @@ export function ProductDocuments({ productId }: ProductDocumentsProps) {
     window.location.href = `/dashboard/products/${productId}/edit?reupload=${doc.id}`;
   };
 
+  const handleApproveDocument = async (doc: Document) => {
+    try {
+      // Update document status in the database
+      const { error } = await supabase
+        .from("products")
+        .update({
+          documents: {
+            ...product?.documents,
+            [doc.type]: product?.documents[doc.type].map((d) => {
+              if (d.id === doc.id) {
+                return { ...d, status: "approved" };
+              }
+              return d;
+            }),
+          },
+        })
+        .eq("id", productId);
+
+      if (error) throw error;
+
+      // Update local state
+      setDocuments(
+        documents.map((d) => {
+          if (d.id === doc.id) {
+            return { ...d, status: "approved" };
+          }
+          return d;
+        })
+      );
+
+      toast({
+        title: "Başarılı",
+        description: "Belge onaylandı",
+      });
+    } catch (error) {
+      console.error("Error approving document:", error);
+      toast({
+        title: "Hata",
+        description: "Belge onaylanırken bir hata oluştu",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleRejectDocument = (doc: Document) => {
+    setSelectedDocument(doc);
+    setShowRejectDialog(true);
+  };
+
+  const handleRejectConfirm = async () => {
+    if (!selectedDocument) return;
+
+    try {
+      // Update document status in the database
+      const { error } = await supabase
+        .from("products")
+        .update({
+          documents: {
+            ...product?.documents,
+            [selectedDocument.type]: product?.documents[
+              selectedDocument.type
+            ].map((d) => {
+              if (d.id === selectedDocument.id) {
+                return {
+                  ...d,
+                  status: "rejected",
+                  rejection_reason: rejectionReason,
+                };
+              }
+              return d;
+            }),
+          },
+        })
+        .eq("id", productId);
+
+      if (error) throw error;
+
+      // Update local state
+      setDocuments(
+        documents.map((d) => {
+          if (d.id === selectedDocument.id) {
+            return {
+              ...d,
+              status: "rejected",
+              rejection_reason: rejectionReason,
+            };
+          }
+          return d;
+        })
+      );
+
+      toast({
+        title: "Başarılı",
+        description: "Belge reddedildi",
+      });
+
+      // Reset state
+      setShowRejectDialog(false);
+      setSelectedDocument(null);
+      setRejectionReason("");
+    } catch (error) {
+      console.error("Error rejecting document:", error);
+      toast({
+        title: "Hata",
+        description: "Belge reddedilirken bir hata oluştu",
+        variant: "destructive",
+      });
+    }
+  };
+
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "approved":
@@ -248,137 +375,199 @@ export function ProductDocuments({ productId }: ProductDocumentsProps) {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Product Documents</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="mb-6">
-          <h3 className="text-lg font-medium mb-2">{product.name}</h3>
-          <Badge
-            variant={
-              product.status === "NEW"
-                ? "success"
-                : product.status === "DRAFT"
-                ? "warning"
-                : "destructive"
-            }
-          >
-            {product.status.toLowerCase()}
-          </Badge>
-        </div>
-
-        {documents.length === 0 ? (
-          <div className="text-center py-8">
-            <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-medium mb-2">No Documents Found</h3>
-            <p className="text-muted-foreground">
-              This product has no documents attached.
-            </p>
+    <>
+      <Card>
+        <CardHeader>
+          <CardTitle>Product Documents</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="mb-6">
+            <h3 className="text-lg font-medium mb-2">{product.name}</h3>
+            <Badge
+              variant={
+                product.status === "NEW"
+                  ? "success"
+                  : product.status === "DRAFT"
+                  ? "warning"
+                  : "destructive"
+              }
+            >
+              {product.status.toLowerCase()}
+            </Badge>
           </div>
-        ) : (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Document Name</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Valid Until</TableHead>
-                <TableHead>Version</TableHead>
-                <TableHead className="w-[100px] text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {documents.map((document, index) => (
-                <TableRow key={index}>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <FileText className="h-4 w-4 text-muted-foreground" />
-                      <div>
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <p className="font-medium truncate max-w-[200px]">
-                                {document.name.length > 25
-                                  ? `${document.name.slice(0, 25)}...`
-                                  : document.name}
-                              </p>
-                            </TooltipTrigger>
-                            <TooltipContent side="top" align="start">
-                              <p className="max-w-[300px] break-words text-xs">
-                                {document.name}
-                              </p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                        <p className="text-sm text-muted-foreground">
-                          {document.id} · {document.fileSize}
-                        </p>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant="secondary">
-                      {documentTypeLabels[document.type] || document.type}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <Badge
-                      variant={getStatusVariant(document.status)}
-                      className="flex w-fit items-center gap-1"
-                    >
-                      {getStatusIcon(document.status)}
-                      {document.status.toLowerCase()}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    {document.validUntil
-                      ? new Date(document.validUntil).toLocaleDateString()
-                      : "N/A"}
-                  </TableCell>
-                  <TableCell>v{document.version}</TableCell>
-                  <TableCell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-8 w-8">
-                          <FileText className="h-4 w-4" />
-                          <span className="sr-only">Open menu</span>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                          onClick={() => handleDownload(document)}
-                        >
-                          <Download className="h-4 w-4 mr-2" />
-                          Download
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleView(document)}>
-                          <Eye className="h-4 w-4 mr-2" />
-                          View
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => handleViewHistory(document)}
-                        >
-                          <History className="h-4 w-4 mr-2" />
-                          View History
-                        </DropdownMenuItem>
-                        {document.status === "rejected" && (
-                          <DropdownMenuItem>
-                            <FileText className="h-4 w-4 mr-2" />
-                            Re-upload
-                          </DropdownMenuItem>
-                        )}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
+
+          {documents.length === 0 ? (
+            <div className="text-center py-8">
+              <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-lg font-medium mb-2">No Documents Found</h3>
+              <p className="text-muted-foreground">
+                This product has no documents attached.
+              </p>
+            </div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Document Name</TableHead>
+                  <TableHead>Type</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Valid Until</TableHead>
+                  <TableHead>Version</TableHead>
+                  <TableHead className="w-[100px] text-right">
+                    Actions
+                  </TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        )}
-      </CardContent>
-    </Card>
+              </TableHeader>
+              <TableBody>
+                {documents.map((document, index) => (
+                  <TableRow key={index}>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <FileText className="h-4 w-4 text-muted-foreground" />
+                        <div>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <p className="font-medium truncate max-w-[200px]">
+                                  {document.name.length > 25
+                                    ? `${document.name.slice(0, 25)}...`
+                                    : document.name}
+                                </p>
+                              </TooltipTrigger>
+                              <TooltipContent side="top" align="start">
+                                <p className="max-w-[300px] break-words text-xs">
+                                  {document.name}
+                                </p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                          <p className="text-sm text-muted-foreground">
+                            {document.id} · {document.fileSize}
+                          </p>
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="secondary">
+                        {documentTypeLabels[document.type] || document.type}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <Badge
+                        variant={getStatusVariant(document.status)}
+                        className="flex w-fit items-center gap-1"
+                      >
+                        {getStatusIcon(document.status)}
+                        {document.status.toLowerCase()}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      {document.validUntil
+                        ? new Date(document.validUntil).toLocaleDateString()
+                        : "N/A"}
+                    </TableCell>
+                    <TableCell>v{document.version}</TableCell>
+                    <TableCell className="text-right">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                          >
+                            <FileText className="h-4 w-4" />
+                            <span className="sr-only">Open menu</span>
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem
+                            onClick={() => handleDownload(document)}
+                          >
+                            <Download className="h-4 w-4 mr-2" />
+                            Download
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => handleView(document)}
+                          >
+                            <Eye className="h-4 w-4 mr-2" />
+                            View
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => handleViewHistory(document)}
+                          >
+                            <History className="h-4 w-4 mr-2" />
+                            View History
+                          </DropdownMenuItem>
+                          {showApprovalOptions && (
+                            <>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem
+                                onClick={() => handleApproveDocument(document)}
+                              >
+                                <CheckCircle className="h-4 w-4 mr-2 text-green-500" />
+                                Onayla
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                onClick={() => handleRejectDocument(document)}
+                              >
+                                <XCircle className="h-4 w-4 mr-2 text-red-500" />
+                                Reddet
+                              </DropdownMenuItem>
+                            </>
+                          )}
+                          {showApprovalOptions &&
+                            document.status === "rejected" && (
+                              <DropdownMenuItem
+                                onClick={() => handleReupload(document)}
+                              >
+                                <FileText className="h-4 w-4 mr-2" />
+                                Yeniden Yükle
+                              </DropdownMenuItem>
+                            )}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+        </CardContent>
+      </Card>
+
+      {showApprovalOptions && (
+        <Dialog open={showRejectDialog} onOpenChange={setShowRejectDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Belgeyi Reddet</DialogTitle>
+              <DialogDescription>
+                Lütfen belgeyi reddetme nedeninizi belirtin.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="py-4">
+              <Textarea
+                placeholder="Reddetme nedeni..."
+                value={rejectionReason}
+                onChange={(e) => setRejectionReason(e.target.value)}
+                className="min-h-[100px]"
+              />
+            </div>
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => setShowRejectDialog(false)}
+              >
+                İptal
+              </Button>
+              <Button variant="destructive" onClick={handleRejectConfirm}>
+                Reddet
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
+    </>
   );
 }

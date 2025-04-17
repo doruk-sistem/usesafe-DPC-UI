@@ -1,6 +1,12 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
+import { Plus, MoreHorizontal, FileText, Eye, CheckCircle, XCircle, Info } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useState, useEffect } from "react";
+
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -16,13 +22,37 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { productService } from "@/lib/services/product";
 import { useAuth } from "@/lib/hooks/use-auth";
+import { productService } from "@/lib/services/product";
+import { ProductDocuments } from "@/components/dashboard/products/product-documents";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+
+interface Document {
+  id: string;
+  name: string;
+  url: string;
+  type: string;
+  status: "approved" | "pending" | "rejected" | "expired";
+  validUntil?: string;
+  version: string;
+  uploadedAt: string;
+  fileSize: string;
+  rejection_reason?: string;
+}
+
 interface PendingProduct {
   id: string;
   name: string;
@@ -30,6 +60,7 @@ interface PendingProduct {
   status: "pending" | "rejected" | "approved";
   createdAt: string;
   manufacturer: string;
+  documents?: Record<string, Document[]>;
 }
 
 export default function PendingProductsPage() {
@@ -37,6 +68,8 @@ export default function PendingProductsPage() {
   const [pageIndex, setPageIndex] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const { user } = useAuth();
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
+  const [showDocumentsDialog, setShowDocumentsDialog] = useState(false);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["pending-products", pageIndex, pageSize, user?.email],
@@ -54,6 +87,30 @@ export default function PendingProductsPage() {
     },
     enabled: !!user?.email,
   });
+
+  const handleViewDocuments = (productId: string) => {
+    setSelectedProductId(productId);
+    setShowDocumentsDialog(true);
+  };
+
+  // Debug için useEffect ekleyelim
+  useEffect(() => {
+    if (selectedProductId) {
+    }
+  }, [selectedProductId]);
+
+  const handleApproveProduct = (productId: string) => {
+    console.log(`Ürün onaylandı: ${productId}`);
+  };
+
+  const handleRejectProduct = (productId: string) => {
+    console.log(`Ürün reddedildi: ${productId}`);
+    // Örnek: productService.rejectProduct(productId);
+  };
+
+  const handleAddInfo = (productId: string) => {
+    console.log(`Ürüne bilgi eklendi: ${productId}`);
+  };
 
   if (isLoading) {
     return (
@@ -147,15 +204,35 @@ export default function PendingProductsPage() {
                       {new Date(product.createdAt).toLocaleDateString()}
                     </TableCell>
                     <TableCell>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => {
-                          window.location.href = `/dashboard/products/${product.id}`;
-                        }}
-                      >
-                        {t("common.buttons.viewDetails")}
-                      </Button>
+                      <div className="flex space-x-2">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="sm">
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>İşlemler</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem onClick={() => handleViewDocuments(product.id)}>
+                              <FileText className="h-4 w-4 mr-2" />
+                              Belgeleri Görüntüle
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => {
+                              window.location.href = `/dashboard/products/${product.id}`;
+                            }}>
+                              <Eye className="h-4 w-4 mr-2" />
+                              Detayları Görüntüle
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuLabel>Kontrol</DropdownMenuLabel>
+                            <DropdownMenuItem onClick={() => handleAddInfo(product.id)}>
+                              <Info className="h-4 w-4 mr-2" />
+                              Bilgi Ekle
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
                     </TableCell>
                   </TableRow>
                 );
@@ -164,6 +241,19 @@ export default function PendingProductsPage() {
           </Table>
         </CardContent>
       </Card>
+
+      <Dialog open={showDocumentsDialog} onOpenChange={setShowDocumentsDialog}>
+  <DialogContent className="max-w-4xl">
+    <DialogHeader>
+      <DialogTitle>Ürün Belgeleri</DialogTitle>
+    </DialogHeader>
+    {selectedProductId && (
+      <div className="space-y-4">
+        <ProductDocuments productId={selectedProductId} showApprovalOptions={true} />
+      </div>
+    )}
+  </DialogContent>
+</Dialog>
     </div>
   );
 }
