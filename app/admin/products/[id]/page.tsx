@@ -44,8 +44,23 @@ export default function ProductDetailsPage({ params }: ProductDetailsProps) {
     company,
     isLoading: isAuthLoading,
     isCompanyLoading,
+    isAdmin,
   } = useAuth();
-  const { product, isLoading: isProductLoading, error } = useProduct(id);
+  const { data: productResponse, isLoading: isProductLoading, error } = useProduct(id);
+  const product = productResponse?.data;
+
+  // Debug için console.log ekleyelim
+  console.log("Page State:", {
+    user,
+    company,
+    isAuthLoading,
+    isCompanyLoading,
+    isAdmin: isAdmin(),
+    userRole: user?.user_metadata?.role,
+    product,
+    error,
+    id
+  });
 
   // Tüm loading state'leri birleştir
   const isLoading = isAuthLoading || isCompanyLoading || isProductLoading;
@@ -61,21 +76,44 @@ export default function ProductDetailsPage({ params }: ProductDetailsProps) {
     );
   }
 
-  // Auth ve company kontrollerini birleştir
-  if (!user || !company) {
+  // Auth kontrolü
+  if (!user) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen">
         <h2 className="text-2xl font-semibold mb-4">
           {t("common.auth.required")}
         </h2>
         <p className="text-muted-foreground mb-4">
-          {!user
-            ? t("common.auth.loginRequired")
-            : t("common.auth.companyRequired")}
+          {t("common.auth.loginRequired")}
         </p>
         <Button asChild>
-          <Link href={!user ? "/login" : "/admin"}>
-            {!user ? t("common.buttons.login") : t("common.buttons.dashboard")}
+          <Link href="/login">
+            {t("common.buttons.login")}
+          </Link>
+        </Button>
+      </div>
+    );
+  }
+
+  // Admin kullanıcıları için company kontrolünü bypass et
+  if (!isAdmin() && !company) {
+    console.log("Company check failed:", {
+      isAdmin: isAdmin(),
+      company,
+      userRole: user?.user_metadata?.role
+    });
+    
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <h2 className="text-2xl font-semibold mb-4">
+          {t("common.auth.required")}
+        </h2>
+        <p className="text-muted-foreground mb-4">
+          {t("common.auth.companyRequired")}
+        </p>
+        <Button asChild>
+          <Link href="/admin">
+            {t("common.buttons.dashboard")}
           </Link>
         </Button>
       </div>
@@ -83,11 +121,14 @@ export default function ProductDetailsPage({ params }: ProductDetailsProps) {
   }
 
   // Hata kontrolünü geliştir
-  if (error || !product?.data) {
+  if (error || !product) {
     // Only log the error if it's not a simple "not found" case
-    if (error && error.message !== "Product not found") {
-      console.error("Product error:", error);
-    }
+    console.error("Product error details:", {
+      error,
+      productData: product,
+      errorMessage: error?.message,
+      id
+    });
 
     return (
       <div className="flex flex-col items-center justify-center min-h-screen">
@@ -104,7 +145,7 @@ export default function ProductDetailsPage({ params }: ProductDetailsProps) {
     );
   }
 
-  const productData = product.data;
+  const productData = product;
 
   try {
     // Döküman durumunu ve sayısını hesapla
@@ -281,7 +322,7 @@ export default function ProductDetailsPage({ params }: ProductDetailsProps) {
                     {t("admin.products.details.productInfo.manufacturer")}
                   </p>
                   <p className="font-medium">
-                    {productData.manufacturer?.name ||
+                    {productData.manufacturer_id ||
                       t("common.labels.notAvailable")}
                   </p>
                 </div>

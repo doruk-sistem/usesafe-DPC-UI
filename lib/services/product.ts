@@ -1,66 +1,65 @@
 import { supabase } from "@/lib/supabase/client";
 import type {
   NewProduct,
-  Product,
   ProductResponse,
   UpdateProduct,
-  BaseProduct,
 } from "@/lib/types/product";
 import { validateAndMapDocuments } from "@/lib/utils/document-mapper";
 
 import { createService } from "../api-client";
 
+// Define admin company ID constant
+const ADMIN_COMPANY_ID = "admin";
+
 export class ProductService {
-  static async getProducts(companyId: string): Promise<BaseProduct[]> {
-    // Admin rolü için tüm ürünleri getir
-    const query = supabase
+  static async getProducts(companyId: string): Promise<any[]> {
+    const { data, error } = await supabase
       .from("products")
-      .select(`
-        id,
-        name,
-        description,
-        manufacturer_id,
-        product_type,
-        product_subcategory,
-        model,
-        status,
-        status_history,
-        images,
-        key_features,
-        created_at,
-        updated_at,
-        documents,
-        manufacturer:companies!products_manufacturer_id_fkey (
-          id,
-          name,
-          taxInfo,
-          companyType,
-          status
-        )
-      `)
+      .select("*")
+      .eq("company_id", companyId)
       .order("created_at", { ascending: false });
-
-    // Admin değilse, sadece kendi şirketinin ürünlerini getir
-    if (companyId) {
-      query.eq("manufacturer_id", companyId);
-    }
-
-    const { data, error } = await query;
 
     if (error) {
       console.error("Error fetching products:", error);
-      return [];
+      throw new Error("Failed to fetch products");
     }
 
     return data || [];
   }
 
-  static async getProduct(
-    id: string,
-    companyId: string
-  ): Promise<ProductResponse> {
-    // Admin şirketi için özel durum - tüm ürünleri göster
-    if (companyId === "admin") {
+  static async getProduct({ id, companyId }: { id: string; companyId: string }): Promise<ProductResponse> {
+    console.log("ProductService.getProduct params:", { id, companyId });
+
+    try {
+      // Admin şirketi için özel durum - tüm ürünleri göster
+      if (companyId === ADMIN_COMPANY_ID || companyId === "") {
+        console.log("Admin user, fetching all products");
+        const { data, error } = await supabase
+          .from("products")
+          .select(`
+            *,
+            manufacturer:manufacturer_id (
+              id,
+              name,
+              taxInfo,
+              companyType,
+              status
+            )
+          `)
+          .eq("id", id)
+          .single();
+
+        console.log("Admin product query result:", { data, error });
+
+        if (error) {
+          console.error("Admin product query error:", error);
+          return { error: { message: "Product not found" } };
+        }
+
+        return { data };
+      }
+
+      console.log("Regular user, fetching company products");
       const { data, error } = await supabase
         .from("products")
         .select(`
@@ -74,36 +73,21 @@ export class ProductService {
           )
         `)
         .eq("id", id)
+        .eq("company_id", companyId)
         .single();
 
+      console.log("Regular product query result:", { data, error });
+
       if (error) {
+        console.error("Regular product query error:", error);
         return { error: { message: "Product not found" } };
       }
 
       return { data };
+    } catch (error) {
+      console.error("ProductService.getProduct caught error:", error);
+      return { error: { message: "An error occurred while fetching the product" } };
     }
-
-    const { data, error } = await supabase
-      .from("products")
-      .select(`
-        *,
-        manufacturer:manufacturer_id (
-          id,
-          name,
-          taxInfo,
-          companyType,
-          status
-        )
-      `)
-      .eq("id", id)
-      .eq("company_id", companyId)
-      .single();
-
-    if (error) {
-      return { error: { message: "Product not found" } };
-    }
-
-    return { data };
   }
 
   static async createProduct(product: NewProduct): Promise<ProductResponse> {
@@ -224,47 +208,17 @@ export class ProductService {
 }
 
 export const productService = createService({
-  getProducts: async ({ companyId }: { companyId: string }): Promise<BaseProduct[]> => {
-    // Admin rolü için tüm ürünleri getir
-    const query = supabase
+  getProducts: async ({ companyId }: { companyId: string }) => {
+    const { data, error } = await supabase
       .from("products")
-      .select(`
-        id,
-        name,
-        description,
-        manufacturer_id,
-        product_type,
-        product_subcategory,
-        model,
-        status,
-        status_history,
-        images,
-        key_features,
-        created_at,
-        updated_at,
-        documents,
-        manufacturer:companies!products_manufacturer_id_fkey (
-          id,
-          name,
-          taxInfo,
-          companyType,
-          status
-        )
-      `)
+      .select("*")
+      .eq("company_id", companyId)
       .order("created_at", { ascending: false });
-
-    // Admin değilse, sadece kendi şirketinin ürünlerini getir
-    if (companyId) {
-      query.eq("manufacturer_id", companyId);
-    }
-
-    const { data, error } = await query;
 
     if (error) {
       console.error("Error fetching products:", error);
-      return [];
+      throw new Error("Failed to fetch products");
     }
-
     return data || [];
   },
   getProduct: async ({
@@ -275,7 +229,7 @@ export const productService = createService({
     companyId: string;
   }): Promise<ProductResponse> => {
     // Admin şirketi için özel durum - tüm ürünleri göster
-    if (companyId === "admin") {
+    if (companyId === ADMIN_COMPANY_ID) {
       const { data, error } = await supabase
         .from("products")
         .select(`
