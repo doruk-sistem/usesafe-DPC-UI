@@ -39,8 +39,8 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
 import { documentsApiHooks } from "@/lib/hooks/use-documents";
-import { ProductWithMetadata } from "@/lib/types/product";
-import { ProductStatus } from "@/lib/types/product";
+import { ProductWithMetadata , ProductStatus } from "@/lib/types/product";
+
 
 export function ProductList() {
   const t = useTranslations();
