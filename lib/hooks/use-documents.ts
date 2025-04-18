@@ -109,16 +109,19 @@ export const documentsApiHooks = {
               name: doc.name || "Unnamed Document",
               type: doc.type || "unknown",
               url: doc.url || "",
-              status: doc.status || "pending",
+              status: (doc.status || "pending").toLowerCase() as DocumentStatus,
               productId: product.id,
-              manufacturerId: product.manufacturer_id,
               manufacturer: product.manufacturer || "",
-              uploadedAt: doc.created_at || new Date().toISOString(),
+              manufacturerId: product.manufacturer_id || "",
               fileSize: doc.fileSize || "",
               version: doc.version || "1.0",
               validUntil: doc.validUntil || null,
               rejection_reason: doc.rejection_reason || null,
-            }));
+              created_at: doc.created_at || new Date().toISOString(),
+              updated_at: doc.updated_at || new Date().toISOString(),
+              uploadedAt: doc.uploadedAt || new Date().toISOString(),
+              size: doc.size || 0
+            } as Document));
           });
 
           return allDocuments;
@@ -661,7 +664,11 @@ const extractDocumentsFromProduct = (product: any): Document[] => {
           version: doc.version || "1.0",
           validUntil: doc.validUntil || null,
           rejection_reason: doc.rejection_reason || null,
-        };
+          created_at: doc.created_at || new Date().toISOString(),
+          updated_at: doc.updated_at || new Date().toISOString(),
+          uploadedAt: doc.uploadedAt || new Date().toISOString(),
+          size: doc.size || 0
+        } as Document;
         documents.push(document);
       }
     });
@@ -675,10 +682,10 @@ const extractDocumentsFromProduct = (product: any): Document[] => {
         docList.forEach((doc: any) => {
           if (doc && doc.id) {
             const document = {
-              id: doc.id,
+              id: doc.id || `doc-${Date.now()}-${Math.random()}`,
               name: doc.name || "Unnamed Document",
               type: docType as DocumentType,
-              url: doc.url,
+              url: doc.url || "",
               status: (doc.status || "pending").toLowerCase() as DocumentStatus,
               productId: product.id,
               manufacturer: product.manufacturer || "",
@@ -687,7 +694,11 @@ const extractDocumentsFromProduct = (product: any): Document[] => {
               version: doc.version || "1.0",
               validUntil: doc.validUntil || null,
               rejection_reason: doc.rejection_reason || null,
-            };
+              created_at: doc.created_at || new Date().toISOString(),
+              updated_at: doc.updated_at || new Date().toISOString(),
+              uploadedAt: doc.uploadedAt || new Date().toISOString(),
+              size: doc.size || 0
+            } as Document;
             documents.push(document);
           } else if (doc && doc.name) {
             // Handle documents without id but with name
@@ -706,7 +717,11 @@ const extractDocumentsFromProduct = (product: any): Document[] => {
               version: doc.version || "1.0",
               validUntil: doc.validUntil || null,
               rejection_reason: doc.rejection_reason || null,
-            };
+              created_at: doc.created_at || new Date().toISOString(),
+              updated_at: doc.updated_at || new Date().toISOString(),
+              uploadedAt: doc.uploadedAt || new Date().toISOString(),
+              size: doc.size || 0
+            } as Document;
             documents.push(document);
           }
         });
@@ -726,7 +741,7 @@ const extractDocumentsFromProduct = (product: any): Document[] => {
                 .substr(2, 9)}`,
             name: doc.name || "Unnamed Document",
             type: docType as DocumentType,
-            url: doc.url,
+            url: doc.url || "",
             status: (doc.status || "pending").toLowerCase() as DocumentStatus,
             productId: product.id,
             manufacturer: product.manufacturer || "",
@@ -735,7 +750,11 @@ const extractDocumentsFromProduct = (product: any): Document[] => {
             version: doc.version || "1.0",
             validUntil: doc.validUntil || null,
             rejection_reason: doc.rejection_reason || null,
-          };
+            created_at: doc.created_at || new Date().toISOString(),
+            updated_at: doc.updated_at || new Date().toISOString(),
+            uploadedAt: doc.uploadedAt || new Date().toISOString(),
+            size: doc.size || 0
+          } as Document;
           documents.push(document);
         }
       }
@@ -825,7 +844,6 @@ const updateDocumentStatus = async (
         documentFound = true;
         documentLocation = `[${documentIndex}]`;
       }
-    } else {
     }
 
     if (!documentFound) {

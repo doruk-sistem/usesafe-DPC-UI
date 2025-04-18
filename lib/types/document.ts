@@ -3,13 +3,15 @@ export interface Document {
   name: string;
   url: string;
   type: string;
-  size: number;
-  created_at: string;
-  updated_at: string;
+  size?: number;
+  created_at?: string;
+  updated_at?: string;
+  uploadedAt?: string;
   status: string;
   rejection_reason?: string;
   metadata?: Record<string, any>;
   manufacturerId?: string;
+  manufacturer?: string;
   productId?: string;
   fileSize?: string;
   validUntil?: string;
