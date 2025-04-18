@@ -1,10 +1,9 @@
 "use client";
 
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Package, Search, Filter, MoreHorizontal, FileText, Eye } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -26,157 +25,60 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
-import { BaseProduct, ProductStatus, StatusTransition, ProductImage, KeyFeature } from "@/lib/types/product";
-
-interface Document {
-  status: "approved" | "rejected" | "pending";
-}
-
-type ProductWithMetadata = {
-  id: string;
-  name: string;
-  description: string;
-  company_id: string;
-  product_type: string;
-  product_subcategory: string;
-  model?: string;
-  status: ProductStatus;
-  status_history: StatusTransition[];
-  images: ProductImage[];
-  key_features: KeyFeature[];
-  created_at: string;
-  updated_at: string;
-  manufacturer_id: string;
-  documents?: any[];
-  manufacturer_name: string;
-  document_count: number;
-  document_status: "All Approved" | "Pending Review" | "Has Rejected Documents" | "No Documents";
-};
+import { ProductWithMetadata } from "@/lib/types/product";
+import { documentsApiHooks } from "@/lib/hooks/use-documents";
 
 export function ProductList() {
   const t = useTranslations();
   const { toast } = useToast();
-  const supabase = createClientComponentClient();
-  const [products, setProducts] = useState<ProductWithMetadata[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [manufacturerFilter, setManufacturerFilter] = useState("all");
-  const [manufacturers, setManufacturers] = useState<Record<string, string>>({});
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        setIsLoading(true);
-        
-        // Önce manufacturers'ı çek (companies tablosundan)
-        const { data: manufacturersData, error: manufacturersError } = await supabase
-          .from("companies")
-          .select("id, name")
-          .eq("companyType", "manufacturer");
+  const { data: products = [], isLoading } = documentsApiHooks.useGetProducts();
 
-        if (manufacturersError) {
-          throw new Error(`Manufacturers fetch error: ${manufacturersError.message}`);
-        }
-
-        if (!manufacturersData) {
-          throw new Error("No manufacturers data received");
-        }
-
-        const manufacturerMap = manufacturersData.reduce((acc, manufacturer) => {
-          acc[manufacturer.id] = manufacturer.name;
-          return acc;
-        }, {} as Record<string, string>);
-
-        setManufacturers(manufacturerMap);
-
-        // Sonra products'ı çek
-        const { data: productsData, error: productsError } = await supabase
-          .from("products")
-          .select(`
-            id,
-            name,
-            description,
-            manufacturer_id,
-            product_type,
-            product_subcategory,
-            model,
-            status,
-            status_history,
-            images,
-            key_features,
-            created_at,
-            updated_at,
-            documents
-          `);
-
-        if (productsError) {
-          throw new Error(`Products fetch error: ${productsError.message}`);
-        }
-
-        if (!productsData) {
-          throw new Error("No products data received");
-        }
-
-        // Process products to include document counts and status
-        const processedProducts = productsData.map(product => {
-          const documentCount = product.documents ? Object.values(product.documents).flat().length : 0;
-          
-          let documentStatus: ProductWithMetadata["document_status"] = "No Documents";
-          if (documentCount > 0) {
-            const allDocs = Object.values(product.documents).flat() as Document[];
-            const hasRejected = allDocs.some(doc => doc.status === "rejected");
-            const allApproved = allDocs.every(doc => doc.status === "approved");
-            
-            if (hasRejected) {
-              documentStatus = "Has Rejected Documents";
-            } else if (allApproved) {
-              documentStatus = "All Approved";
-            } else {
-              documentStatus = "Pending Review";
-            }
-          }
-
-          return {
-            id: product.id,
-            name: product.name,
-            description: product.description || "",
-            company_id: product.manufacturer_id,
-            product_type: product.product_type,
-            product_subcategory: product.product_subcategory || "",
-            model: product.model,
-            status: product.status,
-            status_history: product.status_history || [],
-            images: product.images || [],
-            key_features: product.key_features || [],
-            created_at: product.created_at,
-            updated_at: product.updated_at,
-            manufacturer_id: product.manufacturer_id,
-            documents: product.documents,
-            manufacturer_name: manufacturerMap[product.manufacturer_id] || "Unknown Manufacturer",
-            document_count: documentCount,
-            document_status: documentStatus
-          };
-        });
-
-        setProducts(processedProducts);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        const errorMessage = error instanceof Error ? error.message : JSON.stringify(error);
-        toast({
-          title: "Error",
-          description: `Failed to load products data: ${errorMessage}`,
-          variant: "destructive",
-        });
-      } finally {
-        setIsLoading(false);
+  // Process products to include document counts and status
+  const processedProducts: ProductWithMetadata[] = products.map(product => {
+    const documentCount = product.documents ? Object.values(product.documents).flat().length : 0;
+    
+    let documentStatus: ProductWithMetadata["document_status"] = "No Documents";
+    if (documentCount > 0) {
+      const allDocs = Object.values(product.documents).flat() as { status: "approved" | "rejected" | "pending" }[];
+      const hasRejected = allDocs.some(doc => doc.status === "rejected");
+      const allApproved = allDocs.every(doc => doc.status === "approved");
+      
+      if (hasRejected) {
+        documentStatus = "Has Rejected Documents";
+      } else if (allApproved) {
+        documentStatus = "All Approved";
+      } else {
+        documentStatus = "Pending Review";
       }
     }
 
-    fetchData();
-  }, [supabase, toast]);
+    return {
+      id: product.id,
+      name: product.name,
+      description: product.description || "",
+      company_id: product.manufacturer_id,
+      product_type: product.product_type,
+      product_subcategory: product.product_subcategory || "",
+      model: product.model,
+      status: product.status,
+      status_history: product.status_history || [],
+      images: product.images || [],
+      key_features: product.key_features || [],
+      created_at: product.created_at,
+      updated_at: product.updated_at,
+      manufacturer_id: product.manufacturer_id,
+      documents: product.documents,
+      manufacturer_name: product.manufacturer?.name || "Unknown Manufacturer",
+      document_count: documentCount,
+      document_status: documentStatus
+    };
+  });
 
-  const filteredProducts = products.filter(product => {
+  const filteredProducts = processedProducts.filter(product => {
     // Filter by search query
     if (searchQuery && !product.name.toLowerCase().includes(searchQuery.toLowerCase())) {
       return false;
@@ -260,11 +162,6 @@ export function ProductList() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{t("admin.products.allManufacturers")}</SelectItem>
-                {Object.entries(manufacturers).map(([id, name]) => (
-                  <SelectItem key={id} value={id}>
-                    {name}
-                  </SelectItem>
-                ))}
               </SelectContent>
             </Select>
             <Select value={statusFilter} onValueChange={setStatusFilter}>

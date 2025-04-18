@@ -114,3 +114,24 @@ export interface ProductResponse {
   data?: BaseProduct;
   error?: ProductError;
 }
+
+export type ProductWithMetadata = {
+  id: string;
+  name: string;
+  description: string;
+  company_id: string;
+  product_type: string;
+  product_subcategory: string;
+  model?: string;
+  status: ProductStatus;
+  status_history: StatusTransition[];
+  images: ProductImage[];
+  key_features: KeyFeature[];
+  created_at: string;
+  updated_at: string;
+  manufacturer_id: string;
+  documents?: any[];
+  manufacturer_name: string;
+  document_count: number;
+  document_status: "All Approved" | "Pending Review" | "Has Rejected Documents" | "No Documents";
+};
