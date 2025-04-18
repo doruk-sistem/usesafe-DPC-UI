@@ -35,9 +35,9 @@ export function ProductBlockchainHistory({ productId }: ProductBlockchainHistory
           });
 
         setRecords(sortedHistory);
-      } catch (err) {
-        const errorMessage = err instanceof Error 
-          ? `Failed to load blockchain history: ${err.message}`
+      } catch (err: unknown) {
+        const errorMessage = typeof err === 'object' && err !== null && 'message' in err
+          ? `Failed to load blockchain history: ${(err as Error).message}`
           : 'An unexpected error occurred while fetching history.';
         
         setError(errorMessage);

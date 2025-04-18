@@ -20,8 +20,10 @@ export function RecentApprovals() {
       try {
         const data = await getRecentApprovals();
         setApprovals(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
+      } catch (err: unknown) {
+        setError(typeof err === 'object' && err !== null && 'message' in err
+          ? (err as Error).message
+          : 'An error occurred');
       } finally {
         setIsLoading(false);
       }
