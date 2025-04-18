@@ -6,10 +6,12 @@ import type {
 } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 import { supabase } from "@/lib/supabase/client";
+import { companyService } from "@/lib/services/company";
+import { Company } from "@/lib/types/company";
 
-import { ADMIN_COMPANY_ID } from "../services/company";
 import type { User } from "../types/auth";
 
 import { companyApiHooks } from "./use-company";
@@ -19,21 +21,14 @@ export function useAuth() {
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
-  const {
-    data: company,
-    isLoading: isCompanyLoading,
-    isFetched: isCompanyFetched,
-    error: companyError,
-  } = companyApiHooks.useGetCompanyQuery(
-    { 
-      id: user?.user_metadata?.company_id || 
-          (user?.user_metadata?.role === "admin" ? ADMIN_COMPANY_ID : undefined)
+  const { data: company } = useQuery({
+    queryKey: ["company", user?.user_metadata?.company_id],
+    queryFn: async () => {
+      if (!user?.user_metadata?.company_id) return null;
+      return companyService.getCompany({ id: user.user_metadata.company_id });
     },
-    { 
-      enabled: !!user?.user_metadata?.company_id || user?.user_metadata?.role === "admin",
-      retry: false
-    }
-  );
+    enabled: !!user?.user_metadata?.company_id,
+  });
 
   useEffect(() => {
     const {
@@ -102,9 +97,13 @@ export function useAuth() {
     if (error) throw error;
   };
 
-  const isAdmin = () => {
+  // Create a function that can be called as isAdmin()
+  const isAdminFunction = () => {
     return user?.user_metadata?.role === "admin";
   };
+
+  // Create a boolean value that can be used as isAdmin
+  const isAdminValue = user?.user_metadata?.role === "admin";
 
   const verifyOtp = async (token: string, type: string) => {
     const { error } = await supabase.auth.verifyOtp({
@@ -125,14 +124,11 @@ export function useAuth() {
   return {
     user,
     company,
-    isCompanyLoading,
-    isCompanyFetched,
-    isLoading,
-    companyError,
+    isAdmin: isAdminFunction,
+    isAdminValue,
     signIn,
     signUp,
     signOut,
-    isAdmin,
     updateUser,
     verifyOtp,
   };
