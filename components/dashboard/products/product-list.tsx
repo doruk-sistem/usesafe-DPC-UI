@@ -41,6 +41,7 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
+import { Loading } from "@/components/ui/loading";
 import {
   Table,
   TableBody,
@@ -52,7 +53,7 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import { useProduct } from "@/lib/hooks/use-product";
 import { productsApiHooks } from "@/lib/hooks/use-products";
-import { BaseProduct as Product } from "@/lib/types/product";
+import { Product, ProductStatus } from "@/lib/types/product";
 import { StorageHelper } from "@/lib/utils/storage";
 
 interface ProductListProps {
@@ -119,25 +120,7 @@ export function ProductList({ products, isLoading }: ProductListProps) {
   };
 
   if (isLoading) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("products.title")}</CardTitle>
-          <CardDescription>{t("products.loading")}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="flex items-center space-x-4">
-              <div className="w-12 h-12 bg-gray-200 animate-pulse" />
-              <div className="space-y-2">
-                <div className="w-48 h-4 bg-gray-200 animate-pulse" />
-                <div className="w-36 h-4 bg-gray-200 animate-pulse" />
-              </div>
-            </div>
-          ))}
-        </CardContent>
-      </Card>
-    );
+    return <Loading />;
   }
 
   if (!products || products.length === 0) {
@@ -195,7 +178,7 @@ export function ProductList({ products, isLoading }: ProductListProps) {
                   ? product.documents
                   : Object.values(product.documents || {}).flat();
 
-                const status = determineProductStatus(documents);
+                const status = determineProductStatus(product);
 
                 return (
                   <TableRow key={product.id}>
@@ -256,11 +239,11 @@ export function ProductList({ products, isLoading }: ProductListProps) {
                     <TableCell>
                       <Badge
                         variant={
-                          status === "APPROVED"
+                          status === "approved"
                             ? "success"
-                            : status === "PENDING"
+                            : status === "pending"
                             ? "warning"
-                            : status === "REJECTED"
+                            : status === "rejected"
                             ? "destructive"
                             : "secondary"
                         }

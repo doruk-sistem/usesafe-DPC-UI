@@ -92,8 +92,16 @@ export default function NewProductPageClient() {
         throw new Error("Product ID not received from server");
       }
 
-      // Blockchain kaydı oluştur
+      // Blockchain kaydı oluştur - Temporarily disabled due to insufficient HBAR balance
+      /*
       try {
+        console.log('Starting blockchain record creation...', {
+          productId: response.data.id,
+          name: data.name,
+          manufacturer: data.manufacturer_id,
+          description: data.description
+        });
+
         const blockchainResult =
           await productBlockchainService.recordProductAction(
             response.data.id,
@@ -103,10 +111,7 @@ export default function NewProductPageClient() {
             "CREATE"
           );
 
-        // Update the product with contract address
-        // await ProductService.updateProduct(response.data.id, {
-        //   contract_address: blockchainResult.contractAddress,
-        // });
+        console.log('Blockchain record created successfully:', blockchainResult);
 
         toast({
           title: t("success.title"),
@@ -115,6 +120,12 @@ export default function NewProductPageClient() {
           }),
         });
       } catch (blockchainError) {
+        console.error('Detailed blockchain error:', {
+          error: blockchainError,
+          message: blockchainError instanceof Error ? blockchainError.message : 'Unknown error',
+          stack: blockchainError instanceof Error ? blockchainError.stack : undefined
+        });
+
         toast({
           title: "Warning",
           description:
@@ -125,6 +136,7 @@ export default function NewProductPageClient() {
           variant: "destructive",
         });
       }
+      */
 
       // Validate if product can be moved to NEW status
       if (ProductStatusService.validateStatus(response.data)) {

@@ -1,18 +1,25 @@
 export interface Document {
   id: string;
   name: string;
-  type: DocumentType;
-  manufacturer: string;
-  manufacturerId: string;
-  productId?: string;
-  status: DocumentStatus;
-  validUntil?: string;
-  uploadedAt?: string;
-  fileSize?: string;
-  version?: string;
   url: string;
+  type: string;
+  size: number;
+  created_at: string;
+  updated_at: string;
+  status: string;
   rejection_reason?: string;
-  rejection_date?: string;
+  metadata?: Record<string, any>;
+  manufacturerId?: string;
+  productId?: string;
+  fileSize?: string;
+  validUntil?: string;
+  version?: string;
+}
+
+export interface DocumentWithMetadata extends Document {
+  metadata: {
+    [key: string]: any;
+  };
 }
 
 export type DocumentType = 

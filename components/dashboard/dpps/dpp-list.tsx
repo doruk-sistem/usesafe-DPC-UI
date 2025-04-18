@@ -21,6 +21,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Error } from "@/components/ui/error";
+import { Loading } from "@/components/ui/loading";
 import {
   Table,
   TableBody,
@@ -54,34 +56,16 @@ export function DPPList({ dpps = [], isLoading, error }: DPPListProps) {
       <Card>
         <CardHeader>
           <CardTitle>{t("title")}</CardTitle>
-          <CardDescription className="text-destructive">
-            {error}
-          </CardDescription>
         </CardHeader>
+        <CardContent>
+          <Error error={error} />
+        </CardContent>
       </Card>
     );
   }
 
   if (isLoading) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>
-            <span className="block h-4 w-[200px] animate-pulse rounded-md bg-muted" />
-          </CardTitle>
-          <CardDescription>
-            <span className="block h-4 w-[300px] animate-pulse rounded-md bg-muted" />
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-2">
-            <div className="h-4 w-full animate-pulse rounded-md bg-muted" />
-            <div className="h-4 w-full animate-pulse rounded-md bg-muted" />
-            <div className="h-4 w-full animate-pulse rounded-md bg-muted" />
-          </div>
-        </CardContent>
-      </Card>
-    );
+    return <Loading />;
   }
 
   return (

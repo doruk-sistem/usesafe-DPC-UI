@@ -51,17 +51,7 @@ export type DPPConfig = {
   lastUpdated: string;
 };
 
-export type BaseProduct = Database["public"]["Tables"]["products"]["Row"] & {
-  manufacturer?: {
-    id: string;
-    name: string;
-    taxInfo: {
-      taxNumber: string;
-    };
-    companyType: string;
-    status: boolean;
-  };
-};
+export type BaseProduct = Database["public"]["Tables"]["products"]["Row"];
 export type NewProduct = Database["public"]["Tables"]["products"]["Insert"];
 export type UpdateProduct = Database["public"]["Tables"]["products"]["Update"];
 export type ProductStatus =
@@ -115,18 +105,42 @@ export interface ProductResponse {
   error?: ProductError;
 }
 
-export interface Product {
+export type ProductWithMetadata = {
   id: string;
   name: string;
-  sku: string;
+  description: string;
+  company_id: string;
+  product_type: string;
+  product_subcategory: string;
+  model?: string;
   status: ProductStatus;
+  status_history: StatusTransition[];
+  images: ProductImage[];
+  key_features: KeyFeature[];
   created_at: string;
+  updated_at: string;
   manufacturer_id: string;
-  manufacturer_email: string;
-  manufacturer?: {
-    name: string;
-  };
-  description?: string;
-  images?: ProductImage[];
-  key_features?: KeyFeature[];
-}
+  documents?: any[];
+  manufacturer_name: string;
+  document_count: number;
+  document_status:
+    | "All Approved"
+    | "Pending Review"
+    | "Has Rejected Documents"
+    | "No Documents";
+};
+
+export type Product = BaseProduct & {
+  status: ProductStatus;
+  status_history: StatusTransition[];
+  images: ProductImage[];
+  key_features: KeyFeature[];
+  manufacturer_name: string;
+  document_count: number;
+  document_status:
+    | "All Approved"
+    | "Pending Review"
+    | "Has Rejected Documents"
+    | "No Documents";
+  documents?: Record<string, any[]>;
+};

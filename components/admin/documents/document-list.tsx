@@ -44,6 +44,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Label } from "@/components/ui/label";
+import { Loading } from "@/components/ui/loading";
 import {
   Select,
   SelectContent,
@@ -336,7 +337,7 @@ export function DocumentList({ initialDocuments = [] }: DocumentListProps) {
 
   // Show loading state only if we don't have initial documents
   if ((isLoading || isLoadingProducts) && (!initialDocuments || initialDocuments.length === 0)) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   // Show error only if we don't have initial documents

@@ -33,14 +33,42 @@ export const documentsApiHooks = {
         try {
           const { data: products, error } = await supabase
             .from("products")
-            .select("id, name, manufacturer_id, created_at")
+            .select(`
+              id,
+              name,
+              description,
+              manufacturer_id,
+              product_type,
+              product_subcategory,
+              model,
+              status,
+              status_history,
+              images,
+              key_features,
+              created_at,
+              updated_at,
+              documents,
+              manufacturer:companies!products_manufacturer_id_fkey (
+                id,
+                name,
+                taxInfo,
+                companyType,
+                status
+              )
+            `)
             .order("created_at", { ascending: false });
 
           if (error) {
             throw error;
           }
 
-          return products || [];
+          // Transform manufacturer from array to object
+          const transformedProducts = products?.map(product => ({
+            ...product,
+            manufacturer: Array.isArray(product.manufacturer) ? product.manufacturer[0] : product.manufacturer
+          })) || [];
+
+          return transformedProducts;
         } catch (error) {
           console.error("Error fetching products:", error);
           throw error;

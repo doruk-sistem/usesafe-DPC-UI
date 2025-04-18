@@ -5,8 +5,9 @@ import { CheckCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
-import { getRecentApprovals, type RecentApproval } from "@/lib/hooks/useMetrics";
 import { Card } from "@/components/ui/card";
+import { Error } from "@/components/ui/error";
+import { getRecentApprovals, type RecentApproval } from "@/lib/hooks/useMetrics";
 
 export function RecentApprovals() {
   const t = useTranslations("adminDashboard");
@@ -19,8 +20,10 @@ export function RecentApprovals() {
       try {
         const data = await getRecentApprovals();
         setApprovals(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
+      } catch (err: unknown) {
+        setError(typeof err === 'object' && err !== null && 'message' in err
+          ? (err as Error).message
+          : 'An error occurred');
       } finally {
         setIsLoading(false);
       }
@@ -30,11 +33,7 @@ export function RecentApprovals() {
   }, []);
 
   if (error) {
-    return (
-      <div className="p-4 text-red-500 bg-red-50 rounded-lg">
-        {error}
-      </div>
-    );
+    return <Error error={error} />;
   }
 
   return (

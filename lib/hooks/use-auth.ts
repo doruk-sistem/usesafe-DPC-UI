@@ -4,36 +4,91 @@ import type {
   User as SupabaseUser,
   UserAttributes,
 } from "@supabase/supabase-js";
+import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
+import { useToast } from "@/components/ui/use-toast";
+import { companyService } from "@/lib/services/company";
+import { ManufacturerService } from "@/lib/services/manufacturer";
+import { productService } from "@/lib/services/product";
 import { supabase } from "@/lib/supabase/client";
+import { Company } from "@/lib/types/company";
 
-import { ADMIN_COMPANY_ID } from "../services/company";
 import type { User } from "../types/auth";
 
 import { companyApiHooks } from "./use-company";
 
-export function useAuth() {
-  const [user, setUser] = useState<SupabaseUser | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const router = useRouter();
 
-  const {
-    data: company,
-    isLoading: isCompanyLoading,
-    isFetched: isCompanyFetched,
-    error: companyError,
-  } = companyApiHooks.useGetCompanyQuery(
-    { 
-      id: user?.user_metadata?.company_id || 
-          (user?.user_metadata?.role === "admin" ? ADMIN_COMPANY_ID : undefined)
+export function useAuth() {
+  const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const { toast } = useToast();
+  const router = useRouter();
+  const t = useTranslations("auth");
+
+  const { data: company, isLoading: isCompanyLoading } = useQuery({
+    queryKey: ["company", user?.user_metadata?.company_id],
+    queryFn: () => {
+      // For admin users, return a default company object
+      if (user?.user_metadata?.role === "admin") {
+        return Promise.resolve({
+          id: "admin",
+          name: "Admin Company",
+          taxInfo: {},
+          companyType: "admin",
+          status: true
+        });
+      }
+      
+      // Eğer company_id yoksa, varsayılan bir firma nesnesi döndür
+      if (!user?.user_metadata?.company_id) {
+        return Promise.resolve({
+          id: "default",
+          name: "Default Company",
+          taxInfo: {},
+          companyType: "user",
+          status: true
+        });
+      }
+      
+      // companyService.getCompany fonksiyonu bir nesne bekliyor, string değil
+      return companyService.getCompany({ id: user.user_metadata.company_id });
     },
-    { 
-      enabled: !!user?.user_metadata?.company_id || user?.user_metadata?.role === "admin",
-      retry: false
-    }
-  );
+    enabled: !!user, // Kullanıcı giriş yapmışsa firma bilgilerini yükle
+  });
+
+  const { data: manufacturer, isLoading: isManufacturerLoading } = useQuery({
+    queryKey: ["manufacturer", user?.user_metadata?.company_id],
+    queryFn: () => {
+      // For admin users, return a default manufacturer object
+      if (user?.user_metadata?.role === "admin") {
+        return Promise.resolve({
+          id: "admin",
+          name: "Admin Manufacturer",
+          taxInfo: {},
+          companyType: "admin",
+          status: true
+        });
+      }
+      
+      // Eğer company_id yoksa, varsayılan bir üretici nesnesi döndür
+      if (!user?.user_metadata?.company_id) {
+        return Promise.resolve({
+          id: "default",
+          name: "Default Manufacturer",
+          taxInfo: {},
+          companyType: "user",
+          status: true
+        });
+      }
+      
+      // companyService.getManufacturer fonksiyonu string parametre bekliyor
+      return companyService.getManufacturer(user.user_metadata.company_id);
+    },
+    enabled: !!user, // Kullanıcı giriş yapmışsa üretici bilgilerini yükle
+  });
 
   useEffect(() => {
     const {
@@ -53,23 +108,31 @@ export function useAuth() {
   }, []);
 
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-    if (error) throw error;
+      if (error) throw error;
 
-    // Get session after sign in
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
+      // Get session after sign in
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
 
-    // Redirect based on role
-    if (session?.user?.user_metadata?.role === "admin") {
-      router.push("/admin");
-    } else {
-      router.push("/dashboard");
+      // Redirect based on role
+      if (session?.user?.user_metadata?.role === "admin") {
+        router.push("/admin");
+      } else {
+        router.push("/dashboard");
+      }
+    } catch (error) {
+      toast({
+        title: t("errors.signIn.title"),
+        description: t("errors.signIn.description"),
+        variant: "destructive",
+      });
     }
   };
 
@@ -82,29 +145,72 @@ export function useAuth() {
       company_id: string;
     }
   ) => {
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: metadata,
-      },
-    });
-    if (error) throw error;
+    try {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: metadata,
+        },
+      });
+      if (error) throw error;
+
+      toast({
+        title: t("success.signUp.title"),
+        description: t("success.signUp.description"),
+      });
+
+      router.push("/auth/verify-email");
+    } catch (error) {
+      toast({
+        title: t("errors.signUp.title"),
+        description: t("errors.signUp.description"),
+        variant: "destructive",
+      });
+    }
   };
+
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) throw error;
-    router.push("/");
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      router.push("/auth/login");
+    } catch (error) {
+      toast({
+        title: t("errors.signOut.title"),
+        description: t("errors.signOut.description"),
+        variant: "destructive",
+      });
+    }
   };
 
   const updateUser = async (attributes: UserAttributes) => {
-    const { error } = await supabase.auth.updateUser(attributes);
-    if (error) throw error;
+    try {
+      const { error } = await supabase.auth.updateUser({
+        data: attributes,
+      });
+      if (error) throw error;
+
+      toast({
+        title: t("success.updateUser.title"),
+        description: t("success.updateUser.description"),
+      });
+    } catch (error) {
+      toast({
+        title: t("errors.updateUser.title"),
+        description: t("errors.updateUser.description"),
+        variant: "destructive",
+      });
+    }
   };
 
-  const isAdmin = () => {
+  // Create a function that can be called as isAdmin()
+  const isAdminFunction = () => {
     return user?.user_metadata?.role === "admin";
   };
+
+  // Create a boolean value that can be used as isAdmin
+  const isAdminValue = user?.user_metadata?.role === "admin";
 
   const verifyOtp = async (token: string, type: string) => {
     const { error } = await supabase.auth.verifyOtp({
@@ -125,14 +231,14 @@ export function useAuth() {
   return {
     user,
     company,
+    manufacturer,
+    isLoading: isLoading || isCompanyLoading || isManufacturerLoading,
     isCompanyLoading,
-    isCompanyFetched,
-    isLoading,
-    companyError,
+    isAdmin: isAdminFunction,
+    isAdminValue,
     signIn,
     signUp,
     signOut,
-    isAdmin,
     updateUser,
     verifyOtp,
   };

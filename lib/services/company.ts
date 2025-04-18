@@ -4,25 +4,8 @@ import  { CompanyType } from "@/lib/types/company";
 
 import { createService } from "../api-client";
 
-// Admin şirketi için sabit UUID
-// Bu UUID'yi veritabanında oluşturduğumuz admin şirketinin ID'si ile değiştirin
-export const ADMIN_COMPANY_ID = "00000000-0000-0000-0000-000000000000";
-
 export class CompanyService {
   static async getCompany(id: string): Promise<Company | null> {
-    // Admin şirketi için özel durum
-    if (id === ADMIN_COMPANY_ID) {
-      return {
-        id: ADMIN_COMPANY_ID,
-        name: "Admin Company",
-        taxInfo: {
-          taxNumber: "ADMIN",
-        },
-        companyType: CompanyType.ADMIN,
-        status: true
-      };
-    }
-
     const { data, error } = await supabase
       .from("companies")
       .select("id, name, taxInfo, companyType, status")
@@ -30,10 +13,7 @@ export class CompanyService {
       .single();
 
     if (error) {
-      // Admin şirketi için hata mesajını gösterme
-      if (id !== ADMIN_COMPANY_ID) {
-        console.error("Error fetching company:", error);
-      }
+      console.error("Error fetching company:", error);
       return null;
     }
 
@@ -179,19 +159,6 @@ export class CompanyService {
 
 export const companyService = createService({
   getCompany: async ({ id }: { id: string }): Promise<Company | null> => {
-    // Admin şirketi için özel durum
-    if (id === ADMIN_COMPANY_ID) {
-      return {
-        id: ADMIN_COMPANY_ID,
-        name: "Admin Company",
-        taxInfo: {
-          taxNumber: "ADMIN",
-        },
-        companyType: CompanyType.ADMIN,
-        status: true
-      };
-    }
-
     const { data, error } = await supabase
       .from("companies")
       .select("id, name, taxInfo, companyType, status")
@@ -199,10 +166,7 @@ export const companyService = createService({
       .single();
 
     if (error) {
-      // Admin şirketi için hata mesajını gösterme
-      if (id !== ADMIN_COMPANY_ID) {
-        console.error("Error fetching company:", error);
-      }
+      console.error("Error fetching company:", error);
       return null;
     }
 

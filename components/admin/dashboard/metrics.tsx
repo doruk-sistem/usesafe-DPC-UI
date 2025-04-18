@@ -14,8 +14,9 @@ import {
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
-import { getRecentApprovals, getSystemAlerts, type DashboardMetrics } from "@/lib/hooks/useMetrics";
 import { Card } from "@/components/ui/card";
+import { Error } from "@/components/ui/error";
+import { getRecentApprovals, getSystemAlerts, type DashboardMetrics } from "@/lib/hooks/useMetrics";
 
 export function DashboardMetrics() {
   const t = useTranslations("adminDashboard");
@@ -103,11 +104,7 @@ export function DashboardMetrics() {
   ];
 
   if (error) {
-    return (
-      <div className="p-4 text-red-500 bg-red-50 rounded-lg">
-        {error}
-      </div>
-    );
+    return <Error error={error} />;
   }
 
   return (

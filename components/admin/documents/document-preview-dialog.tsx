@@ -1,47 +1,43 @@
 "use client";
 
 import { Download } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-
+import { Document } from "@/lib/types/document";
 
 interface DocumentPreviewDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  document: {
-    id: string;
-    name: string;
-    type: string;
-    status: string;
-    url?: string;
-    rejection_reason?: string;
-  };
+  document: Document;
 }
 
 export function DocumentPreviewDialog({ isOpen, onClose, document }: DocumentPreviewDialogProps) {
+  const t = useTranslations('documents.preview');
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl h-[90vh]">
         <DialogHeader>
           <DialogTitle>{document.name}</DialogTitle>
-          <DialogDescription>Document information and status</DialogDescription>
+          <DialogDescription>{t('infoAndStatus')}</DialogDescription>
         </DialogHeader>
         
         <div className="space-y-4 py-4">
           {/* Belge Bilgileri */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <p className="text-sm text-muted-foreground">Document ID</p>
+              <p className="text-sm text-muted-foreground">{t('documentId')}</p>
               <div className="font-medium">{document.id}</div>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Type</p>
+              <p className="text-sm text-muted-foreground">{t('type')}</p>
               <div className="font-medium">{document.type}</div>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Status</p>
+              <p className="text-sm text-muted-foreground">{t('status')}</p>
               <div className="font-medium">
                 <Badge variant={document.status === "REJECTED" ? "destructive" : "default"}>
                   {document.status}
@@ -53,7 +49,7 @@ export function DocumentPreviewDialog({ isOpen, onClose, document }: DocumentPre
           {/* Ret Nedeni (varsa) */}
           {document.rejection_reason && (
             <div>
-              <p className="text-sm text-muted-foreground">Rejection Reason</p>
+              <p className="text-sm text-muted-foreground">{t('rejectionReason')}</p>
               <div className="mt-1 p-2 bg-red-50 text-red-800 rounded-md">
                 {document.rejection_reason}
               </div>
@@ -70,7 +66,7 @@ export function DocumentPreviewDialog({ isOpen, onClose, document }: DocumentPre
               />
             ) : (
               <div className="flex items-center justify-center h-full text-muted-foreground">
-                Document preview not available
+                {t('notAvailable')}
               </div>
             )}
           </div>
@@ -81,7 +77,7 @@ export function DocumentPreviewDialog({ isOpen, onClose, document }: DocumentPre
               <Button variant="outline" asChild>
                 <a href={document.url} download target="_blank" rel="noopener noreferrer">
                   <Download className="mr-2 h-4 w-4" />
-                  Download Document
+                  {t('download')}
                 </a>
               </Button>
             </div>

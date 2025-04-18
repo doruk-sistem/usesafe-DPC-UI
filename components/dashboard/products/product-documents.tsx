@@ -33,6 +33,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Loading } from "@/components/ui/loading";
 import {
   Table,
   TableBody,
@@ -567,26 +568,7 @@ export function ProductDocuments({
   };
 
   if (isLoading) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Product Documents</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="flex items-center space-x-4">
-                <div className="w-12 h-12 bg-gray-200 animate-pulse rounded-md" />
-                <div className="space-y-2">
-                  <div className="w-48 h-4 bg-gray-200 animate-pulse" />
-                  <div className="w-36 h-4 bg-gray-200 animate-pulse" />
-                </div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-    );
+    return <Loading />;
   }
 
   if (!product) {

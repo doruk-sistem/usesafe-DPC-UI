@@ -1,7 +1,6 @@
 import { supabase } from "@/lib/supabase/client";
 import type {
   NewProduct,
-  Product,
   ProductResponse,
   UpdateProduct,
 } from "@/lib/types/product";
@@ -9,10 +8,11 @@ import { validateAndMapDocuments } from "@/lib/utils/document-mapper";
 
 import { createService } from "../api-client";
 
-import { ADMIN_COMPANY_ID } from "./company";
+// Define admin company ID constant
+const ADMIN_COMPANY_ID = "admin";
 
 export class ProductService {
-  static async getProducts(companyId: string): Promise<Product[]> {
+  static async getProducts(companyId: string): Promise<any[]> {
     const { data, error } = await supabase
       .from("products")
       .select("*")
@@ -31,55 +31,54 @@ export class ProductService {
     id: string,
     companyId: string
   ): Promise<ProductResponse> {
-    // Admin şirketi için özel durum - tüm ürünleri göster
-    if (companyId === ADMIN_COMPANY_ID) {
-      const { data, error } = await supabase
-        .from("products")
-        .select(
-          `
-          *,
-          manufacturer:manufacturer_id (
-            id,
-            name,
-            taxInfo,
-            companyType,
-            status
-          )
-        `
-        )
-        .eq("id", id)
-        .single();
+    try {
+      const { data: userData } = await supabase.auth.getUser();
+      const isAdmin = userData?.user?.user_metadata?.role === "admin";
 
-      if (error) {
-        return { error: { message: "Product not found" } };
+      if (isAdmin) {
+        const { data, error } = await supabase
+          .from("products")
+          .select("*")
+          .eq("id", id)
+          .single();
+
+        if (error) {
+          return {
+            error: {
+              message: error.message || "Failed to fetch product",
+              field: error.details,
+            },
+          };
+        }
+
+        return { data };
+      } else {
+        const { data, error } = await supabase
+          .from("products")
+          .select("*")
+          .eq("id", id)
+          .eq("company_id", companyId)
+          .single();
+
+        if (error) {
+          return {
+            error: {
+              message: error.message || "Failed to fetch product",
+              field: error.details,
+            },
+          };
+        }
+
+        return { data };
       }
-
-      return { data };
+    } catch (error) {
+      return {
+        error: {
+          message:
+            error instanceof Error ? error.message : "Unknown error occurred",
+        },
+      };
     }
-
-    const { data, error } = await supabase
-      .from("products")
-      .select(
-        `
-        *,
-        manufacturer:manufacturer_id (
-          id,
-          name,
-          taxInfo,
-          companyType,
-          status
-        )
-      `
-      )
-      .eq("id", id)
-      .eq("company_id", companyId)
-      .single();
-
-    if (error) {
-      return { error: { message: "Product not found" } };
-    }
-
-    return { data };
   }
 
   static async createProduct(product: NewProduct): Promise<ProductResponse> {

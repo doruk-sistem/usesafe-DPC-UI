@@ -1,88 +1,68 @@
-import type { BaseProduct } from "@/lib/types/product";
+import { useQuery } from "@tanstack/react-query";
 
-import { ADMIN_COMPANY_ID } from "../services/company";
+import { productService } from "@/lib/services/product";
+import { Product, ProductStatus } from "@/lib/types/product";
 
 import { useAuth } from "./use-auth";
-import { productsApiHooks } from "./use-products";
 
-export function useProduct(productId: string) {
-  const { company, user } = useAuth();
-  const {
-    data: productResponse,
-    isLoading,
-    error,
-  } = productsApiHooks.useGetProductQuery(
-    {
-      companyId: company?.id || (user?.user_metadata?.role === "admin" ? ADMIN_COMPANY_ID : "") as string, 
-      id: productId,
-    },
-    {
-      enabled: !!productId && (!!company?.id || user?.user_metadata?.role === "admin"),
-      retry: 1, // Limit retries to avoid excessive API calls
-      retryDelay: 1000, // Wait 1 second between retries
+export function useProduct(id: string) {
+  const { user, company } = useAuth();
+  const isAdminValue = user?.user_metadata?.role === "admin";
+
+  const { data: product, error, isLoading } = useQuery({
+    queryKey: ["product", id],
+    queryFn: () =>
+      productService.getProduct({
+        id,
+        companyId: isAdminValue ? "" : company?.id || "",
+      }),
+    enabled: !!id && (!!company?.id || isAdminValue),
+  });
+
+  const determineProductStatus = (product: Product | null): ProductStatus => {
+    if (!product) return null;
+    
+    // Belge durumuna göre ürün durumunu belirle
+    if (product.document_status === "All Approved") return "approved";
+    if (product.document_status === "Has Rejected Documents") return "rejected";
+    if (product.document_status === "Pending Review") return "pending";
+    if (product.document_status === "No Documents") return "pending";
+    
+    // Belge durumu yoksa, belgeleri kontrol et
+    if (product.documents) {
+      // Belgeleri düzleştir
+      const flattenedDocs = Array.isArray(product.documents)
+        ? product.documents
+        : Object.values(product.documents).flat();
+      
+      if (flattenedDocs.length > 0) {
+        // Belgelerde reddedilmiş olan var mı kontrol et
+        const hasRejectedDocuments = flattenedDocs.some(
+          (doc: any) => doc.status === "rejected"
+        );
+        
+        if (hasRejectedDocuments) return "rejected";
+        
+        // Tüm belgeler onaylanmış mı kontrol et
+        const allApproved = flattenedDocs.every(
+          (doc: any) => doc.status === "approved"
+        );
+        
+        if (allApproved) return "approved";
+        
+        // Diğer durumlar için pending
+        return "pending";
+      }
     }
-  );
-  
-  // Extract the product data from the response
-  const product = productResponse?.data ? { data: productResponse.data } : null;
-  
-  // Create a more detailed error object
-  const detailedError = error 
-    ? { message: error.message || "An error occurred while fetching the product" } 
-    : productResponse?.error 
-      ? { message: productResponse.error.message || "Product not found" } 
-      : null;
-  
-  const { mutate: _updateProduct } =
-    productsApiHooks.useUpdateProductMutation();
-
-  const updateProduct = async (updates: Partial<BaseProduct>) => {
-    if (!product?.data) return;
-
-    const updateData = {
-      ...updates,
-      company_id: company?.id,
-      images: updates.images?.map((img) => ({
-        url: img.url,
-        alt: img.alt,
-        is_primary: img.is_primary,
-      })),
-      key_features: updates.key_features?.map((feature) => ({
-        name: feature.name,
-        value: feature.value,
-        unit: feature.unit,
-      })),
-    };
-
-    _updateProduct({
-      id: product.data.id || "",
-      product: updateData as any,
-    });
-  };
-
-  const determineProductStatus = (documents: any[]): string => {
-    if (!documents || documents.length === 0) {
-      return "PENDING";
-    }
-
-    const hasRejected = documents.some(doc => doc.status === "rejected");
-    if (hasRejected) {
-      return "REJECTED";
-    }
-
-    const allApproved = documents.every(doc => doc.status === "approved");
-    if (allApproved) {
-      return "APPROVED";
-    }
-
-    return "PENDING";
+    
+    // Varsayılan durum
+    return "pending";
   };
 
   return {
-    product,
+    product: product?.data || null,
+    error: error || product?.error,
     isLoading,
-    error: detailedError,
-    updateProduct,
     determineProductStatus,
   };
 }
