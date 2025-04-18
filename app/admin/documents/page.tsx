@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 
 import { DocumentHeader } from "@/components/admin/documents/document-header";
 import { DocumentList } from "@/components/admin/documents/document-list";
+import { Error } from "@/components/ui/error";
 import { Loading } from "@/components/ui/loading";
 import { documentsApiHooks } from "@/lib/hooks/use-documents";
 
@@ -31,16 +32,10 @@ export default function DocumentsPage() {
 
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4">
-        <h2 className="text-2xl font-semibold text-destructive">
-          {t("documentManagement.repository.error.title")}
-        </h2>
-        <p className="text-muted-foreground">
-          {error instanceof Error
-            ? error.message
-            : t("common.error.unexpectedError")}
-        </p>
-      </div>
+      <Error 
+        title={t("documentManagement.repository.error.title")}
+        error={error}
+      />
     );
   }
 

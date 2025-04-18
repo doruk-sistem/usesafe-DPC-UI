@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { toast } from '@/components/ui/use-toast';
 import { productBlockchainService } from '@/lib/services/product-blockchain';
 import { ProductBlockchainRecord } from '@/lib/types/product-blockchain';
+import { Error } from "@/components/ui/error";
 
 interface ProductBlockchainHistoryProps {
   productId?: string;
@@ -68,11 +69,7 @@ export function ProductBlockchainHistory({ productId }: ProductBlockchainHistory
 
 
   if (error) {
-    return (
-      <div className="p-4 bg-red-50 text-red-700 rounded-md">
-        {error}
-      </div>
-    );
+    return <Error error={error} />;
   }
 
 

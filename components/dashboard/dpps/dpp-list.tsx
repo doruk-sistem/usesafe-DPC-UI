@@ -32,6 +32,7 @@ import {
 import { useDPPs } from "@/lib/hooks/use-dpps";
 import { cn } from "@/lib/utils";
 import { Loading } from "@/components/ui/loading";
+import { Error } from "@/components/ui/error";
 
 interface DPP {
   id: string;
@@ -55,10 +56,10 @@ export function DPPList({ dpps = [], isLoading, error }: DPPListProps) {
       <Card>
         <CardHeader>
           <CardTitle>{t("title")}</CardTitle>
-          <CardDescription className="text-destructive">
-            {error}
-          </CardDescription>
         </CardHeader>
+        <CardContent>
+          <Error error={error} />
+        </CardContent>
       </Card>
     );
   }

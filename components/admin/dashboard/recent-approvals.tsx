@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 
 import { getRecentApprovals, type RecentApproval } from "@/lib/hooks/useMetrics";
 import { Card } from "@/components/ui/card";
+import { Error } from "@/components/ui/error";
 
 export function RecentApprovals() {
   const t = useTranslations("adminDashboard");
@@ -30,11 +31,7 @@ export function RecentApprovals() {
   }, []);
 
   if (error) {
-    return (
-      <div className="p-4 text-red-500 bg-red-50 rounded-lg">
-        {error}
-      </div>
-    );
+    return <Error error={error} />;
   }
 
   return (
