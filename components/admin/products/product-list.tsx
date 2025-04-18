@@ -40,30 +40,7 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import { documentsApiHooks } from "@/lib/hooks/use-documents";
 import { ProductWithMetadata } from "@/lib/types/product";
-
-const getProductStatusDisplay = (status: string) => {
-  switch (status) {
-    case "ARCHIVED":
-      return "Onaylandı";
-    case "DELETED":
-      return "Reddedildi";
-    default:
-      return status.toLowerCase();
-  }
-};
-
-const getProductStatusVariant = (
-  status: string
-): "default" | "success" | "warning" | "destructive" | "secondary" => {
-  switch (status) {
-    case "ARCHIVED":
-      return "success";
-    case "DELETED":
-      return "destructive";
-    default:
-      return "default";
-  }
-};
+import { ProductStatus } from "@/lib/types/product";
 
 export function ProductList() {
   const t = useTranslations();
@@ -71,6 +48,45 @@ export function ProductList() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [manufacturerFilter, setManufacturerFilter] = useState("all");
+
+  const getProductStatusDisplay = (status: ProductStatus) => {
+    switch (status) {
+      case "PENDING":
+        return t("admin.products.status.pending");
+      case "DRAFT":
+        return t("admin.products.status.draft");
+      case "APPROVED":
+        return t("admin.products.status.approved");
+      case "REJECTED":
+        return t("admin.products.status.rejected");
+      case "EXPIRED":
+        return t("admin.products.status.expired");
+      default:
+        return t("admin.products.status.unknown");
+    }
+  };
+
+  const getProductStatusVariant = (
+    status: ProductStatus
+  ): "default" | "success" | "warning" | "destructive" | "secondary" => {
+    switch (status) {
+      case "ARCHIVED":
+      case "APPROVED":
+        return "success";
+      case "DELETED":
+      case "REJECTED":
+        return "destructive";
+      case "PENDING":
+      case "NEW":
+        return "warning";
+      case "DRAFT":
+        return "secondary";
+      case "EXPIRED":
+        return "destructive";
+      default:
+        return "default";
+    }
+  };
 
   const { data: products = [], isLoading } = documentsApiHooks.useGetProducts();
 
@@ -113,7 +129,7 @@ export function ProductList() {
       updated_at: product.updated_at,
       manufacturer_id: product.manufacturer_id,
       documents: product.documents,
-      manufacturer_name: product.manufacturer?.name || "Unknown Manufacturer",
+      manufacturer_name: product.manufacturer?.name || t("admin.products.unknownManufacturer"),
       document_count: documentCount,
       document_status: documentStatus,
     };
@@ -143,6 +159,21 @@ export function ProductList() {
 
     return true;
   });
+
+  const getDocumentStatusDisplay = (status: ProductWithMetadata["document_status"]) => {
+    switch (status) {
+      case "No Documents":
+        return t("admin.products.details.documents.documentStatuses.noDocuments");
+      case "Has Rejected Documents":
+        return t("admin.products.details.documents.documentStatuses.hasRejected");
+      case "All Approved":
+        return t("admin.products.details.documents.documentStatuses.allApproved");
+      case "Pending Review":
+        return t("admin.products.details.documents.documentStatuses.pending");
+      default:
+        return t("admin.products.details.documents.documentStatuses.unknown");
+    }
+  };
 
   if (isLoading) {
     return (
@@ -269,8 +300,7 @@ export function ProductList() {
                           loading="lazy"
                           onError={(e) => {
                             const target = e.target as HTMLImageElement;
-                            target.src =
-                              "https://placehold.co/400x400?text=No+Image";
+                            target.src = "https://placehold.co/400x400?text=No+Image";
                           }}
                         />
                       </div>
@@ -294,8 +324,7 @@ export function ProductList() {
                         </Link>
                       </CardTitle>
                       <CardDescription className="text-xs mt-1">
-                        Created:{" "}
-                        {new Date(product.created_at).toLocaleDateString()}
+                        {t("admin.products.created")}: {new Date(product.created_at).toLocaleDateString()}
                       </CardDescription>
                     </div>
                     <DropdownMenu>
@@ -308,7 +337,7 @@ export function ProductList() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="w-[160px]">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuLabel>{t("productManagement.actions.menu")}</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem asChild>
                           <Link
@@ -358,10 +387,7 @@ export function ProductList() {
                       <div className="flex items-center gap-1">
                         <FileText className="h-4 w-4 text-muted-foreground" />
                         <span className="text-sm font-medium">
-                          {product.document_count}{" "}
-                          {product.document_count === 1
-                            ? "document"
-                            : "documents"}
+                          {t("admin.products.documentCount", { count: product.document_count })}
                         </span>
                       </div>
                     </div>
@@ -370,10 +396,17 @@ export function ProductList() {
                         {t("admin.products.status")}
                       </span>
                       <Badge
-                        variant={getProductStatusVariant(product.status || "")}
-                        className="font-medium"
+                        variant={
+                          product.document_status === "All Approved"
+                            ? "success"
+                            : product.document_status === "Pending Review"
+                            ? "warning"
+                            : product.document_status === "Has Rejected Documents"
+                            ? "destructive"
+                            : "secondary"
+                        }
                       >
-                        {getProductStatusDisplay(product.status || "")}
+                        {getDocumentStatusDisplay(product.document_status)}
                       </Badge>
                     </div>
                   </div>

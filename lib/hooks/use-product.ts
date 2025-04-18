@@ -23,10 +23,10 @@ export function useProduct(id: string) {
     if (!product) return null;
     
     // Belge durumuna göre ürün durumunu belirle
-    if (product.document_status === "All Approved") return "approved";
-    if (product.document_status === "Has Rejected Documents") return "rejected";
-    if (product.document_status === "Pending Review") return "pending";
-    if (product.document_status === "No Documents") return "pending";
+    if (product.document_status === "All Approved") return "APPROVED";
+    if (product.document_status === "Has Rejected Documents") return "REJECTED";
+    if (product.document_status === "Pending Review") return "PENDING";
+    if (product.document_status === "No Documents") return "PENDING";
     
     // Belge durumu yoksa, belgeleri kontrol et
     if (product.documents) {
@@ -41,22 +41,22 @@ export function useProduct(id: string) {
           (doc: any) => doc.status === "rejected"
         );
         
-        if (hasRejectedDocuments) return "rejected";
+        if (hasRejectedDocuments) return "REJECTED";
         
         // Tüm belgeler onaylanmış mı kontrol et
         const allApproved = flattenedDocs.every(
           (doc: any) => doc.status === "approved"
         );
         
-        if (allApproved) return "approved";
+        if (allApproved) return "APPROVED";
         
         // Diğer durumlar için pending
-        return "pending";
+        return "PENDING";
       }
     }
     
     // Varsayılan durum
-    return "pending";
+    return "PENDING";
   };
 
   return {
