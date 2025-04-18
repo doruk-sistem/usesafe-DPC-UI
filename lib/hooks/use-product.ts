@@ -13,13 +13,11 @@ export function useProduct(productId: string) {
     error,
   } = productsApiHooks.useGetProductQuery(
     {
-      companyId: company?.id || (user?.user_metadata?.role === "admin" ? ADMIN_COMPANY_ID : "") as string, 
-      id: productId,
+      companyId: company?.id || "",
+      id: productId || "",
     },
     {
-      enabled: !!productId && (!!company?.id || user?.user_metadata?.role === "admin"),
-      retry: 1, // Limit retries to avoid excessive API calls
-      retryDelay: 1000, // Wait 1 second between retries
+      enabled: !!company?.id && !!productId,
     }
   );
   
