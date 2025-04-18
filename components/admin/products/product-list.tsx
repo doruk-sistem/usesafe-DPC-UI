@@ -26,33 +26,38 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
-
-interface Product {
-  id: string;
-  name: string;
-  manufacturer_id: string;
-  manufacturer_name: string;
-  product_type: string;
-  status: string;
-  created_at: string;
-  document_count: number;
-  document_status: "All Approved" | "Pending Review" | "Has Rejected Documents" | "No Documents";
-  images?: {
-    url: string;
-    alt: string;
-    is_primary: boolean;
-  }[];
-}
+import { BaseProduct, ProductStatus, StatusTransition, ProductImage, KeyFeature } from "@/lib/types/product";
 
 interface Document {
   status: "approved" | "rejected" | "pending";
 }
 
+type ProductWithMetadata = {
+  id: string;
+  name: string;
+  description: string;
+  company_id: string;
+  product_type: string;
+  product_subcategory: string;
+  model?: string;
+  status: ProductStatus;
+  status_history: StatusTransition[];
+  images: ProductImage[];
+  key_features: KeyFeature[];
+  created_at: string;
+  updated_at: string;
+  manufacturer_id: string;
+  documents?: any[];
+  manufacturer_name: string;
+  document_count: number;
+  document_status: "All Approved" | "Pending Review" | "Has Rejected Documents" | "No Documents";
+};
+
 export function ProductList() {
   const t = useTranslations();
   const { toast } = useToast();
   const supabase = createClientComponentClient();
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<ProductWithMetadata[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -91,12 +96,18 @@ export function ProductList() {
           .select(`
             id,
             name,
+            description,
             manufacturer_id,
             product_type,
+            product_subcategory,
+            model,
             status,
+            status_history,
+            images,
+            key_features,
             created_at,
-            documents,
-            images
+            updated_at,
+            documents
           `);
 
         if (productsError) {
@@ -111,7 +122,7 @@ export function ProductList() {
         const processedProducts = productsData.map(product => {
           const documentCount = product.documents ? Object.values(product.documents).flat().length : 0;
           
-          let documentStatus: Product["document_status"] = "No Documents";
+          let documentStatus: ProductWithMetadata["document_status"] = "No Documents";
           if (documentCount > 0) {
             const allDocs = Object.values(product.documents).flat() as Document[];
             const hasRejected = allDocs.some(doc => doc.status === "rejected");
@@ -127,12 +138,24 @@ export function ProductList() {
           }
 
           return {
-            ...product,
+            id: product.id,
+            name: product.name,
+            description: product.description || "",
+            company_id: product.manufacturer_id,
+            product_type: product.product_type,
+            product_subcategory: product.product_subcategory || "",
+            model: product.model,
+            status: product.status,
+            status_history: product.status_history || [],
+            images: product.images || [],
+            key_features: product.key_features || [],
+            created_at: product.created_at,
+            updated_at: product.updated_at,
+            manufacturer_id: product.manufacturer_id,
+            documents: product.documents,
             manufacturer_name: manufacturerMap[product.manufacturer_id] || "Unknown Manufacturer",
             document_count: documentCount,
-            document_status: documentStatus,
-            images: product.images || [],
-            category: product.product_type
+            document_status: documentStatus
           };
         });
 
