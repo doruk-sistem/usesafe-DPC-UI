@@ -9,13 +9,13 @@ export class ProductStatusService {
   static isValidTransition(from: ProductStatus, to: ProductStatus): boolean {
     const allowedTransitions: Record<string, ProductStatus[]> = {
       DRAFT: ["NEW", "DELETED"],
-      NEW: ["ARCHIVED", "DELETED", "approved", "rejected"],
+      NEW: ["ARCHIVED", "DELETED", "APPROVED", "REJECTED"],
       DELETED: ["NEW"],
       ARCHIVED: [],
-      approved: [],
-      rejected: [],
-      pending: ["approved", "rejected"],
-      expired: [],
+      APPROVED: [],
+      REJECTED: [],
+      PENDING: ["APPROVED", "REJECTED"],
+      EXPIRED: [],
     };
 
     return allowedTransitions[from as string]?.includes(to) || false;
@@ -78,15 +78,15 @@ export class ProductStatusService {
   static getAllowedTransitions(from: ProductStatus): ProductStatus[] {
     const allowedTransitions: Record<string, ProductStatus[]> = {
       DRAFT: ["NEW", "DELETED"],
-      NEW: ["ARCHIVED", "DELETED", "approved", "rejected"],
+      NEW: ["ARCHIVED", "DELETED", "APPROVED", "REJECTED"],
       DELETED: ["NEW"],
       ARCHIVED: [],
-      approved: [],
-      rejected: [],
-      pending: ["approved", "rejected"],
-      expired: [],
+      APPROVED: [],
+      REJECTED: [],
+      PENDING: ["APPROVED", "REJECTED"],
+      EXPIRED: [],
     };
-    
+
     return allowedTransitions[from as string] || [];
   }
 
