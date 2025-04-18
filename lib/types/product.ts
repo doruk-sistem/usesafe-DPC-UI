@@ -125,3 +125,13 @@ export type ProductWithMetadata = {
   document_count: number;
   document_status: "All Approved" | "Pending Review" | "Has Rejected Documents" | "No Documents";
 };
+
+export type Product = BaseProduct & {
+  status: ProductStatus;
+  status_history: StatusTransition[];
+  images: ProductImage[];
+  key_features: KeyFeature[];
+  manufacturer_name: string;
+  document_count: number;
+  document_status: "All Approved" | "Pending Review" | "Has Rejected Documents" | "No Documents";
+};

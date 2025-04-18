@@ -37,12 +37,25 @@ export function useAuth() {
           name: "Admin Company",
           taxInfo: {},
           companyType: "admin",
-          status: "active"
+          status: true
         });
       }
-      return companyService.getCompany(user?.user_metadata?.company_id as string);
+      
+      // Eğer company_id yoksa, varsayılan bir firma nesnesi döndür
+      if (!user?.user_metadata?.company_id) {
+        return Promise.resolve({
+          id: "default",
+          name: "Default Company",
+          taxInfo: {},
+          companyType: "user",
+          status: true
+        });
+      }
+      
+      // companyService.getCompany fonksiyonu bir nesne bekliyor, string değil
+      return companyService.getCompany({ id: user.user_metadata.company_id });
     },
-    enabled: !!user?.user_metadata?.company_id || user?.user_metadata?.role === "admin",
+    enabled: !!user, // Kullanıcı giriş yapmışsa firma bilgilerini yükle
   });
 
   const { data: manufacturer, isLoading: isManufacturerLoading } = useQuery({
@@ -55,12 +68,25 @@ export function useAuth() {
           name: "Admin Manufacturer",
           taxInfo: {},
           companyType: "admin",
-          status: "active"
+          status: true
         });
       }
-      return ManufacturerService.getManufacturer(user?.user_metadata?.company_id as string);
+      
+      // Eğer company_id yoksa, varsayılan bir üretici nesnesi döndür
+      if (!user?.user_metadata?.company_id) {
+        return Promise.resolve({
+          id: "default",
+          name: "Default Manufacturer",
+          taxInfo: {},
+          companyType: "user",
+          status: true
+        });
+      }
+      
+      // companyService.getManufacturer fonksiyonu string parametre bekliyor
+      return companyService.getManufacturer(user.user_metadata.company_id);
     },
-    enabled: !!user?.user_metadata?.company_id || user?.user_metadata?.role === "admin",
+    enabled: !!user, // Kullanıcı giriş yapmışsa üretici bilgilerini yükle
   });
 
   useEffect(() => {
