@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Plus, MoreHorizontal, FileText, Eye, CheckCircle, XCircle, Info } from "lucide-react";
+import { Plus, MoreHorizontal, FileText, Eye, CheckCircle, XCircle, Info, Edit } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState, useEffect } from "react";
 
@@ -45,6 +45,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { Input } from "@/components/ui/input";
 
 interface Document {
   id: string;
@@ -78,7 +79,10 @@ export default function PendingProductsPage() {
   const [showDocumentsDialog, setShowDocumentsDialog] = useState(false);
   const [showRejectDialog, setShowRejectDialog] = useState(false);
   const [rejectionReason, setRejectionReason] = useState("");
+  const [showSubManufacturerDialog, setShowSubManufacturerDialog] = useState(false);
+  const [subManufacturer, setSubManufacturer] = useState<string>("");
   const queryClient = useQueryClient();
+  const supabase = createClientComponentClient();
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["pending-products", pageIndex, pageSize, user?.email],
@@ -126,9 +130,6 @@ export default function PendingProductsPage() {
         targetStatus: "ARCHIVED"
       });
 
-      const supabase = createClientComponentClient();
-      
-      // Önce ürünü al
       const { data: product, error: fetchError } = await supabase
         .from("products")
         .select("*")
@@ -236,9 +237,6 @@ export default function PendingProductsPage() {
         rejectionReason: rejectionReason
       });
 
-      const supabase = createClientComponentClient();
-      
-      // Önce ürünü al
       const { data: product, error: fetchError } = await supabase
         .from("products")
         .select("*")
@@ -393,6 +391,38 @@ export default function PendingProductsPage() {
     }
   };
 
+  const fetchProducts = async () => {
+    await queryClient.invalidateQueries({ queryKey: ['pendingProducts'] });
+  };
+
+  const handleUpdateSubManufacturer = async () => {
+    if (!selectedProductId) return;
+
+    try {
+      const { error } = await supabase
+        .from('products')
+        .update({ sub_manufacturer: subManufacturer })
+        .eq('id', selectedProductId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Başarılı",
+        description: "Alt üretici bilgisi güncellendi",
+      });
+
+      setShowSubManufacturerDialog(false);
+      fetchProducts();
+    } catch (error) {
+      console.error('Error updating sub manufacturer:', error);
+      toast({
+        title: "Hata",
+        description: "Alt üretici bilgisi güncellenirken bir hata oluştu",
+        variant: "destructive",
+      });
+    }
+  };
+
   if (isLoading) {
     return (
       <Card>
@@ -524,9 +554,14 @@ export default function PendingProductsPage() {
                                   <XCircle className="h-4 w-4 mr-2 text-red-600" />
                                   Ürünü Reddet
                                 </DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => handleAddInfo(product.id)}>
-                                  <Info className="h-4 w-4 mr-2" />
-                                  Bilgi Ekle
+                                <DropdownMenuItem 
+                                  onClick={() => {
+                                    setSelectedProductId(product.id);
+                                    setShowSubManufacturerDialog(true);
+                                  }}
+                                >
+                                  <Edit className="h-4 w-4 mr-2" />
+                                  Alt Üretici Ekle
                                 </DropdownMenuItem>
                               </>
                             )}
@@ -585,6 +620,41 @@ export default function PendingProductsPage() {
             </Button>
             <Button variant="destructive" onClick={handleRejectConfirm}>
               Reddet
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showSubManufacturerDialog} onOpenChange={setShowSubManufacturerDialog}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Alt Üretici Bilgisi</DialogTitle>
+            <DialogDescription>
+              Ürün için alt üretici bilgisini girin veya düzenleyin
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="grid gap-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="subManufacturer">Alt Üretici</Label>
+              <Input
+                id="subManufacturer"
+                value={subManufacturer}
+                onChange={(e) => setSubManufacturer(e.target.value)}
+                placeholder="Alt üretici adı"
+              />
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setShowSubManufacturerDialog(false)}
+            >
+              İptal
+            </Button>
+            <Button onClick={handleUpdateSubManufacturer}>
+              Kaydet
             </Button>
           </DialogFooter>
         </DialogContent>

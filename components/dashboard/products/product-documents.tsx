@@ -11,6 +11,12 @@ import {
   XCircle,
   Clock,
   MessageSquare,
+  Plus,
+  MoreVertical,
+  Edit,
+  ChevronDown,
+  ChevronUp,
+  X,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -69,6 +75,7 @@ interface Document {
   uploadedAt: string;
   fileSize: string;
   rejection_reason?: string;
+  notes?: string;
 }
 
 interface Product {
@@ -97,64 +104,76 @@ export function ProductDocuments({
   );
   const [rejectionReason, setRejectionReason] = useState("");
   const [showRejectDialog, setShowRejectDialog] = useState(false);
+  const [showDocumentDetails, setShowDocumentDetails] = useState(false);
   const { toast } = useToast();
   const supabase = createClientComponentClient();
   const queryClient = useQueryClient();
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [documentType, setDocumentType] = useState<string>("");
+  const [documentVersion, setDocumentVersion] = useState<string>("1.0");
+  const [validUntil, setValidUntil] = useState<string>("");
+  const [notes, setNotes] = useState<string>("");
+  const [showSubManufacturerDialog, setShowSubManufacturerDialog] = useState(false);
+  const [subManufacturer, setSubManufacturer] = useState<string>("");
+  const [isUploading, setIsUploading] = useState(false);
+  const [showUploadForm, setShowUploadForm] = useState(false);
+  const [showAdditionalFields, setShowAdditionalFields] = useState(false);
 
   useEffect(() => {}, [showApprovalOptions]);
 
-  useEffect(() => {
-    async function fetchProduct() {
-      try {
-        const { data, error } = await supabase
-          .from("products")
-          .select("name, status, documents")
-          .eq("id", productId)
-          .single();
+  const fetchProduct = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("products")
+        .select("name, status, documents")
+        .eq("id", productId)
+        .single();
 
-        if (error) throw error;
+      if (error) throw error;
 
-        setProduct(data);
+      setProduct(data);
 
-        // Flatten all document arrays into a single array
-        const allDocuments: Document[] = [];
-        if (data?.documents) {
-          Object.entries(data.documents).forEach(([type, docs]) => {
-            if (Array.isArray(docs)) {
-              docs.forEach((doc) => {
-                allDocuments.push({
-                  id:
-                    doc.id ||
-                    `doc-${Date.now()}-${Math.random()
-                      .toString(36)
-                      .substr(2, 9)}`,
-                  name: doc.name,
-                  url: doc.url,
-                  type: type,
-                  status: doc.status || "pending",
-                  validUntil: doc.validUntil,
-                  version: doc.version || "1.0",
-                  uploadedAt: doc.uploadedAt || new Date().toISOString(),
-                  fileSize: doc.fileSize || "N/A",
-                  rejection_reason: doc.rejection_reason,
-                });
+      // Flatten all document arrays into a single array
+      const allDocuments: Document[] = [];
+      if (data?.documents) {
+        Object.entries(data.documents).forEach(([type, docs]) => {
+          if (Array.isArray(docs)) {
+            docs.forEach((doc) => {
+              allDocuments.push({
+                id:
+                  doc.id ||
+                  `doc-${Date.now()}-${Math.random()
+                    .toString(36)
+                    .substr(2, 9)}`,
+                name: doc.name,
+                url: doc.url,
+                type: type,
+                status: doc.status || "pending",
+                validUntil: doc.validUntil,
+                version: doc.version || "1.0",
+                uploadedAt: doc.uploadedAt || new Date().toISOString(),
+                fileSize: doc.fileSize || "N/A",
+                rejection_reason: doc.rejection_reason,
+                notes: doc.notes,
               });
-            }
-          });
-        }
-        setDocuments(allDocuments);
-      } catch (error) {
-        console.error("Error fetching product documents:", error);
-        toast({
-          title: "Error",
-          description: "Failed to load documents",
-          variant: "destructive",
+            });
+          }
         });
-      } finally {
-        setIsLoading(false);
       }
+      setDocuments(allDocuments);
+    } catch (error) {
+      console.error("Error fetching product documents:", error);
+      toast({
+        title: "Error",
+        description: "Failed to load documents",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
     }
+  };
 
+  useEffect(() => {
     fetchProduct();
   }, [productId, supabase, toast]);
 
@@ -426,6 +445,97 @@ export function ProductDocuments({
     }
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setSelectedFile(e.target.files[0]);
+    }
+  };
+
+  const handleUploadDocument = async () => {
+    if (!selectedFile || !documentType) {
+      toast({
+        title: "Hata",
+        description: "Lütfen dosya ve belge tipini seçin",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsUploading(true);
+    try {
+      const fileExt = selectedFile.name.split('.').pop();
+      const fileName = `${Math.random()}.${fileExt}`;
+      const filePath = `${productId}/${fileName}`;
+
+      const { error: uploadError, data } = await supabase.storage
+        .from('product-documents')
+        .upload(filePath, selectedFile);
+
+      if (uploadError) {
+        console.error('Upload error:', uploadError);
+        throw uploadError;
+      }
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('product-documents')
+        .getPublicUrl(filePath);
+
+      const newDocument: Document = {
+        id: fileName,
+        name: selectedFile.name,
+        url: publicUrl,
+        type: documentType,
+        status: "pending",
+        version: documentVersion,
+        uploadedAt: new Date().toISOString(),
+        fileSize: `${(selectedFile.size / 1024 / 1024).toFixed(2)} MB`,
+        validUntil: validUntil || undefined,
+        notes: notes || undefined,
+      };
+
+      const { error: updateError } = await supabase
+        .from('products')
+        .update({
+          documents: {
+            ...product?.documents,
+            [documentType]: [...(product?.documents[documentType] || []), newDocument],
+          },
+        })
+        .eq('id', productId);
+
+      if (updateError) {
+        console.error('Update error:', updateError);
+        throw updateError;
+      }
+
+      toast({
+        title: "Başarılı",
+        description: "Belge başarıyla yüklendi",
+      });
+
+      // Reset form
+      setSelectedFile(null);
+      setDocumentType("");
+      setDocumentVersion("1.0");
+      setValidUntil("");
+      setNotes("");
+      setShowUploadForm(false);
+      setShowAdditionalFields(false);
+
+      // Refresh documents
+      fetchProduct();
+    } catch (error) {
+      console.error('Error uploading document:', error);
+      toast({
+        title: "Hata",
+        description: "Belge yüklenirken bir hata oluştu",
+        variant: "destructive",
+      });
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   if (isLoading) {
     return (
       <Card>
@@ -464,18 +574,157 @@ export function ProductDocuments({
   }
 
   return (
-    <>
+    <div className="max-h-[calc(100vh-200px)] overflow-y-auto">
       <Card>
-        <CardHeader>
+        <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>Product Documents</CardTitle>
+          <Button
+            onClick={() => setShowUploadForm(!showUploadForm)}
+            size="sm"
+            className="flex items-center gap-2"
+          >
+            {showUploadForm ? (
+              <>
+                <X className="h-4 w-4" />
+                İptal
+              </>
+            ) : (
+              <>
+                <Plus className="h-4 w-4" />
+                Belge Yükle
+              </>
+            )}
+          </Button>
         </CardHeader>
         <CardContent>
           <div className="mb-6">
             <h3 className="text-lg font-medium mb-2">{product.name}</h3>
-            <Badge variant={getStatusVariant(product.status)}>
-              {getStatusDisplay(product.status).toLowerCase()}
-            </Badge>
+            <div className="flex items-center gap-2">
+              <Badge variant={getStatusVariant(product.status)}>
+                {getStatusDisplay(product.status).toLowerCase()}
+              </Badge>
+            </div>
           </div>
+
+          {showUploadForm && (
+            <div className="mb-6 p-4 border rounded-md bg-muted/30">
+              <h3 className="text-lg font-medium mb-4">Yeni Belge Yükle</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="documentType" className="flex items-center">
+                    Belge Tipi <span className="text-red-500 ml-1">*</span>
+                  </Label>
+                  <select
+                    id="documentType"
+                    className="w-full p-2 border rounded"
+                    value={documentType}
+                    onChange={(e) => setDocumentType(e.target.value)}
+                  >
+                    <option value="">Seçiniz</option>
+                    <option value="quality_cert">Kalite Belgesi</option>
+                    <option value="safety_cert">Güvenlik Belgesi</option>
+                    <option value="test_reports">Test Raporları</option>
+                    <option value="technical_docs">Teknik Dokümantasyon</option>
+                    <option value="compliance_docs">Uyumluluk Belgeleri</option>
+                  </select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="file" className="flex items-center">
+                    Dosya <span className="text-red-500 ml-1">*</span>
+                  </Label>
+                  <input
+                    id="file"
+                    type="file"
+                    onChange={handleFileChange}
+                    accept=".pdf,.doc,.docx,.xls,.xlsx"
+                    className="w-full p-2 border rounded"
+                  />
+                  {selectedFile && (
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Seçilen dosya: {selectedFile.name}
+                    </p>
+                  )}
+                </div>
+
+                <div className="col-span-1 md:col-span-2">
+                  <Button
+                    variant="ghost"
+                    className="flex items-center justify-between w-full p-2"
+                    onClick={() => setShowAdditionalFields(!showAdditionalFields)}
+                  >
+                    <span>Ek Bilgiler</span>
+                    {showAdditionalFields ? (
+                      <ChevronUp className="h-4 w-4" />
+                    ) : (
+                      <ChevronDown className="h-4 w-4" />
+                    )}
+                  </Button>
+                  
+                  {showAdditionalFields && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2 p-2 border rounded-md">
+                      <div className="space-y-2">
+                        <Label htmlFor="version">Versiyon</Label>
+                        <input
+                          id="version"
+                          type="text"
+                          value={documentVersion}
+                          onChange={(e) => setDocumentVersion(e.target.value)}
+                          placeholder="1.0"
+                          className="w-full p-2 border rounded"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="validUntil">Geçerlilik Tarihi (Opsiyonel)</Label>
+                        <input
+                          id="validUntil"
+                          type="date"
+                          value={validUntil}
+                          onChange={(e) => setValidUntil(e.target.value)}
+                          className="w-full p-2 border rounded"
+                        />
+                      </div>
+
+                      <div className="col-span-1 md:col-span-2 space-y-2">
+                        <Label htmlFor="notes">Notlar (Opsiyonel)</Label>
+                        <Textarea
+                          id="notes"
+                          value={notes}
+                          onChange={(e) => setNotes(e.target.value)}
+                          placeholder="Belge hakkında notlar..."
+                          className="min-h-[100px]"
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="col-span-1 md:col-span-2 flex justify-end gap-2 mt-4">
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setShowUploadForm(false);
+                      setSelectedFile(null);
+                      setDocumentType("");
+                      setDocumentVersion("1.0");
+                      setValidUntil("");
+                      setNotes("");
+                      setShowAdditionalFields(false);
+                    }}
+                  >
+                    İptal
+                  </Button>
+                  <Button
+                    onClick={handleUploadDocument}
+                    disabled={isUploading || !selectedFile || !documentType}
+                  >
+                    {isUploading ? "Yükleniyor..." : "Belge Yükle"}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
 
           {documents.length === 0 ? (
             <div className="text-center py-8">
@@ -486,137 +735,196 @@ export function ProductDocuments({
               </p>
             </div>
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Document Name</TableHead>
-                  <TableHead>Type</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Valid Until</TableHead>
-                  <TableHead>Version</TableHead>
-                  <TableHead className="w-[100px] text-right">
-                    Actions
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {documents.map((document, index) => (
-                  <TableRow key={index}>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <FileText className="h-4 w-4 text-muted-foreground" />
-                        <div>
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <p className="font-medium truncate max-w-[200px]">
-                                  {document.name.length > 25
-                                    ? `${document.name.slice(0, 25)}...`
-                                    : document.name}
-                                </p>
-                              </TooltipTrigger>
-                              <TooltipContent side="top" align="start">
-                                <p className="max-w-[300px] break-words text-xs">
-                                  {document.name}
-                                </p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-                          <p className="text-sm text-muted-foreground">
-                            {document.id} · {document.fileSize}
-                          </p>
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="secondary">
-                        {documentTypeLabels[document.type] || document.type}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <Badge
-                        variant={getStatusVariant(document.status)}
-                        className="flex w-fit items-center gap-1"
-                      >
-                        {getStatusIcon(document.status)}
-                        {document.status.toLowerCase()}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      {document.validUntil
-                        ? new Date(document.validUntil).toLocaleDateString()
-                        : "N/A"}
-                    </TableCell>
-                    <TableCell>v{document.version}</TableCell>
-                    <TableCell className="text-right">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8"
-                          >
-                            <FileText className="h-4 w-4" />
-                            <span className="sr-only">Open menu</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem
-                            onClick={() => handleDownload(document)}
-                          >
-                            <Download className="h-4 w-4 mr-2" />
-                            Download
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => handleView(document)}
-                          >
-                            <Eye className="h-4 w-4 mr-2" />
-                            View
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => handleViewHistory(document)}
-                          >
-                            <History className="h-4 w-4 mr-2" />
-                            View History
-                          </DropdownMenuItem>
-                          {showApprovalOptions && (
-                            <>
-                              <DropdownMenuSeparator />
-                              <DropdownMenuItem
-                                onClick={() => handleApproveDocument(document)}
-                              >
-                                <CheckCircle className="h-4 w-4 mr-2 text-green-500" />
-                                Onayla
-                              </DropdownMenuItem>
-                              <DropdownMenuItem
-                                onClick={() => handleRejectDocument(document)}
-                              >
-                                <XCircle className="h-4 w-4 mr-2 text-red-500" />
-                                Reddet
-                              </DropdownMenuItem>
-                            </>
-                          )}
-                          {showApprovalOptions &&
-                            document.status === "rejected" && (
-                              <DropdownMenuItem
-                                onClick={() => handleReupload(document)}
-                              >
-                                <FileText className="h-4 w-4 mr-2" />
-                                Yeniden Yükle
-                              </DropdownMenuItem>
-                            )}
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-[30%]">Document Name</TableHead>
+                    <TableHead className="w-[15%]">Type</TableHead>
+                    <TableHead className="w-[15%]">Status</TableHead>
+                    <TableHead className="w-[15%]">Valid Until</TableHead>
+                    <TableHead className="w-[10%]">Version</TableHead>
+                    <TableHead className="w-[15%] text-right">Actions</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {documents.map((document, index) => (
+                    <TableRow key={index}>
+                      <TableCell className="max-w-[200px] truncate">
+                        <div className="flex items-center gap-2">
+                          <FileText className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                          <div className="min-w-0">
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <p 
+                                    className="font-medium truncate cursor-pointer hover:text-primary"
+                                    onClick={() => {
+                                      setSelectedDocument(document);
+                                      setShowDocumentDetails(true);
+                                    }}
+                                  >
+                                    {document.name}
+                                  </p>
+                                </TooltipTrigger>
+                                <TooltipContent side="top" align="start">
+                                  <p className="max-w-[300px] break-words text-xs">
+                                    {document.name}
+                                  </p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                            <p className="text-xs text-muted-foreground truncate">
+                              {document.fileSize}
+                            </p>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="secondary" className="whitespace-nowrap">
+                          {documentTypeLabels[document.type] || document.type}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          variant={getStatusVariant(document.status)}
+                          className="flex w-fit items-center gap-1 whitespace-nowrap"
+                        >
+                          {getStatusIcon(document.status)}
+                          {document.status.toLowerCase()}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="whitespace-nowrap">
+                        {document.validUntil
+                          ? new Date(document.validUntil).toLocaleDateString()
+                          : "N/A"}
+                      </TableCell>
+                      <TableCell className="whitespace-nowrap">v{document.version}</TableCell>
+                      <TableCell className="text-right">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8"
+                            >
+                              <FileText className="h-4 w-4" />
+                              <span className="sr-only">Open menu</span>
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                              onClick={() => handleDownload(document)}
+                            >
+                              <Download className="h-4 w-4 mr-2" />
+                              Download
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => handleView(document)}
+                            >
+                              <Eye className="h-4 w-4 mr-2" />
+                              View
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => handleViewHistory(document)}
+                            >
+                              <History className="h-4 w-4 mr-2" />
+                              View History
+                            </DropdownMenuItem>
+                            {showApprovalOptions && (
+                              <>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem
+                                  onClick={() => handleApproveDocument(document)}
+                                >
+                                  <CheckCircle className="h-4 w-4 mr-2 text-green-500" />
+                                  Onayla
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() => handleRejectDocument(document)}
+                                >
+                                  <XCircle className="h-4 w-4 mr-2 text-red-500" />
+                                  Reddet
+                                </DropdownMenuItem>
+                              </>
+                            )}
+                            {showApprovalOptions &&
+                              document.status === "rejected" && (
+                                <DropdownMenuItem
+                                  onClick={() => handleReupload(document)}
+                                >
+                                  <FileText className="h-4 w-4 mr-2" />
+                                  Yeniden Yükle
+                                </DropdownMenuItem>
+                              )}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           )}
         </CardContent>
       </Card>
+
+      {/* Belge Detay Dialog'u */}
+      <Dialog open={showDocumentDetails} onOpenChange={setShowDocumentDetails}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Belge Detayları</DialogTitle>
+            <DialogDescription>
+              {selectedDocument?.name}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <h4 className="font-medium mb-2">Genel Bilgiler</h4>
+              <div className="grid grid-cols-2 gap-2 text-sm">
+                <div>
+                  <span className="text-muted-foreground">Dosya Boyutu:</span>
+                  <p>{selectedDocument?.fileSize}</p>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Versiyon:</span>
+                  <p>v{selectedDocument?.version}</p>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Yüklenme Tarihi:</span>
+                  <p>{new Date(selectedDocument?.uploadedAt || "").toLocaleDateString()}</p>
+                </div>
+                {selectedDocument?.validUntil && (
+                  <div>
+                    <span className="text-muted-foreground">Geçerlilik Tarihi:</span>
+                    <p>{new Date(selectedDocument.validUntil).toLocaleDateString()}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {selectedDocument?.notes && (
+              <div>
+                <h4 className="font-medium mb-2">Notlar</h4>
+                <p className="text-sm text-muted-foreground">
+                  {selectedDocument.notes}
+                </p>
+              </div>
+            )}
+
+            {selectedDocument?.rejection_reason && (
+              <div>
+                <h4 className="font-medium mb-2">Red Nedeni</h4>
+                <p className="text-sm text-red-500">
+                  {selectedDocument.rejection_reason}
+                </p>
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {showApprovalOptions && (
         <Dialog open={showRejectDialog} onOpenChange={setShowRejectDialog}>
@@ -650,6 +958,6 @@ export function ProductDocuments({
           </DialogContent>
         </Dialog>
       )}
-    </>
+    </div>
   );
 }
