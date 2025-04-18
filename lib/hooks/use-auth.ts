@@ -94,13 +94,39 @@ export function useAuth() {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
+      if (session?.user) {
+        setUser({
+          id: session.user.id,
+          name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'User',
+          email: session.user.email || '',
+          role: session.user.user_metadata?.role || 'user',
+          user_metadata: {
+            ...session.user.user_metadata,
+            email_verified: session.user.email_confirmed_at != null
+          }
+        });
+      } else {
+        setUser(null);
+      }
       setIsLoading(false);
     });
 
     // Initial session check
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
+      if (session?.user) {
+        setUser({
+          id: session.user.id,
+          name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'User',
+          email: session.user.email || '',
+          role: session.user.user_metadata?.role || 'user',
+          user_metadata: {
+            ...session.user.user_metadata,
+            email_verified: session.user.email_confirmed_at != null
+          }
+        });
+      } else {
+        setUser(null);
+      }
       setIsLoading(false);
     });
 
@@ -121,6 +147,12 @@ export function useAuth() {
         data: { session },
       } = await supabase.auth.getSession();
 
+      // Show success toast with hardcoded message
+      toast({
+        title: "Login Successful",
+        description: "You have been successfully logged in.",
+      });
+
       // Redirect based on role
       if (session?.user?.user_metadata?.role === "admin") {
         router.push("/admin");
@@ -128,11 +160,7 @@ export function useAuth() {
         router.push("/dashboard");
       }
     } catch (error) {
-      toast({
-        title: t("errors.signIn.title"),
-        description: t("errors.signIn.description"),
-        variant: "destructive",
-      });
+      throw error; // Re-throw the error to be handled by the login form
     }
   };
 
