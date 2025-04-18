@@ -27,66 +27,54 @@ export class ProductService {
     return data || [];
   }
 
-  static async getProduct({ id, companyId }: { id: string; companyId: string }): Promise<ProductResponse> {
-    console.log("ProductService.getProduct params:", { id, companyId });
-
+  static async getProduct(id: string, companyId: string): Promise<ProductResponse> {
     try {
-      // Admin şirketi için özel durum - tüm ürünleri göster
-      if (companyId === ADMIN_COMPANY_ID || companyId === "") {
-        console.log("Admin user, fetching all products");
+      const { data: userData } = await supabase.auth.getUser();
+      const isAdmin = userData?.user?.user_metadata?.role === "admin";
+
+      if (isAdmin) {
         const { data, error } = await supabase
           .from("products")
-          .select(`
-            *,
-            manufacturer:manufacturer_id (
-              id,
-              name,
-              taxInfo,
-              companyType,
-              status
-            )
-          `)
+          .select("*")
           .eq("id", id)
           .single();
 
-        console.log("Admin product query result:", { data, error });
+        if (error) {
+          return {
+            error: {
+              message: error.message || "Failed to fetch product",
+              field: error.details,
+            },
+          };
+        }
+
+        return { data };
+      } else {
+        const { data, error } = await supabase
+          .from("products")
+          .select("*")
+          .eq("id", id)
+          .eq("company_id", companyId)
+          .single();
 
         if (error) {
-          console.error("Admin product query error:", error);
-          return { error: { message: "Product not found" } };
+          return {
+            error: {
+              message: error.message || "Failed to fetch product",
+              field: error.details,
+            },
+          };
         }
 
         return { data };
       }
-
-      console.log("Regular user, fetching company products");
-      const { data, error } = await supabase
-        .from("products")
-        .select(`
-          *,
-          manufacturer:manufacturer_id (
-            id,
-            name,
-            taxInfo,
-            companyType,
-            status
-          )
-        `)
-        .eq("id", id)
-        .eq("company_id", companyId)
-        .single();
-
-      console.log("Regular product query result:", { data, error });
-
-      if (error) {
-        console.error("Regular product query error:", error);
-        return { error: { message: "Product not found" } };
-      }
-
-      return { data };
     } catch (error) {
-      console.error("ProductService.getProduct caught error:", error);
-      return { error: { message: "An error occurred while fetching the product" } };
+      return {
+        error: {
+          message:
+            error instanceof Error ? error.message : "Unknown error occurred",
+        },
+      };
     }
   }
 

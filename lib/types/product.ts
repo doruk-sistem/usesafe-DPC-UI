@@ -134,4 +134,5 @@ export type Product = BaseProduct & {
   manufacturer_name: string;
   document_count: number;
   document_status: "All Approved" | "Pending Review" | "Has Rejected Documents" | "No Documents";
+  documents?: Record<string, any[]>;
 };

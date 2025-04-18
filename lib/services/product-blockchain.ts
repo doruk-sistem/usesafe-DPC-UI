@@ -66,9 +66,8 @@ class ProductBlockchainService {
           throw new Error('Invalid action type');
       }
 
-      return { transactionId, contractAddress };
+      return { transactionId, contractAddress: '' };
     } catch (error) {
-      console.error('Error recording product action:', error);
       throw error;
     }
   }

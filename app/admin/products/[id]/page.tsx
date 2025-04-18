@@ -46,8 +46,7 @@ export default function ProductDetailsPage({ params }: ProductDetailsProps) {
     isCompanyLoading,
     isAdmin,
   } = useAuth();
-  const { data: productResponse, isLoading: isProductLoading, error } = useProduct(id);
-  const product = productResponse?.data;
+  const { product, isLoading: isProductLoading, error } = useProduct(id);
 
   // Debug için console.log ekleyelim
   console.log("Page State:", {

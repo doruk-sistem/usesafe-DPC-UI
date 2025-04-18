@@ -6,11 +6,20 @@ import { Product, ProductStatus } from "@/lib/types/product";
 import { useAuth } from "./use-auth";
 
 export function useProduct(id: string) {
-  const { company, isAdminValue } = useAuth();
+  const { user, company } = useAuth();
+  const isAdminValue = user?.user_metadata?.role === "admin";
 
-  console.log("useProduct", { id, companyId: company?.id, isAdmin: isAdminValue });
+  const { data: product, error, isLoading } = useQuery({
+    queryKey: ["product", id],
+    queryFn: () =>
+      productService.getProduct({
+        id,
+        companyId: isAdminValue ? "" : company?.id || "",
+      }),
+    enabled: !!id && (!!company?.id || isAdminValue),
+  });
 
-  const determineProductStatus = (product: Product): ProductStatus => {
+  const determineProductStatus = (product: Product | null): ProductStatus => {
     if (!product) return null;
     
     // Belge durumuna göre ürün durumunu belirle
@@ -51,15 +60,9 @@ export function useProduct(id: string) {
   };
 
   return {
-    ...useQuery({
-      queryKey: ["product", id],
-      queryFn: () =>
-        productService.getProduct({
-          id,
-          companyId: isAdminValue ? "" : company?.id || "",
-        }),
-      enabled: !!id && (!!company?.id || isAdminValue),
-    }),
+    product: product?.data || null,
+    error: error || product?.error,
+    isLoading,
     determineProductStatus,
   };
 }
