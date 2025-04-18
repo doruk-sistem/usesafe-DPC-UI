@@ -48,6 +48,28 @@ interface Document {
   status: "approved" | "rejected" | "pending";
 }
 
+const getProductStatusDisplay = (status: string) => {
+  switch (status) {
+    case "ARCHIVED":
+      return "Onaylandı";
+    case "DELETED":
+      return "Reddedildi";
+    default:
+      return status.toLowerCase();
+  }
+};
+
+const getProductStatusVariant = (status: string): "default" | "success" | "warning" | "destructive" | "secondary" => {
+  switch (status) {
+    case "ARCHIVED":
+      return "success";
+    case "DELETED":
+      return "destructive";
+    default:
+      return "default";
+  }
+};
+
 export function ProductList() {
   const t = useTranslations();
   const { toast } = useToast();
@@ -85,7 +107,7 @@ export function ProductList() {
 
         setManufacturers(manufacturerMap);
 
-        // Sonra products'ı çek
+        // Sonra products'ı çek - onaylanmış ürünleri ve üretici seçilmemiş ürünleri getir
         const { data: productsData, error: productsError } = await supabase
           .from("products")
           .select(`
@@ -97,7 +119,8 @@ export function ProductList() {
             created_at,
             documents,
             images
-          `);
+          `)
+          .or('status.eq.ARCHIVED,manufacturer_id.is.null'); // ARCHIVED durumundaki veya üretici seçilmemiş ürünleri getir
 
         if (productsError) {
           throw new Error(`Products fetch error: ${productsError.message}`);
@@ -171,21 +194,6 @@ export function ProductList() {
     
     return true;
   });
-
-  const getStatusVariant = (status: string): "default" | "success" | "warning" | "destructive" | "secondary" => {
-    switch (status) {
-      case "All Approved":
-        return "success";
-      case "Pending Review":
-        return "warning";
-      case "Has Rejected Documents":
-        return "destructive";
-      case "No Documents":
-        return "secondary";
-      default:
-        return "default";
-    }
-  };
 
   if (isLoading) {
     return (
@@ -360,10 +368,10 @@ export function ProductList() {
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-muted-foreground">{t("admin.products.status")}</span>
                       <Badge 
-                        variant={getStatusVariant(product.document_status)}
+                        variant={getProductStatusVariant(product.status)}
                         className="font-medium"
                       >
-                        {product.document_status}
+                        {getProductStatusDisplay(product.status)}
                       </Badge>
                     </div>
                   </div>

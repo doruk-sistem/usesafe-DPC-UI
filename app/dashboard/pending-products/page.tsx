@@ -193,7 +193,7 @@ export default function PendingProductsPage() {
 
       toast({
         title: "Başarılı",
-        description: "Ürün başarıyla onaylandı. Belgeler inceleme için beklemede.",
+        description: "Ürün başarıyla onaylandı ve admin paneline eklendi.",
       });
       // Verileri yenile
       queryClient.invalidateQueries({ queryKey: ["pending-products"] });

@@ -82,6 +82,7 @@ interface Product {
   name: string;
   status: "DRAFT" | "NEW" | "DELETED" | "ARCHIVED";
   documents: Record<string, Document[]>;
+  manufacturer_id?: string;
 }
 
 const documentTypeLabels: Record<string, string> = {
@@ -113,8 +114,8 @@ export function ProductDocuments({
   const [documentVersion, setDocumentVersion] = useState<string>("1.0");
   const [validUntil, setValidUntil] = useState<string>("");
   const [notes, setNotes] = useState<string>("");
-  const [showSubManufacturerDialog, setShowSubManufacturerDialog] = useState(false);
-  const [subManufacturer, setSubManufacturer] = useState<string>("");
+  const [showManufacturerDialog, setShowManufacturerDialog] = useState(false);
+  const [manufacturer, setManufacturer] = useState<string>("");
   const [isUploading, setIsUploading] = useState(false);
   const [showUploadForm, setShowUploadForm] = useState(false);
   const [showAdditionalFields, setShowAdditionalFields] = useState(false);
@@ -125,13 +126,14 @@ export function ProductDocuments({
     try {
       const { data, error } = await supabase
         .from("products")
-        .select("name, status, documents")
+        .select("name, status, documents, manufacturer_id")
         .eq("id", productId)
         .single();
 
       if (error) throw error;
 
       setProduct(data);
+      setManufacturer(data.manufacturer_id || "");
 
       // Flatten all document arrays into a single array
       const allDocuments: Document[] = [];
@@ -536,6 +538,34 @@ export function ProductDocuments({
     }
   };
 
+  const handleUpdateManufacturer = async () => {
+    if (!productId) return;
+
+    try {
+      const { error } = await supabase
+        .from('products')
+        .update({ manufacturer_id: manufacturer })
+        .eq('id', productId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Başarılı",
+        description: "Üretici bilgisi güncellendi",
+      });
+
+      setShowManufacturerDialog(false);
+      fetchProduct();
+    } catch (error) {
+      console.error('Error updating manufacturer:', error);
+      toast({
+        title: "Hata",
+        description: "Üretici bilgisi güncellenirken bir hata oluştu",
+        variant: "destructive",
+      });
+    }
+  };
+
   if (isLoading) {
     return (
       <Card>
@@ -578,23 +608,34 @@ export function ProductDocuments({
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>Product Documents</CardTitle>
-          <Button
-            onClick={() => setShowUploadForm(!showUploadForm)}
-            size="sm"
-            className="flex items-center gap-2"
-          >
-            {showUploadForm ? (
-              <>
-                <X className="h-4 w-4" />
-                İptal
-              </>
-            ) : (
-              <>
-                <Plus className="h-4 w-4" />
-                Belge Yükle
-              </>
-            )}
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              onClick={() => setShowManufacturerDialog(true)}
+              size="sm"
+              variant="outline"
+              className="flex items-center gap-2"
+            >
+              <Edit className="h-4 w-4" />
+              Alt Üretici Ekle/Düzenle
+            </Button>
+            <Button
+              onClick={() => setShowUploadForm(!showUploadForm)}
+              size="sm"
+              className="flex items-center gap-2"
+            >
+              {showUploadForm ? (
+                <>
+                  <X className="h-4 w-4" />
+                  İptal
+                </>
+              ) : (
+                <>
+                  <Plus className="h-4 w-4" />
+                  Belge Yükle
+                </>
+              )}
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="mb-6">
@@ -958,6 +999,43 @@ export function ProductDocuments({
           </DialogContent>
         </Dialog>
       )}
+
+      {/* Üretici Dialog'u */}
+      <Dialog open={showManufacturerDialog} onOpenChange={setShowManufacturerDialog}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Alt Üretici Bilgisi</DialogTitle>
+            <DialogDescription>
+              Ürün için alt üretici bilgisini girin veya düzenleyin
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="grid gap-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="manufacturer">Alt Üretici</Label>
+              <input
+                id="manufacturer"
+                value={manufacturer}
+                onChange={(e) => setManufacturer(e.target.value)}
+                placeholder="Alt üretici adı"
+                className="w-full p-2 border rounded"
+              />
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setShowManufacturerDialog(false)}
+            >
+              İptal
+            </Button>
+            <Button onClick={handleUpdateManufacturer}>
+              Kaydet
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
