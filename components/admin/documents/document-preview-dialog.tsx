@@ -5,19 +5,12 @@ import { Download } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-
+import { Document } from "@/lib/types/document";
 
 interface DocumentPreviewDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  document: {
-    id: string;
-    name: string;
-    type: string;
-    status: string;
-    url?: string;
-    rejection_reason?: string;
-  };
+  document: Document;
 }
 
 export function DocumentPreviewDialog({ isOpen, onClose, document }: DocumentPreviewDialogProps) {
