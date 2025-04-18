@@ -9,6 +9,11 @@ export interface Document {
   status: string;
   rejection_reason?: string;
   metadata?: Record<string, any>;
+  manufacturerId?: string;
+  productId?: string;
+  fileSize?: string;
+  validUntil?: string;
+  version?: string;
 }
 
 export interface DocumentWithMetadata extends Document {
