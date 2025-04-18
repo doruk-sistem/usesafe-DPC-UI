@@ -21,6 +21,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Error } from "@/components/ui/error";
+import { Loading } from "@/components/ui/loading";
 import {
   Table,
   TableBody,
@@ -31,8 +33,6 @@ import {
 } from "@/components/ui/table";
 import { useDPPs } from "@/lib/hooks/use-dpps";
 import { cn } from "@/lib/utils";
-import { Loading } from "@/components/ui/loading";
-import { Error } from "@/components/ui/error";
 
 interface DPP {
   id: string;

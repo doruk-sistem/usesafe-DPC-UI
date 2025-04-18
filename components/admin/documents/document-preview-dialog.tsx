@@ -1,12 +1,12 @@
 "use client";
 
 import { Download } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Document } from "@/lib/types/document";
-import { useTranslations } from "next-intl";
 
 interface DocumentPreviewDialogProps {
   isOpen: boolean;

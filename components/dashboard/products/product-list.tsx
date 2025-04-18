@@ -41,6 +41,7 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
+import { Loading } from "@/components/ui/loading";
 import {
   Table,
   TableBody,
@@ -54,7 +55,6 @@ import { useProduct } from "@/lib/hooks/use-product";
 import { productsApiHooks } from "@/lib/hooks/use-products";
 import { Product, ProductStatus } from "@/lib/types/product";
 import { StorageHelper } from "@/lib/utils/storage";
-import { Loading } from "@/components/ui/loading";
 
 interface ProductListProps {
   products: Product[];

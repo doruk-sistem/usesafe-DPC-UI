@@ -25,8 +25,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
-import { ProductWithMetadata } from "@/lib/types/product";
 import { documentsApiHooks } from "@/lib/hooks/use-documents";
+import { ProductWithMetadata } from "@/lib/types/product";
 
 export function ProductList() {
   const t = useTranslations();

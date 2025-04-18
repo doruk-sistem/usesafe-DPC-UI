@@ -44,6 +44,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Label } from "@/components/ui/label";
+import { Loading } from "@/components/ui/loading";
 import {
   Select,
   SelectContent,
@@ -69,7 +70,6 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import { documentsApiHooks } from "@/lib/hooks/use-documents";
 import type { Document } from "@/lib/types/document";
-import { Loading } from "@/components/ui/loading";
 
 interface DocumentListProps {
   initialDocuments?: Document[];

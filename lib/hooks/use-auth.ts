@@ -4,21 +4,22 @@ import type {
   User as SupabaseUser,
   UserAttributes,
 } from "@supabase/supabase-js";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
 
-import { supabase } from "@/lib/supabase/client";
+import { useToast } from "@/components/ui/use-toast";
 import { companyService } from "@/lib/services/company";
-import { Company } from "@/lib/types/company";
 import { ManufacturerService } from "@/lib/services/manufacturer";
 import { productService } from "@/lib/services/product";
+import { supabase } from "@/lib/supabase/client";
+import { Company } from "@/lib/types/company";
 
 import type { User } from "../types/auth";
 
 import { companyApiHooks } from "./use-company";
-import { useToast } from "@/components/ui/use-toast";
+
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);

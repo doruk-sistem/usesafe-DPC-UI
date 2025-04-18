@@ -14,9 +14,9 @@ import {
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
-import { getRecentApprovals, getSystemAlerts, type DashboardMetrics } from "@/lib/hooks/useMetrics";
 import { Card } from "@/components/ui/card";
 import { Error } from "@/components/ui/error";
+import { getRecentApprovals, getSystemAlerts, type DashboardMetrics } from "@/lib/hooks/useMetrics";
 
 export function DashboardMetrics() {
   const t = useTranslations("adminDashboard");

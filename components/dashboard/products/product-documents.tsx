@@ -24,6 +24,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Loading } from "@/components/ui/loading";
 import {
   Table,
   TableBody,
@@ -39,7 +40,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
-import { Loading } from "@/components/ui/loading";
 
 interface ProductDocumentsProps {
   productId: string;

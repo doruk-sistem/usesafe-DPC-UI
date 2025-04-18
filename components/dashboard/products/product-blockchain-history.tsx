@@ -3,10 +3,10 @@
 import { format } from 'date-fns';
 import { useEffect, useState } from 'react';
 
+import { Error } from "@/components/ui/error";
 import { toast } from '@/components/ui/use-toast';
 import { productBlockchainService } from '@/lib/services/product-blockchain';
 import { ProductBlockchainRecord } from '@/lib/types/product-blockchain';
-import { Error } from "@/components/ui/error";
 
 interface ProductBlockchainHistoryProps {
   productId?: string;

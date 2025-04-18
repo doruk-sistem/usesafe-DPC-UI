@@ -5,9 +5,9 @@ import { AlertTriangle, AlertCircle, Info } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
-import { getSystemAlerts, type SystemAlert } from "@/lib/hooks/useMetrics";
 import { Card } from "@/components/ui/card";
 import { Error } from "@/components/ui/error";
+import { getSystemAlerts, type SystemAlert } from "@/lib/hooks/useMetrics";
 
 export function SystemAlerts() {
   const t = useTranslations("adminDashboard");

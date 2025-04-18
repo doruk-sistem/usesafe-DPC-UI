@@ -7,8 +7,8 @@ import { ProductHeader } from "@/components/dashboard/products/product-header";
 import { ProductList } from "@/components/dashboard/products/product-list";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { useProducts } from "@/lib/hooks/use-products";
 import { Error } from "@/components/ui/error";
+import { useProducts } from "@/lib/hooks/use-products";
 
 export default function ProductsPage() {
   const { products, isLoading, error } = useProducts();

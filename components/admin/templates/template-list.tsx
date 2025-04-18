@@ -31,6 +31,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Error } from "@/components/ui/error";
 import {
   Table,
   TableBody,
@@ -42,7 +43,6 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import { useDPPTemplates } from "@/lib/hooks/use-dpp-templates";
 import { DPPTemplateService } from "@/lib/services/dpp-template";
-import { Error } from "@/components/ui/error";
 
 export function DPPTemplateList() {
   const { templates, isLoading, error, refreshTemplates } = useDPPTemplates();

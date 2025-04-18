@@ -1,7 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { useAuth } from "./use-auth";
+
 import { productService } from "@/lib/services/product";
 import { Product, ProductStatus } from "@/lib/types/product";
+
+import { useAuth } from "./use-auth";
 
 export function useProduct(id: string) {
   const { company, isAdminValue } = useAuth();

@@ -5,9 +5,9 @@ import { CheckCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
-import { getRecentApprovals, type RecentApproval } from "@/lib/hooks/useMetrics";
 import { Card } from "@/components/ui/card";
 import { Error } from "@/components/ui/error";
+import { getRecentApprovals, type RecentApproval } from "@/lib/hooks/useMetrics";
 
 export function RecentApprovals() {
   const t = useTranslations("adminDashboard");
