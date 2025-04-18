@@ -126,4 +126,7 @@ export interface Product {
   manufacturer?: {
     name: string;
   };
+  description?: string;
+  images?: ProductImage[];
+  key_features?: KeyFeature[];
 }

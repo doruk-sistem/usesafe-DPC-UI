@@ -734,7 +734,7 @@ const updateDocumentStatus = async (
 
     let updatedDocuments = { ...product.documents };
     let documentFound = false;
-    let documentLocation = null;
+    let documentLocation: string | null = null;
 
     // Extract document name from documentId if it's a generated ID
     let documentName = "";

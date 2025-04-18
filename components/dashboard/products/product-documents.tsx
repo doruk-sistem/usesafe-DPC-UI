@@ -400,16 +400,29 @@ export function ProductDocuments({
     }
   };
 
+  const getStatusDisplay = (status: string) => {
+    switch (status) {
+      case "ARCHIVED":
+        return "approved";
+      case "DELETED":
+        return "rejected";
+      default:
+        return status;
+    }
+  };
+
   const getStatusVariant = (status: string) => {
     switch (status) {
-      case "approved":
+      case "ARCHIVED":
         return "success";
-      case "rejected":
+      case "DELETED":
         return "destructive";
-      case "pending":
+      case "NEW":
+        return "success";
+      case "DRAFT":
         return "warning";
       default:
-        return "secondary";
+        return "default";
     }
   };
 
@@ -459,16 +472,8 @@ export function ProductDocuments({
         <CardContent>
           <div className="mb-6">
             <h3 className="text-lg font-medium mb-2">{product.name}</h3>
-            <Badge
-              variant={
-                product.status === "NEW"
-                  ? "success"
-                  : product.status === "DRAFT"
-                  ? "warning"
-                  : "destructive"
-              }
-            >
-              {product.status.toLowerCase()}
+            <Badge variant={getStatusVariant(product.status)}>
+              {getStatusDisplay(product.status).toLowerCase()}
             </Badge>
           </div>
 

@@ -7,14 +7,23 @@ import type {
 
 export class ProductStatusService {
   static isValidTransition(from: ProductStatus, to: ProductStatus): boolean {
-    const allowedTransitions: Record<ProductStatus, ProductStatus[]> = {
+    console.log("isValidTransition çağrıldı:", { from, to });
+    
+    const allowedTransitions: Record<string, ProductStatus[]> = {
       DRAFT: ["NEW", "DELETED"],
-      NEW: ["ARCHIVED", "DELETED"],
+      NEW: ["ARCHIVED", "DELETED", "approved", "rejected"],
       DELETED: ["NEW"],
       ARCHIVED: [],
+      approved: [],
+      rejected: [],
+      pending: ["approved", "rejected"],
+      expired: [],
     };
 
-    return allowedTransitions[from]?.includes(to) || false;
+    const result = allowedTransitions[from as string]?.includes(to) || false;
+    console.log("Geçiş geçerli mi:", result);
+    
+    return result;
   }
 
   static async updateStatus(
@@ -24,15 +33,36 @@ export class ProductStatusService {
     reason?: string
   ): Promise<{ success: boolean; error?: string }> {
     try {
+      console.log("updateStatus çağrıldı:", {
+        productId,
+        newStatus,
+        userId,
+        reason
+      });
+
       const { data: product, error: fetchError } = await supabase
         .from("products")
         .select("status, status_history")
         .eq("id", productId)
         .single();
 
-      if (fetchError) throw new Error("Failed to fetch product");
+      if (fetchError) {
+        console.error("Ürün getirme hatası:", fetchError);
+        throw new Error("Failed to fetch product");
+      }
+
+      console.log("Mevcut ürün durumu:", {
+        productId,
+        currentStatus: product.status,
+        targetStatus: newStatus
+      });
 
       if (!this.isValidTransition(product.status, newStatus)) {
+        console.error("Geçersiz durum geçişi:", {
+          from: product.status,
+          to: newStatus,
+          allowedTransitions: this.getAllowedTransitions(product.status)
+        });
         return {
           success: false,
           error: `Invalid status transition from ${product.status} to ${newStatus}`,
@@ -47,6 +77,8 @@ export class ProductStatusService {
         reason,
       };
 
+      console.log("Durum geçişi oluşturuldu:", transition);
+
       const { error: updateError } = await supabase
         .from("products")
         .update({
@@ -55,7 +87,15 @@ export class ProductStatusService {
         })
         .eq("id", productId);
 
-      if (updateError) throw updateError;
+      if (updateError) {
+        console.error("Ürün güncelleme hatası:", updateError);
+        throw updateError;
+      }
+
+      console.log("Ürün durumu başarıyla güncellendi:", {
+        productId,
+        newStatus
+      });
 
       return { success: true };
     } catch (error) {
@@ -66,6 +106,21 @@ export class ProductStatusService {
           error instanceof Error ? error.message : "Failed to update status",
       };
     }
+  }
+
+  static getAllowedTransitions(from: ProductStatus): ProductStatus[] {
+    const allowedTransitions: Record<string, ProductStatus[]> = {
+      DRAFT: ["NEW", "DELETED"],
+      NEW: ["ARCHIVED", "DELETED", "approved", "rejected"],
+      DELETED: ["NEW"],
+      ARCHIVED: [],
+      approved: [],
+      rejected: [],
+      pending: ["approved", "rejected"],
+      expired: [],
+    };
+    
+    return allowedTransitions[from as string] || [];
   }
 
   static async getStatusHistory(
@@ -89,8 +144,10 @@ export class ProductStatusService {
       return !!(
         product.name &&
         product.description &&
-        product.images?.length > 0 &&
-        product.key_features?.length > 0
+        product.images &&
+        product.images.length > 0 &&
+        product.key_features &&
+        product.key_features.length > 0
       );
     }
 
