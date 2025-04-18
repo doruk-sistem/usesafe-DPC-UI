@@ -59,10 +59,10 @@ export type ProductStatus =
   | "NEW"
   | "DELETED"
   | "ARCHIVED"
-  | "approved"
-  | "pending"
-  | "rejected"
-  | "expired"
+  | "APPROVED"
+  | "PENDING"
+  | "REJECTED"
+  | "EXPIRED"
   | null;
 
 export interface StatusTransition {
@@ -123,16 +123,31 @@ export type ProductWithMetadata = {
   documents?: any[];
   manufacturer_name: string;
   document_count: number;
-  document_status: "All Approved" | "Pending Review" | "Has Rejected Documents" | "No Documents";
+  document_status:
+    | "All Approved"
+    | "Pending Review"
+    | "Has Rejected Documents"
+    | "No Documents";
 };
 
-export type Product = BaseProduct & {
+export interface Product {
+  id: string;
+  name: string;
+  description?: string;
+  manufacturer_id: string;
+  product_type: string;
+  product_subcategory?: string;
+  model?: string;
   status: ProductStatus;
-  status_history: StatusTransition[];
-  images: ProductImage[];
-  key_features: KeyFeature[];
-  manufacturer_name: string;
-  document_count: number;
-  document_status: "All Approved" | "Pending Review" | "Has Rejected Documents" | "No Documents";
-  documents?: Record<string, any[]>;
-};
+  status_history?: StatusTransition[];
+  images?: ProductImage[];
+  key_features?: KeyFeature[];
+  created_at?: string;
+  updated_at?: string;
+  documents?: any;
+  manufacturer?: {
+    id: string;
+    name: string;
+  };
+  document_status?: "All Approved" | "Pending Review" | "Has Rejected Documents" | "No Documents";
+}

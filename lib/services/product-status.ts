@@ -7,14 +7,18 @@ import type {
 
 export class ProductStatusService {
   static isValidTransition(from: ProductStatus, to: ProductStatus): boolean {
-    const allowedTransitions: Record<ProductStatus, ProductStatus[]> = {
+    const allowedTransitions: Record<string, ProductStatus[]> = {
       DRAFT: ["NEW", "DELETED"],
-      NEW: ["ARCHIVED", "DELETED"],
+      NEW: ["ARCHIVED", "DELETED", "APPROVED", "REJECTED"],
       DELETED: ["NEW"],
       ARCHIVED: [],
+      APPROVED: [],
+      REJECTED: [],
+      PENDING: ["APPROVED", "REJECTED"],
+      EXPIRED: [],
     };
 
-    return allowedTransitions[from]?.includes(to) || false;
+    return allowedTransitions[from as string]?.includes(to) || false;
   }
 
   static async updateStatus(
@@ -30,7 +34,9 @@ export class ProductStatusService {
         .eq("id", productId)
         .single();
 
-      if (fetchError) throw new Error("Failed to fetch product");
+      if (fetchError) {
+        throw new Error("Failed to fetch product");
+      }
 
       if (!this.isValidTransition(product.status, newStatus)) {
         return {
@@ -55,17 +61,33 @@ export class ProductStatusService {
         })
         .eq("id", productId);
 
-      if (updateError) throw updateError;
+      if (updateError) {
+        throw updateError;
+      }
 
       return { success: true };
     } catch (error) {
-      console.error("Error updating product status:", error);
       return {
         success: false,
         error:
           error instanceof Error ? error.message : "Failed to update status",
       };
     }
+  }
+
+  static getAllowedTransitions(from: ProductStatus): ProductStatus[] {
+    const allowedTransitions: Record<string, ProductStatus[]> = {
+      DRAFT: ["NEW", "DELETED"],
+      NEW: ["ARCHIVED", "DELETED", "APPROVED", "REJECTED"],
+      DELETED: ["NEW"],
+      ARCHIVED: [],
+      APPROVED: [],
+      REJECTED: [],
+      PENDING: ["APPROVED", "REJECTED"],
+      EXPIRED: [],
+    };
+
+    return allowedTransitions[from as string] || [];
   }
 
   static async getStatusHistory(
@@ -89,8 +111,10 @@ export class ProductStatusService {
       return !!(
         product.name &&
         product.description &&
-        product.images?.length > 0 &&
-        product.key_features?.length > 0
+        product.images &&
+        product.images.length > 0 &&
+        product.key_features &&
+        product.key_features.length > 0
       );
     }
 

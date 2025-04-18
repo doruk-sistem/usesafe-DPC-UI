@@ -20,14 +20,16 @@ export class ProductService {
       .order("created_at", { ascending: false });
 
     if (error) {
-      console.error("Error fetching products:", error);
       throw new Error("Failed to fetch products");
     }
 
     return data || [];
   }
 
-  static async getProduct(id: string, companyId: string): Promise<ProductResponse> {
+  static async getProduct(
+    id: string,
+    companyId: string
+  ): Promise<ProductResponse> {
     try {
       const { data: userData } = await supabase.auth.getUser();
       const isAdmin = userData?.user?.user_metadata?.role === "admin";
@@ -105,7 +107,6 @@ export class ProductService {
         .single();
 
       if (error) {
-        console.error("Product creation error:", error);
         return {
           error: {
             message: error.message || "Failed to create product",
@@ -116,7 +117,6 @@ export class ProductService {
 
       return { data };
     } catch (error) {
-      console.error("Error in createProduct:", error);
       return {
         error: {
           message:
@@ -159,7 +159,6 @@ export class ProductService {
         .single();
 
       if (getError) {
-        console.error("Error fetching product for deletion:", getError);
         throw new Error("Failed to fetch product for deletion");
       }
 
@@ -183,15 +182,86 @@ export class ProductService {
       const { error } = await supabase.from("products").delete().eq("id", id);
 
       if (error) {
-        console.error("Error deleting product:", error);
         throw new Error("Failed to delete product");
       }
 
       return true;
     } catch (error) {
-      console.error("Error in deleteProduct:", error);
       throw error;
     }
+  }
+
+  static async getPendingProducts(
+    email: string,
+    page = 0,
+    pageSize = 10
+  ): Promise<{
+    items: {
+      id: string;
+      name: string;
+      sku: string;
+      status: string;
+      createdAt: string;
+      manufacturer: string;
+    }[];
+    totalPages: number;
+    currentPage: number;
+    totalItems: number;
+  }> {
+    // Get the current user's session
+    const {
+      data: { session },
+      error: sessionError,
+    } = await supabase.auth.getSession();
+
+    if (sessionError) {
+      throw new Error("Failed to get user session");
+    }
+
+    if (!session) {
+      throw new Error("No active session found");
+    }
+
+    // Get the user's metadata from the session
+    const userMetadata = session.user.user_metadata;
+    const companyId = userMetadata?.company_id;
+
+    if (!companyId) {
+      return {
+        items: [],
+        totalPages: 0,
+        currentPage: page,
+        totalItems: 0,
+      };
+    }
+
+    // Fetch products by manufacturer_id with status DRAFT or NEW
+    const { data, error, count } = await supabase
+      .from("products")
+      .select("*, manufacturer:manufacturer_id (name)", { count: "exact" })
+      .eq("manufacturer_id", companyId)
+      .in("status", ["DRAFT", "NEW"])
+      .range(page * pageSize, (page + 1) * pageSize - 1)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      throw new Error("Failed to fetch pending products");
+    }
+
+    return {
+      items:
+        data?.map((product) => ({
+          id: product.id,
+          name: product.name,
+          sku: product.sku,
+          status: product.status,
+          createdAt: product.created_at,
+          manufacturer: product.manufacturer?.name || "Unknown",
+        })) || [],
+      totalPages: Math.ceil((count || 0) / pageSize),
+      currentPage: page,
+      totalItems: count || 0,
+    };
   }
 }
 
@@ -204,7 +274,6 @@ export const productService = createService({
       .order("created_at", { ascending: false });
 
     if (error) {
-      console.error("Error fetching products:", error);
       throw new Error("Failed to fetch products");
     }
     return data || [];
@@ -220,7 +289,8 @@ export const productService = createService({
     if (companyId === ADMIN_COMPANY_ID) {
       const { data, error } = await supabase
         .from("products")
-        .select(`
+        .select(
+          `
           *,
           manufacturer:manufacturer_id (
             id,
@@ -229,7 +299,8 @@ export const productService = createService({
             companyType,
             status
           )
-        `)
+        `
+        )
         .eq("id", id)
         .single();
 
@@ -242,7 +313,8 @@ export const productService = createService({
 
     const { data, error } = await supabase
       .from("products")
-      .select(`
+      .select(
+        `
         *,
         manufacturer:manufacturer_id (
           id,
@@ -251,7 +323,8 @@ export const productService = createService({
           companyType,
           status
         )
-      `)
+      `
+      )
       .eq("id", id)
       .eq("company_id", companyId)
       .single();
@@ -289,25 +362,20 @@ export const productService = createService({
         .single();
 
       if (error) {
-        console.error("Product creation error:", error);
         return {
           error: {
             message: error.message || "Failed to create product",
             field: error.details,
-            code: error.code,
           },
         };
       }
 
       return { data };
     } catch (error) {
-      console.error("Error in createProduct:", error);
-
       return {
         error: {
           message:
             error instanceof Error ? error.message : "Unknown error occurred",
-          details: error instanceof Error ? error.stack : undefined,
         },
       };
     }
@@ -341,7 +409,6 @@ export const productService = createService({
     const { error } = await supabase.from("products").delete().eq("id", id);
 
     if (error) {
-      console.error("Error deleting product:", error);
       throw new Error("Failed to delete product");
     }
 

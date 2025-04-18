@@ -217,7 +217,7 @@ export function ProductList({ products, isLoading }: ProductListProps) {
                     <TableCell>
                       <div className="space-y-2">
                         <div className="space-y-1">
-                          {product.key_features.slice(0, 3).map((feature) => (
+                          {product.key_features?.slice(0, 3).map((feature) => (
                             <div
                               key={feature.name}
                               className="flex items-center text-sm"
@@ -228,7 +228,7 @@ export function ProductList({ products, isLoading }: ProductListProps) {
                               <span>{feature.value}</span>
                             </div>
                           ))}
-                          {product.key_features.length > 3 && (
+                          {product.key_features && product.key_features.length > 3 && (
                             <Badge variant="secondary" className="text-xs">
                               +{product.key_features.length - 3} more
                             </Badge>
@@ -239,11 +239,11 @@ export function ProductList({ products, isLoading }: ProductListProps) {
                     <TableCell>
                       <Badge
                         variant={
-                          status === "approved"
+                          status === "APPROVED"
                             ? "success"
-                            : status === "pending"
+                            : status === "PENDING"
                             ? "warning"
-                            : status === "rejected"
+                            : status === "REJECTED"
                             ? "destructive"
                             : "secondary"
                         }
