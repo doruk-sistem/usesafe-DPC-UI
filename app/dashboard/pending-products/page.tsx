@@ -1,10 +1,12 @@
 "use client";
 
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Plus, MoreHorizontal, FileText, Eye, CheckCircle, XCircle, Info, Edit } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState, useEffect } from "react";
 
+import { ProductDocuments } from "@/components/dashboard/products/product-documents";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,16 +17,13 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { useAuth } from "@/lib/hooks/use-auth";
-import { productService } from "@/lib/services/product";
-import { ProductDocuments } from "@/components/dashboard/products/product-documents";
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -33,19 +32,20 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { Input } from "@/components/ui/input";
+import { useAuth } from "@/lib/hooks/use-auth";
+import { productService } from "@/lib/services/product";
 
 interface Document {
   id: string;

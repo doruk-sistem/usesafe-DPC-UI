@@ -14,7 +14,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from 'next-intl';
 import { useMemo } from 'react';
-import { CompanyType } from "@/lib/types/company";
+
 import { ComplateRegistrationForm } from "@/components/dashboard/complate-registration-form";
 import { Button } from "@/components/ui/button";
 import {
@@ -33,6 +33,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { useAuth } from "@/lib/hooks/use-auth";
+import { CompanyType } from "@/lib/types/company";
 import { cn } from "@/lib/utils";
 
 interface DashboardLayoutProps {
