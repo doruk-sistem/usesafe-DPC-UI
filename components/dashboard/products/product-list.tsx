@@ -52,7 +52,7 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import { useProduct } from "@/lib/hooks/use-product";
 import { productsApiHooks } from "@/lib/hooks/use-products";
-import { BaseProduct as Product } from "@/lib/types/product";
+import { Product, ProductStatus } from "@/lib/types/product";
 import { StorageHelper } from "@/lib/utils/storage";
 import { Loading } from "@/components/ui/loading";
 
@@ -178,7 +178,7 @@ export function ProductList({ products, isLoading }: ProductListProps) {
                   ? product.documents
                   : Object.values(product.documents || {}).flat();
 
-                const status = determineProductStatus(documents);
+                const status = determineProductStatus(product);
 
                 return (
                   <TableRow key={product.id}>
@@ -239,11 +239,11 @@ export function ProductList({ products, isLoading }: ProductListProps) {
                     <TableCell>
                       <Badge
                         variant={
-                          status === "APPROVED"
+                          status === "approved"
                             ? "success"
-                            : status === "PENDING"
+                            : status === "pending"
                             ? "warning"
-                            : status === "REJECTED"
+                            : status === "rejected"
                             ? "destructive"
                             : "secondary"
                         }
