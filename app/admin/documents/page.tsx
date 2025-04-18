@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 
 import { DocumentHeader } from "@/components/admin/documents/document-header";
 import { DocumentList } from "@/components/admin/documents/document-list";
+import { Loading } from "@/components/ui/loading";
 import { documentsApiHooks } from "@/lib/hooks/use-documents";
 
 export const dynamic = "force-dynamic";
@@ -25,11 +26,7 @@ export default function DocumentsPage() {
     : documents;
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-muted-foreground">{t("common.loading")}</div>
-      </div>
-    );
+    return <Loading />;
   }
 
   if (error) {

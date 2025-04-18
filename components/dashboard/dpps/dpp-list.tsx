@@ -31,6 +31,7 @@ import {
 } from "@/components/ui/table";
 import { useDPPs } from "@/lib/hooks/use-dpps";
 import { cn } from "@/lib/utils";
+import { Loading } from "@/components/ui/loading";
 
 interface DPP {
   id: string;
@@ -63,25 +64,7 @@ export function DPPList({ dpps = [], isLoading, error }: DPPListProps) {
   }
 
   if (isLoading) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>
-            <span className="block h-4 w-[200px] animate-pulse rounded-md bg-muted" />
-          </CardTitle>
-          <CardDescription>
-            <span className="block h-4 w-[300px] animate-pulse rounded-md bg-muted" />
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-2">
-            <div className="h-4 w-full animate-pulse rounded-md bg-muted" />
-            <div className="h-4 w-full animate-pulse rounded-md bg-muted" />
-            <div className="h-4 w-full animate-pulse rounded-md bg-muted" />
-          </div>
-        </CardContent>
-      </Card>
-    );
+    return <Loading />;
   }
 
   return (

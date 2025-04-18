@@ -69,6 +69,7 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import { documentsApiHooks } from "@/lib/hooks/use-documents";
 import type { Document } from "@/lib/types/document";
+import { Loading } from "@/components/ui/loading";
 
 interface DocumentListProps {
   initialDocuments?: Document[];
@@ -336,7 +337,7 @@ export function DocumentList({ initialDocuments = [] }: DocumentListProps) {
 
   // Show loading state only if we don't have initial documents
   if ((isLoading || isLoadingProducts) && (!initialDocuments || initialDocuments.length === 0)) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   // Show error only if we don't have initial documents
