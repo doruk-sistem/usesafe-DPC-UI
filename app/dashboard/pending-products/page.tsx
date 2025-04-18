@@ -45,7 +45,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
 import { useAuth } from "@/lib/hooks/use-auth";
-import { productService } from "@/lib/services/product";
+import { productService, ProductService } from "@/lib/services/product";
 
 interface Document {
   id: string;
@@ -91,11 +91,11 @@ export default function PendingProductsPage() {
         return Promise.reject(new Error("User email is not available"));
       }
 
-      return productService.getPendingProducts({
-        email: user.email,
-        page: pageIndex,
-        pageSize,
-      });
+      return ProductService.getPendingProducts(
+        user.email,
+        pageIndex,
+        pageSize
+      );
     },
     enabled: !!user?.email,
   });
