@@ -20,7 +20,6 @@ export class ProductService {
       .order("created_at", { ascending: false });
 
     if (error) {
-      console.error("Error fetching products:", error);
       throw new Error("Failed to fetch products");
     }
 
@@ -108,7 +107,6 @@ export class ProductService {
         .single();
 
       if (error) {
-        console.error("Product creation error:", error);
         return {
           error: {
             message: error.message || "Failed to create product",
@@ -119,7 +117,6 @@ export class ProductService {
 
       return { data };
     } catch (error) {
-      console.error("Error in createProduct:", error);
       return {
         error: {
           message:
@@ -162,7 +159,6 @@ export class ProductService {
         .single();
 
       if (getError) {
-        console.error("Error fetching product for deletion:", getError);
         throw new Error("Failed to fetch product for deletion");
       }
 
@@ -186,13 +182,11 @@ export class ProductService {
       const { error } = await supabase.from("products").delete().eq("id", id);
 
       if (error) {
-        console.error("Error deleting product:", error);
         throw new Error("Failed to delete product");
       }
 
       return true;
     } catch (error) {
-      console.error("Error in deleteProduct:", error);
       throw error;
     }
   }
@@ -214,8 +208,6 @@ export class ProductService {
     currentPage: number;
     totalItems: number;
   }> {
-    console.log("Fetching pending products with email:", email);
-
     // Get the current user's session
     const {
       data: { session },
@@ -223,12 +215,10 @@ export class ProductService {
     } = await supabase.auth.getSession();
 
     if (sessionError) {
-      console.error("Error getting session:", sessionError);
       throw new Error("Failed to get user session");
     }
 
     if (!session) {
-      console.error("No active session found");
       throw new Error("No active session found");
     }
 
@@ -237,7 +227,6 @@ export class ProductService {
     const companyId = userMetadata?.company_id;
 
     if (!companyId) {
-      console.error("No company ID found in user metadata");
       return {
         items: [],
         totalPages: 0,
@@ -245,8 +234,6 @@ export class ProductService {
         totalItems: 0,
       };
     }
-
-    console.log("Found company ID:", companyId);
 
     // Fetch products by manufacturer_id with status DRAFT or NEW
     const { data, error, count } = await supabase
@@ -258,7 +245,6 @@ export class ProductService {
       .order("created_at", { ascending: false });
 
     if (error) {
-      console.error("Error fetching pending products:", error);
       throw new Error("Failed to fetch pending products");
     }
 
@@ -288,7 +274,6 @@ export const productService = createService({
       .order("created_at", { ascending: false });
 
     if (error) {
-      console.error("Error fetching products:", error);
       throw new Error("Failed to fetch products");
     }
     return data || [];
@@ -377,25 +362,20 @@ export const productService = createService({
         .single();
 
       if (error) {
-        console.error("Product creation error:", error);
         return {
           error: {
             message: error.message || "Failed to create product",
             field: error.details,
-            code: error.code,
           },
         };
       }
 
       return { data };
     } catch (error) {
-      console.error("Error in createProduct:", error);
-
       return {
         error: {
           message:
             error instanceof Error ? error.message : "Unknown error occurred",
-          details: error instanceof Error ? error.stack : undefined,
         },
       };
     }
@@ -429,7 +409,6 @@ export const productService = createService({
     const { error } = await supabase.from("products").delete().eq("id", id);
 
     if (error) {
-      console.error("Error deleting product:", error);
       throw new Error("Failed to delete product");
     }
 
@@ -451,12 +430,10 @@ export const productService = createService({
     } = await supabase.auth.getSession();
 
     if (sessionError) {
-      console.error("Error getting session:", sessionError);
       throw new Error("Failed to get user session");
     }
 
     if (!session) {
-      console.error("No active session found");
       throw new Error("No active session found");
     }
 
@@ -465,7 +442,6 @@ export const productService = createService({
     const companyId = userMetadata?.company_id;
 
     if (!companyId) {
-      console.error("No company ID found in user metadata");
       return {
         items: [],
         totalPages: 0,
@@ -484,7 +460,6 @@ export const productService = createService({
       .order("created_at", { ascending: false });
 
     if (error) {
-      console.error("Error fetching pending products:", error);
       throw new Error("Failed to fetch pending products");
     }
 

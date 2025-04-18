@@ -7,8 +7,6 @@ import type {
 
 export class ProductStatusService {
   static isValidTransition(from: ProductStatus, to: ProductStatus): boolean {
-    console.log("isValidTransition çağrıldı:", { from, to });
-    
     const allowedTransitions: Record<string, ProductStatus[]> = {
       DRAFT: ["NEW", "DELETED"],
       NEW: ["ARCHIVED", "DELETED", "approved", "rejected"],
@@ -20,10 +18,7 @@ export class ProductStatusService {
       expired: [],
     };
 
-    const result = allowedTransitions[from as string]?.includes(to) || false;
-    console.log("Geçiş geçerli mi:", result);
-    
-    return result;
+    return allowedTransitions[from as string]?.includes(to) || false;
   }
 
   static async updateStatus(
@@ -33,13 +28,6 @@ export class ProductStatusService {
     reason?: string
   ): Promise<{ success: boolean; error?: string }> {
     try {
-      console.log("updateStatus çağrıldı:", {
-        productId,
-        newStatus,
-        userId,
-        reason
-      });
-
       const { data: product, error: fetchError } = await supabase
         .from("products")
         .select("status, status_history")
@@ -47,22 +35,10 @@ export class ProductStatusService {
         .single();
 
       if (fetchError) {
-        console.error("Ürün getirme hatası:", fetchError);
         throw new Error("Failed to fetch product");
       }
 
-      console.log("Mevcut ürün durumu:", {
-        productId,
-        currentStatus: product.status,
-        targetStatus: newStatus
-      });
-
       if (!this.isValidTransition(product.status, newStatus)) {
-        console.error("Geçersiz durum geçişi:", {
-          from: product.status,
-          to: newStatus,
-          allowedTransitions: this.getAllowedTransitions(product.status)
-        });
         return {
           success: false,
           error: `Invalid status transition from ${product.status} to ${newStatus}`,
@@ -77,8 +53,6 @@ export class ProductStatusService {
         reason,
       };
 
-      console.log("Durum geçişi oluşturuldu:", transition);
-
       const { error: updateError } = await supabase
         .from("products")
         .update({
@@ -88,18 +62,11 @@ export class ProductStatusService {
         .eq("id", productId);
 
       if (updateError) {
-        console.error("Ürün güncelleme hatası:", updateError);
         throw updateError;
       }
 
-      console.log("Ürün durumu başarıyla güncellendi:", {
-        productId,
-        newStatus
-      });
-
       return { success: true };
     } catch (error) {
-      console.error("Error updating product status:", error);
       return {
         success: false,
         error:

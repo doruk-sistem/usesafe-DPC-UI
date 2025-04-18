@@ -88,7 +88,6 @@ export default function PendingProductsPage() {
     queryKey: ["pending-products", pageIndex, pageSize, user?.email],
     queryFn: () => {
       if (!user?.email) {
-        console.error("User email is not available");
         return Promise.reject(new Error("User email is not available"));
       }
 
@@ -123,13 +122,6 @@ export default function PendingProductsPage() {
     }
 
     try {
-      console.log("Onaylama işlemi başlatılıyor:", {
-        productId,
-        userId: user.id,
-        currentStatus: "NEW",
-        targetStatus: "ARCHIVED"
-      });
-
       const { data: product, error: fetchError } = await supabase
         .from("products")
         .select("*")
@@ -137,22 +129,12 @@ export default function PendingProductsPage() {
         .single();
 
       if (fetchError) {
-        console.error("Ürün getirme hatası:", fetchError);
         throw new Error(`Failed to fetch product: ${fetchError.message}`);
       }
 
       if (!product) {
-        console.error("Ürün bulunamadı:", productId);
         throw new Error(`Product not found: ${productId}`);
       }
-
-      console.log("Mevcut ürün durumu:", {
-        productId,
-        currentStatus: product.status,
-        targetStatus: "ARCHIVED",
-        statusHistory: product.status_history,
-        documents: product.documents
-      });
 
       // Doğrudan geçiş: NEW -> ARCHIVED
       const transition = {
@@ -161,8 +143,6 @@ export default function PendingProductsPage() {
         timestamp: new Date().toISOString(),
         userId: user.id
       };
-
-      console.log("Durum geçişi oluşturuldu:", transition);
 
       // Ürünü güncelle - belgelerin durumunu değiştirmeden
       const { data: updateData, error: updateError } = await supabase
@@ -175,21 +155,8 @@ export default function PendingProductsPage() {
         .select();
 
       if (updateError) {
-        console.error("Ürün güncelleme hatası:", {
-          error: updateError,
-          message: updateError.message,
-          details: updateError.details,
-          hint: updateError.hint,
-          code: updateError.code
-        });
         throw new Error(`Failed to update product: ${updateError.message}`);
       }
-
-      console.log("Ürün durumu başarıyla güncellendi:", {
-        productId,
-        updateData,
-        newStatus: "ARCHIVED"
-      });
 
       toast({
         title: "Başarılı",
@@ -198,13 +165,6 @@ export default function PendingProductsPage() {
       // Verileri yenile
       queryClient.invalidateQueries({ queryKey: ["pending-products"] });
     } catch (error) {
-      console.error("Error approving product:", error);
-      console.error("Hata detayları:", {
-        error,
-        errorMessage: error instanceof Error ? error.message : "Bilinmeyen hata",
-        errorStack: error instanceof Error ? error.stack : undefined,
-        errorObject: JSON.stringify(error, null, 2)
-      });
       toast({
         title: "Hata",
         description: error instanceof Error ? error.message : "Ürün onaylanırken bir hata oluştu",
@@ -229,14 +189,6 @@ export default function PendingProductsPage() {
     }
 
     try {
-      console.log("Reddetme işlemi başlatılıyor:", {
-        productId: selectedProductId,
-        userId: user.id,
-        currentStatus: "NEW",
-        targetStatus: "DELETED",
-        rejectionReason: rejectionReason
-      });
-
       const { data: product, error: fetchError } = await supabase
         .from("products")
         .select("*")
@@ -244,22 +196,12 @@ export default function PendingProductsPage() {
         .single();
 
       if (fetchError) {
-        console.error("Ürün getirme hatası:", fetchError);
         throw new Error(`Failed to fetch product: ${fetchError.message}`);
       }
 
       if (!product) {
-        console.error("Ürün bulunamadı:", selectedProductId);
         throw new Error(`Product not found: ${selectedProductId}`);
       }
-
-      console.log("Mevcut ürün durumu:", {
-        productId: selectedProductId,
-        currentStatus: product.status,
-        targetStatus: "DELETED",
-        statusHistory: product.status_history,
-        documents: product.documents
-      });
 
       // Tüm dökümanları reddet
       let updatedDocuments = { ...product.documents };
@@ -269,12 +211,9 @@ export default function PendingProductsPage() {
       if (updatedDocuments && typeof updatedDocuments === 'object') {
         for (const docType in updatedDocuments) {
           if (Array.isArray(updatedDocuments[docType])) {
-            console.log(`Döküman tipi ${docType} için güncelleme yapılıyor:`, updatedDocuments[docType]);
-            
             updatedDocuments[docType] = updatedDocuments[docType].map((doc: any) => {
               if (doc.status === "pending") {
                 documentsUpdated = true;
-                console.log(`Döküman reddediliyor: ${doc.name} (${doc.id})`);
                 return {
                   ...doc,
                   status: "rejected",
@@ -287,9 +226,6 @@ export default function PendingProductsPage() {
         }
       }
 
-      console.log("Güncellenmiş dökümanlar:", updatedDocuments);
-      console.log("Dökümanlar güncellendi mi:", documentsUpdated);
-
       // Doğrudan geçiş: NEW -> DELETED
       const transition = {
         from: product.status,
@@ -298,8 +234,6 @@ export default function PendingProductsPage() {
         userId: user.id,
         reason: rejectionReason
       };
-
-      console.log("Durum geçişi oluşturuldu:", transition);
 
       // Ürünü güncelle
       const { data: updateData, error: updateError } = await supabase
@@ -313,23 +247,8 @@ export default function PendingProductsPage() {
         .select();
 
       if (updateError) {
-        console.error("Ürün güncelleme hatası:", {
-          error: updateError,
-          message: updateError.message,
-          details: updateError.details,
-          hint: updateError.hint,
-          code: updateError.code
-        });
         throw new Error(`Failed to update product: ${updateError.message}`);
       }
-
-      console.log("Ürün durumu başarıyla güncellendi:", {
-        productId: selectedProductId,
-        updateData,
-        newStatus: "DELETED",
-        documentsUpdated,
-        updatedDocuments: updateData?.[0]?.documents
-      });
 
       toast({
         title: "Başarılı",
@@ -343,13 +262,6 @@ export default function PendingProductsPage() {
       setShowRejectDialog(false);
       setRejectionReason("");
     } catch (error) {
-      console.error("Error rejecting product:", error);
-      console.error("Hata detayları:", {
-        error,
-        errorMessage: error instanceof Error ? error.message : "Bilinmeyen hata",
-        errorStack: error instanceof Error ? error.stack : undefined,
-        errorObject: JSON.stringify(error, null, 2)
-      });
       toast({
         title: "Hata",
         description: error instanceof Error ? error.message : "Ürün reddedilirken bir hata oluştu",
@@ -414,7 +326,6 @@ export default function PendingProductsPage() {
       setShowSubManufacturerDialog(false);
       fetchProducts();
     } catch (error) {
-      console.error('Error updating sub manufacturer:', error);
       toast({
         title: "Hata",
         description: "Alt üretici bilgisi güncellenirken bir hata oluştu",
