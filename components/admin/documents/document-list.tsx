@@ -4,10 +4,8 @@ import {
   Eye,
   MoreHorizontal,
   FileText,
-  AlertTriangle,
   CheckCircle,
   XCircle,
-  Clock,
   ChevronDown,
   ChevronRight,
   Download,
@@ -61,15 +59,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
 import { documentsApiHooks } from "@/lib/hooks/use-documents";
 import type { Document } from "@/lib/types/document";
+
+import { getStatusIcon } from "../../../lib/utils/document-utils";
 
 interface DocumentListProps {
   initialDocuments?: Document[];
@@ -299,19 +294,6 @@ export function DocumentList({ initialDocuments = [] }: DocumentListProps) {
         description: "Document URL not available",
         variant: "destructive",
       });
-    }
-  };
-
-  const getStatusIcon = (status: Document["status"]) => {
-    switch (status) {
-      case "approved":
-        return <CheckCircle className="h-4 w-4" />;
-      case "rejected":
-        return <XCircle className="h-4 w-4" />;
-      case "expired":
-        return <AlertTriangle className="h-4 w-4" />;
-      default:
-        return <Clock className="h-4 w-4" />;
     }
   };
 

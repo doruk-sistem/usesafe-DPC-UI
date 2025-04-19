@@ -49,23 +49,6 @@ export function ProductList() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [manufacturerFilter, setManufacturerFilter] = useState("all");
 
-  const getProductStatusDisplay = (status: ProductStatus) => {
-    switch (status) {
-      case "PENDING":
-        return t("admin.products.status.pending");
-      case "DRAFT":
-        return t("admin.products.status.draft");
-      case "APPROVED":
-        return t("admin.products.status.approved");
-      case "REJECTED":
-        return t("admin.products.status.rejected");
-      case "EXPIRED":
-        return t("admin.products.status.expired");
-      default:
-        return t("admin.products.status.unknown");
-    }
-  };
-
   const getProductStatusVariant = (
     status: ProductStatus
   ): "default" | "success" | "warning" | "destructive" | "secondary" => {

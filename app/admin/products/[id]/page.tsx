@@ -15,10 +15,13 @@ import { use } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Loading } from "@/components/ui/loading";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { useProduct } from "@/lib/hooks/use-product";
-import { DocumentStatus } from "@/lib/types/document";
+import { Document, DocumentStatus } from "@/lib/types/document";
 import { ProductStatus } from "@/lib/types/product";
+
+import { getStatusIcon, getStatusColor } from "../../../../lib/utils/document-utils";
 
 interface ProductDetailsProps {
   params: Promise<{
@@ -26,109 +29,19 @@ interface ProductDetailsProps {
   }>;
 }
 
-interface Document {
-  id: string;
-  name: string;
-  status: DocumentStatus;
-  type?: string;
-  validUntil?: string;
-  rejection_reason?: string;
-  [key: string]: any;
-}
-
 export default function ProductDetailsPage({ params }: ProductDetailsProps) {
   const { id } = use(params);
   const t = useTranslations();
-  const {
-    user,
-    company,
-    isLoading: isAuthLoading,
-    isCompanyLoading,
-    isAdmin,
-  } = useAuth();
+  const { isLoading: isAuthLoading } = useAuth();
   const { product, isLoading: isProductLoading, error } = useProduct(id);
 
-  // Debug için console.log ekleyelim
-  console.log("Page State:", {
-    user,
-    company,
-    isAuthLoading,
-    isCompanyLoading,
-    isAdmin: isAdmin(),
-    userRole: user?.user_metadata?.role,
-    product,
-    error,
-    id
-  });
-
-  // Tüm loading state'leri birleştir
-  const isLoading = isAuthLoading || isCompanyLoading || isProductLoading;
+  const isLoading = isAuthLoading || isProductLoading;
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">{t("common.loading")}</p>
-        </div>
-      </div>
-    );
+    return <Loading />;
   }
 
-  // Auth kontrolü
-  if (!user) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen">
-        <h2 className="text-2xl font-semibold mb-4">
-          {t("common.auth.required")}
-        </h2>
-        <p className="text-muted-foreground mb-4">
-          {t("common.auth.loginRequired")}
-        </p>
-        <Button asChild>
-          <Link href="/login">
-            {t("common.buttons.login")}
-          </Link>
-        </Button>
-      </div>
-    );
-  }
-
-  // Admin kullanıcıları için company kontrolünü bypass et
-  if (!isAdmin() && !company) {
-    console.log("Company check failed:", {
-      isAdmin: isAdmin(),
-      company,
-      userRole: user?.user_metadata?.role
-    });
-    
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen">
-        <h2 className="text-2xl font-semibold mb-4">
-          {t("common.auth.required")}
-        </h2>
-        <p className="text-muted-foreground mb-4">
-          {t("common.auth.companyRequired")}
-        </p>
-        <Button asChild>
-          <Link href="/admin">
-            {t("common.buttons.dashboard")}
-          </Link>
-        </Button>
-      </div>
-    );
-  }
-
-  // Hata kontrolünü geliştir
   if (error || !product) {
-    // Only log the error if it's not a simple "not found" case
-    console.error("Product error details:", {
-      error,
-      productData: product,
-      errorMessage: error?.message,
-      id
-    });
-
     return (
       <div className="flex flex-col items-center justify-center min-h-screen">
         <h2 className="text-2xl font-semibold mb-4">
@@ -245,38 +158,6 @@ export default function ProductDetailsPage({ params }: ProductDetailsProps) {
         const displayStatus = currentStatus.productStatus;
       }
     }
-    // Döküman durumuna göre ikon ve renk belirleme
-    const getStatusIcon = (status: DocumentStatus | string) => {
-      const statusLower = (status || "").toLowerCase();
-      switch (statusLower) {
-        case "approved":
-          return <CheckCircle className="h-4 w-4 text-green-500" />;
-        case "rejected":
-          return <XCircle className="h-4 w-4 text-red-500" />;
-        case "pending":
-          return <Clock className="h-4 w-4 text-yellow-500" />;
-        case "expired":
-          return <AlertCircle className="h-4 w-4 text-red-500" />;
-        default:
-          return <FileText className="h-4 w-4 text-gray-500" />;
-      }
-    };
-
-    const getStatusColor = (status: DocumentStatus | string) => {
-      const statusLower = (status || "").toLowerCase();
-      switch (statusLower) {
-        case "approved":
-          return "bg-green-100 text-green-800 hover:bg-green-200";
-        case "rejected":
-          return "bg-red-100 text-red-800 hover:bg-red-200";
-        case "pending":
-          return "bg-yellow-100 text-yellow-800 hover:bg-yellow-200";
-        case "expired":
-          return "bg-red-100 text-red-800 hover:bg-red-200";
-        default:
-          return "bg-gray-100 text-gray-800 hover:bg-gray-200";
-      }
-    };
 
     return (
       <div className="space-y-6">

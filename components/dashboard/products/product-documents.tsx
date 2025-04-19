@@ -7,13 +7,9 @@ import {
   FileText,
   Eye,
   History,
-  AlertTriangle,
   CheckCircle,
   XCircle,
-  Clock,
-  MessageSquare,
   Plus,
-  MoreVertical,
   Edit,
   ChevronDown,
   ChevronUp,
@@ -59,6 +55,7 @@ import {
 } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
 import { updateDocumentStatus } from "@/lib/hooks/use-documents";
+import { getStatusIcon } from "@/lib/utils/document-utils";
 
 interface ProductDocumentsProps {
   productId: string;
@@ -409,30 +406,6 @@ export function ProductDocuments({
     }
   };
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case "approved":
-        return <CheckCircle className="h-4 w-4" />;
-      case "rejected":
-        return <XCircle className="h-4 w-4" />;
-      case "pending":
-        return <Clock className="h-4 w-4" />;
-      default:
-        return <AlertTriangle className="h-4 w-4" />;
-    }
-  };
-
-  const getStatusDisplay = (status: string) => {
-    switch (status) {
-      case "ARCHIVED":
-        return "approved";
-      case "DELETED":
-        return "rejected";
-      default:
-        return status;
-    }
-  };
-
   const getStatusVariant = (status: string) => {
     switch (status) {
       case "ARCHIVED":
@@ -624,7 +597,7 @@ export function ProductDocuments({
             <h3 className="text-lg font-medium mb-2">{product.name}</h3>
             <div className="flex items-center gap-2">
               <Badge variant={getStatusVariant(product.status)}>
-                {getStatusDisplay(product.status).toLowerCase()}
+                {getStatusVariant(product.status).toLowerCase()}
               </Badge>
             </div>
           </div>

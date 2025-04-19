@@ -36,6 +36,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
+import { getStatusIcon } from "../../../lib/utils/document-utils";
+
 export function DocumentList() {
   const t = useTranslations();
 
@@ -87,19 +89,6 @@ export function DocumentList() {
       rejectionReason: "Document signature verification failed",
     },
   ];
-
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case "approved":
-        return <CheckCircle className="h-4 w-4" />;
-      case "rejected":
-        return <XCircle className="h-4 w-4" />;
-      case "expiring":
-        return <AlertTriangle className="h-4 w-4" />;
-      default:
-        return <Clock className="h-4 w-4" />;
-    }
-  };
 
   const getStatusVariant = (status: string) => {
     switch (status) {
