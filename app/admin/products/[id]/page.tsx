@@ -15,8 +15,7 @@ import { Loading } from "@/components/ui/loading";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { useProduct } from "@/lib/hooks/use-product";
 import { Document } from "@/lib/types/document";
-
-import { getStatusIcon, getStatusColor } from "../../../../lib/utils/document-utils";
+import { getStatusIcon, getStatusColor } from "@/lib/utils/document-utils";
 
 interface ProductDetailsProps {
   params: Promise<{
