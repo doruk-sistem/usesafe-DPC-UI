@@ -54,33 +54,13 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
-import { updateDocumentStatus } from "@/lib/hooks/use-documents";
+import { Product } from "@/lib/data/products";
+import { Document } from "@/lib/types/document";
 import { getStatusIcon } from "@/lib/utils/document-utils";
 
 interface ProductDocumentsProps {
   productId: string;
   showApprovalOptions?: boolean;
-}
-
-interface Document {
-  id: string;
-  name: string;
-  url: string;
-  type: string;
-  status: "approved" | "pending" | "rejected" | "expired";
-  validUntil?: string;
-  version: string;
-  uploadedAt: string;
-  fileSize: string;
-  rejection_reason?: string;
-  notes?: string;
-}
-
-interface Product {
-  name: string;
-  status: "DRAFT" | "NEW" | "DELETED" | "ARCHIVED";
-  documents: Record<string, Document[]>;
-  manufacturer_id?: string;
 }
 
 const documentTypeLabels: Record<string, string> = {

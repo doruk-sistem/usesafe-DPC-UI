@@ -16,6 +16,7 @@ export interface Document {
   fileSize?: string;
   validUntil?: string;
   version?: string;
+  notes?: string;
 }
 
 export interface DocumentWithMetadata extends Document {
