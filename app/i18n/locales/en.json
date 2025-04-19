@@ -49,7 +49,15 @@
           "actions": "Actions"
         },
         "actions": {
-          "viewProducts": "View Products"
+          "title": "Actions",
+          "viewProducts": "View Products",
+          "viewDetails": "View Details",
+          "viewDocuments": "View Documents",
+          "edit": "Edit",
+          "delete": "Delete",
+          "approve": "Approve",
+          "reject": "Reject",
+          "suspend": "Suspend"
         }
       },
       "details": {
@@ -90,6 +98,14 @@
           "approve": "Approve",
           "reject": "Reject",
           "suspend": "Suspend"
+        },
+        "error": {
+          "title": "Error",
+          "companyIdRequired": "Company ID is required",
+          "message": "{message}",
+          "generic": "Failed to load company details. Please try again later.",
+          "notFoundTitle": "Not Found",
+          "notFoundMessage": "No company found with the provided ID."
         }
       },
       "status": {

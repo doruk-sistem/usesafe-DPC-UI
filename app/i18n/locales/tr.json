@@ -53,7 +53,10 @@
           "actions": "İşlemler"
         },
         "actions": {
+          "title": "İşlemler",
           "viewProducts": "Ürünleri Görüntüle",
+          "viewDetails": "Detayları Görüntüle",
+          "viewDocuments": "Belgeleri Görüntüle",
           "edit": "Düzenle",
           "delete": "Sil",
           "approve": "Onayla",
@@ -66,7 +69,11 @@
         "loading": "Yükleniyor...",
         "error": {
           "title": "Hata",
-          "description": "Firma bilgileri alınamadı"
+          "companyIdRequired": "Firma ID'si gereklidir",
+          "message": "{message}",
+          "generic": "Firma detayları yüklenirken bir hata oluştu. Lütfen daha sonra tekrar deneyin.",
+          "notFoundTitle": "Bulunamadı",
+          "notFoundMessage": "Belirtilen ID'ye sahip firma bulunamadı"
         },
         "companyInfo": {
           "title": "Firma Bilgileri",

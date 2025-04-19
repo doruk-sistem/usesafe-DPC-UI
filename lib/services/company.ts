@@ -18,19 +18,40 @@ interface SupplierResponse {
 
 // Static metodlar için class
 export class CompanyService {
-  static async getCompany(id: string): Promise<Company | null> {
+  static async getCompany(id: string): Promise<Company> {
+    if (!id) throw new Error("Company ID is required");
+
     const { data, error } = await supabase
       .from("companies")
-      .select("id, name, taxInfo, companyType, status")
+      .select("*")
       .eq("id", id)
       .single();
 
-    if (error) {
-      console.error("Error fetching company:", error);
-      return null;
-    }
+    if (error) throw error;
+    if (!data) throw new Error(`Company not found with id: ${id}`);
 
     return data;
+  }
+
+  static async getCompanies(options: { status?: string; type?: string } = {}): Promise<Company[]> {
+    let query = supabase.from("companies").select("*");
+
+    if (options.status) {
+      query = query.eq("status", options.status);
+    }
+
+    if (options.type) {
+      query = query.eq("companyType", options.type);
+    }
+
+    const { data, error } = await query;
+
+    if (error) {
+      console.error("Error fetching companies:", error);
+      throw error;
+    }
+
+    return data || [];
   }
 
   static async getSuppliers(companyId: string): Promise<Company[]> {
@@ -317,7 +338,7 @@ export const companyService = createService({
     }
   },
 
-  // Üreticileri ara
+
   searchManufacturers: async (query: string): Promise<Company[]> => {
     const { data, error } = await supabase
       .from("companies")

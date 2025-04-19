@@ -23,16 +23,16 @@ interface CompanyDetailsProps {
 
 export function CompanyDetails({ companyId }: CompanyDetailsProps) {
   const t = useTranslations("admin.companies.details");
-  const { company, isLoading, error } = useCompany(companyId);
+  const { data: company, isLoading, error } = useCompany(companyId);
   
   if (!companyId) {
     return (
       <div className="space-y-6">
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Error</AlertTitle>
+          <AlertTitle>{t("error.title")}</AlertTitle>
           <AlertDescription>
-            Company ID is required
+            {t("error.companyIdRequired")}
           </AlertDescription>
         </Alert>
       </div>
@@ -67,9 +67,9 @@ export function CompanyDetails({ companyId }: CompanyDetailsProps) {
       <div className="space-y-6">
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Error</AlertTitle>
+          <AlertTitle>{t("error.title")}</AlertTitle>
           <AlertDescription>
-            {error instanceof Error ? error.message : "Failed to load company details. Please try again later."}
+            {error instanceof Error ? t("error.message", { message: error.message }) : t("error.generic")}
           </AlertDescription>
         </Alert>
       </div>
@@ -81,9 +81,9 @@ export function CompanyDetails({ companyId }: CompanyDetailsProps) {
       <div className="space-y-6">
         <Alert>
           <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Not Found</AlertTitle>
+          <AlertTitle>{t("error.notFoundTitle")}</AlertTitle>
           <AlertDescription>
-            No company found with the provided ID.
+            {t("error.notFoundMessage")}
           </AlertDescription>
         </Alert>
       </div>

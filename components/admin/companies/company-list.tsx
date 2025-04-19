@@ -3,7 +3,7 @@
 import { Building2, Package, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 import { useCompanies } from "../../../lib/hooks/use-company";
-import { Company, CompanyStatus, CompanyType } from "../../../lib/types/company";
+import { Company } from "../../../lib/types/company";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,44 +25,16 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useTranslations } from "next-intl";
 
-const getStatusBadgeVariant = (status: CompanyStatus) => {
+const getStatusBadgeVariant = (status: string) => {
   switch (status) {
-    case CompanyStatus.ACTIVE:
+    case "ACTIVE":
       return "success";
-    case CompanyStatus.INACTIVE:
+    case "INACTIVE":
       return "secondary";
-    case CompanyStatus.PENDING:
+    case "PENDING":
       return "warning";
     default:
       return "secondary";
-  }
-};
-
-const getCompanyTypeLabel = (type: CompanyType) => {
-  switch (type) {
-    case CompanyType.MANUFACTURER:
-      return "Üretici";
-    case CompanyType.BRAND_OWNER:
-      return "Marka Sahibi";
-    case CompanyType.MATERIAL_SUPPLIER:
-      return "Malzeme Tedarikçisi";
-    case CompanyType.FACTORY:
-      return "Fabrika";
-    default:
-      return type;
-  }
-};
-
-const getStatusLabel = (status: CompanyStatus) => {
-  switch (status) {
-    case CompanyStatus.ACTIVE:
-      return "Aktif";
-    case CompanyStatus.INACTIVE:
-      return "Pasif";
-    case CompanyStatus.PENDING:
-      return "Beklemede";
-    default:
-      return status;
   }
 };
 
@@ -130,13 +102,13 @@ export function CompanyList() {
                     <span className="font-medium">{company.name}</span>
                   </div>
                 </TableCell>
-                <TableCell>{getCompanyTypeLabel(company.companyType)}</TableCell>
+                <TableCell>{t(`types.${company.companyType.toLowerCase()}`)}</TableCell>
                 <TableCell>{company.email || "-"}</TableCell>
                 <TableCell>{company.phone || "-"}</TableCell>
                 <TableCell>{company.taxInfo.taxNumber}</TableCell>
                 <TableCell>
                   <Badge variant={getStatusBadgeVariant(company.status)}>
-                    {getStatusLabel(company.status)}
+                    {t(`status.${company.status.toLowerCase()}`)}
                   </Badge>
                 </TableCell>
                 <TableCell>
@@ -153,25 +125,25 @@ export function CompanyList() {
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" size="icon">
                         <MoreHorizontal className="h-4 w-4" />
-                        <span className="sr-only">İşlemler</span>
+                        <span className="sr-only">{t("list.actions.title")}</span>
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>İşlemler</DropdownMenuLabel>
+                      <DropdownMenuLabel>{t("list.actions.title")}</DropdownMenuLabel>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem asChild>
                         <Link href={`/admin/companies/${company.id}`}>
-                          Detayları Görüntüle
+                          {t("list.actions.viewDetails")}
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
                         <Link href={`/admin/companies/${company.id}?tab=products`}>
-                          Ürünleri Görüntüle
+                          {t("list.actions.viewProducts")}
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
                         <Link href={`/admin/companies/${company.id}?tab=documents`}>
-                          Belgeleri Görüntüle
+                          {t("list.actions.viewDocuments")}
                         </Link>
                       </DropdownMenuItem>
                     </DropdownMenuContent>
