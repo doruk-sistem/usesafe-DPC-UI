@@ -3,10 +3,6 @@
 import {
   FileText,
   Package,
-  CheckCircle,
-  XCircle,
-  Clock,
-  AlertCircle,
 } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
@@ -18,8 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loading } from "@/components/ui/loading";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { useProduct } from "@/lib/hooks/use-product";
-import { Document, DocumentStatus } from "@/lib/types/document";
-import { ProductStatus } from "@/lib/types/product";
+import { Document } from "@/lib/types/document";
 
 import { getStatusIcon, getStatusColor } from "../../../../lib/utils/document-utils";
 
@@ -62,13 +57,6 @@ export default function ProductDetailsPage({ params }: ProductDetailsProps) {
   try {
     // Döküman durumunu ve sayısını hesapla
     let documentCount = 0;
-    let documentStatus = t(
-      "admin.products.details.documents.documentStatuses.noDocuments"
-    );
-    let hasRejectedDocuments = false;
-    let hasPendingDocuments = false;
-    let hasExpiredDocuments = false;
-    let hasApprovedDocuments = false;
     const allDocuments: Document[] = [];
 
     if (productData.documents) {
@@ -88,75 +76,6 @@ export default function ProductDetailsPage({ params }: ProductDetailsProps) {
       }
 
       documentCount = allDocuments.length;
-
-      if (documentCount > 0) {
-        // Döküman durumlarını enum olarak tanımlayalım
-        const DocumentStatuses = {
-          REJECTED: "rejected",
-          PENDING: "pending",
-          EXPIRED: "expired",
-          APPROVED: "approved",
-        } as const;
-
-        // Durumları bir Map ile kontrol edelim
-        const statusFlags = {
-          [DocumentStatuses.REJECTED]: () => (hasRejectedDocuments = true),
-          [DocumentStatuses.PENDING]: () => (hasPendingDocuments = true),
-          [DocumentStatuses.EXPIRED]: () => (hasExpiredDocuments = true),
-          [DocumentStatuses.APPROVED]: () => (hasApprovedDocuments = true),
-        };
-
-        // Döküman durumlarını kontrol et
-        allDocuments.forEach((doc) => {
-          const status = (doc.status || "").toLowerCase();
-          // Eğer geçerli bir status varsa ilgili flag'i güncelle
-          statusFlags[status]?.();
-        });
-
-        // Durum öncelik sırası (en önemliden en önemsize)
-        const statusPriority = [
-          {
-            key: "rejected",
-            condition: hasRejectedDocuments,
-            status: "hasRejected",
-            productStatus: "REJECTED" as ProductStatus,
-          },
-          {
-            key: "pending",
-            condition: hasPendingDocuments,
-            status: "pending",
-            productStatus: "PENDING" as ProductStatus,
-          },
-          {
-            key: "expired",
-            condition: hasExpiredDocuments,
-            status: "hasExpired",
-            productStatus: "EXPIRED" as ProductStatus,
-          },
-          {
-            key: "approved",
-            condition: hasApprovedDocuments,
-            status: "allApproved",
-            productStatus: "APPROVED" as ProductStatus,
-          },
-        ];
-
-        // İlk eşleşen durumu bul
-        const currentStatus = statusPriority.find(
-          (status) => status.condition
-        ) || {
-          key: "unknown",
-          status: "unknown",
-          productStatus: "NEW" as ProductStatus,
-        };
-
-        // Döküman durumunu ve ürün durumunu güncelle
-        documentStatus = t(
-          `admin.products.details.documents.documentStatuses.${currentStatus.status}`
-        );
-        // Status'u güncellemek yerine sadece görüntüleme için kullanıyoruz
-        const displayStatus = currentStatus.productStatus;
-      }
     }
 
     return (
@@ -255,12 +174,6 @@ export default function ProductDetailsPage({ params }: ProductDetailsProps) {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm text-muted-foreground">
-                    {t("admin.products.details.documents.documentStatus")}
-                  </p>
-                  <Badge variant="outline">{documentStatus}</Badge>
-                </div>
                 <div className="flex items-center justify-between">
                   <p className="text-sm text-muted-foreground">
                     {t("admin.products.details.documents.totalDocuments")}

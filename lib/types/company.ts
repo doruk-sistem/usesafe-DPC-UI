@@ -1,3 +1,5 @@
+import { DocumentStatus } from "./document";
+
 export enum AddressType {
   HEADQUARTERS = "headquarters",
   BRANCH = "branch",
@@ -23,12 +25,6 @@ export enum DocumentType {
   QUALITY_CERTIFICATE = "quality_certificate",
   EXPORT_CERTIFICATE = "export_certificate",
   PRODUCTION_PERMIT = "production_permit",
-}
-
-export enum DocumentStatus {
-  PENDING = "pending",
-  APPROVED = "approved",
-  REJECTED = "rejected",
 }
 
 export interface Company {
