@@ -10,7 +10,6 @@ import {
   CheckCircle,
   XCircle,
   Plus,
-  Edit,
   ChevronDown,
   ChevronUp,
   X,
@@ -24,7 +23,6 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -81,8 +79,6 @@ export function ProductDocuments({
   const [selectedDocument, setSelectedDocument] = useState<Document | null>(
     null
   );
-  const [rejectionReason, setRejectionReason] = useState("");
-  const [showRejectDialog, setShowRejectDialog] = useState(false);
   const [showDocumentDetails, setShowDocumentDetails] = useState(false);
   const { toast } = useToast();
   const supabase = createClientComponentClient();
@@ -92,8 +88,6 @@ export function ProductDocuments({
   const [documentVersion, setDocumentVersion] = useState<string>("1.0");
   const [validUntil, setValidUntil] = useState<string>("");
   const [notes, setNotes] = useState<string>("");
-  const [showManufacturerDialog, setShowManufacturerDialog] = useState(false);
-  const [manufacturer, setManufacturer] = useState<string>("");
   const [isUploading, setIsUploading] = useState(false);
   const [showUploadForm, setShowUploadForm] = useState(false);
   const [showAdditionalFields, setShowAdditionalFields] = useState(false);
@@ -111,7 +105,6 @@ export function ProductDocuments({
       if (error) throw error;
 
       setProduct(data);
-      setManufacturer(data.manufacturer_id || "");
 
       // Flatten all document arrays into a single array
       const allDocuments: Document[] = [];
@@ -287,103 +280,6 @@ export function ProductDocuments({
 
   const handleRejectDocument = (doc: Document) => {
     setSelectedDocument(doc);
-    setShowRejectDialog(true);
-  };
-
-  const handleRejectConfirm = async () => {
-    if (!selectedDocument) return;
-
-    try {
-      // Doğrudan Supabase'e güncelleme yap
-      const supabase = createClientComponentClient();
-
-      // Önce ürünü al
-      const { data: product, error: fetchError } = await supabase
-        .from("products")
-        .select("*")
-        .eq("id", productId)
-        .single();
-
-      if (fetchError) throw fetchError;
-      if (!product) throw new Error("Product not found");
-
-      // Belgeleri güncelle
-      const updatedDocuments = { ...product.documents };
-      let documentFound = false;
-
-      // Belge tipine göre arama yap
-      if (selectedDocument.type && updatedDocuments[selectedDocument.type]) {
-        const documentArray = updatedDocuments[selectedDocument.type];
-
-        // Belge adına göre eşleştir
-        const documentIndex = documentArray.findIndex(
-          (d: any) => d.name === selectedDocument.name
-        );
-
-        if (documentIndex !== -1) {
-          // Belgeyi güncelle
-          updatedDocuments[selectedDocument.type][documentIndex] = {
-            ...updatedDocuments[selectedDocument.type][documentIndex],
-            status: "rejected",
-            rejection_reason: rejectionReason,
-            rejected_at: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-          };
-          documentFound = true;
-        }
-      }
-
-      if (!documentFound) {
-        throw new Error(
-          `Document with name ${selectedDocument.name} not found in product`
-        );
-      }
-
-      // Ürünü güncelle
-      const { error: updateError } = await supabase
-        .from("products")
-        .update({ documents: updatedDocuments })
-        .eq("id", productId);
-
-      if (updateError) throw updateError;
-
-      // Update local state
-      setDocuments(
-        documents.map((d) => {
-          if (d.id === selectedDocument.id) {
-            return {
-              ...d,
-              status: "rejected",
-              rejection_reason: rejectionReason,
-              rejected_at: new Date().toISOString(),
-            };
-          }
-          return d;
-        })
-      );
-
-      // Invalidate the product query to refresh the data
-      await queryClient.invalidateQueries({ queryKey: ["product", productId] });
-      await queryClient.invalidateQueries({ queryKey: ["products"] });
-
-      toast({
-        title: "Başarılı",
-        description: "Belge reddedildi",
-      });
-
-      setShowRejectDialog(false);
-      setSelectedDocument(null);
-      setRejectionReason("");
-    } catch (error) {
-      console.error("Error rejecting document:", error);
-      toast({
-        title: "Hata",
-        description:
-          "Belge reddedilirken bir hata oluştu: " +
-          (error instanceof Error ? error.message : JSON.stringify(error)),
-        variant: "destructive",
-      });
-    }
   };
 
   const getStatusVariant = (status: string) => {
@@ -492,34 +388,6 @@ export function ProductDocuments({
     }
   };
 
-  const handleUpdateManufacturer = async () => {
-    if (!productId) return;
-
-    try {
-      const { error } = await supabase
-        .from('products')
-        .update({ manufacturer_id: manufacturer })
-        .eq('id', productId);
-
-      if (error) throw error;
-
-      toast({
-        title: "Başarılı",
-        description: "Üretici bilgisi güncellendi",
-      });
-
-      setShowManufacturerDialog(false);
-      fetchProduct();
-    } catch (error) {
-      console.error('Error updating manufacturer:', error);
-      toast({
-        title: "Hata",
-        description: "Üretici bilgisi güncellenirken bir hata oluştu",
-        variant: "destructive",
-      });
-    }
-  };
-
   if (isLoading) {
     return <Loading />;
   }
@@ -544,15 +412,6 @@ export function ProductDocuments({
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>Product Documents</CardTitle>
           <div className="flex gap-2">
-            <Button
-              onClick={() => setShowManufacturerDialog(true)}
-              size="sm"
-              variant="outline"
-              className="flex items-center gap-2"
-            >
-              <Edit className="h-4 w-4" />
-              Alt Üretici Ekle/Düzenle
-            </Button>
             <Button
               onClick={() => setShowUploadForm(!showUploadForm)}
               size="sm"
@@ -899,76 +758,6 @@ export function ProductDocuments({
               </div>
             )}
           </div>
-        </DialogContent>
-      </Dialog>
-
-      {showApprovalOptions && (
-        <Dialog open={showRejectDialog} onOpenChange={setShowRejectDialog}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Belgeyi Reddet</DialogTitle>
-              <DialogDescription>
-                Lütfen reddetme sebebini belirtin.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="space-y-4">
-              <Label htmlFor="rejection-reason">Reddetme Sebebi</Label>
-              <Textarea
-                id="rejection-reason"
-                value={rejectionReason}
-                onChange={(e) => setRejectionReason(e.target.value)}
-                placeholder="Reddetme sebebini girin..."
-              />
-            </div>
-            <DialogFooter>
-              <Button
-                variant="outline"
-                onClick={() => setShowRejectDialog(false)}
-              >
-                İptal
-              </Button>
-              <Button variant="destructive" onClick={handleRejectConfirm}>
-                Reddet
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      )}
-
-      {/* Üretici Dialog'u */}
-      <Dialog open={showManufacturerDialog} onOpenChange={setShowManufacturerDialog}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Alt Üretici Bilgisi</DialogTitle>
-            <DialogDescription>
-              Ürün için alt üretici bilgisini girin veya düzenleyin
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="grid gap-4 py-4">
-            <div className="space-y-2">
-              <Label htmlFor="manufacturer">Alt Üretici</Label>
-              <input
-                id="manufacturer"
-                value={manufacturer}
-                onChange={(e) => setManufacturer(e.target.value)}
-                placeholder="Alt üretici adı"
-                className="w-full p-2 border rounded"
-              />
-            </div>
-          </div>
-
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setShowManufacturerDialog(false)}
-            >
-              İptal
-            </Button>
-            <Button onClick={handleUpdateManufacturer}>
-              Kaydet
-            </Button>
-          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
