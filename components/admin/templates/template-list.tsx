@@ -31,6 +31,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Error } from "@/components/ui/error";
 import {
   Table,
   TableBody,
@@ -72,7 +73,7 @@ export function DPPTemplateList() {
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return <Error error={error} />;
   }
 
   if (templates.length === 0) {

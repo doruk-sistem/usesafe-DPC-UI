@@ -1,72 +1,72 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useEffect, useState, useCallback } from "react";
-import { supabase } from "@/lib/supabase/client";
 import type {
-  Session,
   User as SupabaseUser,
   UserAttributes,
 } from "@supabase/supabase-js";
+import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
 
-import { useCompany } from "./use-company";
+import { useToast } from "@/components/ui/use-toast";
+import { companyApiHooks } from "@/lib/hooks/use-company";
+import { supabase } from "@/lib/supabase/client";
 
-// Kullanıcı tipini genişletiyoruz çünkü user_metadata'ya ihtiyacımız var
-interface ExtendedUser extends SupabaseUser {
-  user_metadata: {
-    role?: string;
-    full_name?: string;
-    company_id?: string;
-    [key: string]: any;
-  };
-}
 
 export function useAuth() {
-  const router = useRouter();
-
-  const [user, setUser] = useState<ExtendedUser | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
+  const [user, setUser] = useState<SupabaseUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const { toast } = useToast();
+  const router = useRouter();
+  const t = useTranslations("auth");
 
   const {
     data: company,
     isLoading: isCompanyLoading,
-    error: companyError
-  } = useCompany(user?.user_metadata?.company_id || "");
-
-  const getSession = useCallback(async () => {
-    const { data, error } = await supabase.auth.getSession();
-    if (error) {
-      console.error("getSession error", error);
-      return;
-    }
-
-    setSession(data.session);
-    setUser((data.session?.user as ExtendedUser) || null);
-    setIsLoading(false);
-  }, []);
+    isFetched: isCompanyFetched,
+  } = companyApiHooks.useGetCompanyQuery(
+    { id: user?.user_metadata?.company_id },
+    { enabled: !!user?.user_metadata?.company_id }
+  );
 
   useEffect(() => {
-    getSession();
-
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-      setUser((session?.user as ExtendedUser) || null);
+      setUser(session?.user ?? null);
+      setIsLoading(false);
+    });
+
+    // Initial session check
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+      setIsLoading(false);
     });
 
     return () => subscription.unsubscribe();
-  }, [getSession]);
+  }, []);
 
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
     if (error) throw error;
 
-    const { data } = await supabase.auth.getUser();
-    setUser(data.user as ExtendedUser);
+    // Get session after sign in
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
 
-    if (data.user?.user_metadata?.role === "admin") {
+    // Show success toast with hardcoded message
+    toast({
+      title: "Login Successful",
+      description: "You have been successfully logged in.",
+    });
+
+    // Redirect based on role
+    if (session?.user?.user_metadata?.role === "admin") {
       router.push("/admin");
     } else {
       router.push("/dashboard");
@@ -76,60 +76,102 @@ export function useAuth() {
   const signUp = async (
     email: string,
     password: string,
-    metadata: ExtendedUser["user_metadata"] = {}
+    metadata: {
+      role: "admin" | "manufacturer";
+      full_name: string;
+      company_id: string;
+    }
   ) => {
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { data: metadata },
-    });
-    if (error) throw error;
+    try {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: metadata,
+        },
+      });
+      if (error) throw error;
+
+      toast({
+        title: t("success.signUp.title"),
+        description: t("success.signUp.description"),
+      });
+
+      router.push("/auth/verify-email");
+    } catch (error) {
+      toast({
+        title: t("errors.signUp.title"),
+        description: t("errors.signUp.description"),
+        variant: "destructive",
+      });
+    }
   };
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) throw error;
-    setUser(null);
-    setSession(null);
-    router.push("/");
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      router.push("/auth/login");
+    } catch (error) {
+      toast({
+        title: t("errors.signOut.title"),
+        description: t("errors.signOut.description"),
+        variant: "destructive",
+      });
+    }
   };
 
   const updateUser = async (attributes: UserAttributes) => {
-    const { error } = await supabase.auth.updateUser(attributes);
-    if (error) throw error;
-  };
+    try {
+      const { error } = await supabase.auth.updateUser({
+        data: attributes,
+      });
+      if (error) throw error;
 
-  const verifyOtp = async (token: string, type: string) => {
-    const { error } = await supabase.auth.verifyOtp({
-      token_hash: token,
-      type: type as any,
-    });
-
-    if (error) throw error;
-
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-
-    return { session };
+      toast({
+        title: t("success.updateUser.title"),
+        description: t("success.updateUser.description"),
+      });
+    } catch (error) {
+      toast({
+        title: t("errors.updateUser.title"),
+        description: t("errors.updateUser.description"),
+        variant: "destructive",
+      });
+    }
   };
 
   const isAdmin = () => {
     return user?.user_metadata?.role === "admin";
   };
 
+  const verifyOtp = async (token: string, type: string) => {
+    const { error } = await supabase.auth.verifyOtp({
+      token_hash: token,
+      type: type as any, // 'signup', 'email' veya 'recovery' olabilir
+    });
+    
+    if (error) throw error;
+    
+    // Get session after verification
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    
+    return { session };
+  };
+
   return {
     user,
-    session,
+    company,
+    isCompanyLoading,
+    isCompanyFetched,
     isLoading,
     signIn,
     signUp,
     signOut,
+    isAdmin,
     updateUser,
     verifyOtp,
-    isAdmin,
-    company,
-    isCompanyLoading,
-    companyError,
   };
 }

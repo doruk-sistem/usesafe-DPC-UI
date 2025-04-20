@@ -2,12 +2,18 @@
 
 import { Download, Plus } from "lucide-react";
 import Link from "next/link";
-import { useState, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
+import { useState, useEffect, useRef } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface ProductHeaderProps {
   onSearch?: (term: string) => void;
@@ -37,7 +43,7 @@ export function ProductHeader({
       if (onSearch) {
         onSearch(searchTerm);
       }
-    }, 300); 
+    }, 300);
 
     return () => clearTimeout(delayDebounceFn);
   }, [searchTerm, onSearch]);
@@ -60,9 +66,7 @@ export function ProductHeader({
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
         <h1 className="text-2xl font-semibold">{t("title")}</h1>
-        <p className="text-sm text-muted-foreground">
-          {t("description")}
-        </p>
+        <p className="text-sm text-muted-foreground">{t("description")}</p>
       </div>
 
       <div className="flex flex-col sm:flex-row items-center gap-2">
@@ -74,27 +78,37 @@ export function ProductHeader({
         />
 
         <Select value={filter} onValueChange={handleFilterChange}>
-          <SelectTrigger className="w-full sm:w-[160px]">
+          <SelectTrigger className="w-[180px]">
             <SelectValue placeholder={t("filters.type.label")} />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">{t("filters.type.all")}</SelectItem>
             <SelectItem value="agm">{t("filters.type.agm")}</SelectItem>
             <SelectItem value="efb">{t("filters.type.efb")}</SelectItem>
-            <SelectItem value="standard">{t("filters.type.standard")}</SelectItem>
+            <SelectItem value="standard">
+              {t("filters.type.standard")}
+            </SelectItem>
             <SelectItem value="marine">{t("filters.type.marine")}</SelectItem>
           </SelectContent>
         </Select>
 
         <Select value={status} onValueChange={handleStatusChange}>
-          <SelectTrigger className="w-full sm:w-[160px]">
+          <SelectTrigger className="w-[180px]">
             <SelectValue placeholder={t("filters.status.label")} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all-status">{t("filters.status.all")}</SelectItem>
-            <SelectItem value="active">{t("filters.status.active")}</SelectItem>
-            <SelectItem value="pending">{t("filters.status.pending")}</SelectItem>
-            <SelectItem value="draft">{t("filters.status.draft")}</SelectItem>
+            <SelectItem value="all-status">
+              {t("filters.status.all")}
+            </SelectItem>
+            <SelectItem value="approved">
+              {t("filters.status.APPROVED")}
+            </SelectItem>
+            <SelectItem value="rejected">
+              {t("filters.status.REJECTED")}
+            </SelectItem>
+            <SelectItem value="pending">
+              {t("filters.status.PENDING")}
+            </SelectItem>
           </SelectContent>
         </Select>
 

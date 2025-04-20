@@ -2,8 +2,8 @@
 
 import { Html5Qrcode } from "html5-qrcode";
 import { Camera } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
+import { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";

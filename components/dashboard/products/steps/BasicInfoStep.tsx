@@ -18,7 +18,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { PRODUCT_TYPE_OPTIONS, type SubcategoryOption } from "@/lib/constants/product-types";
+import {
+  PRODUCT_TYPE_OPTIONS,
+  type SubcategoryOption,
+} from "@/lib/constants/product-types";
 import type { KeyFeature, NewProduct } from "@/lib/types/product";
 import type { Json } from "@/lib/types/supabase";
 
@@ -39,7 +42,13 @@ const selectClassNames = {
       isFocused ? "border-primary ring-2 ring-primary" : "border-input"
     ),
   menu: () => "border border-input rounded-md shadow-lg",
-  option: ({ isFocused, isSelected }: { isFocused: boolean; isSelected: boolean }) =>
+  option: ({
+    isFocused,
+    isSelected,
+  }: {
+    isFocused: boolean;
+    isSelected: boolean;
+  }) =>
     clsx(
       "px-3 py-2 cursor-pointer",
       (isFocused || isSelected) && "bg-primary text-white"
@@ -48,24 +57,24 @@ const selectClassNames = {
 
 export function BasicInfoStep({ form }: BasicInfoStepProps) {
   const [subcategories, setSubcategories] = useState<SubcategoryOption[]>([]);
-  
+
   const productType = form.watch("product_type");
-  
+
   useEffect(() => {
     // Find the selected product type and get its subcategories
     const selectedProductType = PRODUCT_TYPE_OPTIONS.find(
       (option) => option.value === productType
     );
-    
+
     if (selectedProductType) {
       setSubcategories(selectedProductType.subcategories);
-      
+
       // Clear subcategory selection if the product type changes and there's no matching subcategory
       const currentSubcategory = form.getValues("product_subcategory");
       const subcategoryExists = selectedProductType.subcategories.some(
         (sub) => sub.value === currentSubcategory
       );
-      
+
       if (!subcategoryExists && currentSubcategory) {
         form.setValue("product_subcategory", "");
       }
@@ -143,7 +152,7 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
                             url: URL.createObjectURL(file),
                             alt: file.name,
                             is_primary: field.value.length === 0,
-                            fileObject: file
+                            fileObject: file,
                           };
                           field.onChange([...field.value, newImage]);
                         }
@@ -182,10 +191,13 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
               <FormControl>
                 <Select
                   options={PRODUCT_TYPE_OPTIONS}
-                  value={PRODUCT_TYPE_OPTIONS.find(option => option.value === field.value)}
+                  value={PRODUCT_TYPE_OPTIONS.find(
+                    (option) => option.value === field.value
+                  )}
                   onChange={(selectedOption: OptionType | null) => {
                     const newValue = selectedOption?.value || "";
                     field.onChange(newValue);
+
                     form.setValue("product_subcategory", "");
                   }}
                   placeholder="Select Product Type"
@@ -206,7 +218,9 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
               <FormControl>
                 <Select
                   options={subcategories}
-                  value={subcategories.find((option) => option.value === field.value)}
+                  value={subcategories.find(
+                    (option) => option.value === field.value
+                  )}
                   onChange={(selectedOption: OptionType | null) => {
                     field.onChange(selectedOption?.value || "");
                   }}
@@ -228,7 +242,29 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
             <FormItem>
               <FormLabel>Model</FormLabel>
               <FormControl>
-                <Input placeholder="Enter product model" {...field} />
+                <Select
+                  options={
+                    PRODUCT_TYPE_OPTIONS.find(
+                      (option) => option.value === form.watch("product_type")
+                    )?.subcategories || []
+                  }
+                  value={
+                    PRODUCT_TYPE_OPTIONS.find(
+                      (option) => option.value === form.watch("product_type")
+                    )?.subcategories.find((sub) => sub.value === field.value) ||
+                    null
+                  }
+                  onChange={(selectedOption: OptionType | null) => {
+                    const newValue = selectedOption?.value || "";
+                    field.onChange(newValue);
+                  }}
+                  placeholder="Select Model"
+                  classNames={selectClassNames}
+                  isDisabled={
+                    !form.watch("product_type") ||
+                    form.watch("product_type") === "please_select"
+                  }
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -239,13 +275,18 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
           control={form.control}
           name="description"
           render={({ field }) => (
-            <FormItem className={subcategories.length > 0 ? "md:col-span-1" : "col-span-2"}>
+            <FormItem
+              className={
+                subcategories.length > 0 ? "md:col-span-1" : "col-span-2"
+              }
+            >
               <FormLabel>Description</FormLabel>
               <FormControl>
                 <Textarea
                   placeholder="Enter product description"
                   className="min-h-[100px]"
                   {...field}
+                  value={field.value || ''}
                 />
               </FormControl>
               <FormMessage />
@@ -262,14 +303,14 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
                 <FormLabel>Key Features</FormLabel>
                 <FormControl>
                   <div className="space-y-4">
-                    {(Array.isArray(field.value) ? field.value : []).map(
+                    {((field.value || []) as KeyFeature[]).map(
                       (feature: KeyFeature, index: number) => (
                         <div key={index} className="flex gap-4">
                           <Input
                             placeholder="Feature name"
                             value={feature.name}
                             onChange={(e) => {
-                              const newFeatures = [...field.value];
+                              const newFeatures = [...(field.value || []) as KeyFeature[]];
                               newFeatures[index] = {
                                 ...feature,
                                 name: e.target.value,
@@ -281,7 +322,7 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
                             placeholder="Value"
                             value={feature.value}
                             onChange={(e) => {
-                              const newFeatures = [...field.value];
+                              const newFeatures = [...(field.value || []) as KeyFeature[]];
                               newFeatures[index] = {
                                 ...feature,
                                 value: e.target.value,
@@ -293,7 +334,7 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
                             placeholder="Unit (optional)"
                             value={feature.unit || ""}
                             onChange={(e) => {
-                              const newFeatures = [...field.value];
+                              const newFeatures = [...(field.value || []) as KeyFeature[]];
                               newFeatures[index] = {
                                 ...feature,
                                 unit: e.target.value || undefined,
@@ -306,7 +347,7 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
                             variant="destructive"
                             size="icon"
                             onClick={() => {
-                              const newFeatures = [...field.value];
+                              const newFeatures = [...(field.value || []) as KeyFeature[]];
                               newFeatures.splice(index, 1);
                               field.onChange(newFeatures);
                             }}
@@ -326,7 +367,7 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
                           unit: undefined,
                         };
                         field.onChange([
-                          ...(Array.isArray(field.value) ? field.value : []),
+                          ...((field.value || []) as KeyFeature[]),
                           newFeature,
                         ]);
                       }}

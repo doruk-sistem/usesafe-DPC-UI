@@ -1,11 +1,13 @@
 "use client";
 
 import { Plus, X } from "lucide-react";
-import { useCallback } from "react";
+import { useTranslations } from "next-intl";
+import { useCallback, useState, useEffect } from "react";
 import { UseFormReturn } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   FormControl,
   FormField,
@@ -38,9 +40,36 @@ interface DocumentUploadStepProps {
 export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
   const { user } = useAuth();
   const { toast } = useToast();
+  const [isVerified, setIsVerified] = useState(false);
+  const t = useTranslations();
 
   const companyId =
     user?.user_metadata?.company_id || "7d26ed35-49ca-4c0d-932e-52254fb0e5b8";
+
+  // Form trigger metodunu sadece bu komponentin yaşam döngüsü boyunca override edelim
+  useEffect(() => {
+    const originalTrigger = form.trigger;
+
+    // Override the trigger method
+    form.trigger = async (name?: string | string[]) => {
+      if (!isVerified) {
+        toast({
+          title: t("admin.products.steps.documentUpload.verificationRequired"),
+          description: t(
+            "admin.products.steps.documentUpload.pleaseVerifyDocuments"
+          ),
+          variant: "destructive",
+        });
+        return false;
+      }
+      return originalTrigger(name);
+    };
+
+    // Cleanup function to restore the original trigger method
+    return () => {
+      form.trigger = originalTrigger;
+    };
+  }, [form, isVerified, toast]);
 
   // ✅ Dosya yükleme işlemi
   const handleDocumentUpload = useCallback(
@@ -53,7 +82,7 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
         return {
           success: false,
           documents: existingDocs,
-          errors: ["Invalid upload parameters"],
+          errors: [t("admin.products.steps.documentUpload.invalidUploadParameters")],
         };
       }
 
@@ -70,10 +99,14 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
           (DOCUMENT_TYPE_CONFIG[docType]?.maxSize || 10 * 1024 * 1024);
 
         if (!isValidType) {
-          errors.push(`${file.name}: Invalid file type`);
+          errors.push(
+            `${file.name}: ${t("admin.products.steps.documentUpload.invalidFileType")}`
+          );
         }
         if (!isValidSize) {
-          errors.push(`${file.name}: File size exceeds limit`);
+          errors.push(
+            `${file.name}: ${t("admin.products.steps.documentUpload.fileSizeExceedsLimit")}`
+          );
         }
 
         return isValidType && isValidSize;
@@ -139,7 +172,7 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
 
       if (result.errors.length > 0) {
         toast({
-          title: "Upload Issues",
+          title: t("admin.products.steps.documentUpload.uploadIssues"),
           description: result.errors.join("\n"),
           variant: "destructive",
         });
@@ -154,10 +187,11 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
   return (
     <Card className="p-6 space-y-6">
       <div>
-        <h3 className="text-lg font-semibold">Product Documents</h3>
+        <h3 className="text-lg font-semibold">
+          {t("admin.products.steps.documentUpload.productDocuments")}
+        </h3>
         <p className="text-sm text-muted-foreground">
-          Upload relevant documents for your product. All documents are
-          optional.
+          {t("admin.products.steps.documentUpload.uploadDocuments")}
         </p>
       </div>
 
@@ -222,7 +256,7 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
                       }}
                     >
                       <Plus className="h-4 w-4 mr-2" />
-                      Add Document
+                      {t("admin.products.steps.documentUpload.addDocument")}
                     </Button>
                   </div>
                 </div>
@@ -232,6 +266,28 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
           )}
         />
       ))}
+
+      {/* Doküman doğrulama checkbox'ı */}
+      <div className="flex items-start space-x-3 space-y-0 rounded-md border p-4 mt-6">
+        <Checkbox
+          id="documents-verification"
+          checked={isVerified}
+          onCheckedChange={(checked) => setIsVerified(checked === true)}
+        />
+        <div className="space-y-1 leading-none">
+          <label
+            htmlFor="documents-verification"
+            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+          >
+            {t("admin.products.steps.documentUpload.verifyDocuments")}
+          </label>
+          <p className="text-sm text-muted-foreground">
+            {t(
+              "admin.products.steps.documentUpload.verifyDocumentsDescription"
+            )}
+          </p>
+        </div>
+      </div>
     </Card>
   );
 }

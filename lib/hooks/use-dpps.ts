@@ -11,7 +11,7 @@ export function useDPPs() {
   const [error, setError] = useState<string | null>(null);
   const { user } = useAuth();
 
-  const companyId = user?.user_metadata["company_id"] || "7d26ed35-49ca-4c0d-932e-52254fb0e5b8";
+  const companyId = user?.user_metadata?.company_id || "7d26ed35-49ca-4c0d-932e-52254fb0e5b8";
 
   useEffect(() => {
     const fetchDPPs = async () => {

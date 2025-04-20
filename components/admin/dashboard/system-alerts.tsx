@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
-import { Card } from "@/components/ui/card";
-import { getSystemAlerts, type SystemAlert } from "@/app/api/metrics/route";
-import { supabase } from "@/lib/supabase/client";
 import { motion } from "framer-motion";
 import { AlertTriangle, AlertCircle, Info } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
+
+import { Card } from "@/components/ui/card";
+import { Error } from "@/components/ui/error";
+import { getSystemAlerts, type SystemAlert } from "@/lib/hooks/useMetrics";
 
 export function SystemAlerts() {
   const t = useTranslations("adminDashboard");
@@ -27,22 +28,6 @@ export function SystemAlerts() {
     };
 
     fetchAlerts();
-
-    // Set up real-time subscription
-    const subscription = supabase
-      .channel('system-alerts')
-      .on('postgres_changes', { 
-        event: '*', 
-        schema: 'public',
-        table: 'system_alerts'
-      }, () => {
-        fetchAlerts();
-      })
-      .subscribe();
-
-    return () => {
-      subscription.unsubscribe();
-    };
   }, []);
 
   const getSeverityIcon = (severity: string) => {
@@ -68,11 +53,7 @@ export function SystemAlerts() {
   };
 
   if (error) {
-    return (
-      <div className="p-4 text-red-500 bg-red-50 rounded-lg">
-        {error}
-      </div>
-    );
+    return <Error error={error} />;
   }
 
   return (

@@ -1,11 +1,12 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+import { use } from "react";
+
 import { DocumentDetails } from "@/components/admin/documents/document-details";
 import { DocumentHistory } from "@/components/admin/documents/document-history";
 import { DocumentValidation } from "@/components/admin/documents/document-validation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useTranslations } from "next-intl";
-import { use } from "react";
 
 export default function DocumentPage(props: { params: Promise<{ id: string }> }) {
   const t = useTranslations("documentManagement.repository");

@@ -1,4 +1,3 @@
-import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase/client';
 
 export interface DashboardMetrics {
@@ -25,7 +24,7 @@ export interface SystemAlert {
   timestamp: Date;
 }
 
-export async function GET() {
+export async function getDashboardMetrics(): Promise<DashboardMetrics> {
   try {
     const { count: manufacturersCount } = await supabase
       .from('companies')
@@ -72,10 +71,10 @@ export async function GET() {
       ? ((safeManufacturersCount - safeLastMonthManufacturers) / safeLastMonthManufacturers) * 100
       : 0;
 
-    const metrics: DashboardMetrics = {
-      totalManufacturers: {
-        count: safeManufacturersCount,
-        change: manufacturersChange
+    return {
+      totalManufacturers: { 
+        count: safeManufacturersCount, 
+        change: manufacturersChange 
       },
       pendingApprovals: {
         count: pendingApprovalsCount ?? 0,
@@ -98,11 +97,9 @@ export async function GET() {
         change: 1.2
       }
     };
-
-    return NextResponse.json(metrics);
   } catch (error) {
     console.error('Error fetching dashboard metrics:', error);
-    return NextResponse.json({ error: 'Failed to fetch metrics' }, { status: 500 });
+    throw error;
   }
 }
 
