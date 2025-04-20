@@ -3,8 +3,9 @@
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Shield } from "lucide-react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter , redirect } from "next/navigation";
 import { useState, useEffect, Suspense } from "react";
+
 
 import { Button } from "@/components/ui/button";
 import {
@@ -80,7 +81,7 @@ function CallbackContent() {
 
       setLoading(false);
 
-      router.push(params.next);
+      router.push(hashParams.next);
       
       // If this is an invite flow (as indicated by type=invite in hash)
       // if (params.type === 'invite') {
@@ -88,7 +89,7 @@ function CallbackContent() {
       //   // or implement any other invite-specific logic
       // } else {
       //   // For regular sign-in, redirect to the next page
-      //   router.push(params.next);
+      //   router.push(hashParams.next);
       // }
     } catch (error) {
       console.error("Auth error:", error);
@@ -112,6 +113,7 @@ function CallbackContent() {
           
           if (error) {
             // Kullanıcı henüz doğrulanmamış, bu normal
+            console.log("Kullanıcı henüz doğrulanmamış:", error);
             return;
           }
           
@@ -324,23 +326,27 @@ function CallbackContent() {
 }
 
 export default function AuthCallback() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const code = searchParams.get('code');
-  const next = searchParams.get('next') || '/dashboard';
-
-  useEffect(() => {
-    if (code) {
-      router.push(next);
-    }
-  }, [code, next, router]);
-
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      <div className="text-center">
-        <h1 className="text-2xl font-semibold text-gray-900">Processing authentication...</h1>
-        <p className="mt-2 text-gray-600">Please wait while we complete your sign in.</p>
+    <div className="container max-w-md mx-auto py-10 px-4">
+      <div className="flex flex-col items-center text-center mb-10">
+        <Shield className="h-12 w-12 text-primary mb-4" />
+        <h1 className="text-3xl font-bold mb-2">Hoş Geldiniz</h1>
+        <p className="text-muted-foreground">
+          UseSafe platformunun Dijital Ürün Sertifikası sistemine katılın
+        </p>
       </div>
+
+      <Suspense
+        fallback={
+          <Card>
+            <CardHeader>
+              <CardTitle>Yükleniyor...</CardTitle>
+            </CardHeader>
+          </Card>
+        }
+      >
+        <CallbackContent />
+      </Suspense>
     </div>
   );
 } 
