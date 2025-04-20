@@ -40,11 +40,6 @@ export function LoginForm({ from }: LoginFormProps) {
   const onSubmit = async (data: FormData) => {
     try {
       await signIn(data.email, data.password);
-
-      toast({
-        title: "Success",
-        description: "Logged in successfully",
-      });
     } catch (error) {
       // Check if error is AuthError from Supabase
       if (error instanceof Error) {

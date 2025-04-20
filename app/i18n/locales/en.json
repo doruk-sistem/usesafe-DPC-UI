@@ -9,6 +9,12 @@
     "verifyProducts": "Verify Products",
     "signIn": "Sign In"
   },
+  "pages": {           
+    "pendingProducts": {
+      "title": "Pending Products",
+      "description": "List of products pending approval"
+    }
+  },
   "error": {
     "404": {
       "title": "404",
@@ -62,7 +68,8 @@
       "dpps": "DPPs",
       "suppliers": "Suppliers",
       "documents": "Documents",
-      "certifications": "Certifications"
+      "certifications": "Certifications",
+      "pendingProducts": "Pending Products"
     },
     "registration": {
       "title": "Registration",
@@ -260,6 +267,7 @@
   "products": {
     "title": "Certified Products",
     "description": "Explore our collection of certified sustainable products with verified Digital Product Passports.",
+    "loading": "Loading products...",
     "list": {
       "categories": {
         "textile": "Textile",
@@ -482,7 +490,8 @@
         "status": "Status",
         "createdAt": "Created At",
         "actions": "Actions",
-        "basicInfo": "Basic Info"
+        "basicInfo": "Basic Info",
+        "manufacturer": "Manufacturer"
       }
     },
     "delete": {
@@ -551,7 +560,8 @@
         "basicInfo": "Basic Info",
         "status": "Status",
         "createdAt": "Created At",
-        "actions": "Actions"
+        "actions": "Actions",
+        "manufacturer": "Manufacturer"
       }
     },
     "actions": {
@@ -622,6 +632,47 @@
       "draft": "Draft",
       "active": "Active",
       "pending": "Pending"
+    },
+    "loading": "Loading...",
+    "buttons": {
+      "back": "Back",
+      "login": "Login",
+      "dashboard": "Go to Dashboard",
+      "addNew": "Add New",
+      "viewDetails": "View Details"
+    },
+
+    "auth": {
+      "required": "Authentication Required",
+      "loginRequired": "You need to login to view this page.",
+      "companyRequired": "Please make sure you are associated with a company."
+    },
+    "labels": {
+      "notAvailable": "Not Available"
+    },
+    "error": {
+      "title": "Error",
+      "description": "An error occurred",
+      "tryAgain": "Please try again",
+      "notFound": "Not Found",
+      "unauthorized": "Unauthorized Access",
+      "forbidden": "Access Denied",
+      "serverError": "Server Error"
+    },
+    "success": {
+      "title": "Success",
+      "saved": "Saved",
+      "updated": "Updated",
+      "deleted": "Deleted",
+      "created": "Created"
+    },
+    "validation": {
+      "required": "This field is required",
+      "email": "Please enter a valid email address",
+      "minLength": "Must be at least {length} characters",
+      "maxLength": "Must be at most {length} characters",
+      "password": "Password must be at least 8 characters",
+      "passwordMatch": "Passwords do not match"
     }
   },
   "productCategories": {
@@ -869,7 +920,75 @@
       "manufacturers": "Manufacturers",
       "documents": "Documents",
       "certifications": "Certifications",
-      "dppTemplates": "DPP Templates"
+      "dppTemplates": "DPP Templates",
+      "products": "Products"
+    },
+    "products": {
+      "title": "Products",
+      "description": "Manage and review all products in the system",
+      "loading": "Loading products...",
+      "searchPlaceholder": "Search products...",
+      "filterByManufacturer": "Filter by manufacturer",
+      "filterByStatus": "Filter by status",
+      "allManufacturers": "All Manufacturers",
+      "allStatus": "All Status",
+      "allApproved": "All Approved",
+      "pendingReview": "Pending Review",
+      "hasRejectedDocuments": "Has Rejected Documents",
+      "noDocuments": "No Documents",
+      "noProductsFound": "No Products Found",
+      "noProductsAdded": "No products have been added yet.",
+      "noProductsMatchFilter": "No products match the current filter criteria.",
+      "manufacturer": "Manufacturer",
+      "category": "Category",
+      "documents": "Documents",
+      "status": "Status",
+      "uncategorized": "Uncategorized",
+      "viewDetails": "View Details",
+      "viewDocuments": "View Documents",
+      "addNewProduct": "Add New Product",
+      "created": "Created",
+      "documentCount": "{count} document",
+      "documentCount_plural": "{count} documents",
+      "unknownManufacturer": "Unknown Manufacturer",
+      "details": {
+        "backButton": "Back to Products",
+        "viewDocuments": "View Documents",
+        "productInfo": {
+          "title": "Product Information",
+          "id": "Product ID",
+          "manufacturer": "Manufacturer",
+          "type": "Type",
+          "status": "Status",
+          "created": "Created",
+          "description": "Description"
+        },
+        "documents": {
+          "title": "Documents",
+          "totalDocuments": "Total Documents",
+          "documentStatus": "Document Status",
+          "description": "Document information and status",
+          "id": "Document ID",
+          "type": "Type",
+          "validUntil": "Valid Until",
+          "rejectionReason": "Rejection Reason",
+          "viewDocument": "View Document",
+          "documentStatuses": {
+            "noDocuments": "No Documents",
+            "hasRejected": "Has Rejected Documents",
+            "pending": "Pending Review",
+            "hasExpired": "Has Expired Documents",
+            "allApproved": "All Approved",
+            "unknown": "Unknown Status"
+          }
+        },
+        "errorLoadingProduct": "Error Loading Product",
+        "unexpectedError": "An unexpected error occurred"
+      },
+      "errors": {
+        "notFound": "Product Not Found",
+        "notFoundDescription": "The requested product could not be found. It may have been deleted or you may not have permission to view it."
+      }
     },
     "dpc": {
       "title": "DPC Applications",

@@ -9,6 +9,12 @@
     "verifyProducts": "Ürün Doğrula",
     "signIn": "Giriş Yap"
   },
+  "pages": {
+    "pendingProducts": {
+      "title": "Bekleyen Ürünler",
+      "description": "Onay bekleyen ürünlerin listesi"
+    }
+  },
   "error": {
     "404": {
       "title": "404",
@@ -62,7 +68,8 @@
       "dpps": "DPP'ler",
       "suppliers": "Tedarikçiler",
       "documents": "Belgeler",
-      "certifications": "Sertifikalar"
+      "certifications": "Sertifikalar",
+      "pendingProducts": "Bekleyen Ürünler"
     },
     "registration": {
       "title": "Kayıt",
@@ -260,6 +267,7 @@
   "products": {
     "title": "Sertifikalı Ürünler",
     "description": "Dijital Ürün Pasaportu ile doğrulanmış sertifikalı sürdürülebilir ürünlerimizi keşfedin.",
+    "loading": "Ürünler yükleniyor...",
     "list": {
       "categories": {
         "textile": "Tekstil",
@@ -944,6 +952,7 @@
         "createdAt": "Oluşturulma Tarihi",
         "actions": "İşlemler",
         "basicInfo": "Temel Bilgiler"
+     
       }
     },
     "delete": {
@@ -957,10 +966,6 @@
     "addProduct": {
       "title": "Yeni Ürün Ekle",
       "description": "Yeni bir ürün eklemek için formu doldurun",
-      "error": {
-        "title": "Hata",
-        "description": "Ürün eklenirken bir hata oluştu"
-      },
       "form": {
         "steps": {
           "manufacturer": "Üretici"
@@ -1016,7 +1021,8 @@
         "basicInfo": "Temel Bilgiler",
         "status": "Durum",
         "createdAt": "Oluşturulma Tarihi",
-        "actions": "İşlemler"
+        "actions": "İşlemler",
+        "manufacturer": "Üretici"
       }
     },
     "actions": {
@@ -1086,6 +1092,46 @@
       "draft": "Taslak",
       "active": "Aktif",
       "pending": "Beklemede"
+    },
+    "loading": "Yükleniyor...",
+    "buttons": {
+      "back": "Geri",
+      "login": "Giriş Yap",
+      "dashboard": "Panele Git",
+      "addNew": "Yeni Ekle",
+      "viewDetails": "Detayları Görüntüle"
+    },
+    "auth": {
+      "required": "Kimlik Doğrulama Gerekli",
+      "loginRequired": "Bu sayfayı görüntülemek için giriş yapmalısınız.",
+      "companyRequired": "Lütfen bir şirketle ilişkilendirildiğinizden emin olun."
+    },
+    "labels": {
+      "notAvailable": "Mevcut Değil"
+    },
+    "error": {
+      "title": "Hata",
+      "description": "Bir hata oluştu",
+      "tryAgain": "Lütfen tekrar deneyin",
+      "notFound": "Bulunamadı",
+      "unauthorized": "Yetkisiz Erişim",
+      "forbidden": "Erişim Reddedildi",
+      "serverError": "Sunucu Hatası"
+    },
+    "success": {
+      "title": "Başarılı",
+      "saved": "Kaydedildi",
+      "updated": "Güncellendi",
+      "deleted": "Silindi",
+      "created": "Oluşturuldu"
+    },
+    "validation": {
+      "required": "Bu alan zorunludur",
+      "email": "Geçerli bir e-posta adresi girin",
+      "minLength": "En az {length} karakter olmalıdır",
+      "maxLength": "En fazla {length} karakter olmalıdır",
+      "password": "Şifre en az 8 karakter olmalıdır",
+      "passwordMatch": "Şifreler eşleşmiyor"
     }
   },
   "productCategories": {
@@ -1535,7 +1581,80 @@
     }
   },
   "admin": {
+    "sidebar": {
+      "dashboard": "Panel",
+      "manufacturers": "Üreticiler",
+      "documents": "Belgeler",
+      "certifications": "Sertifikalar",
+      "dppTemplates": "DPP Şablonları",
+      "products": "Ürünler"
+    },
     "products": {
+      "title": "Ürünler",
+      "description": "Sistemdeki tüm ürünleri yönetin ve inceleyin",
+      "loading": "Ürünler yükleniyor...",
+      "searchPlaceholder": "Ürün ara...",
+      "filterByManufacturer": "Üreticiye göre filtrele",
+      "filterByStatus": "Duruma göre filtrele",
+      "allManufacturers": "Tüm Üreticiler",
+      "allStatus": "Tüm Durumlar",
+      "allApproved": "Tümü Onaylandı",
+      "pendingReview": "İnceleme Bekliyor",
+      "hasRejectedDocuments": "Reddedilmiş Dökümanlar Var",
+      "noDocuments": "Döküman Yok",
+      "noProductsFound": "Ürün Bulunamadı",
+      "noProductsAdded": "Henüz ürün eklenmemiş.",
+      "noProductsMatchFilter": "Filtrelere uygun ürün bulunamadı.",
+      "manufacturer": "Üretici",
+      "category": "Kategori",
+      "documents": "Dökümanlar",
+      "status": "Durum",
+      "uncategorized": "Kategorisiz",
+      "viewDetails": "Detayları Görüntüle",
+      "viewDocuments": "Dökümanları Görüntüle",
+      "addNewProduct": "Yeni Ürün Ekle",
+      "created": "Oluşturulma Tarihi",
+      "documentCount": "{count} döküman",
+      "documentCount_plural": "{count} döküman",
+      "unknownManufacturer": "Bilinmeyen Üretici",
+      "details": {
+        "backButton": "Ürünlere Dön",
+        "viewDocuments": "Dökümanları Görüntüle",
+        "productInfo": {
+          "title": "Ürün Bilgileri",
+          "id": "Ürün ID",
+          "manufacturer": "Üretici",
+          "type": "Tip",
+          "status": "Durum",
+          "created": "Oluşturulma Tarihi",
+          "description": "Açıklama"
+        },
+        "documents": {
+          "title": "Dökümanlar",
+          "totalDocuments": "Toplam Döküman",
+          "documentStatus": "Döküman Durumu",
+          "description": "Döküman bilgileri ve durumu",
+          "id": "Döküman ID",
+          "type": "Tip",
+          "validUntil": "Geçerlilik Tarihi",
+          "rejectionReason": "Red Nedeni",
+          "viewDocument": "Dökümanı Görüntüle",
+          "documentStatuses": {
+            "noDocuments": "Döküman Yok",
+            "hasRejected": "Reddedilmiş Dökümanlar Var",
+            "pending": "İnceleme Bekliyor",
+            "hasExpired": "Süresi Dolmuş Dökümanlar Var",
+            "allApproved": "Tümü Onaylandı",
+            "unknown": "Bilinmeyen Durum"
+          }
+        },
+        "errorLoadingProduct": "Ürün Yüklenirken Hata Oluştu",
+        "unexpectedError": "Beklenmeyen bir hata oluştu"
+      },
+      "errors": {
+        "notFound": "Ürün Bulunamadı",
+        "notFoundDescription": "İstenen ürün bulunamadı. Silinmiş olabilir veya görüntüleme izniniz olmayabilir."
+      },
       "steps": {
         "documentUpload": {
           "title": "Ürün Belgelerini Yükle",
@@ -1558,7 +1677,6 @@
         }
       }
     },
-    
     "dpc": {
       "title": "DPC Başvuruları",
       "description": "DPC başvurularını görüntüleyin ve yönetin",
@@ -1672,7 +1790,8 @@
       "manufacturers": "Üreticiler",
       "documents": "Belgeler",
       "certifications": "Sertifikalar",
-      "dppTemplates": "DPP Şablonları"
+      "dppTemplates": "DPP Şablonları",
+      "products": "Ürünler"
     }
   }
 }

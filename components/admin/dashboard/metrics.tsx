@@ -14,9 +14,9 @@ import {
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
-import { getRecentApprovals, getSystemAlerts, type DashboardMetrics, type RecentApproval, type SystemAlert } from "@/app/api/metrics/route";
 import { Card } from "@/components/ui/card";
-import { supabase } from "@/lib/supabase/client";
+import { Error } from "@/components/ui/error";
+import { getRecentApprovals, getSystemAlerts, type DashboardMetrics } from "@/lib/hooks/useMetrics";
 
 export function DashboardMetrics() {
   const t = useTranslations("adminDashboard");
@@ -30,7 +30,6 @@ export function DashboardMetrics() {
         const recentApprovals = await getRecentApprovals();
         const systemAlerts = await getSystemAlerts();
         // Handle the data as needed
-        console.log(recentApprovals, systemAlerts);
       } catch (err) {
         console.error(err);
       } finally {
@@ -39,22 +38,6 @@ export function DashboardMetrics() {
     };
 
     fetchMetrics();
-
-    // Optional: Set up real-time subscription
-    const subscription = supabase
-      .channel('metrics-changes')
-      .on('postgres_changes', { 
-        event: '*', 
-        schema: 'public',
-        table: 'companies'
-      }, () => {
-        fetchMetrics();
-      })
-      .subscribe();
-
-    return () => {
-      subscription.unsubscribe();
-    };
   }, []);
 
   const metricConfigs = [
@@ -121,11 +104,7 @@ export function DashboardMetrics() {
   ];
 
   if (error) {
-    return (
-      <div className="p-4 text-red-500 bg-red-50 rounded-lg">
-        {error}
-      </div>
-    );
+    return <Error error={error} />;
   }
 
   return (

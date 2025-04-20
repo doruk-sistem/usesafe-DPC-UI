@@ -1,7 +1,7 @@
 import { supabase } from "@/lib/supabase/client";
 import type {
+  BaseProduct,
   NewProduct,
-  Product,
   ProductResponse,
   UpdateProduct,
 } from "@/lib/types/product";
@@ -9,8 +9,11 @@ import { validateAndMapDocuments } from "@/lib/utils/document-mapper";
 
 import { createService } from "../api-client";
 
+// Define admin company ID constant
+const ADMIN_COMPANY_ID = "admin";
+
 export class ProductService {
-  static async getProducts(companyId: string): Promise<Product[]> {
+  static async getProducts(companyId: string): Promise<any[]> {
     const { data, error } = await supabase
       .from("products")
       .select("*")
@@ -18,7 +21,6 @@ export class ProductService {
       .order("created_at", { ascending: false });
 
     if (error) {
-      console.error("Error fetching products:", error);
       throw new Error("Failed to fetch products");
     }
 
@@ -29,24 +31,61 @@ export class ProductService {
     id: string,
     companyId: string
   ): Promise<ProductResponse> {
-    const { data, error } = await supabase
-      .from("products")
-      .select("*")
-      .eq("id", id)
-      .eq("company_id", companyId)
-      .single();
+    try {
+      const { data: userData } = await supabase.auth.getUser();
+      const isAdmin = userData?.user?.user_metadata?.role === "admin";
 
-    if (error) {
-      return { error: { message: "Product not found" } };
+      if (isAdmin) {
+        const { data, error } = await supabase
+          .from("products")
+          .select("*")
+          .eq("id", id)
+          .single();
+
+        if (error) {
+          return {
+            error: {
+              message: error.message || "Failed to fetch product",
+              field: error.details,
+            },
+          };
+        }
+
+        return { data };
+      } else {
+        const { data, error } = await supabase
+          .from("products")
+          .select("*")
+          .eq("id", id)
+          .eq("company_id", companyId)
+          .single();
+
+        if (error) {
+          return {
+            error: {
+              message: error.message || "Failed to fetch product",
+              field: error.details,
+            },
+          };
+        }
+
+        return { data };
+      }
+    } catch (error) {
+      return {
+        error: {
+          message:
+            error instanceof Error ? error.message : "Unknown error occurred",
+        },
+      };
     }
-
-    return { data };
   }
 
   static async createProduct(product: NewProduct): Promise<ProductResponse> {
     try {
       // Extract documents if they exist, otherwise use empty object
       const { documents = {}, manufacturer_id, ...productData } = product;
+
       // Validate and map documents with type assertion to fix lint error
       const validatedDocuments = validateAndMapDocuments(
         documents as Record<string, any[]>
@@ -69,7 +108,6 @@ export class ProductService {
         .single();
 
       if (error) {
-        console.error("Product creation error:", error);
         return {
           error: {
             message: error.message || "Failed to create product",
@@ -80,7 +118,6 @@ export class ProductService {
 
       return { data };
     } catch (error) {
-      console.error("Error in createProduct:", error);
       return {
         error: {
           message:
@@ -123,7 +160,6 @@ export class ProductService {
         .single();
 
       if (getError) {
-        console.error("Error fetching product for deletion:", getError);
         throw new Error("Failed to fetch product for deletion");
       }
 
@@ -147,15 +183,70 @@ export class ProductService {
       const { error } = await supabase.from("products").delete().eq("id", id);
 
       if (error) {
-        console.error("Error deleting product:", error);
         throw new Error("Failed to delete product");
       }
 
       return true;
     } catch (error) {
-      console.error("Error in deleteProduct:", error);
       throw error;
     }
+  }
+
+  static async getPendingProducts(
+    page = 0,
+    pageSize = 10
+  ): Promise<{
+    items: BaseProduct[];
+    totalPages: number;
+    currentPage: number;
+    totalItems: number;
+  }> {
+    // Get the current user's session
+    const {
+      data: { session },
+      error: sessionError,
+    } = await supabase.auth.getSession();
+
+    if (sessionError) {
+      throw new Error("Failed to get user session");
+    }
+
+    if (!session) {
+      throw new Error("No active session found");
+    }
+
+    // Get the user's metadata from the session
+    const userMetadata = session.user.user_metadata;
+    const companyId = userMetadata?.company_id;
+
+    if (!companyId) {
+      return {
+        items: [],
+        totalPages: 0,
+        currentPage: page,
+        totalItems: 0,
+      };
+    }
+
+    // Fetch products by manufacturer_id with status DRAFT or NEW
+    const { data, error, count } = await supabase
+      .from("products")
+      .select("*, manufacturer:manufacturer_id (name)", { count: "exact" })
+      .eq("manufacturer_id", companyId)
+      .in("status", ["DRAFT", "NEW"])
+      .range(page * pageSize, (page + 1) * pageSize - 1)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      throw new Error("Failed to fetch pending products");
+    }
+
+    return {
+      items: data,
+      totalPages: Math.ceil((count || 0) / pageSize),
+      currentPage: page,
+      totalItems: count || 0,
+    };
   }
 }
 
@@ -168,7 +259,6 @@ export const productService = createService({
       .order("created_at", { ascending: false });
 
     if (error) {
-      console.error("Error fetching products:", error);
       throw new Error("Failed to fetch products");
     }
     return data || [];
@@ -180,9 +270,46 @@ export const productService = createService({
     id: string;
     companyId: string;
   }): Promise<ProductResponse> => {
+    // Admin şirketi için özel durum - tüm ürünleri göster
+    if (companyId === ADMIN_COMPANY_ID) {
+      const { data, error } = await supabase
+        .from("products")
+        .select(
+          `
+          *,
+          manufacturer:manufacturer_id (
+            id,
+            name,
+            taxInfo,
+            companyType,
+            status
+          )
+        `
+        )
+        .eq("id", id)
+        .single();
+
+      if (error) {
+        return { error: { message: "Product not found" } };
+      }
+
+      return { data };
+    }
+
     const { data, error } = await supabase
       .from("products")
-      .select("*")
+      .select(
+        `
+        *,
+        manufacturer:manufacturer_id (
+          id,
+          name,
+          taxInfo,
+          companyType,
+          status
+        )
+      `
+      )
       .eq("id", id)
       .eq("company_id", companyId)
       .single();
@@ -197,6 +324,7 @@ export const productService = createService({
     try {
       // Extract documents if they exist, otherwise use empty object
       const { documents = {}, manufacturer_id, ...productData } = product;
+
       // Validate and map documents with type assertion to fix lint error
       const validatedDocuments = validateAndMapDocuments(
         documents as Record<string, any[]>
@@ -219,25 +347,20 @@ export const productService = createService({
         .single();
 
       if (error) {
-        console.error("Product creation error:", error);
         return {
           error: {
             message: error.message || "Failed to create product",
             field: error.details,
-            code: error.code,
           },
         };
       }
 
       return { data };
     } catch (error) {
-      console.error("Error in createProduct:", error);
-
       return {
         error: {
           message:
             error instanceof Error ? error.message : "Unknown error occurred",
-          details: error instanceof Error ? error.stack : undefined,
         },
       };
     }
@@ -271,7 +394,6 @@ export const productService = createService({
     const { error } = await supabase.from("products").delete().eq("id", id);
 
     if (error) {
-      console.error("Error deleting product:", error);
       throw new Error("Failed to delete product");
     }
 

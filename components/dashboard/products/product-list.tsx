@@ -1,22 +1,59 @@
 "use client";
 
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuItem,
+} from "@radix-ui/react-dropdown-menu";
 import { useQueryClient } from "@tanstack/react-query";
-import { Battery, FileText, ImageOff, MoreHorizontal, Trash, Pencil } from "lucide-react";
+import {
+  Battery,
+  FileText,
+  ImageOff,
+  MoreHorizontal,
+  Trash,
+  Pencil,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { Loading } from "@/components/ui/loading";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { useToast } from "@/components/ui/use-toast";
 import { useProduct } from "@/lib/hooks/use-product";
 import { productsApiHooks } from "@/lib/hooks/use-products";
-import { BaseProduct as Product } from "@/lib/types/product";
+import { Product, ProductStatus } from "@/lib/types/product";
 import { StorageHelper } from "@/lib/utils/storage";
 
 interface ProductListProps {
@@ -32,7 +69,6 @@ export function ProductList({ products, isLoading }: ProductListProps) {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const { determineProductStatus } = useProduct("");
 
-
   const { mutate: deleteProduct } = productsApiHooks.useDeleteProductMutation({
     onSuccess: () => {
       toast({
@@ -46,7 +82,10 @@ export function ProductList({ products, isLoading }: ProductListProps) {
     onError: (error) => {
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to delete product. Please try again.",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Failed to delete product. Please try again.",
         variant: "destructive",
       });
       setIsDeleteDialogOpen(false);
@@ -81,25 +120,7 @@ export function ProductList({ products, isLoading }: ProductListProps) {
   };
 
   if (isLoading) {
-    return (
-      <Card>
-        <CardHeader>
-        <CardTitle>{t("products.title")}</CardTitle>
-        <CardDescription>{t("products.loading")}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="flex items-center space-x-4">
-              <div className="w-12 h-12 bg-gray-200 animate-pulse" />
-              <div className="space-y-2">
-                <div className="w-48 h-4 bg-gray-200 animate-pulse" />
-                <div className="w-36 h-4 bg-gray-200 animate-pulse" />
-              </div>
-            </div>
-          ))}
-        </CardContent>
-      </Card>
-    );
+    return <Loading />;
   }
 
   if (!products || products.length === 0) {
@@ -107,12 +128,16 @@ export function ProductList({ products, isLoading }: ProductListProps) {
       <Card>
         <CardContent className="flex flex-col items-center justify-center py-12">
           <Battery className="h-12 w-12 text-muted-foreground mb-4" />
-          <h2 className="text-xl font-semibold mb-2">{t("products.empty.title")}</h2>
+          <h2 className="text-xl font-semibold mb-2">
+            {t("products.empty.title")}
+          </h2>
           <p className="text-muted-foreground mb-4">
-          {t("products.empty.description")}
+            {t("products.empty.description")}
           </p>
           <Button asChild>
-          <Link href="/dashboard/products/new">{t("products.empty.addButton")}</Link>
+            <Link href="/dashboard/products/new">
+              {t("products.empty.addButton")}
+            </Link>
           </Button>
         </CardContent>
       </Card>
@@ -124,28 +149,37 @@ export function ProductList({ products, isLoading }: ProductListProps) {
       <Card>
         <CardHeader>
           <CardTitle>{t("products.title")}</CardTitle>
-          <CardDescription>
-            {t("products.description")}
-          </CardDescription>
+          <CardDescription>{t("products.description")}</CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>{t("productManagement.table.productName")}</TableHead>
-                <TableHead>{t("productManagement.table.model")}</TableHead>
-                <TableHead>{t("productManagement.table.status")}</TableHead>
-                <TableHead>{t("productManagement.table.actions")}</TableHead>
+                <TableHead>
+                  {t("productManagement.list.columns.product")}
+                </TableHead>
+                <TableHead>
+                  {t("productManagement.list.columns.category")}
+                </TableHead>
+                <TableHead>
+                  {t("productManagement.list.columns.basicInfo")}
+                </TableHead>
+                <TableHead>
+                  {t("productManagement.list.columns.status")}
+                </TableHead>
+                <TableHead>
+                  {t("productManagement.list.columns.actions")}
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {products.map((product) => {
-                const documents = Array.isArray(product.documents) 
-                  ? product.documents 
+                const documents = Array.isArray(product.documents)
+                  ? product.documents
                   : Object.values(product.documents || {}).flat();
-                
-                const status = determineProductStatus(documents);
-                
+
+                const status = determineProductStatus(product);
+
                 return (
                   <TableRow key={product.id}>
                     <TableCell>
@@ -175,19 +209,26 @@ export function ProductList({ products, isLoading }: ProductListProps) {
                     </TableCell>
                     <TableCell>
                       <Badge variant="secondary">
-                        {t(`productTypes.${product.product_type.toLowerCase()}`)}
+                        {t(
+                          `productTypes.${product.product_type.toLowerCase()}`
+                        )}
                       </Badge>
                     </TableCell>
                     <TableCell>
                       <div className="space-y-2">
                         <div className="space-y-1">
-                          {product.key_features.slice(0, 3).map((feature) => (
-                            <div key={feature.name} className="flex items-center text-sm">
-                              <span className="text-muted-foreground w-20">{feature.name}:</span>
+                          {product.key_features?.slice(0, 3).map((feature) => (
+                            <div
+                              key={feature.name}
+                              className="flex items-center text-sm"
+                            >
+                              <span className="text-muted-foreground w-20">
+                                {feature.name}:
+                              </span>
                               <span>{feature.value}</span>
                             </div>
                           ))}
-                          {product.key_features.length > 3 && (
+                          {product.key_features && product.key_features.length > 3 && (
                             <Badge variant="secondary" className="text-xs">
                               +{product.key_features.length - 3} more
                             </Badge>
@@ -198,52 +239,83 @@ export function ProductList({ products, isLoading }: ProductListProps) {
                     <TableCell>
                       <Badge
                         variant={
-                          product.status === "NEW"
+                          status === "APPROVED"
                             ? "success"
-                            : product.status === "DRAFT"
+                            : status === "PENDING"
                             ? "warning"
-                            : "destructive"
+                            : status === "REJECTED"
+                            ? "destructive"
+                            : "secondary"
                         }
                       >
-                        {t(`common.status.${product.status.toLowerCase()}`)}
+                        {status || "PENDING"}
                       </Badge>
                     </TableCell>
                     <TableCell>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon">
-                            <MoreHorizontal className="h-4 w-4" />
-                            <span className="sr-only">{t("productManagement.actions.openMenu")}</span>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 p-0 rounded-full bg-gradient-to-br from-primary/5 via-primary/10 to-primary/5 hover:from-primary/10 hover:via-primary/15 hover:to-primary/10 border border-border/50 shadow-sm transition-all duration-200"
+                          >
+                            <MoreHorizontal className="h-4 w-4 text-primary/70 hover:text-primary transition-colors" />
+                            <span className="sr-only">
+                              {t("productManagement.actions.openMenu")}
+                            </span>
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>{t("productManagement.actions.menu")}</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
+                        <DropdownMenuContent
+                          align="end"
+                          className="w-[200px] p-2 rounded-xl border border-border/50 shadow-lg bg-gradient-to-b from-background to-muted/30 backdrop-blur-sm"
+                        >
+                          <DropdownMenuLabel className="px-2 py-1.5 text-xs font-medium text-muted-foreground">
+                            {t("productManagement.actions.menu")}
+                          </DropdownMenuLabel>
+                          <DropdownMenuSeparator className="my-1 bg-border/50" />
                           <DropdownMenuItem asChild>
-                            <Link href={`/dashboard/products/${product.id}`}>
-                              <Battery className="h-4 w-4 mr-2" />
-                              {t("productManagement.actions.viewDetails")}
-                              </Link>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem asChild>
-                            <Link href={`/dashboard/products/${product.id}/edit`}>
-                            {t("productManagement.actions.editProduct")}
+                            <Link
+                              href={`/dashboard/products/${product.id}`}
+                              className="flex items-center px-2 py-1.5 text-sm rounded-md cursor-pointer hover:bg-primary/5 transition-colors"
+                            >
+                              <Battery className="h-4 w-4 mr-2 text-primary/70" />
+                              <span>
+                                {t("productManagement.actions.viewDetails")}
+                              </span>
                             </Link>
                           </DropdownMenuItem>
                           <DropdownMenuItem asChild>
-                            <Link href={`/dashboard/products/${product.id}/documents`}>
-                              <FileText className="h-4 w-4 mr-2" />
-                              {t("productManagement.actions.viewDocuments")}
-                              </Link>
+                            <Link
+                              href={`/dashboard/products/${product.id}/edit`}
+                              className="flex items-center px-2 py-1.5 text-sm rounded-md cursor-pointer hover:bg-primary/5 transition-colors"
+                            >
+                              <Pencil className="h-4 w-4 mr-2 text-primary/70" />
+                              <span>
+                                {t("productManagement.actions.editProduct")}
+                              </span>
+                            </Link>
                           </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem 
-                            className="text-destructive focus:text-destructive"
+                          <DropdownMenuItem asChild>
+                            <Link
+                              href={`/dashboard/products/${product.id}/documents`}
+                              className="flex items-center px-2 py-1.5 text-sm rounded-md cursor-pointer hover:bg-primary/5 transition-colors"
+                            >
+                              <FileText className="h-4 w-4 mr-2 text-primary/70" />
+                              <span>
+                                {t("productManagement.actions.viewDocuments")}
+                              </span>
+                            </Link>
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator className="my-1 bg-border/50" />
+                          <DropdownMenuItem
                             onClick={() => handleDeleteClick(product)}
+                            className="flex items-center px-2 py-1.5 text-sm rounded-md cursor-pointer text-destructive hover:text-destructive hover:bg-destructive/5 transition-colors"
                           >
                             <Trash className="h-4 w-4 mr-2" />
-                            {t("productManagement.actions.deleteProduct")}
-                            </DropdownMenuItem>
+                            <span>
+                              {t("productManagement.actions.deleteProduct")}
+                            </span>
+                          </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </TableCell>
@@ -255,17 +327,20 @@ export function ProductList({ products, isLoading }: ProductListProps) {
         </CardContent>
       </Card>
 
-      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+      <AlertDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>{t("delete.title")}</AlertDialogTitle>
             <AlertDialogDescription>
-              {t("delete.description", { name: productToDelete?.name || '' })}
+              {t("delete.description", { name: productToDelete?.name || "" })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>{t("delete.cancel")}</AlertDialogCancel>
-            <AlertDialogAction 
+            <AlertDialogAction
               onClick={handleConfirmDelete}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >

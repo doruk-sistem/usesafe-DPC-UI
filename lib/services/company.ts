@@ -1,5 +1,6 @@
 import { supabase } from "@/lib/supabase/client";
 import type { Company } from "@/lib/types/company";
+import  { CompanyType } from "@/lib/types/company";
 
 import { createService } from "../api-client";
 
@@ -7,7 +8,7 @@ export class CompanyService {
   static async getCompany(id: string): Promise<Company | null> {
     const { data, error } = await supabase
       .from("companies")
-      .select("id, name, taxInfo, companyType")
+      .select("id, name, taxInfo, companyType, status")
       .eq("id", id)
       .single();
 
@@ -28,7 +29,8 @@ export class CompanyService {
           id,
           name,
           companyType,
-          taxInfo
+          taxInfo,
+          status
         )
       `
       )
@@ -39,8 +41,17 @@ export class CompanyService {
       throw error;
     }
 
-    // Extract supplier data from the nested structure
-    return data.map((item) => item.supplier);
+    // Extract supplier data from the nested structure and ensure it matches Company type
+    return (data || []).map((item) => {
+      const supplier = item.supplier as unknown as Company;
+      return {
+        id: supplier.id,
+        name: supplier.name,
+        companyType: supplier.companyType,
+        taxInfo: supplier.taxInfo,
+        status: supplier.status
+      };
+    });
   }
 
   static async createManufacturer(
@@ -66,6 +77,7 @@ export class CompanyService {
             name: data.name,
             taxInfo: data.taxInfo,
             companyType: data.companyType,
+            status: true
           },
         ])
         .select()
@@ -115,7 +127,7 @@ export class CompanyService {
   static async searchManufacturers(query: string): Promise<Company[]> {
     const { data, error } = await supabase
       .from("companies")
-      .select("id, name, taxInfo")
+      .select("id, name, taxInfo, companyType, status")
       .or(`name.ilike.%${query}%, taxInfo->>'taxNumber'.ilike.%${query}%`)
       .in("companyType", ["manufacturer", "factory"])
       .limit(10);
@@ -131,7 +143,7 @@ export class CompanyService {
   static async getManufacturer(id: string): Promise<Company | null> {
     const { data, error } = await supabase
       .from("companies")
-      .select("id, name, taxInfo, companyType")
+      .select("id, name, taxInfo, companyType, status")
       .eq("id", id)
       .in("companyType", ["manufacturer", "factory"])
       .single();
@@ -149,7 +161,7 @@ export const companyService = createService({
   getCompany: async ({ id }: { id: string }): Promise<Company | null> => {
     const { data, error } = await supabase
       .from("companies")
-      .select("id, name, taxInfo, companyType")
+      .select("id, name, taxInfo, companyType, status")
       .eq("id", id)
       .single();
 
@@ -169,7 +181,8 @@ export const companyService = createService({
           id,
           name,
           companyType,
-          taxInfo
+          taxInfo,
+          status
         )
       `
       )
@@ -180,8 +193,17 @@ export const companyService = createService({
       throw error;
     }
 
-    // Extract supplier data from the nested structure
-    return data.map((item) => item.supplier);
+    // Extract supplier data from the nested structure and ensure it matches Company type
+    return (data || []).map((item) => {
+      const supplier = item.supplier as unknown as Company;
+      return {
+        id: supplier.id,
+        name: supplier.name,
+        companyType: supplier.companyType,
+        taxInfo: supplier.taxInfo,
+        status: supplier.status
+      };
+    });
   },
   async createManufacturer(data: {
     name: string;
@@ -203,6 +225,7 @@ export const companyService = createService({
             name: data.name,
             taxInfo: data.taxInfo,
             companyType: data.companyType,
+            status: true
           },
         ])
         .select()
@@ -243,7 +266,7 @@ export const companyService = createService({
   async searchManufacturers(query: string): Promise<Company[]> {
     const { data, error } = await supabase
       .from("companies")
-      .select("id, name, taxInfo")
+      .select("id, name, taxInfo, companyType, status")
       .or(`name.ilike.%${query}%, taxInfo->>'taxNumber'.ilike.%${query}%`)
       .in("companyType", ["manufacturer", "factory"])
       .limit(10);
@@ -258,7 +281,7 @@ export const companyService = createService({
   async getManufacturer(id: string): Promise<Company | null> {
     const { data, error } = await supabase
       .from("companies")
-      .select("id, name, taxInfo, companyType")
+      .select("id, name, taxInfo, companyType, status")
       .eq("id", id)
       .in("companyType", ["manufacturer", "factory"])
       .single();

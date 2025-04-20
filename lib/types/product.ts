@@ -59,10 +59,10 @@ export type ProductStatus =
   | "NEW"
   | "DELETED"
   | "ARCHIVED"
-  | "approved"
-  | "pending"
-  | "rejected"
-  | "expired"
+  | "APPROVED"
+  | "PENDING"
+  | "REJECTED"
+  | "EXPIRED"
   | null;
 
 export interface StatusTransition {

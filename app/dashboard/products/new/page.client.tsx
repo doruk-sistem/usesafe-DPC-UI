@@ -92,8 +92,16 @@ export default function NewProductPageClient() {
         throw new Error("Product ID not received from server");
       }
 
-      // Blockchain kaydı oluştur
+      // Blockchain kaydı oluştur - Temporarily disabled due to insufficient HBAR balance
+      /*
       try {
+        console.log('Starting blockchain record creation...', {
+          productId: response.data.id,
+          name: data.name,
+          manufacturer: data.manufacturer_id,
+          description: data.description
+        });
+
         const blockchainResult =
           await productBlockchainService.recordProductAction(
             response.data.id,
@@ -103,18 +111,21 @@ export default function NewProductPageClient() {
             "CREATE"
           );
 
-        // Update the product with contract address
-        // await ProductService.updateProduct(response.data.id, {
-        //   contract_address: blockchainResult.contractAddress,
-        // });
+        console.log('Blockchain record created successfully:', blockchainResult);
 
         toast({
           title: t("success.title"),
           description: t("success.blockchain", {
-            address: blockchainResult.contractAddress
+            address: blockchainResult.contractAddress,
           }),
         });
       } catch (blockchainError) {
+        console.error('Detailed blockchain error:', {
+          error: blockchainError,
+          message: blockchainError instanceof Error ? blockchainError.message : 'Unknown error',
+          stack: blockchainError instanceof Error ? blockchainError.stack : undefined
+        });
+
         toast({
           title: "Warning",
           description:
@@ -125,6 +136,7 @@ export default function NewProductPageClient() {
           variant: "destructive",
         });
       }
+      */
 
       // Validate if product can be moved to NEW status
       if (ProductStatusService.validateStatus(response.data)) {
@@ -158,15 +170,11 @@ export default function NewProductPageClient() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-semibold">{t("title")}</h1>
-        <p className="text-sm text-muted-foreground">
-          {t("description")}
-        </p>
+        <p className="text-sm text-muted-foreground">{t("description")}</p>
       </div>
 
       <Card className="p-6">
-        <ProductForm
-          onSubmit={handleSubmit}
-        />
+        <ProductForm onSubmit={handleSubmit} />
       </Card>
     </div>
   );
