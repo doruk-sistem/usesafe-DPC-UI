@@ -34,6 +34,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Loading } from "@/components/ui/loading";
 import {
   Table,
   TableBody,
@@ -249,10 +250,6 @@ export default function PendingProductsPage() {
     }
   };
 
-  const handleAddInfo = (productId: string) => {
-    console.log(`Ürüne bilgi eklendi: ${productId}`);
-  };
-
   const hasPendingDocuments = (product: BaseProduct) => {
     if (!product.documents) return false;
     return Object.values(product.documents).some((doc: Document) =>
@@ -314,25 +311,7 @@ export default function PendingProductsPage() {
   };
 
   if (isLoading) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("products.title")}</CardTitle>
-          <CardDescription>{t("products.loading")}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="flex items-center space-x-4">
-              <div className="w-12 h-12 bg-gray-200 animate-pulse" />
-              <div className="space-y-2">
-                <div className="w-48 h-4 bg-gray-200 animate-pulse" />
-                <div className="w-36 h-4 bg-gray-200 animate-pulse" />
-              </div>
-            </div>
-          ))}
-        </CardContent>
-      </Card>
-    );
+    return <Loading />;
   }
 
   return (
@@ -362,9 +341,6 @@ export default function PendingProductsPage() {
                   {t("productManagement.list.columns.product")}
                 </TableHead>
                 <TableHead>
-                  {t("productManagement.list.columns.manufacturer")}
-                </TableHead>
-                <TableHead>
                   {t("productManagement.list.columns.status")}
                 </TableHead>
                 <TableHead>Belgeler</TableHead>
@@ -389,7 +365,6 @@ export default function PendingProductsPage() {
                         </span>
                       </div>
                     </TableCell>
-                    <TableCell>{product.manufacturer_id}</TableCell>
                     <TableCell>
                       <Badge variant={getStatusVariant(product.status || "")}>
                         {getStatusDisplay(product.status || "").toUpperCase()}
