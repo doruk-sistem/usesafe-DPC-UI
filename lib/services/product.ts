@@ -1,5 +1,6 @@
 import { supabase } from "@/lib/supabase/client";
 import type {
+  BaseProduct,
   NewProduct,
   ProductResponse,
   UpdateProduct,
@@ -192,18 +193,10 @@ export class ProductService {
   }
 
   static async getPendingProducts(
-    email: string,
     page = 0,
     pageSize = 10
   ): Promise<{
-    items: {
-      id: string;
-      name: string;
-      sku: string;
-      status: string;
-      createdAt: string;
-      manufacturer: string;
-    }[];
+    items: BaseProduct[];
     totalPages: number;
     currentPage: number;
     totalItems: number;
@@ -249,15 +242,7 @@ export class ProductService {
     }
 
     return {
-      items:
-        data?.map((product) => ({
-          id: product.id,
-          name: product.name,
-          sku: product.sku,
-          status: product.status,
-          createdAt: product.created_at,
-          manufacturer: product.manufacturer?.name || "Unknown",
-        })) || [],
+      items: data,
       totalPages: Math.ceil((count || 0) / pageSize),
       currentPage: page,
       totalItems: count || 0,

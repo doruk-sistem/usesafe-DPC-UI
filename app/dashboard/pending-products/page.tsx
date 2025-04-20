@@ -45,30 +45,9 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
 import { useAuth } from "@/lib/hooks/use-auth";
-import { productService, ProductService } from "@/lib/services/product";
-
-interface Document {
-  id: string;
-  name: string;
-  url: string;
-  type: string;
-  status: "approved" | "pending" | "rejected" | "expired";
-  validUntil?: string;
-  version: string;
-  uploadedAt: string;
-  fileSize: string;
-  rejection_reason?: string;
-}
-
-interface PendingProduct {
-  id: string;
-  name: string;
-  sku: string;
-  status: "NEW" | "pending" | "rejected" | "approved" | "ARCHIVED" | "DELETED";
-  createdAt: string;
-  manufacturer: string;
-  documents?: Record<string, Document[]>;
-}
+import { ProductService } from "@/lib/services/product";
+import { Document } from "@/lib/types/document";
+import { BaseProduct } from "@/lib/types/product";
 
 export default function PendingProductsPage() {
   const t = useTranslations();
@@ -274,10 +253,10 @@ export default function PendingProductsPage() {
     console.log(`Ürüne bilgi eklendi: ${productId}`);
   };
 
-  const hasPendingDocuments = (product: PendingProduct) => {
+  const hasPendingDocuments = (product: BaseProduct) => {
     if (!product.documents) return false;
-    return Object.values(product.documents).some((docs) =>
-      docs.some((doc) => doc.status === "pending")
+    return Object.values(product.documents).some((doc: Document) =>
+      doc.status === "pending"
     );
   };
 
@@ -398,7 +377,7 @@ export default function PendingProductsPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {(data?.items || []).map((product: PendingProduct) => {
+              {(data?.items || []).map((product: BaseProduct) => {
                 const pendingDocs = hasPendingDocuments(product);
                 return (
                   <TableRow key={product.id}>
@@ -406,14 +385,14 @@ export default function PendingProductsPage() {
                       <div className="flex flex-col">
                         <span className="font-medium">{product.name}</span>
                         <span className="text-sm text-muted-foreground">
-                          {product.sku}
+                          {product.model}
                         </span>
                       </div>
                     </TableCell>
-                    <TableCell>{product.manufacturer}</TableCell>
+                    <TableCell>{product.manufacturer_id}</TableCell>
                     <TableCell>
-                      <Badge variant={getStatusVariant(product.status)}>
-                        {getStatusDisplay(product.status).toUpperCase()}
+                      <Badge variant={getStatusVariant(product.status || "")}>
+                        {getStatusDisplay(product.status || "").toUpperCase()}
                       </Badge>
                     </TableCell>
                     <TableCell>
@@ -424,7 +403,7 @@ export default function PendingProductsPage() {
                       )}
                     </TableCell>
                     <TableCell>
-                      {new Date(product.createdAt).toLocaleDateString()}
+                      {new Date(product.created_at).toLocaleDateString()}
                     </TableCell>
                     <TableCell>
                       <div className="flex space-x-2">
