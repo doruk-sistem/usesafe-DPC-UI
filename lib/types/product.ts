@@ -54,7 +54,16 @@ export type DPPConfig = {
 export type BaseProduct = Database["public"]["Tables"]["products"]["Row"];
 export type NewProduct = Database["public"]["Tables"]["products"]["Insert"];
 export type UpdateProduct = Database["public"]["Tables"]["products"]["Update"];
-export type ProductStatus = "DRAFT" | "NEW" | "DELETED" | "ARCHIVED" | "approved" | "pending" | "rejected" | "expired" | null;
+export type ProductStatus =
+  | "DRAFT"
+  | "NEW"
+  | "DELETED"
+  | "ARCHIVED"
+  | "APPROVED"
+  | "PENDING"
+  | "REJECTED"
+  | "EXPIRED"
+  | null;
 
 export interface StatusTransition {
   from: ProductStatus;

@@ -1,8 +1,8 @@
 "use client";
 
 import { ArrowLeft, Box, Download } from "lucide-react";
-import { useTranslations } from "next-intl";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";

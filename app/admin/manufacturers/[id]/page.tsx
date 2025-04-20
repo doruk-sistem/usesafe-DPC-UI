@@ -1,4 +1,5 @@
 import { getTranslations } from "next-intl/server";
+
 import { ManufacturerDetails } from "@/components/admin/manufacturers/manufacturer-details";
 import { ManufacturerDocuments } from "@/components/admin/manufacturers/manufacturer-documents";
 import { ManufacturerProducts } from "@/components/admin/manufacturers/manufacturer-products";

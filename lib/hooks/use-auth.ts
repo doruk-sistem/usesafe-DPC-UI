@@ -5,18 +5,20 @@ import type {
   UserAttributes,
 } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
+import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/lib/supabase/client";
-
-import type { User } from "../types/auth";
 
 import { companyApiHooks } from "./use-company";
 
 export function useAuth() {
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const { toast } = useToast();
   const router = useRouter();
+  const t = useTranslations("auth");
 
   const {
     data: company,
@@ -57,6 +59,12 @@ export function useAuth() {
       data: { session },
     } = await supabase.auth.getSession();
 
+    // Show success toast with hardcoded message
+    toast({
+      title: "Login Successful",
+      description: "You have been successfully logged in.",
+    });
+
     // Redirect based on role
     if (session?.user?.user_metadata?.role === "admin") {
       router.push("/admin");
@@ -68,27 +76,69 @@ export function useAuth() {
   const signUp = async (
     email: string,
     password: string,
-    metadata: Pick<User["user_metadata"], "role" | "full_name" | "company_id">
+    metadata: {
+      role: "admin" | "manufacturer";
+      full_name: string;
+      company_id: string;
+    }
   ) => {
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: metadata,
-      },
-    });
-    if (error) throw error;
+    try {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: metadata,
+        },
+      });
+      if (error) throw error;
+
+      toast({
+        title: t("success.signUp.title"),
+        description: t("success.signUp.description"),
+      });
+
+      router.push("/auth/verify-email");
+    } catch (error) {
+      toast({
+        title: t("errors.signUp.title"),
+        description: t("errors.signUp.description"),
+        variant: "destructive",
+      });
+    }
   };
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) throw error;
-    router.push("/");
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      router.push("/auth/login");
+    } catch (error) {
+      toast({
+        title: t("errors.signOut.title"),
+        description: t("errors.signOut.description"),
+        variant: "destructive",
+      });
+    }
   };
 
   const updateUser = async (attributes: UserAttributes) => {
-    const { error } = await supabase.auth.updateUser(attributes);
-    if (error) throw error;
+    try {
+      const { error } = await supabase.auth.updateUser({
+        data: attributes,
+      });
+      if (error) throw error;
+
+      toast({
+        title: t("success.updateUser.title"),
+        description: t("success.updateUser.description"),
+      });
+    } catch (error) {
+      toast({
+        title: t("errors.updateUser.title"),
+        description: t("errors.updateUser.description"),
+        variant: "destructive",
+      });
+    }
   };
 
   const isAdmin = () => {

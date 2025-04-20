@@ -3,8 +3,9 @@
 import { motion } from "framer-motion";
 import { Leaf, Droplets, Zap, Recycle, Beaker, Sprout } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+
 import { Badge } from "@/components/ui/badge";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 
 export interface SustainabilityMetricsCardProps {

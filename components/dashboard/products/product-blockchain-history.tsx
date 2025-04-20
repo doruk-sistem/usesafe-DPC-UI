@@ -3,6 +3,7 @@
 import { format } from 'date-fns';
 import { useEffect, useState } from 'react';
 
+import { Error } from "@/components/ui/error";
 import { toast } from '@/components/ui/use-toast';
 import { productBlockchainService } from '@/lib/services/product-blockchain';
 import { ProductBlockchainRecord } from '@/lib/types/product-blockchain';
@@ -34,9 +35,9 @@ export function ProductBlockchainHistory({ productId }: ProductBlockchainHistory
           });
 
         setRecords(sortedHistory);
-      } catch (err) {
-        const errorMessage = err instanceof Error 
-          ? `Failed to load blockchain history: ${err.message}`
+      } catch (err: unknown) {
+        const errorMessage = typeof err === 'object' && err !== null && 'message' in err
+          ? `Failed to load blockchain history: ${(err as Error).message}`
           : 'An unexpected error occurred while fetching history.';
         
         setError(errorMessage);
@@ -68,11 +69,7 @@ export function ProductBlockchainHistory({ productId }: ProductBlockchainHistory
 
 
   if (error) {
-    return (
-      <div className="p-4 bg-red-50 text-red-700 rounded-md">
-        {error}
-      </div>
-    );
+    return <Error error={error} />;
   }
 
 

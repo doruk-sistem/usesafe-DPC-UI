@@ -6,8 +6,8 @@ import { Shield } from "lucide-react";
 import { DashboardHeader } from "@/components/admin/dashboard/header";
 import { DashboardMetrics } from "@/components/admin/dashboard/metrics";
 import { PendingApprovals } from "@/components/admin/dashboard/pending-approvals";
-import { SystemAlerts } from "@/components/admin/dashboard/system-alerts";
 import { RecentApprovals } from "@/components/admin/dashboard/recent-approvals";
+import { SystemAlerts } from "@/components/admin/dashboard/system-alerts";
 
 const containerVariants = {
   hidden: { opacity: 0 },

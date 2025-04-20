@@ -118,7 +118,6 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
           }
         }
       } catch (error) {
-        console.error("Error fetching product:", error);
         toast({
           title: "Error",
           description: "Failed to load product details",
@@ -193,7 +192,6 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
           : "New document uploaded successfully",
       });
     } catch (error) {
-      console.error("Error uploading file:", error);
       toast({
         title: "Error",
         description: "Failed to upload file",
@@ -208,7 +206,6 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
     try {
       // Check if documentId is valid
       if (!documentId) {
-        console.error("Invalid document ID:", documentId);
         toast({
           title: "Error",
           description: "Cannot delete document: Invalid document ID",
@@ -218,12 +215,6 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
       }
       
       setIsDeleting(documentId);
-      
-      console.log("Deleting document with ID:", documentId);
-      console.log("Document name:", documentName);
-      console.log("Document type:", documentType);
-      console.log("Current product state:", product);
-      console.log("Current allDocuments state:", allDocuments);
       
       // In a real app, this would delete from Supabase
       // For now, we'll simulate the delete process
@@ -239,13 +230,11 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
         return !(doc.name === documentName && doc.type === documentType);
       });
       
-      console.log("Updated allDocuments:", updatedAllDocuments);
       setAllDocuments(updatedAllDocuments);
       
       // Then, update the product state if it exists
       if (product) {
         const productCopy = JSON.parse(JSON.stringify(product));
-        console.log("Product copy before deletion:", productCopy);
         
         // Find and remove the document from the appropriate category
         let documentFound = false;
@@ -263,16 +252,12 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
           });
           
           if (updatedCategoryDocs.length !== categoryDocs.length) {
-            console.log(`Document found and removed from category: ${documentType}`);
             productCopy.documents[documentType] = updatedCategoryDocs;
             documentFound = true;
           }
         } else {
           // If we don't know the document type, check all categories
           for (const category in productCopy.documents) {
-            console.log(`Checking category: ${category}`);
-            console.log(`Documents in category:`, productCopy.documents[category]);
-            
             const categoryDocs = productCopy.documents[category];
             const updatedCategoryDocs = categoryDocs.filter((doc: any) => {
               // If the document has an ID, use it for comparison
@@ -283,10 +268,7 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
               return doc.name !== documentName;
             });
             
-            console.log(`Documents after filtering:`, updatedCategoryDocs);
-            
             if (updatedCategoryDocs.length !== categoryDocs.length) {
-              console.log(`Document found and removed from category: ${category}`);
               productCopy.documents[category] = updatedCategoryDocs;
               documentFound = true;
               break;
@@ -296,7 +278,6 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
         
         if (documentFound) {
           // Update the product state with the modified documents
-          console.log("Product copy after deletion:", productCopy);
           setProduct(productCopy);
           
           toast({
@@ -304,23 +285,13 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
             description: "Document deleted successfully",
           });
         } else {
-          console.error("Document not found in any category");
-          // Even if the document is not found in the product, we've already removed it from allDocuments
-          // So we can still consider the operation successful
           toast({
             title: "Success",
             description: "Document removed from the list",
           });
         }
-      } else {
-        // If there's no product state, we've already removed the document from allDocuments
-        toast({
-          title: "Success",
-          description: "Document removed from the list",
-        });
       }
     } catch (error) {
-      console.error("Error deleting document:", error);
       toast({
         title: "Error",
         description: "Failed to delete document",
@@ -371,7 +342,6 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
         description: "New document added successfully",
       });
     } catch (error) {
-      console.error("Error adding document:", error);
       toast({
         title: "Error",
         description: "Failed to add document",
@@ -415,7 +385,6 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
       // Redirect back to products page
       router.push("/dashboard/products");
     } catch (error) {
-      console.error("Error saving changes:", error);
       toast({
         title: "Error",
         description: "Failed to save changes",
@@ -481,7 +450,6 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
         description: "Image uploaded successfully",
       });
     } catch (error) {
-      console.error('Error uploading image:', error);
       toast({
         title: "Error",
         description: "Failed to upload image",
@@ -512,7 +480,6 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
         description: "Image deleted successfully",
       });
     } catch (error) {
-      console.error('Error deleting image:', error);
       toast({
         title: "Error",
         description: "Failed to delete image",
@@ -543,7 +510,6 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
         description: "Primary image updated successfully",
       });
     } catch (error) {
-      console.error('Error updating primary image:', error);
       toast({
         title: "Error",
         description: "Failed to update primary image",
@@ -800,13 +766,11 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
                           variant="ghost" 
                           size="sm" 
                           onClick={() => {
-                            console.log("Delete button clicked for document:", doc);
                             if (doc.id) {
                               handleDeleteDocument(doc.id, doc.name, doc.type);
                             } else {
                               // Generate a temporary ID if none exists
                               const tempId = `doc-${doc.name}-${doc.type}-${Date.now()}`;
-                              console.log("Generated temporary ID:", tempId);
                               handleDeleteDocument(tempId, doc.name, doc.type);
                             }
                           }}

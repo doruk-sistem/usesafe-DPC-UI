@@ -1,9 +1,11 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
 import { CertificationDocuments } from "./certification-documents";
 import { CertificationTests } from "./certification-tests";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface CertificationTabsProps {
   certificationId: string;
