@@ -30,6 +30,7 @@ export interface Database {
           updated_at: string
           manufacturer_id: string
           documents?: Document[]
+          document_status?: string
         }
         Insert: {
           id?: string
@@ -51,6 +52,7 @@ export interface Database {
           updated_at?: string
           documents?: Document[];
           manufacturer_id: string
+          document_status?: string
         }
         Update: {
           id?: string
@@ -72,6 +74,7 @@ export interface Database {
           model?: string
           documents?: Document[]
           manufacturer_id?: string
+          document_status?: string
         }
       }
     }

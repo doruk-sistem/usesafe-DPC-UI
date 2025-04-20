@@ -3,15 +3,17 @@
 import {
   Package,
   Search,
-  Filter,
   MoreHorizontal,
   FileText,
   Eye,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
+
+import Loading from "@/app/admin/loading";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -37,49 +39,25 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useToast } from "@/components/ui/use-toast";
 import { documentsApiHooks } from "@/lib/hooks/use-documents";
-import { ProductWithMetadata , ProductStatus } from "@/lib/types/product";
+import { BaseProduct, ProductStatus } from "@/lib/types/product";
 
 
 export function ProductList() {
   const t = useTranslations();
-  const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [manufacturerFilter, setManufacturerFilter] = useState("all");
 
-  const getProductStatusVariant = (
-    status: ProductStatus
-  ): "default" | "success" | "warning" | "destructive" | "secondary" => {
-    switch (status) {
-      case "ARCHIVED":
-      case "APPROVED":
-        return "success";
-      case "DELETED":
-      case "REJECTED":
-        return "destructive";
-      case "PENDING":
-      case "NEW":
-        return "warning";
-      case "DRAFT":
-        return "secondary";
-      case "EXPIRED":
-        return "destructive";
-      default:
-        return "default";
-    }
-  };
-
   const { data: products = [], isLoading } = documentsApiHooks.useGetProducts();
 
   // Process products to include document counts and status
-  const processedProducts: ProductWithMetadata[] = products.map((product) => {
+  const processedProducts: BaseProduct[] = products.map((product) => {
     const documentCount = product.documents
       ? Object.values(product.documents).flat().length
       : 0;
 
-    let documentStatus: ProductWithMetadata["document_status"] = "No Documents";
+    let documentStatus: BaseProduct["document_status"] = "No Documents";
     if (documentCount > 0) {
       const allDocs = Object.values(product.documents).flat() as {
         status: "approved" | "rejected" | "pending";
@@ -97,23 +75,7 @@ export function ProductList() {
     }
 
     return {
-      id: product.id,
-      name: product.name,
-      description: product.description || "",
-      company_id: product.manufacturer_id,
-      product_type: product.product_type,
-      product_subcategory: product.product_subcategory || "",
-      model: product.model,
-      status: product.status,
-      status_history: product.status_history || [],
-      images: product.images || [],
-      key_features: product.key_features || [],
-      created_at: product.created_at,
-      updated_at: product.updated_at,
-      manufacturer_id: product.manufacturer_id,
-      documents: product.documents,
-      manufacturer_name: product.manufacturer?.name || t("admin.products.unknownManufacturer"),
-      document_count: documentCount,
+      ...product,
       document_status: documentStatus,
     };
   });
@@ -143,7 +105,7 @@ export function ProductList() {
     return true;
   });
 
-  const getDocumentStatusDisplay = (status: ProductWithMetadata["document_status"]) => {
+  const getDocumentStatusDisplay = (status: BaseProduct["document_status"]) => {
     switch (status) {
       case "No Documents":
         return t("admin.products.details.documents.documentStatuses.noDocuments");
@@ -159,14 +121,7 @@ export function ProductList() {
   };
 
   if (isLoading) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("admin.products.title")}</CardTitle>
-          <CardDescription>{t("admin.products.loading")}</CardDescription>
-        </CardHeader>
-      </Card>
-    );
+    return <Loading />
   }
 
   return (
@@ -270,7 +225,7 @@ export function ProductList() {
                   {product.images && product.images.length > 0 ? (
                     <div className="relative w-full h-full">
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <img
+                        <Image
                           src={
                             product.images.find((img) => img.is_primary)?.url ||
                             product.images[0].url
@@ -351,7 +306,7 @@ export function ProductList() {
                         {t("admin.products.manufacturer")}
                       </span>
                       <span className="text-sm font-medium">
-                        {product.manufacturer_name}
+                        {product.manufacturer_id}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
@@ -370,7 +325,7 @@ export function ProductList() {
                       <div className="flex items-center gap-1">
                         <FileText className="h-4 w-4 text-muted-foreground" />
                         <span className="text-sm font-medium">
-                          {t("admin.products.documentCount", { count: product.document_count })}
+                          {t("admin.products.documentCount", { count: product.documents?.length || 0 })}
                         </span>
                       </div>
                     </div>
