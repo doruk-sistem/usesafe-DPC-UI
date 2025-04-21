@@ -83,7 +83,7 @@ export const textileProducts: Product[] = [
               id: "category",
               name: "Category",
               type: "text",
-              value: "Women's Clothing",
+              value: "womens_clothing",
               required: true
             }
           ]
@@ -329,7 +329,7 @@ export const textileProducts: Product[] = [
               id: "category",
               name: "Category",
               type: "text",
-              value: "Women's Clothing",
+              value: "womens_clothing",
               required: true
             }
           ]

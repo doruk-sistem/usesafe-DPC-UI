@@ -1,4 +1,4 @@
-import { CompanyType } from "../types/company";
+import { CompanyType, DocumentType } from "../types/company";
 
 export interface RegistrationRequest {
   // Company Information
@@ -24,7 +24,7 @@ export interface RegistrationRequest {
     postalCode?: string;
   }[];
   documents: {
-    type: string;
+    type: DocumentType;
     filePath: string;
   }[];
 }

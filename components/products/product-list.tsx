@@ -2,9 +2,9 @@
 
 import { motion } from "framer-motion";
 import { Leaf, Factory, TreePine, Sparkles } from "lucide-react";
-import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import {
@@ -16,10 +16,9 @@ import {
 import { EnhancedCard } from "@/components/ui/enhanced-card";
 import { products } from "@/lib/data/products";
 import { textileProducts } from "@/lib/data/textile-products";
-import { Product } from "@/lib/types/product";
 
 export function ProductList() {
-  const t = useTranslations("products.list");
+  const t = useTranslations("products");
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -46,7 +45,7 @@ export function ProductList() {
 
   const allProducts = [...textileProducts, ...products];
 
-  const getSustainabilityScore = (product: Product) => {
+  const getSustainabilityScore = (product) => {
     if (!product?.dpp_config?.sections) return 0;
 
     const environmentalSection = product.dpp_config.sections.find(
@@ -60,7 +59,7 @@ export function ProductList() {
     return typeof score === "number" ? score : 0;
   };
 
-  const getCarbonFootprint = (product: Product) => {
+  const getCarbonFootprint = (product) => {
     if (!product?.dpp_config?.sections) return "0 kg CO2e";
 
     const environmentalSection = product.dpp_config.sections.find(
@@ -74,7 +73,7 @@ export function ProductList() {
     return typeof footprint === "string" ? footprint : "0 kg CO2e";
   };
 
-  const getManufacturer = (product: Product) => {
+  const getManufacturer = (product) => {
     if (!product?.dpp_config?.sections) return t("quickInfo.unknown");
 
     const basicInfoSection = product.dpp_config.sections.find(
@@ -88,7 +87,7 @@ export function ProductList() {
     );
   };
 
-  const getCategory = (product: Product) => {
+  const getCategory = (product) => {
     if (!product?.dpp_config?.sections) return product.product_type;
 
     const basicInfoSection = product.dpp_config.sections.find(
@@ -102,20 +101,20 @@ export function ProductList() {
     );
   };
 
-  const getSustainabilityIcon = (score: number) => {
+  const getSustainabilityIcon = (score) => {
     if (score >= 90) return <Sparkles className="w-5 h-5 text-green-500" />;
     if (score >= 75) return <Leaf className="w-5 h-5 text-green-500" />;
     if (score >= 50) return <TreePine className="w-5 h-5 text-yellow-500" />;
     return <Factory className="w-5 h-5 text-red-500" />;
   };
 
-  const getSustainabilityVariant = (score: number) => {
+  const getSustainabilityVariant = (score) => {
     if (score >= 80) return "success";
     if (score >= 60) return "warning";
     return "destructive";
   };
 
-  const parseCarbonFootprint = (footprint: string): number => {
+  const parseCarbonFootprint = (footprint) => {
     return parseFloat(footprint.replace(" kg CO2e", ""));
   };
 
@@ -166,7 +165,7 @@ export function ProductList() {
                     <CardTitle className="text-lg flex items-center justify-between">
                       {product.name}
                       <Badge variant="secondary" className="ml-2">
-                        {t(`categories.${category.toLowerCase()}`)}
+                        {t(`list.categories.${category.toLowerCase()}`)}
                       </Badge>
                     </CardTitle>
                     <CardDescription className="flex items-center">
@@ -180,7 +179,7 @@ export function ProductList() {
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-muted-foreground">
-                        {t("sustainability.score")}
+                        {t("list.sustainability.score")}
                       </span>
                       <Badge
                         variant={getSustainabilityVariant(sustainabilityScore)}
@@ -193,7 +192,7 @@ export function ProductList() {
 
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-muted-foreground">
-                        {t("sustainability.carbonFootprint")}
+                        {t("list.sustainability.carbonFootprint")}
                       </span>
                       <span
                         className={`text-sm font-medium ${

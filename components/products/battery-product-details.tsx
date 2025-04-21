@@ -2,12 +2,11 @@
 
 import { motion } from "framer-motion";
 import { ArrowLeft, HardHat, Warehouse } from "lucide-react";
-import { useTranslations } from "next-intl";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 import { ProductQR } from "@/components/products/product-qr";
 import { Button } from "@/components/ui/button";
-import { Product } from "@/lib/types/product";
 
 import { Card, CardHeader, CardTitle, CardContent } from "../ui/card";
 
@@ -23,7 +22,7 @@ import { ProductQuickInfo } from "./product-details/ProductQuickInfo";
 import { SustainabilityMetricsCard } from "./product-details/SustainabilityMetricsCard";
 
 interface BatteryProductDetailsProps {
-  product: Product;
+  product: any;
 }
 
 export function BatteryProductDetails({ product }: BatteryProductDetailsProps) {
@@ -95,77 +94,77 @@ export function BatteryProductDetails({ product }: BatteryProductDetailsProps) {
   const hazardPictograms = [
     {
       src: "/images/hazard-health.gif",
-      alt: t("hazards.health"),
-      description: t("hazards.healthDesc"),
+      alt: "Health Hazard",
+      description: "Potential risks to human health",
     },
     {
       src: "/images/hazard-explosive.gif",
-      alt: t("hazards.corrosive"),
-      description: t("hazards.corrosiveDesc"),
+      alt: "Corrosive Hazard",
+      description: "Potential corrosive risks",
     },
     {
       src: "/images/hazard-warning.png",
-      alt: t("hazards.warning"),
-      description: t("hazards.warningDesc"),
+      alt: "Warning",
+      description: "Important safety information",
     },
     {
       src: "/images/hazard-explosive.jpeg",
-      alt: t("hazards.explosive"),
-      description: t("hazards.explosiveDesc"),
+      alt: "Explosive Hazard",
+      description: "Potential explosion risks",
     },
     {
       src: "/images/hazard-environmental.png",
-      alt: t("hazards.environmental"),
-      description: t("hazards.environmentalDesc"),
+      alt: "Environmental Hazard",
+      description: "Potential risks to the environment",
     },
   ];
 
   const safetyMeasures = [
-    t("safety.measures.careful"),
-    t("safety.measures.upright"),
-    t("safety.measures.ventilation"),
-    t("safety.measures.water"),
-    t("safety.measures.goggles"),
-    t("safety.measures.clothing"),
+    "Handle with care",
+    "Keep battery upright",
+    "Ensure proper ventilation",
+    "Keep away from water",
+    "Wear protective goggles",
+    "Wear protective clothing",
   ];
 
   const emergencyProcedures = [
-    t("emergency.procedures.contact"),
-    t("emergency.procedures.clothing"),
-    t("emergency.procedures.ingestion"),
-    t("emergency.procedures.spill"),
-    t("emergency.procedures.gases"),
-    t("emergency.procedures.spark"),
-    t("emergency.procedures.fire"),
-    t("emergency.procedures.devices"),
+    "In case of skin contact, wash immediately with water",
+    "Remove contaminated clothing",
+    "If swallowed, seek medical attention immediately",
+    "For spills, contain and collect",
+    "In case of gas release, evacuate area",
+    "Keep away from sparks and flames",
+    "Use appropriate fire extinguishing media",
+    "Disconnect all electrical devices",
   ];
 
   const storageGuidelines = [
     {
-      title: t("storage.general.title"),
+      title: "General Storage",
       items: [
-        t("storage.general.dry"),
-        t("storage.general.pallet"),
+        "Store in a dry place",
+        "Store on pallets",
       ],
     },
     {
-      title: t("storage.charge.title"),
+      title: "Charge Storage",
       items: [
-        t("storage.charge.sale"),
-        t("storage.charge.minimum"),
-        t("storage.charge.damage"),
+        "Charge before sale",
+        "Maintain minimum charge",
+        "Prevent deep discharge",
       ],
     },
     {
-      title: t("storage.installation.title"),
+      title: "Installation",
       items: [
-        t("storage.installation.verify"),
-        t("storage.installation.engine"),
-        t("storage.installation.remove"),
-        t("storage.installation.control"),
-        t("storage.installation.clean"),
-        t("storage.installation.install"),
-        t("storage.installation.check"),
+        "Verify correct voltage",
+        "Turn off engine",
+        "Remove old battery",
+        "Check fluid levels",
+        "Clean terminals",
+        "Install new battery",
+        "Check connections",
       ],
     },
   ];

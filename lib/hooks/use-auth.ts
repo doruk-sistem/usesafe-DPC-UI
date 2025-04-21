@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useCallback } from "react";
+import { useTranslations } from "next-intl";
 import { supabase } from "@/lib/supabase/client";
 import type {
   Session,
@@ -9,6 +10,7 @@ import type {
   UserAttributes,
 } from "@supabase/supabase-js";
 
+import { useToast } from "@/components/ui/use-toast";
 import { useCompany } from "./use-company";
 
 // Kullanıcı tipini genişletiyoruz çünkü user_metadata'ya ihtiyacımız var
@@ -23,6 +25,8 @@ interface ExtendedUser extends SupabaseUser {
 
 export function useAuth() {
   const router = useRouter();
+  const t = useTranslations("auth");
+  const { toast } = useToast();
 
   const [user, setUser] = useState<ExtendedUser | null>(null);
   const [session, setSession] = useState<Session | null>(null);
@@ -60,16 +64,29 @@ export function useAuth() {
   }, [getSession]);
 
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) throw error;
+    try {
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) throw error;
 
-    const { data } = await supabase.auth.getUser();
-    setUser(data.user as ExtendedUser);
+      const { data } = await supabase.auth.getUser();
+      setUser(data.user as ExtendedUser);
 
-    if (data.user?.user_metadata?.role === "admin") {
-      router.push("/admin");
-    } else {
-      router.push("/dashboard");
+      toast({
+        title: t("success.signIn.title"),
+        description: t("success.signIn.description"),
+      });
+
+      if (data.user?.user_metadata?.role === "admin") {
+        router.push("/admin");
+      } else {
+        router.push("/dashboard");
+      }
+    } catch (error) {
+      toast({
+        title: t("errors.signIn.title"),
+        description: t("errors.signIn.description"),
+        variant: "destructive",
+      });
     }
   };
 
@@ -78,25 +95,69 @@ export function useAuth() {
     password: string,
     metadata: ExtendedUser["user_metadata"] = {}
   ) => {
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { data: metadata },
-    });
-    if (error) throw error;
+    try {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { data: metadata },
+      });
+      if (error) throw error;
+
+      toast({
+        title: t("success.signUp.title"),
+        description: t("success.signUp.description"),
+      });
+
+      router.push("/auth/verify-email");
+    } catch (error) {
+      toast({
+        title: t("errors.signUp.title"),
+        description: t("errors.signUp.description"),
+        variant: "destructive",
+      });
+    }
   };
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) throw error;
-    setUser(null);
-    setSession(null);
-    router.push("/");
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      
+      setUser(null);
+      setSession(null);
+      router.push("/auth/login");
+      
+      toast({
+        title: t("success.signOut.title"),
+        description: t("success.signOut.description"),
+      });
+    } catch (error) {
+      toast({
+        title: t("errors.signOut.title"),
+        description: t("errors.signOut.description"),
+        variant: "destructive",
+      });
+    }
   };
 
   const updateUser = async (attributes: UserAttributes) => {
-    const { error } = await supabase.auth.updateUser(attributes);
-    if (error) throw error;
+    try {
+      const { error } = await supabase.auth.updateUser({
+        data: attributes,
+      });
+      if (error) throw error;
+
+      toast({
+        title: t("success.updateUser.title"),
+        description: t("success.updateUser.description"),
+      });
+    } catch (error) {
+      toast({
+        title: t("errors.updateUser.title"),
+        description: t("errors.updateUser.description"),
+        variant: "destructive",
+      });
+    }
   };
 
   const verifyOtp = async (token: string, type: string) => {

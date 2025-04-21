@@ -1,10 +1,10 @@
 "use client";
 
-import { CheckCircle, XCircle, AlertTriangle, Clock } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { getStatusColor, getStatusIcon } from "@/lib/utils/document-utils";
 
 type ValidationStatus = "verified" | "valid" | "failed" | "warning" | "pending";
 
@@ -65,42 +65,6 @@ export function DocumentValidation({ documentId }: DocumentValidationProps) {
     return <div>{t("noData.title")}</div>;
   }
 
-  const getStatusIcon = (status: ValidationStatus) => {
-    switch (status) {
-      case "verified":
-      case "valid":
-        return <CheckCircle className="h-5 w-5 text-green-500" />;
-      case "failed":
-        return <XCircle className="h-5 w-5 text-red-500" />;
-      case "warning":
-        return <AlertTriangle className="h-5 w-5 text-yellow-500" />;
-      default:
-        return <Clock className="h-5 w-5 text-blue-500" />;
-    }
-  };
-
-  const getStatusColor = (status: ValidationStatus) => {
-    switch (status) {
-      case "verified":
-      case "valid":
-        return "text-green-500";
-      case "failed":
-        return "text-red-500";
-      case "warning":
-        return "text-yellow-500";
-      default:
-        return "text-blue-500";
-    }
-  };
-
-  const getStatusText = (status: ValidationStatus) => {
-    return t(`checks.${status}`);
-  };
-
-  const getCheckTitle = (key: string) => {
-    return t(`checks.${key}.title`);
-  };
-
   const calculateProgress = () => {
     const total = Object.keys(validation).length;
     const completed = Object.values(validation).filter(
@@ -122,14 +86,14 @@ export function DocumentValidation({ documentId }: DocumentValidationProps) {
           <div key={key} className="flex items-start gap-4">
             {getStatusIcon(check.status)}
             <div className="flex-1 space-y-1">
-              <p className="font-medium capitalize">{getCheckTitle(key)}</p>
+              <p className="font-medium capitalize">{t(`checks.${key}.title`)}</p>
               <p className="text-sm text-muted-foreground">{t(`checks.${key}.${check.status}`)}</p>
               <p className="text-xs text-muted-foreground">
                 {new Date(check.timestamp).toLocaleString()}
               </p>
             </div>
             <span className={`text-sm font-medium ${getStatusColor(check.status)} capitalize`}>
-              {getStatusText(check.status)}
+              {t(`checks.${check.status}`)}
             </span>
           </div>
         ))}

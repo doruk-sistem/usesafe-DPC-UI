@@ -1,13 +1,26 @@
 "use client";
 
-import { LayoutDashboard, Users, FileCheck, Shield, Bell, Building2 } from "lucide-react";
+import {
+  LayoutDashboard,
+  Users,
+  FileCheck,
+  Shield,
+  Bell,
+  Package,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 
 interface AdminLayoutProps {
@@ -30,9 +43,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       icon: Users,
     },
     {
-      title: t("companies"),
-      href: "/admin/companies",
-      icon: Building2,
+      title: t("products"),
+      href: "/admin/products",
+      icon: Package,
     },
     {
       title: t("documents"),
@@ -48,7 +61,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       title: t("dppTemplates"),
       href: "/admin/templates",
       icon: Shield,
-    }
+    },
   ];
 
   return (

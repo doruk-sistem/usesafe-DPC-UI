@@ -1,5 +1,7 @@
 import { supabase } from "@/lib/supabase/client";
 import type { Company, CompanyStats } from "@/lib/types/company";
+import { CompanyType } from "@/lib/types/company";
+
 import { createService } from "../api-client";
 
 interface SupplierResponse {
@@ -23,7 +25,7 @@ export class CompanyService {
 
     const { data, error } = await supabase
       .from("companies")
-      .select("*")
+      .select("id, name, taxInfo, companyType, status")
       .eq("id", id)
       .single();
 
@@ -75,8 +77,17 @@ export class CompanyService {
       throw error;
     }
 
-    const suppliers = (data as unknown as { supplier: Company }[]).map(item => item.supplier);
-    return suppliers;
+    // Extract supplier data from the nested structure and ensure it matches Company type
+    return (data || []).map((item) => {
+      const supplier = item.supplier as unknown as Company;
+      return {
+        id: supplier.id,
+        name: supplier.name,
+        companyType: supplier.companyType,
+        taxInfo: supplier.taxInfo,
+        status: supplier.status
+      };
+    });
   }
 
   static async createManufacturer(
@@ -101,6 +112,7 @@ export class CompanyService {
             name: data.name,
             taxInfo: data.taxInfo,
             companyType: data.companyType,
+            status: true
           },
         ])
         .select()
@@ -277,8 +289,17 @@ export const companyService = createService({
       throw error;
     }
 
-    const suppliers = (data as unknown as { supplier: Company }[]).map(item => item.supplier);
-    return suppliers;
+    // Extract supplier data from the nested structure and ensure it matches Company type
+    return (data || []).map((item) => {
+      const supplier = item.supplier as unknown as Company;
+      return {
+        id: supplier.id,
+        name: supplier.name,
+        companyType: supplier.companyType,
+        taxInfo: supplier.taxInfo,
+        status: supplier.status
+      };
+    });
   },
 
   // Üretici oluştur
@@ -301,6 +322,7 @@ export const companyService = createService({
             name: data.name,
             taxInfo: data.taxInfo,
             companyType: data.companyType,
+            status: true
           },
         ])
         .select()

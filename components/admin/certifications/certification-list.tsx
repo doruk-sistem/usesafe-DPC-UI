@@ -1,9 +1,9 @@
 "use client";
 
 import { Box, CheckCircle, Clock, Download, Eye, MoreHorizontal, XCircle } from "lucide-react";
-import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -28,6 +28,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { getStatusIcon } from "@/lib/utils/document-utils";
 
 const certifications = [
   {
@@ -76,17 +77,6 @@ export function CertificationList() {
   const filteredCertifications = manufacturerId
     ? certifications.filter(cert => cert.manufacturerId === manufacturerId)
     : certifications;
-
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case "approved":
-        return <CheckCircle className="h-4 w-4" />;
-      case "rejected":
-        return <XCircle className="h-4 w-4" />;
-      default:
-        return <Clock className="h-4 w-4" />;
-    }
-  };
 
   const getStatusVariant = (status: string) => {
     switch (status) {

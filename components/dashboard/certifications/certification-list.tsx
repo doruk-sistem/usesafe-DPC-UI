@@ -30,6 +30,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+import { getStatusIcon } from "../../../lib/utils/document-utils";
+
 // Sample data - In a real app, this would come from an API
 const certifications = [
   {
@@ -73,17 +75,6 @@ const certifications = [
 
 export function CertificationList() {
   const t = useTranslations();
-
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case "approved":
-        return <CheckCircle className="h-4 w-4" />;
-      case "rejected":
-        return <XCircle className="h-4 w-4" />;
-      default:
-        return <Clock className="h-4 w-4" />;
-    }
-  };
 
   const getStatusVariant = (status: string) => {
     switch (status) {

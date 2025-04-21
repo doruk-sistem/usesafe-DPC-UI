@@ -5,9 +5,89 @@
     "verifyProducts": "Verify Products",
     "signIn": "Sign In"
   },
+  "home": {
+    "hero": {
+      "title": "Digital Product Passport Platform",
+      "description": "Secure, transparent, and traceable product certification for manufacturers and consumers",
+      "getStarted": "Get Started",
+      "verifyProduct": "Verify Product"
+    },
+    "features": {
+      "manufacturers": {
+        "title": "For Manufacturers",
+        "description": "Register your company and start managing your product certifications digitally",
+        "buttonText": "Register Now"
+      },
+      "traceability": {
+        "title": "Product Traceability",
+        "description": "Track your products throughout their lifecycle with secure digital passports",
+        "buttonText": "Learn More"
+      },
+      "history": {
+        "title": "Product History",
+        "description": "Access complete product history and certification records",
+        "buttonText": "View Products"
+      },
+      "connectedData": {
+        "title": "Connected Data",
+        "description": "All your product data connected and accessible in one place",
+        "buttonText": "Explore"
+      }
+    },
+    "traceability": {
+      "title": "How It Works",
+      "description": "Follow your product's journey from raw materials to certified end product",
+      "steps": {
+        "rawMaterials": {
+          "title": "Raw Materials",
+          "description": "Track the origin and quality of raw materials"
+        },
+        "manufacturing": {
+          "title": "Manufacturing",
+          "description": "Monitor the manufacturing process and quality controls"
+        },
+        "certification": {
+          "title": "Certification",
+          "description": "Verify and maintain product certifications"
+        }
+      }
+    }
+  },
+  "pages": {           
+    "pendingProducts": {
+      "title": "Pending Products",
+      "description": "List of products pending approval"
+    }
+  },
+  "error": {
+    "404": {
+      "title": "404",
+      "description": "This page could not be found.",
+      "backHome": "Back to Home"
+    },
+    "generic": "An error occurred",
+    "network": {
+      "title": "Network Error",
+      "description": "Please check your internet connection and try again"
+    },
+    "server": {
+      "title": "Server Error",
+      "description": "Something went wrong on our end. Please try again later"
+    },
+    "unauthorized": {
+      "title": "Unauthorized",
+      "description": "You don't have permission to access this resource"
+    },
+    "forbidden": "Access forbidden",
+    "notFound": "Resource not found",
+    "timeout": "Request timed out",
+    "validation": {
+      "title": "Validation Error",
+      "description": "Please check your input and try again"
+    }
+  },
   "admin": {
     "sidebar": {
-      "companies": "Companies",
       "dashboard": "Dashboard",
       "products": "Products",
       "users": "Users",
@@ -15,7 +95,8 @@
       "manufacturers": "Manufacturers",
       "documents": "Documents",
       "certifications": "Certifications",
-      "dppTemplates": "DPP Templates"
+      "dppTemplates": "DPP Templates",
+      "pendingProducts": "Pending Products"
     },
     "labels": {
       "manufacturer": "Manufacturer",
@@ -38,6 +119,10 @@
           "description": "Loading companies..."
         },
         "total": "Total: {count} Companies",
+        "empty": {
+          "title": "No Companies Found",
+          "description": "No registered companies yet."
+        },
         "columns": {
           "name": "Company Name",
           "type": "Company Type",
@@ -62,6 +147,15 @@
       },
       "details": {
         "title": "Company Details",
+        "loading": "Loading...",
+        "error": {
+          "title": "Error",
+          "companyIdRequired": "Company ID is required",
+          "message": "{message}",
+          "generic": "An error occurred while loading company details. Please try again later.",
+          "notFoundTitle": "Not Found",
+          "notFoundMessage": "Company with specified ID not found"
+        },
         "companyInfo": {
           "title": "Company Information",
           "type": "Company Type",
@@ -75,7 +169,19 @@
           "email": "Email",
           "phone": "Phone",
           "website": "Website",
-          "address": "Address"
+          "address": "Address",
+          "notAvailable": "Contact information not available"
+        },
+        "taxInfo": {
+          "title": "Tax Information",
+          "taxNumber": "Tax Number",
+          "taxOffice": "Tax Office",
+          "mersisNo": "MERSIS No",
+          "notAvailable": "Tax information not available"
+        },
+        "addressInfo": {
+          "title": "Address Information",
+          "notAvailable": "Address information not available"
         },
         "statistics": {
           "title": "Statistics",
@@ -99,13 +205,41 @@
           "reject": "Reject",
           "suspend": "Suspend"
         },
-        "error": {
-          "title": "Error",
-          "companyIdRequired": "Company ID is required",
-          "message": "{message}",
-          "generic": "Failed to load company details. Please try again later.",
-          "notFoundTitle": "Not Found",
-          "notFoundMessage": "No company found with the provided ID."
+        "documentHistory": {
+          "title": "Document History",
+          "description": "View document history and changes",
+          "columns": {
+            "document": "Document",
+            "action": "Action",
+            "date": "Date",
+            "user": "User"
+          }
+        },
+        "activityLog": {
+          "title": "Activity Log",
+          "description": "View company activity log",
+          "columns": {
+            "activity": "Activity",
+            "date": "Date",
+            "user": "User",
+            "details": "Details"
+          }
+        },
+        "verification": {
+          "title": "Verification Status",
+          "description": "View company verification status",
+          "status": {
+            "verified": "Verified",
+            "pending": "Pending",
+            "rejected": "Rejected"
+          },
+          "documents": {
+            "title": "Required Documents",
+            "description": "View required documents for verification",
+            "missing": "Missing Documents",
+            "uploaded": "Uploaded Documents",
+            "verified": "Verified Documents"
+          }
         }
       },
       "status": {
@@ -114,7 +248,15 @@
         "suspended": "Suspended",
         "inactive": "Inactive",
         "approved": "Approved",
-        "rejected": "Rejected"
+        "rejected": "Rejected",
+        "document_pending": "Document Pending",
+        "document_approved": "Document Approved",
+        "document_rejected": "Document Rejected",
+        "document_expired": "Document Expired",
+        "document_renewal_required": "Document Renewal Required",
+        "verification_pending": "Verification Pending",
+        "verification_completed": "Verification Completed",
+        "verification_failed": "Verification Failed"
       },
       "types": {
         "manufacturer": "Manufacturer",
@@ -122,7 +264,16 @@
         "retailer": "Retailer",
         "wholesaler": "Wholesaler",
         "importer": "Importer",
-        "exporter": "Exporter"
+        "exporter": "Exporter",
+        "brand_owner": "Brand Owner",
+        "service_provider": "Service Provider",
+        "consultant": "Consultant",
+        "certification_body": "Certification Body",
+        "testing_laboratory": "Testing Laboratory",
+        "inspection_body": "Inspection Body",
+        "raw_material_supplier": "Raw Material Supplier",
+        "component_supplier": "Component Supplier",
+        "logistics_provider": "Logistics Provider"
       },
       "filters": {
         "all": "All Companies",
@@ -132,7 +283,14 @@
         "inactive": "Inactive Companies",
         "byType": "Filter by Type",
         "byStatus": "Filter by Status",
-        "byDate": "Filter by Date"
+        "byDate": "Filter by Date",
+        "byDocumentType": "Filter by Document Type",
+        "byDocumentStatus": "Filter by Document Status",
+        "byRegistrationDate": "Filter by Registration Date",
+        "byLastActivity": "Filter by Last Activity",
+        "byProductCount": "Filter by Product Count",
+        "byDocumentCount": "Filter by Document Count",
+        "byVerificationStatus": "Filter by Verification Status"
       },
       "messages": {
         "approveSuccess": "Company approved successfully",
@@ -145,7 +303,23 @@
         "activateError": "Error activating company",
         "deleteConfirm": "Are you sure you want to delete this company?",
         "deleteSuccess": "Company deleted successfully",
-        "deleteError": "Error deleting company"
+        "deleteError": "Error deleting company",
+        "updateSuccess": "Company updated successfully",
+        "updateError": "Error updating company",
+        "documentUploadSuccess": "Document uploaded successfully",
+        "documentUploadError": "Error uploading document",
+        "documentDeleteSuccess": "Document deleted successfully",
+        "documentDeleteError": "Error deleting document",
+        "documentApproveSuccess": "Document approved successfully",
+        "documentApproveError": "Error approving document",
+        "documentRejectSuccess": "Document rejected successfully",
+        "documentRejectError": "Error rejecting document",
+        "verificationSuccess": "Company verification completed successfully",
+        "verificationError": "Error during company verification",
+        "documentVerificationSuccess": "Document verification completed successfully",
+        "documentVerificationError": "Error during document verification",
+        "activityLogSuccess": "Activity log updated successfully",
+        "activityLogError": "Error updating activity log"
       },
       "documents": {
         "title": "Documents",
@@ -168,443 +342,375 @@
           "trade_registry_gazette": "Trade Registry Gazette",
           "tax_plate": "Tax Plate",
           "activity_certificate": "Activity Certificate",
-          "iso_certificate": "ISO Certificate"
+          "iso_certificate": "ISO Certificate",
+          "environmental_certificate": "Environmental Certificate",
+          "safety_certificate": "Safety Certificate",
+          "quality_certificate": "Quality Certificate",
+          "compliance_certificate": "Compliance Certificate"
         },
         "status": {
+          "pending": "Pending",
           "approved": "Approved",
           "rejected": "Rejected",
-          "pending": "Pending Review"
+          "expired": "Expired",
+          "renewal_required": "Renewal Required"
         },
         "actions": {
-          "title": "Actions",
-          "add": "Add Document",
           "view": "View",
           "download": "Download",
-          "approve": "Approve",
-          "reject": "Reject",
-          "delete": "Delete"
-        }
-      }
-    },
-    "manufacturers": {
-      "title": "Manufacturers",
-      "description": "View and manage registered manufacturers",
-      "list": {
-        "title": "Manufacturer List",
-        "description": "List of all registered manufacturers",
-        "search": "Search manufacturers...",
-        "filter": "Filter",
-        "sort": "Sort",
-        "columns": {
-          "name": "Manufacturer Name",
-          "type": "Manufacturer Type",
-          "status": "Status",
-          "registrationDate": "Registration Date",
-          "actions": "Actions"
-        },
-        "actions": {
-          "view": "View",
-          "edit": "Edit",
           "delete": "Delete",
           "approve": "Approve",
-          "reject": "Reject"
-        },
-        "empty": "No manufacturers found",
-        "loading": "Loading manufacturers..."
-      },
-      "status": {
-        "active": "Active",
-        "pending": "Pending",
-        "suspended": "Suspended",
-        "inactive": "Inactive"
-      },
-      "filters": {
-        "status": "Status",
-        "allManufacturers": "All Manufacturers",
-        "pendingApproval": "Pending Approval",
-        "approved": "Approved",
-        "rejected": "Rejected"
-      },
-      "actions": {
-        "addNew": "Add New"
-      }
-    },
-    "dpc": {
-      "title": "DPC Title",
-      "description": "DPC Description",
-      "columns": {
-        "product": "Product",
-        "category": "Category",
-        "manufacturer": "Manufacturer",
-        "status": "Status",
-        "score": "Score",
-        "documents": "Documents"
-      },
-      "status": {
-        "pending": "Pending",
-        "approved": "Approved",
-        "rejected": "Rejected"
-      },
-      "actions": {
-        "newDPC": "New DPC",
-        "download": "Download",
-        "view": "View"
-      },
-      "filters": {
-        "allCategories": "All Categories",
-        "allStatus": "All Status"
-      }
-    },
-    "documents": {
-      "title": "Documents",
-      "description": "List of company documents",
-      "empty": {
-        "description": "No documents found for this company.",
-        "uploadFirst": "Upload First Document"
-      },
-      "columns": {
-        "id": "Document ID",
-        "name": "Document Name",
-        "type": "Document Type",
-        "status": "Status",
-        "uploadDate": "Upload Date",
-        "actions": "Actions"
-      },
-      "types": {
-        "signature_circular": "Signature Circular",
-        "trade_registry_gazette": "Trade Registry Gazette",
-        "tax_plate": "Tax Registration Certificate",
-        "activity_certificate": "Activity Certificate",
-        "iso_certificate": "ISO Certificate",
-        "quality_certificate": "Quality Certificate",
-        "export_certificate": "Export Certificate",
-        "production_permit": "Production Permit"
-      },
-      "status": {
-        "approved": "Approved",
-        "rejected": "Rejected",
-        "pending": "Pending Approval"
-      },
-      "actions": {
-        "add": "Add Document",
-        "view": "View",
-        "download": "Download",
-        "approve": "Approve",
-        "reject": "Reject",
-        "delete": "Delete"
+          "reject": "Reject",
+          "renew": "Renew"
+        }
       }
     },
     "products": {
       "title": "Products",
-      "description": "View and manage products",
-      "list": {
-        "title": "Products",
-        "description": "List of all products",
-        "total": "Total: {count} products found",
-        "search": "Search products...",
-        "filter": "All",
-        "columns": {
-          "productCode": "Product Code",
-          "productName": "Product Name",
-          "sku": "SKU",
-          "category": "Category",
-          "status": "Status",
-          "addedDate": "Added Date",
-          "actions": "Actions"
+      "description": "Manage and review all products in the system",
+      "loading": "Loading products...",
+      "searchPlaceholder": "Search products...",
+      "filterByManufacturer": "Filter by manufacturer",
+      "filterByStatus": "Filter by status",
+      "allManufacturers": "All Manufacturers",
+      "allStatus": "All Status",
+      "allApproved": "All Approved",
+      "pendingReview": "Pending Review",
+      "hasRejectedDocuments": "Has Rejected Documents",
+      "noDocuments": "No Documents",
+      "noProductsFound": "No Products Found",
+      "noProductsAdded": "No products have been added yet.",
+      "noProductsMatchFilter": "No products match the current filter criteria.",
+      "manufacturer": "Manufacturer",
+      "category": "Category",
+      "documents": "Documents",
+      "status": "Status",
+      "uncategorized": "Uncategorized",
+      "viewDetails": "View Details",
+      "viewDocuments": "View Documents",
+      "addNewProduct": "Add New Product",
+      "created": "Created",
+      "documentCount": "{count} document",
+      "documentCount_plural": "{count} documents",
+      "unknownManufacturer": "Unknown Manufacturer",
+      "features": {
+        "certifications": {
+          "title": "Product Certifications",
+          "description": "Manage and track your product certifications",
+          "types": {
+            "quality": {
+              "title": "Quality Certifications",
+              "description": "ISO and quality management certifications"
+            },
+            "safety": {
+              "title": "Safety Certifications",
+              "description": "Product safety and compliance certifications"
+            },
+            "environmental": {
+              "title": "Environmental Certifications",
+              "description": "Environmental and sustainability certifications"
+            },
+            "industry": {
+              "title": "Industry Standards",
+              "description": "Industry-specific standards and certifications"
+            }
+          },
+          "status": {
+            "active": "Active",
+            "pending": "Pending Review",
+            "expired": "Expired",
+            "revoked": "Revoked"
+          },
+          "actions": {
+            "view": "View Certificate",
+            "download": "Download Certificate",
+            "verify": "Verify Certificate",
+            "renew": "Renew Certificate"
+          }
         },
-        "status": {
-          "active": "Active",
-          "passive": "Passive",
-          "draft": "Draft",
-          "pending": "Pending Review",
-          "taslak": "Draft",
-          "NEW": "New"
+        "traceability": {
+          "title": "Product Traceability",
+          "description": "Track your products throughout their lifecycle with secure digital passports",
+          "steps": {
+            "rawMaterials": {
+              "title": "Raw Materials",
+              "description": "Track the origin and quality of raw materials"
+            },
+            "manufacturing": {
+              "title": "Manufacturing",
+              "description": "Monitor the manufacturing process and quality controls"
+            },
+            "certification": {
+              "title": "Certification",
+              "description": "Verify and maintain product certifications"
+            },
+            "distribution": {
+              "title": "Distribution",
+              "description": "Track product distribution and logistics"
+            },
+            "endOfLife": {
+              "title": "End of Life",
+              "description": "Manage product recycling and disposal"
+            }
+          },
+          "benefits": {
+            "transparency": "Enhanced transparency in supply chain",
+            "compliance": "Easy compliance with regulations",
+            "quality": "Improved quality control",
+            "sustainability": "Better sustainability tracking",
+            "customerTrust": "Increased customer trust"
+          }
         },
-        "actions": {
-          "title": "Actions",
-          "add": "Add New Product",
-          "edit": "Edit",
-          "delete": "Delete",
-          "view": "View",
-          "approve": "Approve",
-          "reject": "Reject"
+        "sustainability": {
+          "title": "Sustainability",
+          "description": "Track and manage product sustainability metrics",
+          "metrics": {
+            "waterUsage": "Water Usage",
+            "energyConsumption": "Energy Consumption",
+            "recycledMaterials": "Recycled Materials",
+            "chemicalReduction": "Chemical Reduction",
+            "biodegradability": "Biodegradability",
+            "water-saving": "Water Saving",
+            "recycled-content": "Recycled Content",
+            "chemical-usage": "Chemical Usage",
+            "renewable-energy": "Renewable Energy",
+            "packaging": "Packaging",
+            "waste-reduction": "Waste Reduction"
+          },
+          "score": "Sustainability Score",
+          "carbonFootprint": "Carbon Footprint"
         },
-        "filters": {
-          "all": "All",
-          "active": "Active Products",
-          "passive": "Passive Products",
-          "draft": "Drafts",
-          "pending": "Pending Review"
-        },
-        "messages": {
-          "deleteConfirm": "Are you sure you want to delete this product?",
-          "deleteSuccess": "Product deleted successfully",
-          "deleteError": "Error deleting product",
-          "addSuccess": "Product added successfully",
-          "addError": "Error adding product",
-          "editSuccess": "Product updated successfully",
-          "editError": "Error updating product"
-        },
-        "empty": {
-          "filtered": "No products found matching your search criteria.",
-          "description": "No products have been added yet."
+        "supplyChain": {
+          "title": "Supply Chain Management",
+          "description": "Track and manage your product's supply chain information",
+          "components": {
+            "title": "Components",
+            "description": "Track components and materials used in production",
+            "list": {
+              "title": "Component List",
+              "empty": "No components added",
+              "add": "Add Component"
+            },
+            "form": {
+              "name": "Component Name",
+              "type": "Component Type",
+              "supplier": "Supplier",
+              "origin": "Country of Origin",
+              "certification": "Certification",
+              "quantity": "Quantity",
+              "unit": "Unit"
+            }
+          },
+          "suppliers": {
+            "title": "Suppliers",
+            "description": "Manage your product's suppliers",
+            "list": {
+              "title": "Supplier List",
+              "empty": "No suppliers added",
+              "add": "Add Supplier"
+            },
+            "form": {
+              "name": "Supplier Name",
+              "type": "Supplier Type",
+              "contact": "Contact Information",
+              "certification": "Certification",
+              "location": "Location"
+            }
+          },
+          "logistics": {
+            "title": "Logistics",
+            "description": "Track product transportation and logistics",
+            "transport": {
+              "title": "Transportation",
+              "mode": "Transport Mode",
+              "route": "Transport Route",
+              "carbonFootprint": "Carbon Footprint"
+            },
+            "warehousing": {
+              "title": "Warehousing",
+              "location": "Warehouse Location",
+              "conditions": "Storage Conditions",
+              "duration": "Storage Duration"
+            }
+          },
+          "compliance": {
+            "title": "Compliance",
+            "description": "Track supply chain compliance requirements",
+            "regulations": {
+              "title": "Regulations",
+              "description": "Applicable regulations and standards"
+            },
+            "certifications": {
+              "title": "Certifications",
+              "description": "Required certifications"
+            },
+            "audits": {
+              "title": "Audits",
+              "description": "Supply chain audit records"
+            }
+          }
         }
       },
-      "empty": {
-        "description": "No products found",
-        "addFirst": "Add First Product"
+      "steps": {
+        "documentUpload": {
+          "title": "Upload Product Documents",
+          "description": "Upload the required documents for your product",
+          "verifyDocuments": "Verify Documents",
+          "verifyDocumentsDescription": "Verify the authenticity of all uploaded documents",
+          "addDocument": "Add Document",
+          "uploadDocuments": "Upload Documents",
+          "productDocuments": "Product Documents",
+          "verificationRequired": "Document verification required",
+          "pleaseVerifyDocuments": "Please verify the documents before proceeding",
+          "invalidUploadParameters": "Invalid upload parameters",
+          "invalidFileType": "Invalid file type",
+          "fileSizeExceedsLimit": "File size exceeds limit",
+          "uploadIssues": "Upload Issues",
+          "documentTypes": {
+            "testReports": "Test Reports",
+            "technicalDocumentation": "Technical Documentation"
+          }
+        }
       },
-      "loading": "Loading products...",
       "details": {
-        "title": "Product Details",
+        "backToProducts": "Back to Products",
+        "viewDocuments": "View Documents",
+        "productInfo": {
+          "title": "Product Information",
+          "id": "Product ID",
+          "manufacturer": "Manufacturer",
+          "type": "Type",
+          "status": "Status",
+          "created": "Created",
+          "description": "Description"
+        },
+        "documents": {
+          "title": "Documents",
+          "totalDocuments": "Total Documents",
+          "documentStatus": "Document Status",
+          "description": "Document information and status",
+          "id": "Document ID",
+          "type": "Type",
+          "validUntil": "Valid Until",
+          "rejectionReason": "Rejection Reason",
+          "viewDocument": "View Document",
+          "documentStatuses": {
+            "noDocuments": "No Documents",
+            "hasRejected": "Has Rejected Documents",
+            "pending": "Pending Review",
+            "hasExpired": "Has Expired Documents",
+            "allApproved": "All Approved",
+            "unknown": "Unknown Status"
+          }
+        },
+        "errorLoadingProduct": "Error Loading Product",
+        "unexpectedError": "An unexpected error occurred",
+        "materials": {
+          "title": "Materials",
+          "composition": "Material Composition",
+          "percentage": "Percentage",
+          "type": "Material Type",
+          "sustainability": "Sustainability Rating"
+        },
+        "textile": {
+          "title": "Textile Information",
+          "careInstructions": "Care Instructions",
+          "washing": "Washing",
+          "drying": "Drying",
+          "ironing": "Ironing",
+          "bleaching": "Bleaching",
+          "dryCleaning": "Dry Cleaning"
+        },
+        "certifications": {
+          "title": "Certifications",
+          "description": "Product certifications and compliance information",
+          "table": {
+            "name": "Name",
+            "issuedBy": "Issued By",
+            "validUntil": "Valid Until",
+            "status": "Status",
+            "document": "Document"
+          },
+          "status": {
+            "active": "Active",
+            "valid": "Valid",
+            "expired": "Expired",
+            "pending": "Pending",
+            "unknown": "Unknown"
+          },
+          "actions": {
+            "download": "Download"
+          }
+        },
         "basicInfo": {
           "title": "Basic Information",
-          "productCode": "Product Code",
-          "productName": "Product Name",
-          "sku": "SKU",
+          "name": "Name",
+          "model": "Model",
+          "type": "Type",
+          "description": "Description",
+          "manufacturer": "Manufacturer",
           "category": "Category",
-          "status": "Status",
-          "addedDate": "Added Date"
+          "unknown": "Unknown"
         },
-        "actions": {
-          "edit": "Edit",
-          "delete": "Delete",
-          "approve": "Approve",
-          "reject": "Reject"
-        },
-        "tabs": {
-          "overview": "Overview",
-          "documents": "Documents",
-          "history": "History"
-        }
-      }
-    }
-  },
-  "home": {
-    "hero": {
-      "title": "Digital Product Certification & Traceability System",
-      "description": "Track, verify, and ensure product authenticity through blockchain-powered certification and end-to-end supply chain traceability",
-      "getStarted": "Get Started",
-      "verifyProduct": "Verify Product"
-    },
-    "features": {
-      "manufacturers": {
-        "title": "For Manufacturers",
-        "description": "Register your company and certify your products with our digital certification system.",
-        "buttonText": "Register Now"
-      },
-      "traceability": {
-        "title": "Product Traceability",
-        "description": "Track complete product journey from raw materials to retail with blockchain verification.",
-        "buttonText": "Explore Products"
-      },
-      "history": {
-        "title": "Supply Chain History",
-        "description": "Access complete supply chain history and verify product authenticity instantly.",
-        "buttonText": "Verify Now"
-      },
-      "connectedData": {
-        "title": "Connected Data",
-        "description": "Link product data, certifications, and sustainability metrics in one place.",
-        "buttonText": "Learn More"
-      }
-    },
-    "traceability": {
-      "title": "End-to-End Traceability",
-      "description": "Track every step of your product's journey with complete transparency and verification",
-      "steps": {
-        "rawMaterials": {
-          "title": "Raw Materials",
-          "description": "Track sourcing and origin of materials with verified sustainability credentials"
-        },
-        "manufacturing": {
-          "title": "Manufacturing",
-          "description": "Monitor production processes and sustainability metrics in real-time"
-        },
-        "certification": {
-          "title": "Certification",
-          "description": "Verify authenticity with blockchain-backed digital certification"
-        }
-      }
-    }
-  },
-  "products": {
-    "title": "Certified Products",
-    "description": "Explore our collection of certified sustainable products with verified Digital Product Passports.",
-    "featured": {
-      "title": "Featured Products",
-      "description": "Browse our selection of certified sustainable products from e-bebek"
-    },
-    "cards": {
-      "traceability": {
-        "title": "Product Traceability",
-        "description": "Track product journey from source to store"
-      },
-      "history": {
-        "title": "Supply Chain History",
-        "description": "Complete transparency of product lifecycle"
-      },
-      "certifications": {
-        "title": "Verified Certifications",
-        "description": "Authenticated sustainability credentials"
-      }
-    },
-    "verify": "Verify Product",
-    "form": {
-      "documents": {
-        "title": "Documents",
-        "description": "Upload required documents for your product",
-        "missing": "Missing documents: {documents}",
-        "types": {
-          "quality_cert": "Quality Certificate",
-          "safety_cert": "Safety Certificate",
-          "test_reports": "Test Reports",
-          "technical_docs": "Technical Documents",
-          "compliance_docs": "Compliance Documents"
+        "hazards": {
+          "title": "Hazard Information",
+          "health": "Health Hazard",
+          "healthTitle": "Health Hazard",
+          "healthDescription": "Potential risks to human health",
+          "environmentalTitle": "Environmental Hazard",
+          "environmentalDescription": "Potential risks to the environment",
+          "physicalTitle": "Physical Hazard",
+          "physicalDescription": "Potential physical risks",
+          "corrosiveTitle": "Corrosive Hazard",
+          "corrosiveDescription": "Potential corrosive risks",
+          "explosiveTitle": "Explosive Hazard",
+          "explosiveDescription": "Potential explosion risks",
+          "warningTitle": "Warning",
+          "warningDescription": "Important safety information"
         }
       },
-      "validation": {
-        "error": "Please fill in all required fields"
-      }
-    }
-  },
-  "product": {
-    "details": {
-      "navigation": {
-        "backToProducts": "Back to Products"
+      "errors": {
+        "notFound": "Product Not Found",
+        "notFoundDescription": "The requested product could not be found. It may have been deleted or you may not have permission to view it."
       },
-      "notAvailable": "Product details are not available for this type",
-      "quickInfo": {
-        "title": "Quick Info",
-        "model": "Model",
-        "manufacturer": "Manufacturer",
-        "unknown": "Unknown"
+      "featured": {
+        "title": "Featured Products",
+        "description": "Highlighted products with special features or certifications",
+        "viewAll": "View All Products",
+        "empty": "No featured products available"
       },
-      "keyFeatures": {
-        "title": "Key Features"
-      },
-      "basicInfo": {
-        "title": "Basic Information",
-        "manufacturer": "Manufacturer",
-        "category": "Category"
-      },
-      "hazards": {
-        "title": "Hazard Pictograms",
-        "health": "Health Hazard",
-        "healthDesc": "May cause respiratory irritation",
-        "corrosive": "Corrosive",
-        "corrosiveDesc": "Contains corrosive materials",
-        "warning": "Warning",
-        "warningDesc": "General safety warning",
-        "explosive": "Explosive",
-        "explosiveDesc": "Risk of explosion under specific conditions",
-        "environmental": "Environmental Hazard",
-        "environmentalDesc": "May pollute water sources"
-      },
-      "materials": {
-        "title": "Materials"
-      },
-      "safety": {
-        "title": "Health and Safety",
-        "measures": {
-          "careful": "Handle with care",
-          "upright": "Keep upright",
-          "ventilation": "Use in well-ventilated area",
-          "water": "Keep away from water",
-          "goggles": "Wear safety goggles",
-          "clothing": "Wear protective clothing"
-        }
-      },
-      "emergency": {
-        "title": "Emergency Procedures",
-        "procedures": {
-          "contact": "Contact emergency services",
-          "clothing": "Remove contaminated clothing",
-          "ingestion": "Do not induce vomiting if ingested",
-          "spill": "Contain spills immediately",
-          "gases": "Avoid inhaling gases",
-          "spark": "Keep away from sparks",
-          "fire": "Use appropriate fire extinguisher",
-          "devices": "Turn off nearby devices"
-        }
-      },
-      "storage": {
-        "title": "Storage and Installation",
-        "general": {
-          "title": "General Storage Guidelines",
-          "dry": "Store in a dry place",
-          "pallet": "Store on pallets"
-        },
-        "charge": {
-          "title": "Charging Guidelines",
-          "sale": "Charge before first sale",
-          "minimum": "Maintain minimum charge",
-          "damage": "Avoid overcharging"
-        },
-        "installation": {
-          "title": "Installation Steps",
-          "verify": "Verify compatibility",
-          "engine": "Turn off engine",
-          "remove": "Remove old battery",
-          "control": "Check control unit",
-          "clean": "Clean terminals",
-          "install": "Install new battery",
-          "check": "Check connections"
-        }
-      },
-      "certifications": {
-        "title": "Certifications",
-        "table": {
-          "name": "Certificate",
-          "issuedBy": "Issued By",
-          "validUntil": "Valid Until",
-          "status": "Status",
-          "document": "Document"
+      "verify": {
+        "title": "Verify Product",
+        "description": "Enter product details to verify authenticity",
+        "button": "Verify Product",
+        "placeholder": "Enter Product ID or scan QR code",
+        "scan": "Scan QR Code",
+        "verification": {
+          "title": "Product Verification",
+          "description": "Verify product authenticity"
         },
         "status": {
-          "statusPending": "Pending",
-          "statusApproved": "Approved",
-          "statusRejected": "Rejected"
-        },
-        "actions": {
-          "download": "Download"
+          "validating": "Verifying product...",
+          "valid": "Product verified successfully",
+          "invalid": "Invalid product ID",
+          "notFound": "Product not found"
         }
-      },
-      "sustainability": {
-        "title": "Sustainability Metrics",
-        "badge": "Sustainable",
-        "progress": "Overall Sustainability Progress",
-        "carbonFootprint": "Carbon Footprint",
-        "metrics": {
-          "water-usage": "Water Usage",
-          "water-saving": "Water Saving",
-          "energy-consumption": "Energy Consumption",
-          "renewable-energy": "Renewable Energy",
-          "recycled-materials": "Recycled Materials",
-          "recycled-content": "Recycled Content",
-          "chemical-reduction": "Chemical Reduction",
-          "chemical-usage": "Chemical Usage",
-          "biodegradability": "Biodegradability",
-          "sustainability-score": "Sustainability Score"
+      }
+    },
+    "dpc": {
+      "title": "Digital Product Certificates",
+      "description": "Manage your DPC applications and certificates",
+      "applications": {
+        "title": "DPC Applications",
+        "description": "View and manage your Digital Product Certificate applications",
+        "columns": {
+          "product": "Product",
+          "category": "Category",
+          "manufacturer": "Manufacturer",
+          "status": "Status",
+          "score": "Score",
+          "documents": "Documents"
         }
-      },
-      "qr": {
-        "title": "Product QR Code",
-        "description": "Scan this code to verify product authenticity",
-        "imageAlt": "Product QR Code",
-        "downloadButton": "Download QR Code",
-        "error": {
-          "title": "Error",
-          "generate": "Failed to generate QR code",
-          "notReady": "QR code is not ready yet"
-        },
-        "success": {
-          "title": "Success",
-          "download": "QR code downloaded successfully"
-        }
-      },
-      "care": {
-        "title": "Care Instructions"
       }
     }
   },
@@ -634,10 +740,336 @@
     "menu": {
       "dashboard": "Dashboard",
       "products": "Products",
+      "pendingProducts": "Pending Products",
       "certifications": "Certifications",
       "documents": "Documents",
       "analytics": "Analytics",
       "settings": "Settings"
+    },
+    "metrics": {
+      "totalProducts": "Total Products",
+      "certifiedProducts": "Certified Products",
+      "pendingCertifications": "Pending Certifications",
+      "approvedDocuments": "Approved Documents",
+      "complianceRate": "Compliance Rate"
+    },
+    "period": {
+      "select": "Select Period",
+      "today": "Today",
+      "thisWeek": "This Week",
+      "thisMonth": "This Month",
+      "thisQuarter": "This Quarter",
+      "custom": "Custom Range"
+    },
+    "applications": {
+      "title": "Pending Applications",
+      "description": "Review and manage pending applications",
+      "empty": "No pending applications",
+      "loading": "Loading applications...",
+      "submitted": "Submitted on"
+    }
+  },
+  "productManagement": {
+    "title": "Product Management",
+    "description": "Manage and track all your products"
+  },
+  "auth": {
+    "companyName": {
+      "label": "Company Name",
+      "placeholder": "Enter company name",
+      "description": "Your company's legal name"
+    },
+    "taxId": {
+      "label": "Tax ID",
+      "placeholder": "Enter tax ID",
+      "description": "Your company's tax identification number"
+    },
+    "address": {
+      "label": "Address",
+      "placeholder": "Enter company address",
+      "description": "Your company's physical address"
+    },
+    "phone": {
+      "label": "Phone",
+      "placeholder": "Enter phone number",
+      "description": "Your company's contact number"
+    },
+    "email": {
+      "label": "Email",
+      "placeholder": "Enter email address",
+      "description": "Your company's email address"
+    },
+    "signIn": {
+      "title": "Sign In",
+      "description": "Enter your credentials to access your account",
+      "form": {
+        "email": "Email",
+        "password": "Password",
+        "rememberMe": "Remember me",
+        "forgotPassword": "Forgot password?",
+        "submit": "Sign In",
+        "noAccount": "Don't have an account?",
+        "signUp": "Sign Up"
+      },
+      "success": {
+        "title": "Sign In Successful",
+        "description": "You have successfully signed in"
+      },
+      "error": {
+        "title": "Sign In Failed",
+        "description": "Invalid email or password"
+      }
+    },
+    "signUp": {
+      "title": "Sign Up",
+      "description": "Create a new account to get started",
+      "form": {
+        "email": "Email",
+        "password": "Password",
+        "confirmPassword": "Confirm Password",
+        "submit": "Sign Up",
+        "haveAccount": "Already have an account?",
+        "signIn": "Sign In"
+      },
+      "success": {
+        "title": "Sign Up Successful",
+        "description": "Your account has been created successfully"
+      },
+      "error": {
+        "title": "Sign Up Failed",
+        "description": "An error occurred while creating your account"
+      }
+    },
+    "forgotPassword": {
+      "title": "Forgot Password",
+      "description": "Enter your email to reset your password",
+      "form": {
+        "email": "Email",
+        "submit": "Reset Password",
+        "backToSignIn": "Back to Sign In"
+      },
+      "success": {
+        "title": "Reset Link Sent",
+        "description": "Password reset link has been sent to your email"
+      },
+      "error": {
+        "title": "Reset Failed",
+        "description": "An error occurred while sending reset link"
+      }
+    },
+    "resetPassword": {
+      "title": "Reset Password",
+      "description": "Enter your new password",
+      "form": {
+        "password": "New Password",
+        "confirmPassword": "Confirm New Password",
+        "submit": "Reset Password"
+      },
+      "success": {
+        "title": "Password Reset Successful",
+        "description": "Your password has been reset successfully"
+      },
+      "error": {
+        "title": "Reset Failed",
+        "description": "An error occurred while resetting your password"
+      },
+      "expired": {
+        "title": "Reset Link Expired",
+        "description": "The password reset link has expired. Please request a new one.",
+        "button": "Request New Link"
+      }
+    },
+    "verifyEmail": {
+      "title": "Verify Email",
+      "description": "Please verify your email address",
+      "form": {
+        "code": "Verification Code",
+        "submit": "Verify",
+        "resend": "Resend Code"
+      },
+      "success": {
+        "title": "Email Verified",
+        "description": "Your email has been verified successfully"
+      },
+      "error": {
+        "title": "Verification Failed",
+        "description": "An error occurred while verifying your email"
+      },
+      "resend": {
+        "title": "Resend Verification Email",
+        "description": "Didn't receive the verification email?",
+        "button": "Resend Email",
+        "success": "Verification email has been resent",
+        "error": "Error resending verification email"
+      }
+    },
+    "createAccount": {
+      "title": "Create Account",
+      "description": "Create a new account to get started",
+      "form": {
+        "name": "Full Name",
+        "companyName": "Company Name",
+        "taxId": "Tax ID",
+        "email": "Email",
+        "password": "Password",
+        "confirmPassword": "Confirm Password",
+        "phone": "Phone",
+        "address": "Address",
+        "country": "Country",
+        "city": "City",
+        "postalCode": "Postal Code",
+        "website": "Website",
+        "companyType": "Company Type",
+        "industry": "Industry",
+        "submit": "Create Account",
+        "haveAccount": "Already have an account?",
+        "signIn": "Sign In",
+        "placeholders": {
+          "name": "Enter your full name",
+          "companyName": "Enter your company name",
+          "taxId": "Enter your tax ID",
+          "email": "Enter your email address",
+          "password": "Enter your password",
+          "confirmPassword": "Confirm your password",
+          "phone": "Enter your phone number",
+          "address": "Enter your address",
+          "country": "Select your country",
+          "city": "Enter your city",
+          "postalCode": "Enter your postal code",
+          "website": "Enter your website URL",
+          "companyType": "Select your company type",
+          "industry": "Select your industry"
+        },
+        "descriptions": {
+          "name": "Your full name as it appears on official documents",
+          "companyName": "Your company's legal name",
+          "taxId": "Your company's tax identification number",
+          "email": "Your company email address",
+          "password": "Create a strong password",
+          "confirmPassword": "Re-enter your password",
+          "phone": "Your company phone number",
+          "address": "Your company's physical address",
+          "country": "Your company's country of registration",
+          "city": "Your company's city",
+          "postalCode": "Your company's postal code",
+          "website": "Your company's website URL",
+          "companyType": "Select your company's type",
+          "industry": "Select your company's industry"
+        }
+      },
+      "success": {
+        "title": "Account Created",
+        "description": "Your account has been created successfully. Please check your email to verify your account."
+      },
+      "error": {
+        "title": "Account Creation Failed",
+        "description": "An error occurred while creating your account. Please try again.",
+        "emailExists": "Email already exists",
+        "invalidEmail": "Invalid email address",
+        "weakPassword": "Password is too weak",
+        "passwordsDontMatch": "Passwords do not match",
+        "invalidTaxId": "Invalid tax ID",
+        "invalidPhone": "Invalid phone number",
+        "invalidPostalCode": "Invalid postal code",
+        "invalidWebsite": "Invalid website URL",
+        "requiredField": "This field is required",
+        "invalidCompanyType": "Invalid company type",
+        "invalidIndustry": "Invalid industry"
+      }
+    },
+    "session": {
+      "expired": {
+        "title": "Session Expired",
+        "description": "Your session has expired. Please sign in again.",
+        "button": "Sign In"
+      }
+    }
+  },
+  "validation": {
+    "required": "This field is required",
+    "email": "Please enter a valid email address",
+    "minLength": "Must be at least {min} characters",
+    "maxLength": "Must be at most {max} characters",
+    "pattern": "Invalid format",
+    "password": {
+      "minLength": "Password must be at least 8 characters",
+      "uppercase": "Password must contain at least one uppercase letter",
+      "lowercase": "Password must contain at least one lowercase letter",
+      "number": "Password must contain at least one number",
+      "special": "Password must contain at least one special character"
+    },
+    "confirmPassword": "Passwords do not match",
+    "taxId": "Please enter a valid tax ID",
+    "phone": "Please enter a valid phone number"
+  },
+  "success": {
+    "generic": "Operation completed successfully",
+    "created": {
+      "title": "Success",
+      "description": "Item created successfully"
+    },
+    "updated": {
+      "title": "Success",
+      "description": "Item updated successfully"
+    },
+    "deleted": {
+      "title": "Success",
+      "description": "Item deleted successfully"
+    },
+    "saved": {
+      "title": "Success",
+      "description": "Changes saved successfully"
+    }
+  },
+  "documentManagement": {
+    "title": "Document Management",
+    "description": "Manage and track all your documents",
+    "upload": {
+      "title": "Upload Document",
+      "description": "Upload a new document",
+      "button": "Upload Document",
+      "dragAndDrop": "Drag and drop files here or click to browse",
+      "supportedFormats": "Supported formats: PDF, DOC, DOCX, JPG, PNG",
+      "maxSize": "Maximum file size: 10MB"
+    },
+    "list": {
+      "title": "Documents",
+      "description": "List of all documents",
+      "empty": "No documents found",
+      "loading": "Loading documents...",
+      "error": "Error loading documents"
+    },
+    "details": {
+      "title": "Document Details",
+      "description": "View document details",
+      "id": "Document ID",
+      "name": "Document Name",
+      "type": "Document Type",
+      "status": "Status",
+      "uploadDate": "Upload Date",
+      "validUntil": "Valid Until",
+      "actions": "Actions"
+    },
+    "status": {
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "expired": "Expired"
+    },
+    "actions": {
+      "view": "View",
+      "download": "Download",
+      "delete": "Delete",
+      "approve": "Approve",
+      "reject": "Reject"
+    }
+  },
+  "suppliers": {
+    "title": "Suppliers",
+    "description": "View and manage your company's suppliers",
+    "error": {
+      "title": "Error",
+      "description": "An error occurred while loading suppliers"
     },
     "products": {
       "title": "Product Management",
@@ -652,7 +1084,7 @@
         "form": {
           "basicInfo": {
             "title": "Basic Information",
-            "description": "Enter the basic details of your product"
+            "description": "Enter basic details of your product"
           },
           "model": {
             "label": "Model",
@@ -687,7 +1119,11 @@
             }
           },
           "validation": {
-            "error": "Please fill in all required fields"
+            "error": "Please fill in all required fields",
+            "email": "Please enter a valid email address",
+            "phone": "Please enter a valid phone number",
+            "taxId": "Please enter a valid tax ID",
+            "required": "This field is required"
           }
         },
         "sustainability": {
@@ -710,7 +1146,7 @@
         "images": {
           "title": "Product Images",
           "description": "Upload images of your product",
-          "upload": "Upload Images",
+          "upload": "Upload Image",
           "dragDrop": "Drag and drop images here or click to select",
           "maxSize": "Maximum file size: 5MB"
         },
@@ -743,7 +1179,6 @@
         "loading": "Loading products..."
       }
     },
-    "description": "Overview of your products and certifications",
     "period": {
       "select": "Select Period",
       "today": "Today",
@@ -764,49 +1199,7 @@
       "description": "Review and manage pending applications",
       "empty": "No pending applications",
       "loading": "Loading applications...",
-      "submitted": "Submitted on"
-    }
-  },
-  "productManagement": {
-    "title": "Product Management",
-    "description": "Manage and track all your products",
-    "search": {
-      "placeholder": "Search products..."
-    },
-    "filters": {
-      "type": {
-        "label": "Product Type",
-        "all": "All Types",
-        "agm": "AGM",
-        "efb": "EFB",
-        "standard": "Standard",
-        "marine": "Marine"
-      },
-      "status": {
-        "label": "Status",
-        "all": "All Statuses",
-        "active": "Active",
-        "pending": "Pending",
-        "draft": "Draft"
-      }
-    },
-    "actions": {
-      "download": "Download",
-      "addProduct": "New Product",
-      "menu": "Actions",
-      "viewDetails": "View Details",
-      "editProduct": "Edit Product",
-      "viewDocuments": "View Documents",
-      "deleteProduct": "Delete Product"
-    },
-    "list": {
-      "title": "Product List",
-      "description": "View and manage all your products",
-      "loading": "Loading products...",
-      "empty": {
-        "title": "No Products Found",
-        "description": "You don't have any products yet. Use the 'New Product' button to add one."
-      },
+      "submitted": "Submission date",
       "columns": {
         "name": "Name",
         "type": "Type",
@@ -818,121 +1211,299 @@
         "view": "View",
         "approve": "Approve",
         "reject": "Reject"
+      }
+    },
+    "list": {
+      "title": "Supplier List",
+      "description": "View and manage your company's suppliers",
+      "loading": "Loading suppliers...",
+      "empty": {
+        "title": "No Suppliers Found",
+        "description": "You don't have any suppliers yet. They will appear here when you add products from manufacturers or material suppliers."
+      },
+      "columns": {
+        "company": "Company",
+        "type": "Type",
+        "taxId": "Tax ID",
+        "products": "Products",
+        "status": "Status"
+      },
+      "actions": {
+        "viewProducts": "View Products",
+        "viewDocuments": "View Documents",
+        "viewCertifications": "View Certifications",
+        "more": "Actions",
+        "download": "Download List"
+      },
+      "filters": {
+        "allTypes": "All Types",
+        "selectType": "Select Type"
       },
       "status": {
-        "pending": "Pending",
-        "review": "Under Review",
-        "approved": "Approved",
-        "rejected": "Rejected"
+        "active": "Active",
+        "inactive": "Inactive",
+        "pending": "Pending"
+      },
+      "types": {
+        "manufacturer": "Manufacturer",
+        "distributor": "Distributor",
+        "retailer": "Retailer"
       }
     },
-    "activities": {
-      "title": "Recent Activities",
-      "description": "Your recent product and certification activity",
-      "empty": "No recent activity",
-      "loading": "Loading activities...",
-      "submitted": "Submitted on",
-      "status": {
-        "new": "New",
-        "draft": "Draft",
-        "deleted": "Deleted",
-        "category": "Category",
-        "status": "Status",
-        "createdAt": "Created At",
-        "actions": "Actions",
-        "basicInfo": "Basic Info"
-      }
-    },
-    "delete": {
-      "confirm": {
-        "title": "Delete Product",
-        "description": "Are you sure you want to delete this product? This action cannot be undone.",
-        "cancel": "Cancel",
-        "confirm": "Delete"
-      }
-    },
-    "addProduct": {
-      "title": "Add New Product",
-      "description": "Fill in the form to add a new product",
-      "form": {
-        "steps": {
-          "manufacturer": "Manufacturer"
+    "actions": {
+      "addSupplier": "Add Supplier",
+      "editSupplier": "Edit Supplier",
+      "deleteSupplier": "Delete Supplier",
+      "export": "Export Suppliers"
+    }
+  },
+  "dpp": {
+    "title": "Digital Product Passports",
+    "description": "Manage your DPPs and track production information",
+    "list": {
+      "title": "Digital Product Passports",
+      "description": "View and manage your Digital Product Passports",
+      "serialNumber": "Serial Number",
+      "product": "Product",
+      "manufacturingDate": "Manufacturing Date",
+      "facility": "Facility",
+      "filters": {
+        "all": "All Products",
+        "type": {
+          "placeholder": "Filter by type"
         },
-        "fields": {
-          "manufacturer": {
-            "label": "Manufacturer",
-            "placeholder": "Select or enter manufacturer",
-            "description": "Select the product manufacturer or add a new one"
+        "agm": "AGM Batteries",
+        "efb": "EFB Batteries",
+        "standard": "Standard Batteries",
+        "marine": "Marine Batteries"
+      },
+      "actions": {
+        "title": "Actions",
+        "view": "View Details",
+        "download": "Download QR Code"
+      },
+      "noResults": "No DPPs found"
+    },
+    "new": {
+      "title": "Create Digital Product Passport",
+      "description": "Create a new DPP for an existing product",
+      "form": {
+        "product": {
+          "label": "Product",
+          "placeholder": "Select product",
+          "error": "Product selection is required"
+        },
+        "serialNumber": {
+          "label": "Serial Number",
+          "placeholder": "Enter serial number",
+          "error": "Serial number is required"
+        },
+        "manufacturingDate": {
+          "label": "Manufacturing Date",
+          "placeholder": "Select manufacturing date",
+          "error": "Manufacturing date is required"
+        },
+        "facility": {
+          "label": "Manufacturing Facility",
+          "placeholder": "Enter manufacturing facility",
+          "error": "Manufacturing facility is required"
+        },
+        "validation": {
+          "required": "This field is required",
+          "invalidDate": "Please enter a valid date",
+          "invalidSerialNumber": "Please enter a valid serial number"
+        }
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "create": "Create DPP"
+      },
+      "success": {
+        "title": "DPP Created",
+        "description": "Digital Product Passport created successfully"
+      },
+      "error": {
+        "title": "Error",
+        "description": "An error occurred while creating the DPP"
+      }
+    },
+    "details": {
+      "back": "Back to List",
+      "overview": {
+        "title": "Product Overview",
+        "manufacturer": "Manufacturer",
+        "serialNumber": "Serial Number",
+        "manufacturingDate": "Manufacturing Date"
+      },
+      "qr": {
+        "title": "Product QR Code",
+        "description": "Scan this code to verify the product",
+        "download": "Download QR Code"
+      }
+    },
+    "config": {
+      "title": "DPP Configuration",
+      "description": "Configure the sections and fields to be included in your product's DPP",
+      "info": "Add or remove sections to customize your DPP. Required sections cannot be removed.",
+      "sections": {
+        "basicInfo": {
+          "title": "Basic Information",
+          "fields": {
+            "name": "Product Name",
+            "type": "Product Type",
+            "description": "Description"
           }
         },
-        "navigation": {
-          "next": "Next",
-          "back": "Back",
-          "finish": "Finish"
+        "manufacturing": {
+          "title": "Manufacturing Details",
+          "fields": {
+            "serialNumber": "Serial Number",
+            "manufacturingDate": "Manufacturing Date",
+            "facility": "Manufacturing Facility"
+          }
+        },
+        "supplyChain": {
+          "title": "Supply Chain Information",
+          "fields": {
+            "supplier": "Supplier",
+            "origin": "Country of Origin",
+            "transportation": "Transportation Method"
+          }
         }
       }
     },
-    "productTypes": {
-      "detergents": "Detergents",
-      "textile": "Textile",
-      "battery": "Battery",
-      "automotive": "Automotive",
-      "electronics": "Electronics",
-      "clothing": "Clothing",
-      "agm": "AGM",
-      "efb": "EFB",
-      "standard": "Standard",
-      "marine": "Marine"
-    },
-    "common": {
-      "status": {
-        "new": "NEW",
-        "draft": "Draft",
-        "active": "Active",
-        "pending": "Pending"
+    "applications": {
+      "types": {
+        "agm": "AGM Batteries",
+        "efb": "EFB Batteries",
+        "standard": "Standard Batteries",
+        "marine": "Marine Batteries"
       }
     }
   },
-  "common": {
-    "status": {
-      "new": "NEW",
-      "draft": "Draft",
-      "active": "Active",
-      "pending": "Pending"
+  "verify": {
+    "title": "Verify Product",
+    "description": "Enter a product ID or scan a QR code to verify product authenticity and view the Digital Product Passport.",
+    "verification": {
+      "title": "Product Verification",
+      "description": "Verify product authenticity using product code or QR code",
+      "manualInput": {
+        "placeholder": "Enter Product ID (e.g. PROD-2024-001)",
+        "verify": "Verify"
+      },
+      "orScanQR": "or scan QR code",
+      "scanner": {
+        "title": "Scan QR Code",
+        "description": "Use your camera to scan the product QR code",
+        "start": "Start Scanning",
+        "permission": {
+          "title": "Camera Permission Required",
+          "description": "Please allow camera access to scan QR codes",
+          "button": "Grant Permission"
+        },
+        "error": {
+          "title": "Scan Error",
+          "description": "Could not scan QR code. Please try again.",
+          "button": "Try Again"
+        }
+      }
     },
-    "loading": "Loading...",
-    "actions": "Actions"
+    "card": {
+      "title": "Product Verification",
+      "description": "Verify product authenticity using product code or QR code"
+    },
+    "input": {
+      "placeholder": "Enter Product ID (e.g. PROD-2024-001)",
+      "button": "Verify",
+      "or": "or scan QR code"
+    },
+    "status": {
+      "validating": {
+        "title": "Verifying Product",
+        "description": "Please wait while we verify product authenticity..."
+      },
+      "valid": {
+        "title": "Product Verified",
+        "description": "Redirecting to product details..."
+      },
+      "invalid": {
+        "title": "Verification Failed",
+        "description": "Product code could not be verified. Please try again or contact support.",
+        "notFound": "Product not found in our database",
+        "error": "Product code could not be verified",
+        "button": "Try Again"
+      }
+    },
+    "toast": {
+      "error": {
+        "title": "Invalid Product Code",
+        "description": "Please enter a valid product code or scan a valid QR code."
+      }
+    },
+    "scan": {
+      "title": "Scan QR Code",
+      "description": "Use your camera to scan the product QR code",
+      "permission": {
+        "title": "Camera Permission Required",
+        "description": "Please allow camera access to scan QR codes",
+        "button": "Grant Permission"
+      },
+      "error": {
+        "title": "Scan Error",
+        "description": "Could not scan QR code. Please try again.",
+        "button": "Try Again"
+      }
+    },
+    "result": {
+      "title": "Verification Result",
+      "authentic": "Product is authentic",
+      "notFound": "Product not found",
+      "invalid": "Invalid product ID"
+    }
   },
-  "productCategories": {
-    "detergents": "Detergents",
-    "textile": "Textile",
-    "battery": "Battery",
-    "automotive": "Automotive",
-    "electronics": "Electronics",
-    "clothing": "Clothing"
-  },
-  "productTypes": {
-    "detergents": "Detergents",
-    "textile": "Textile",
-    "battery": "Battery",
-    "automotive": "Automotive",
-    "electronics": "Electronics",
-    "clothing": "Clothing"
-  },
-  "documentManagement": {
+  "documents": {
     "title": "Document Management",
-    "description": "Manage your company documents and certificates",
+    "description": "Manage your company documents and certifications",
     "repository": {
       "title": "Document Repository",
-      "description": "View and manage your company documents and certificates",
+      "description": "View and manage your company documents and certifications",
       "columns": {
         "document": "Document",
         "type": "Type",
         "category": "Category",
         "status": "Status",
-        "expiryDate": "Expiry Date",
-        "updatedBy": "Updated By",
-        "actions": "Actions"
+        "validUntil": "Valid Until",
+        "issuer": "Issuer",
+        "review": "Under Review",
+        "approved": "Approved",
+        "rejected": "Rejected"
+      },
+      "actions": {
+        "view": "View",
+        "download": "Download",
+        "delete": "Delete",
+        "approve": "Approve",
+        "reject": "Reject",
+        "renew": "Renew"
+      },
+      "status": {
+        "pending": "Pending",
+        "approved": "Approved",
+        "rejected": "Rejected",
+        "expired": "Expired",
+        "renewal": "Renewal Required"
+      }
+    },
+    "activities": {
+      "title": "Recent Activities",
+      "description": "Your recent product and certification activities",
+      "empty": "No recent activities",
+      "loading": "Loading activities...",
+      "submitted": "Submission date",
+      "status": {
+        "new": "New",
+        "draft": "Draft",
+        "deleted": "Deleted"
       }
     },
     "menu": {
@@ -945,160 +1516,77 @@
     },
     "registration": {
       "title": "Complete Registration",
-      "description": "Please complete your company registration before starting to use UseSafe."
-    }
-  },
-  "adminDashboard": {
-    "title": "Admin Dashboard",
-    "description": "Monitor and manage system-wide operations",
-    "period": {
-      "select": "Select period",
-      "today": "Today",
-      "thisWeek": "This Week",
-      "thisMonth": "This Month",
-      "thisQuarter": "This Quarter"
+      "description": "Please complete your company registration before starting to use UseSafe.",
+      "rejected": "Rejected",
+      "expired": "Expired",
+      "expiring": "Expiring Soon"
     },
-    "metrics": {
-      "totalManufacturers": "Total Manufacturers",
-      "pendingApplications": "Pending Applications",
-      "pendingApprovals": "Pending Approvals",
-      "activeProducts": "Active Products",
-      "totalCertifications": "Total Certifications",
-      "documentVerifications": "Document Verifications",
-      "systemAlerts": "System Alerts",
-      "verificationRate": "Verification Rate",
-      "activeDPCs": "Active DPCs",
-      "vsLastMonth": "vs Last Month"
-    },
-    "sections": {
-      "pendingApprovals": {
-        "title": "Pending Approvals",
-        "description": "Review and manage pending approval requests"
-      },
-      "systemAlerts": {
-        "title": "System Alerts",
-        "description": "Important system notifications and alerts",
-        "alerts": {
-          "serverHighVolume": "High Server Load",
-          "failedVerification": "Failed Verification",
-          "maintenance": "Scheduled Maintenance",
-          "highVolume": "High Volume"
-        }
-      }
-    },
-    "systemAlerts": {
-      "title": "System Alerts",
-      "noAlerts": "No active alerts",
-      "severity": {
-        "high": "High",
-        "medium": "Medium",
-        "low": "Low"
-      }
-    },
-    "recentApprovals": {
-      "title": "Recent Approvals",
-      "noApprovals": "No approvals yet",
-      "viewAll": "View All",
-      "types": {
-        "manufacturer": "Manufacturer",
-        "product": "Product",
-        "document": "Document",
-        "certification": "Certification"
-      }
-    },
-    "labels": {
-      "manufacturer": "Manufacturer",
-      "document": "Document",
-      "dpp": "DPP",
-      "dpc": "DPC"
-    },
-    "recentActivities": {
-      "title": "Recent Activities",
-      "noActivities": "No activities yet",
-      "viewAll": "View All",
-      "types": {
-        "manufacturerRegistration": "Manufacturer Registration",
-        "productCertification": "Product Certification",
-        "documentVerification": "Document Verification",
-        "systemUpdate": "System Update"
-      }
-    },
-    "pendingApprovals": {
-      "title": "Pending Approvals",
-      "noPending": "No pending approvals",
-      "viewAll": "View All",
-      "types": {
-        "manufacturer": "Manufacturer",
-        "product": "Product",
-        "document": "Document",
-        "certification": "Certification"
-      }
-    },
-    "manufacturerList": {
-      "title": "Manufacturers",
-      "noManufacturers": "No manufacturers yet",
-      "viewAll": "View All",
-      "columns": {
-        "name": "Name",
-        "products": "Products",
-        "status": "Status",
-        "joinDate": "Join Date"
-      }
+    "filters": {
+      "allDocuments": "All Documents",
+      "allStatus": "All Statuses"
     },
     "actions": {
-      "review": "Review",
-      "approve": "Approve",
-      "reject": "Reject",
+      "title": "Actions",
+      "view": "View Details",
+      "download": "Download",
+      "history": "View History",
+      "reupload": "Reupload",
       "delete": "Delete",
-      "edit": "Edit",
-      "view": "View",
-      "download": "Download"
+      "upload": "Upload"
+    },
+    "types": {
+      "qualityManagement": "Quality Management",
+      "safetyHealth": "Occupational Health and Safety",
+      "batteryStandards": "Battery Standards"
+    },
+    "categories": {
+      "iso9001": "ISO 9001",
+      "iso45001": "ISO 45001",
+      "tsEn": "TS EN 50342-1"
     }
   },
-  "verify": {
-    "title": "Verify Product",
-    "description": "Enter a product ID or scan a QR code to verify its authenticity and view its Digital Product Passport.",
-    "card": {
-      "title": "Product Verification",
-      "description": "Verify product authenticity using a product code or QR code"
-    },
-    "input": {
-      "placeholder": "Enter Product ID (e.g., PROD-2024-001)",
-      "button": "Verify",
-      "or": "or scan QR code"
-    },
-    "status": {
-      "validating": {
-        "title": "Validating Product",
-        "description": "Please wait while we verify the product authenticity..."
+  "dpc": {
+    "title": "Digital Product Certificates",
+    "description": "Manage your DPC applications and certificates",
+    "applications": {
+      "title": "DPC Applications",
+      "description": "View and manage your Digital Product Certificate applications",
+      "columns": {
+        "product": "Product",
+        "status": "Status",
+        "submitted": "Application Date",
+        "validUntil": "Valid Until",
+        "documents": "Documents",
+        "certifications": "Certifications"
       },
-      "valid": {
-        "title": "Product Verified",
-        "description": "Redirecting to product details..."
+      "status": {
+        "approved": "Approved",
+        "pending": "Pending",
+        "rejected": "Rejected"
       },
-      "invalid": {
-        "title": "Validation Failed",
-        "description": "The product code could not be verified. Please try again or contact support.",
-        "notFound": "Product not found in our database",
-        "error": "Failed to validate product code",
-        "button": "Try Again"
+      "filters": {
+        "allTypes": "All Types",
+        "allStatus": "All Statuses"
+      },
+      "actions": {
+        "title": "Actions",
+        "newDPC": "New DPC",
+        "download": "Download",
+        "view": "View Details",
+        "verify": "Verify DPC",
+        "resubmit": "Resubmit",
+        "delete": "Delete"
+      },
+      "documents": {
+        "reports": "Reports",
+        "documents": "Documents"
+      },
+      "types": {
+        "agm": "AGM Batteries",
+        "efb": "EFB Batteries",
+        "standard": "Standard Batteries",
+        "marine": "Marine Batteries"
       }
-    },
-    "toast": {
-      "error": {
-        "title": "Invalid Product Code",
-        "description": "Please enter a valid product code or scan a valid QR code."
-      }
-    },
-    "scan": {
-      "title": "Scan QR Code",
-      "description": "Use your camera to scan the product QR code"
-    },
-    "result": {
-      "title": "Verification Result",
-      "authentic": "Product is authentic",
-      "notFound": "Product not found",
-      "invalid": "Invalid product ID"
     }
   },
   "settings": {
@@ -1157,7 +1645,7 @@
         }
       },
       "filters": {
-        "status": "Filter by status",
+        "status": "Filter by Status",
         "allManufacturers": "All Manufacturers",
         "pendingApproval": "Pending Approval",
         "approved": "Approved",
@@ -1210,7 +1698,7 @@
         "title": "System Alerts",
         "description": "Recent system notifications and alerts",
         "alerts": {
-          "highVolume": "High volume of pending approvals detected",
+          "highVolume": "High number of pending approvals detected",
           "failedVerification": "Blockchain verification attempt failed",
           "maintenance": "System maintenance scheduled for tonight"
         }
@@ -1257,38 +1745,671 @@
       },
       "filters": {
         "allDocuments": "All Documents",
-        "allStatus": "All Status"
+        "allStatus": "All Statuses"
+      }
+    },
+    "security": {
+      "title": "Security Settings",
+      "description": "Manage your account security settings",
+      "password": {
+        "title": "Change Password",
+        "description": "Update your account password",
+        "current": "Current Password",
+        "new": "New Password",
+        "confirm": "Confirm New Password"
       },
-      "actions": {
-        "upload": "Upload"
+      "twoFactor": {
+        "title": "Two-Factor Authentication",
+        "description": "Enable two-factor authentication for additional security",
+        "enable": "Enable 2FA",
+        "disable": "Disable 2FA"
       }
     }
   },
-  "companyDetails": "Company Details and Statistics",
-  "totalProducts": "Total Products",
-  "activeProducts": "Active Products",
-  "pendingProducts": "Pending Products",
-  "taxInfo": "Tax Information",
-  "addressInfo": "Address Information",
-  "contactPerson": "Contact Person",
-  "loading": "Loading...",
-  "errorFetching": "Error: Unable to fetch information.",
-  "auth": {
-    "companyInfo": {
-      "companyType": {
-        "label": "Company Type *",
-        "placeholder": "Select company type",
-        "description": "Select your company's primary business type",
-        "options": {
-          "brandOwner": "Brand Owner",
-          "factory": "Factory",
-          "manufacturer": "Manufacturer",
-          "materialSupplier": "Material Supplier"
+  "productCategories": {
+    "detergents": "Detergents",
+    "textile": "Textile",
+    "battery": "Battery",
+    "automotive": "Automotive",
+    "electronics": "Electronics",
+    "clothing": "Clothing"
+  },
+  "productTypes": {
+    "detergents": "Detergents",
+    "textile": "Textile",
+    "battery": "Battery",
+    "automotive": "Automotive",
+    "electronics": "Electronics",
+    "clothing": "Clothing"
+  },
+  "battery": {
+    "title": "Battery Management",
+    "description": "Manage your battery products and certifications",
+    "list": {
+      "title": "Battery List",
+      "description": "View and manage your battery products",
+      "search": "Search batteries...",
+      "filter": "Filter",
+      "sort": "Sort",
+      "columns": {
+        "name": "Name",
+        "model": "Model",
+        "type": "Type",
+        "capacity": "Capacity",
+        "voltage": "Voltage",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "actions": {
+        "view": "View",
+        "edit": "Edit",
+        "delete": "Delete",
+        "verify": "Verify"
+      },
+      "empty": "No batteries found",
+      "loading": "Loading batteries..."
+    },
+    "types": {
+      "agm": "AGM Battery",
+      "efb": "EFB Battery",
+      "standard": "Standard Battery",
+      "marine": "Marine Battery"
+    },
+    "details": {
+      "title": "Battery Details",
+      "description": "View detailed information about the battery",
+      "basicInfo": {
+        "title": "Basic Information",
+        "name": "Name",
+        "model": "Model",
+        "type": "Type",
+        "capacity": "Capacity",
+        "voltage": "Voltage",
+        "dimensions": "Dimensions",
+        "weight": "Weight"
+      },
+      "technicalSpecs": {
+        "title": "Technical Specifications",
+        "coldCrankingAmps": "Cold Cranking Amps",
+        "reserveCapacity": "Reserve Capacity",
+        "cycleLife": "Cycle Life",
+        "operatingTemperature": "Operating Temperature"
+      },
+      "certifications": {
+        "title": "Certifications",
+        "description": "View battery certifications and compliance documents"
+      },
+      "documents": {
+        "title": "Documents",
+        "description": "View battery-related documents and test reports"
+      }
+    }
+  },
+  "certifications": {
+    "title": "Certifications",
+    "description": "Manage your product certifications",
+    "list": {
+      "title": "Certification List",
+      "description": "View and manage your product certifications",
+      "search": "Search certifications...",
+      "filter": "Filter",
+      "sort": "Sort",
+      "columns": {
+        "name": "Name",
+        "type": "Type",
+        "validUntil": "Valid Until",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "actions": {
+        "view": "View",
+        "download": "Download",
+        "renew": "Renew",
+        "revoke": "Revoke"
+      },
+      "empty": "No certifications found",
+      "loading": "Loading certifications..."
+    },
+    "types": {
+      "iso9001": "ISO 9001",
+      "iso14001": "ISO 14001",
+      "iso45001": "ISO 45001",
+      "ce": "CE Marking",
+      "rohs": "RoHS",
+      "reach": "REACH"
+    },
+    "details": {
+      "title": "Certification Details",
+      "description": "View detailed information about the certification",
+      "basicInfo": {
+        "title": "Basic Information",
+        "name": "Name",
+        "type": "Type",
+        "issuer": "Issuer",
+        "issueDate": "Issue Date",
+        "validUntil": "Valid Until",
+        "status": "Status"
+      },
+      "scope": {
+        "title": "Scope",
+        "description": "Certification scope and coverage"
+      },
+      "documents": {
+        "title": "Documents",
+        "description": "View certification-related documents"
+      },
+      "history": {
+        "title": "History",
+        "description": "View certification history and changes"
+      }
+    }
+  },
+  "analytics": {
+    "title": "Analytics",
+    "description": "View analytics and reports",
+    "dashboard": {
+      "title": "Analytics Dashboard",
+      "description": "View comprehensive analytics and reports",
+      "metrics": {
+        "totalProducts": "Total Products",
+        "certifiedProducts": "Certified Products",
+        "pendingCertifications": "Pending Certifications",
+        "complianceRate": "Compliance Rate",
+        "documentApprovalRate": "Document Approval Rate",
+        "averageProcessingTime": "Average Processing Time"
+      },
+      "charts": {
+        "certificationStatus": "Certification Status",
+        "documentStatus": "Document Status",
+        "processingTime": "Processing Time",
+        "complianceTrend": "Compliance Trend"
+      }
+    },
+    "reports": {
+      "title": "Reports",
+      "description": "Generate and view detailed reports",
+      "types": {
+        "compliance": "Compliance Report",
+        "certification": "Certification Report",
+        "document": "Document Report",
+        "processing": "Processing Report"
+      },
+      "filters": {
+        "dateRange": "Date Range",
+        "productType": "Product Type",
+        "certificationType": "Certification Type",
+        "status": "Status"
+      },
+      "actions": {
+        "generate": "Generate Report",
+        "download": "Download",
+        "export": "Export",
+        "schedule": "Schedule Report"
+      }
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "description": "View and manage your notifications",
+    "list": {
+      "title": "Notifications",
+      "description": "View your notifications",
+      "empty": "No notifications",
+      "loading": "Loading notifications...",
+      "markAllAsRead": "Mark all as read",
+      "types": {
+        "certification": "Certification",
+        "document": "Document",
+        "product": "Product",
+        "system": "System"
+      }
+    },
+    "settings": {
+      "title": "Notification Settings",
+      "description": "Configure your notification preferences",
+      "email": {
+        "title": "Email Notifications",
+        "description": "Configure email notification settings",
+        "certificationUpdates": "Certification Updates",
+        "documentApprovals": "Document Approvals",
+        "productUpdates": "Product Updates",
+        "systemAlerts": "System Alerts"
+      },
+      "inApp": {
+        "title": "In-App Notifications",
+        "description": "Configure in-app notification settings",
+        "certificationUpdates": "Certification Updates",
+        "documentApprovals": "Document Approvals",
+        "productUpdates": "Product Updates",
+        "systemAlerts": "System Alerts"
+      }
+    }
+  },
+  "help": {
+    "title": "Help & Support",
+    "description": "Get help and support",
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "description": "Find answers to common questions",
+      "categories": {
+        "general": "General",
+        "products": "Products",
+        "certifications": "Certifications",
+        "documents": "Documents",
+        "account": "Account"
+      }
+    },
+    "contact": {
+      "title": "Contact Support",
+      "description": "Get in touch with our support team",
+      "form": {
+        "subject": "Subject",
+        "message": "Message",
+        "submit": "Submit"
+      }
+    },
+    "documentation": {
+      "title": "Documentation",
+      "description": "Access product documentation and guides",
+      "categories": {
+        "gettingStarted": "Getting Started",
+        "userGuide": "User Guide",
+        "api": "API Documentation",
+        "troubleshooting": "Troubleshooting"
+      }
+    }
+  },
+  "products": {
+    "title": "Products",
+    "description": "Manage your products and their digital passports",
+    "featured": {
+      "title": "Featured Products",
+      "description": "Highlighted products with special features or certifications",
+      "viewAll": "View All Products",
+      "empty": "No featured products available"
+    },
+    "verify": {
+      "title": "Verify Product",
+      "description": "Enter product details to verify authenticity",
+      "button": "Verify Product",
+      "placeholder": "Enter Product ID or scan QR code",
+      "scan": "Scan QR Code",
+      "verification": {
+        "title": "Product Verification",
+        "description": "Verify product authenticity"
+      },
+      "status": {
+        "validating": "Verifying product...",
+        "valid": "Product verified successfully",
+        "invalid": "Invalid product ID",
+        "notFound": "Product not found"
+      }
+    },
+    "list": {
+      "title": "All Products",
+      "description": "View and manage all your products",
+      "empty": "No products found",
+      "loading": "Loading products...",
+      "searchPlaceholder": "Search products...",
+      "filterByStatus": "Filter by status",
+      "filterByCategory": "Filter by category",
+      "columns": {
+        "name": "Product Name",
+        "category": "Category",
+        "status": "Status",
+        "createdAt": "Created At",
+        "actions": "Actions"
+      },
+      "sustainability": {
+        "score": "Sustainability Score",
+        "carbonFootprint": "Carbon Footprint"
+      },
+      "categories": {
+        "automotive batteries": "Automotive Batteries",
+        "marine batteries": "Marine Batteries",
+        "womens_clothing": "Women's Clothing"
+      }
+    },
+    "features": {
+      "certifications": {
+        "title": "Product Certifications",
+        "description": "Manage and track your product certifications",
+        "types": {
+          "quality": {
+            "title": "Quality Certifications",
+            "description": "ISO and quality management certifications"
+          },
+          "safety": {
+            "title": "Safety Certifications",
+            "description": "Product safety and compliance certifications"
+          },
+          "environmental": {
+            "title": "Environmental Certifications",
+            "description": "Environmental and sustainability certifications"
+          },
+          "industry": {
+            "title": "Industry Standards",
+            "description": "Industry-specific standards and certifications"
+          }
+        },
+        "status": {
+          "active": "Active",
+          "pending": "Pending Review",
+          "expired": "Expired",
+          "revoked": "Revoked"
+        },
+        "actions": {
+          "view": "View Certificate",
+          "download": "Download Certificate",
+          "verify": "Verify Certificate",
+          "renew": "Renew Certificate"
         }
       },
-      "companyName": {
-        "label": "Company Name *"
+      "traceability": {
+        "title": "Product Traceability",
+        "description": "Track your products throughout their lifecycle with secure digital passports",
+        "steps": {
+          "rawMaterials": {
+            "title": "Raw Materials",
+            "description": "Track the origin and quality of raw materials"
+          },
+          "manufacturing": {
+            "title": "Manufacturing",
+            "description": "Monitor the manufacturing process and quality controls"
+          },
+          "certification": {
+            "title": "Certification",
+            "description": "Verify and maintain product certifications"
+          },
+          "distribution": {
+            "title": "Distribution",
+            "description": "Track product distribution and logistics"
+          },
+          "endOfLife": {
+            "title": "End of Life",
+            "description": "Manage product recycling and disposal"
+          }
+        },
+        "benefits": {
+          "transparency": "Enhanced transparency in supply chain",
+          "compliance": "Easy compliance with regulations",
+          "quality": "Improved quality control",
+          "sustainability": "Better sustainability tracking",
+          "customerTrust": "Increased customer trust"
+        }
+      },
+      "sustainability": {
+        "title": "Sustainability",
+        "description": "Track and manage product sustainability metrics",
+        "metrics": {
+          "waterUsage": "Water Usage",
+          "energyConsumption": "Energy Consumption",
+          "recycledMaterials": "Recycled Materials",
+          "chemicalReduction": "Chemical Reduction",
+          "biodegradability": "Biodegradability",
+          "water-saving": "Water Saving",
+          "recycled-content": "Recycled Content",
+          "chemical-usage": "Chemical Usage",
+          "renewable-energy": "Renewable Energy",
+          "packaging": "Packaging",
+          "waste-reduction": "Waste Reduction"
+        },
+        "score": "Sustainability Score",
+        "carbonFootprint": "Carbon Footprint"
+      },
+      "supplyChain": {
+        "title": "Supply Chain Management",
+        "description": "Track and manage your product's supply chain information",
+        "components": {
+          "title": "Components",
+          "description": "Track components and materials used in production",
+          "list": {
+            "title": "Component List",
+            "empty": "No components added",
+            "add": "Add Component"
+          },
+          "form": {
+            "name": "Component Name",
+            "type": "Component Type",
+            "supplier": "Supplier",
+            "origin": "Country of Origin",
+            "certification": "Certification",
+            "quantity": "Quantity",
+            "unit": "Unit"
+          }
+        },
+        "suppliers": {
+          "title": "Suppliers",
+          "description": "Manage your product's suppliers",
+          "list": {
+            "title": "Supplier List",
+            "empty": "No suppliers added",
+            "add": "Add Supplier"
+          },
+          "form": {
+            "name": "Supplier Name",
+            "type": "Supplier Type",
+            "contact": "Contact Information",
+            "certification": "Certification",
+            "location": "Location"
+          }
+        },
+        "logistics": {
+          "title": "Logistics",
+          "description": "Track product transportation and logistics",
+          "transport": {
+            "title": "Transportation",
+            "mode": "Transport Mode",
+            "route": "Transport Route",
+            "carbonFootprint": "Carbon Footprint"
+          },
+          "warehousing": {
+            "title": "Warehousing",
+            "location": "Warehouse Location",
+            "conditions": "Storage Conditions",
+            "duration": "Storage Duration"
+          }
+        },
+        "compliance": {
+          "title": "Compliance",
+          "description": "Track supply chain compliance requirements",
+          "regulations": {
+            "title": "Regulations",
+            "description": "Applicable regulations and standards"
+          },
+          "certifications": {
+            "title": "Certifications",
+            "description": "Required certifications"
+          },
+          "audits": {
+            "title": "Audits",
+            "description": "Supply chain audit records"
+          }
+        }
       }
+    },
+    "details": {
+      "title": "Product Details",
+      "description": "View detailed information about the product",
+      "backToProducts": "Back to Products",
+      "viewDocuments": "View Documents",
+      "quickInfo": {
+        "title": "Quick Information",
+        "model": "Model",
+        "manufacturer": "Manufacturer"
+      },
+      "keyFeatures": {
+        "title": "Key Features"
+      },
+      "basicInfo": {
+        "title": "Basic Information",
+        "name": "Product Name",
+        "model": "Model",
+        "type": "Type",
+        "description": "Description",
+        "manufacturer": "Manufacturer",
+        "category": "Category"
+      },
+      "technicalSpecs": {
+        "title": "Technical Specifications",
+        "dimensions": "Dimensions",
+        "weight": "Weight",
+        "materials": "Materials",
+        "certifications": "Certifications"
+      },
+      "documents": {
+        "title": "Documents",
+        "description": "View product-related documents",
+        "certificates": "Certificates",
+        "testReports": "Test Reports",
+        "technicalDocs": "Technical Documentation"
+      },
+      "materials": {
+        "title": "Materials",
+        "table": {
+          "material": "Material",
+          "percentage": "Percentage",
+          "recyclable": "Recyclable",
+          "description": "Description"
+        },
+        "recyclable": {
+          "yes": "Yes",
+          "no": "No"
+        }
+      },
+      "textile": {
+        "careInstructions": "Care Instructions"
+      },
+      "certifications": {
+        "title": "Certifications",
+        "table": {
+          "name": "Name",
+          "issuedBy": "Issued By",
+          "validUntil": "Valid Until",
+          "status": "Status",
+          "document": "Document"
+        },
+        "status": {
+          "valid": "Valid"
+        },
+        "actions": {
+          "download": "Download"
+        }
+      },
+      "sustainability": {
+        "title": "Sustainability Information",
+        "description": "View product sustainability metrics and environmental impact",
+        "badge": "Sustainability Badge",
+        "progress": "Progress",
+        "metrics": {
+          "carbon-footprint": "Carbon Footprint",
+          "water-usage": "Water Usage",
+          "energy-consumption": "Energy Consumption",
+          "recycled-materials": "Recycled Materials",
+          "chemical-reduction": "Chemical Reduction",
+          "biodegradability": "Biodegradability",
+          "water-saving": "Water Saving",
+          "recycled-content": "Recycled Content",
+          "chemical-usage": "Chemical Usage",
+          "renewable-energy": "Renewable Energy",
+          "packaging": "Packaging",
+          "waste-reduction": "Waste Reduction"
+        }
+      },
+      "battery": {
+        "healthAndSafety": {
+          "title": "Health and Safety"
+        },
+        "storage": {
+          "title": "Storage",
+          "sections": {
+            "generalstorage": "General Storage",
+            "chargestorage": "Charge Storage",
+            "installation": "Installation"
+          }
+        }
+      },
+      "hazards": {
+        "title": "Hazards"
+      },
+      "emergency": {
+        "title": "Emergency"
+      },
+      "qr": {
+        "title": "Product QR Code",
+        "description": "Scan this code to verify the product",
+        "download": "Download QR Code",
+        "downloadButton": "Download QR Code",
+        "imageAlt": "Product QR Code"
+      }
+    }
+  },
+  "product": {
+    "details": {
+      "qr": {
+        "title": "Product QR Code",
+        "description": "Scan this code to verify the product",
+        "download": "Download QR Code",
+        "downloadButton": "Download QR Code",
+        "imageAlt": "Product QR Code"
+      }
+    }
+  },
+  "tip": {
+    "title": "Type",
+    "description": "Product type information",
+    "select": "Select Type",
+    "placeholder": "Enter type",
+    "required": "Type is required",
+    "invalid": "Invalid type",
+    "unknown": "Unknown type",
+    "categories": {
+      "all": "All Types",
+      "battery": "Battery",
+      "textile": "Textile",
+      "detergent": "Detergent",
+      "automotive": "Automotive",
+      "electronics": "Electronics",
+      "clothing": "Clothing"
+    },
+    "battery": {
+      "agm": "AGM Battery",
+      "efb": "EFB Battery",
+      "standard": "Standard Battery",
+      "marine": "Marine Battery"
+    },
+    "textile": {
+      "cotton": "Cotton",
+      "polyester": "Polyester",
+      "wool": "Wool",
+      "silk": "Silk",
+      "nylon": "Nylon"
+    },
+    "detergent": {
+      "liquid": "Liquid Detergent",
+      "powder": "Powder Detergent",
+      "capsule": "Capsule Detergent",
+      "bar": "Bar Detergent"
+    },
+    "automotive": {
+      "engine": "Engine Parts",
+      "brake": "Brake Parts",
+      "suspension": "Suspension Parts",
+      "electrical": "Electrical Parts"
+    },
+    "electronics": {
+      "computer": "Computer",
+      "mobile": "Mobile Device",
+      "home": "Home Appliance",
+      "audio": "Audio Device"
+    },
+    "clothing": {
+      "shirt": "Shirt",
+      "pants": "Pants",
+      "dress": "Dress",
+      "jacket": "Jacket",
+      "shoes": "Shoes"
     }
   }
 }
+    

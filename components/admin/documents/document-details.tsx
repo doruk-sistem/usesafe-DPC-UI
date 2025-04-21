@@ -2,8 +2,8 @@
 
 import { ArrowLeft, Download, FileText } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
