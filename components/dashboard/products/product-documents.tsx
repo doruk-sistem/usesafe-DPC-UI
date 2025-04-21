@@ -7,8 +7,6 @@ import {
   FileText,
   Eye,
   History,
-  CheckCircle,
-  XCircle,
   Plus,
   ChevronDown,
   ChevronUp,
@@ -53,7 +51,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
-import { Product } from "@/lib/data/products";
+import { BaseProduct } from "@/lib/types/product";
 import {
   getDocuments,
   approveDocument,
@@ -66,12 +64,10 @@ import { getStatusIcon } from "@/lib/utils/document-utils";
 
 interface ProductDocumentsProps {
   productId: string;
-  showApprovalOptions?: boolean;
 }
 
 export function ProductDocuments({
   productId,
-  showApprovalOptions = false,
 }: ProductDocumentsProps) {
   const t = useTranslations("products.ProductDocuments");
   
@@ -84,14 +80,11 @@ export function ProductDocuments({
   };
 
   const [documents, setDocuments] = useState<Document[]>([]);
-  const [product, setProduct] = useState<Product | null>(null);
+  const [product, setProduct] = useState<BaseProduct | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedDocument, setSelectedDocument] = useState<Document | null>(
-    null
-  );
+  const [selectedDocument, setSelectedDocument] = useState<Document | null>(null);
   const [showDocumentDetails, setShowDocumentDetails] = useState(false);
   const { toast } = useToast();
-  const supabase = createClientComponentClient();
   const queryClient = useQueryClient();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [documentType, setDocumentType] = useState<string>("");
@@ -101,10 +94,6 @@ export function ProductDocuments({
   const [isUploading, setIsUploading] = useState(false);
   const [showUploadForm, setShowUploadForm] = useState(false);
   const [showAdditionalFields, setShowAdditionalFields] = useState(false);
-  const [rejectionReason, setRejectionReason] = useState<string>("");
-  const [showRejectDialog, setShowRejectDialog] = useState(false);
-
-  useEffect(() => {}, [showApprovalOptions]);
 
   const fetchProduct = async () => {
     try {
@@ -120,7 +109,7 @@ export function ProductDocuments({
 
   useEffect(() => {
     fetchProduct();
-  }, [productId, supabase, toast]);
+  }, [productId, toast]);
 
   const handleDownload = async (doc: Document) => {
     try {
@@ -151,12 +140,17 @@ export function ProductDocuments({
     }
 
     // Navigate to document history page
-    window.location.href = `/dashboard/documents/${doc.id}/history`;
+    window.location.href = `/dashboard/documents/${doc.id as string}/history`;
   };
 
   const handleReupload = (doc: Document) => {
+    // Check if document has a valid ID
+    if (!doc.id) {
+      return;
+    }
+
     // Navigate to the product edit page with a query parameter to indicate re-upload
-    window.location.href = `/dashboard/products/${productId}/edit?reupload=${doc.id}`;
+    window.location.href = `/dashboard/products/${productId}/edit?reupload=${doc.id as string}`;
   };
 
   const getStatusVariant = (status: string) => {
@@ -225,47 +219,6 @@ export function ProductDocuments({
     }
   };
 
-  const handleApprove = async (documentId: string) => {
-    try {
-      await updateDocument(productId, documentId, { status: "approved" });
-      toast({
-        title: t("success"),
-        description: t("documentApproved"),
-      });
-      await fetchProduct();
-    } catch (error) {
-      console.error("Error approving document:", error);
-      toast({
-        title: t("error"),
-        description: t("errorApprovingDocument"),
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleReject = async (documentId: string, reason: string) => {
-    try {
-      await updateDocument(productId, documentId, {
-        status: "rejected",
-        rejection_reason: reason,
-      });
-      toast({
-        title: t("success"),
-        description: t("documentRejected"),
-      });
-      setShowRejectDialog(false);
-      setRejectionReason("");
-      await fetchProduct();
-    } catch (error) {
-      console.error("Error rejecting document:", error);
-      toast({
-        title: t("error"),
-        description: t("errorRejectingDocument"),
-        variant: "destructive",
-      });
-    }
-  };
-
   if (isLoading) {
     return <Loading />;
   }
@@ -313,8 +266,8 @@ export function ProductDocuments({
           <div className="mb-6">
             <h3 className="text-lg font-medium mb-2">{product.name}</h3>
             <div className="flex items-center gap-2">
-              <Badge variant={getStatusVariant(product.status)}>
-                {getStatusVariant(product.status).toLowerCase()}
+              <Badge variant={getStatusVariant(product.status || "")}>
+                {getStatusVariant(product.status || "").toLowerCase()}
               </Badge>
             </div>
           </div>
@@ -543,47 +496,18 @@ export function ProductDocuments({
                           <DropdownMenuContent align="end">
                             <DropdownMenuLabel>{t("actions")}</DropdownMenuLabel>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem
-                              onClick={() => handleDownload(document)}
-                            >
+                            <DropdownMenuItem onClick={() => handleDownload(document)}>
                               <Download className="h-4 w-4 mr-2" />
                               {t("download")}
                             </DropdownMenuItem>
-                            <DropdownMenuItem
-                              onClick={() => handleView(document)}
-                            >
+                            <DropdownMenuItem onClick={() => handleView(document)}>
                               <Eye className="h-4 w-4 mr-2" />
                               {t("view")}
                             </DropdownMenuItem>
-                            <DropdownMenuItem
-                              onClick={() => handleViewHistory(document)}
-                            >
+                            <DropdownMenuItem onClick={() => handleViewHistory(document)}>
                               <History className="h-4 w-4 mr-2" />
                               {t("viewHistory")}
                             </DropdownMenuItem>
-                            {showApprovalOptions && (
-                              <>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem
-                                  onClick={() => {
-                                    setSelectedDocument(document);
-                                    setShowRejectDialog(true);
-                                  }}
-                                >
-                                  <XCircle className="h-4 w-4 mr-2 text-red-500" />
-                                  {t("reject")}
-                                </DropdownMenuItem>
-                              </>
-                            )}
-                            {showApprovalOptions &&
-                              document.status === "rejected" && (
-                                <DropdownMenuItem
-                                  onClick={() => handleReupload(document)}
-                                >
-                                  <FileText className="h-4 w-4 mr-2" />
-                                  {t("reupload")}
-                                </DropdownMenuItem>
-                              )}
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </TableCell>
@@ -657,47 +581,6 @@ export function ProductDocuments({
                 </p>
               </div>
             )}
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Reject Dialog'u */}
-      <Dialog open={showRejectDialog} onOpenChange={setShowRejectDialog}>
-        <DialogContent className="sm:max-w-[400px]">
-          <DialogHeader>
-            <DialogTitle>{t("rejectDocument")}</DialogTitle>
-            <DialogDescription>
-              {t("rejectDescription")}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="rejectionReason">{t("rejectionReason")}</Label>
-              <Textarea
-                id="rejectionReason"
-                value={rejectionReason}
-                onChange={(e) => setRejectionReason(e.target.value)}
-                placeholder={t("rejectionReasonPlaceholder")}
-                className="min-h-[100px]"
-              />
-            </div>
-            <div className="flex justify-end gap-2">
-              <Button
-                variant="outline"
-                onClick={() => setShowRejectDialog(false)}
-              >
-                {t("cancel")}
-              </Button>
-              <Button
-                onClick={() => {
-                  setIsUploading(true);
-                  // Handle reject logic here
-                }}
-                disabled={!rejectionReason}
-              >
-                {t("confirm")}
-              </Button>
-            </div>
           </div>
         </DialogContent>
       </Dialog>
