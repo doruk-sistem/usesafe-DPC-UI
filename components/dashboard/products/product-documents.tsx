@@ -51,7 +51,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
-import { BaseProduct } from "@/lib/types/product";
 import {
   getDocuments,
   approveDocument,
@@ -60,6 +59,7 @@ import {
   updateDocument,
 } from "@/lib/services/documents";
 import { Document } from "@/lib/types/document";
+import { BaseProduct } from "@/lib/types/product";
 import { getStatusIcon } from "@/lib/utils/document-utils";
 
 interface ProductDocumentsProps {

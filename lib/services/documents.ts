@@ -1,4 +1,5 @@
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+
 import { Document } from "@/lib/types/document";
 import { BaseProduct } from "@/lib/types/product";
 
