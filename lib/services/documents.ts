@@ -1,43 +1,24 @@
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 import { Document } from '@/lib/types/document';
-import { Product } from '@/lib/types/product';
+import { BaseProduct } from '@/lib/types/product';
 
 const supabase = createClientComponentClient();
 
-export async function getDocuments(productId?: string): Promise<{ documents: Document[], product?: Product }> {
+export async function getDocuments(productId: string): Promise<{ documents: Document[], product?: BaseProduct }> {
   try {
-    if (!productId) {
-      // Use absolute path with window.location.origin
-      const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
-      const url = `${baseUrl}/api/documents`;
-      
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        cache: 'no-store'
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || `Failed to fetch documents: ${response.statusText}`);
-      }
-      
-      const data = await response.json();
-      return { documents: data || [] };
-    }
-
-    // If productId is provided, fetch from Supabase
-    const { data: product, error: productError } = await supabase
+    // Fetch from Supabase
+    const { data: productData, error: productError } = await supabase
       .from("products")
-      .select("id, name, status, documents, manufacturer_id")
+      .select("*")
       .eq("id", productId)
       .single();
 
     if (productError) throw productError;
-    if (!product) throw new Error("Product not found");
+    if (!productData) throw new Error("Product not found");
+
+    // Convert to BaseProduct type
+    const product = productData as BaseProduct;
 
     // Flatten all document arrays into a single array
     const allDocuments: Document[] = [];
