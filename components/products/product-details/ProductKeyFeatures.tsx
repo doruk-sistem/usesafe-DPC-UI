@@ -2,26 +2,28 @@
 
 import { motion } from "framer-motion";
 import { ListChecks } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { KeyFeature } from "@/lib/types/product";
 
 export interface ProductKeyFeaturesProps {
+  title: string;
   features: KeyFeature[];
-  itemVariants: any;
 }
 
-export function ProductKeyFeatures({ features, itemVariants }: ProductKeyFeaturesProps) {
+export function ProductKeyFeatures({ title, features }: ProductKeyFeaturesProps) {
+  const t = useTranslations("products.details.keyFeatures");
+
   return (
     <motion.div
-      variants={itemVariants}
-      whileHover="hover"
+      whileHover={{ scale: 1.02 }}
     >
       <Card>
         <CardHeader>
           <div className="flex items-center gap-2">
             <ListChecks className="w-5 h-5 text-primary" />
-            <CardTitle>Key Features</CardTitle>
+            <CardTitle>{title}</CardTitle>
           </div>
         </CardHeader>
         <CardContent>

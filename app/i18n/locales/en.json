@@ -1,0 +1,1073 @@
+{
+  "navbar": {
+    "dashboard": "Dashboard",
+    "products": "Products",
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Logout",
+    "companyRegistration": "Company Registration",
+    "verifyProducts": "Verify Products",
+    "signIn": "Sign In"
+  },
+  "pages": {           
+    "pendingProducts": {
+      "title": "Pending Products",
+      "description": "List of products pending approval"
+    }
+  },
+  "error": {
+    "404": {
+      "title": "404",
+      "description": "This page could not be found.",
+      "backHome": "Back to Home"
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome",
+    "overview": {
+      "title": "Dashboard Overview",
+      "description": "Track your products, certifications and documents"
+    },
+    "period": {
+      "select": "Select period",
+      "today": "Today",
+      "thisWeek": "This Week",
+      "thisMonth": "This Month",
+      "thisQuarter": "This Quarter"
+    },
+    "metrics": {
+      "totalProducts": "Total Products",
+      "pendingCertifications": "Pending Certifications",
+      "approvedDocuments": "Approved Documents",
+      "complianceRate": "Compliance Rate"
+    },
+    "applications": {
+      "title": "Pending Applications",
+      "submitted": "Submitted",
+      "status": {
+        "pending": "Pending",
+        "review": "In Review",
+        "rejected": "Rejected"
+      }
+    },
+    "activities": {
+      "title": "Recent Activities",
+      "noActivities": "No recent activities found",
+      "status": {
+        "NEW": "New",
+        "DRAFT": "Draft",
+        "DELETED": "Deleted"
+      }
+    },
+    "menu": {
+      "dashboard": "Dashboard",
+      "products": "Products",
+      "profile": "Profile",
+      "settings": "Settings",
+      "dpps": "DPPs",
+      "suppliers": "Suppliers",
+      "documents": "Documents",
+      "certifications": "Certifications",
+      "pendingProducts": "Pending Products"
+    },
+    "registration": {
+      "title": "Registration",
+      "description": "Complete your company registration and start using our digital certification system",
+      "steps": {
+        "companyInfo": {
+          "title": "Company Information",
+          "companyName": "Company Name",
+          "taxId": "Tax ID",
+          "tradeRegisterNumber": "Trade Register Number",
+          "mersisNumber": "MERSIS Number"
+        },
+        "ownerInfo": {
+          "title": "Owner Information",
+          "nationalId": "National ID",
+          "countryCode": "Country Code",
+          "phone": "Phone Number"
+        },
+        "address": {
+          "title": "Address Information",
+          "headquarters": "Headquarters Address",
+          "city": "City",
+          "district": "District",
+          "postalCode": "Postal Code"
+        },
+        "documents": {
+          "title": "Documents",
+          "required": "Required Documents",
+          "optional": "Optional Documents",
+          "signatureCircular": "Signature Circular",
+          "tradeRegistry": "Trade Registry Gazette",
+          "taxPlate": "Tax Plate",
+          "activityCertificate": "Activity Certificate",
+          "isoCertificates": "ISO Certificates",
+          "qualityCertificates": "Quality Certificates",
+          "exportDocuments": "Export Documents",
+          "productionPermits": "Production Permits"
+        },
+        "success": {
+          "title": "Registration Completed Successfully",
+          "description": "Thank you for registering with UseSafe.",
+          "emailSent": "We've sent a verification email to your registered email address.",
+          "checkEmail": "Please check your email to verify your account",
+          "nextSteps": {
+            "title": "Next steps:",
+            "verifyEmail": "Verify your email address",
+            "waitReview": "Wait for admin review (typically 1-2 business days)",
+            "approval": "Receive approval notification",
+            "onboarding": "Complete platform onboarding"
+          }
+        },
+        "navigation": {
+          "next": "Next",
+          "previous": "Previous",
+          "submit": "Submit Registration"
+        }
+      }
+    }
+  },
+  "home": {
+    "hero": {
+      "title": "Digital Product Certification & Traceability System",
+      "description": "Track, verify, and ensure product authenticity through blockchain-powered certification and end-to-end supply chain traceability",
+      "getStarted": "Get Started",
+      "verifyProduct": "Verify Product"
+    },
+    "features": {
+      "manufacturers": {
+        "title": "For Manufacturers",
+        "description": "Register your company and certify your products with our digital certification system.",
+        "buttonText": "Register Now"
+      },
+      "traceability": {
+        "title": "Product Traceability",
+        "description": "Track complete product journey from raw materials to retail with blockchain verification.",
+        "buttonText": "Explore Products"
+      },
+      "history": {
+        "title": "Supply Chain History",
+        "description": "Access complete supply chain history and verify product authenticity instantly.",
+        "buttonText": "Verify Now"
+      },
+      "connectedData": {
+        "title": "Connected Data",
+        "description": "Link product data, certifications, and sustainability metrics in one place.",
+        "buttonText": "Learn More"
+      }
+    },
+    "traceability": {
+      "title": "End-to-End Traceability",
+      "description": "Track every step of your product's journey with complete transparency and verification",
+      "steps": {
+        "rawMaterials": {
+          "title": "Raw Materials",
+          "description": "Track sourcing and origin of materials with verified sustainability credentials"
+        },
+        "manufacturing": {
+          "title": "Manufacturing",
+          "description": "Monitor production processes and sustainability metrics in real-time"
+        },
+        "certification": {
+          "title": "Certification",
+          "description": "Verify authenticity with blockchain-backed digital certification"
+        }
+      }
+    }
+  },
+  "product": {
+    "details": {
+      "notAvailable": "DPP layout not available for this product type",
+      "basicInfo": {
+        "title": "Basic Information",
+        "manufacturer": "Manufacturer",
+        "category": "Category"
+      },
+      "materials": {
+        "title": "Materials",
+        "recyclable": "Recyclable",
+        "percentage": "Percentage"
+      },
+      "certifications": {
+        "title": "Certifications",
+        "issuedBy": "Issued By",
+        "validUntil": "Valid Until",
+        "status": {
+          "valid": "Valid",
+          "expired": "Expired",
+          "unknown": "Unknown"
+        }
+      },
+      "keyFeatures": {
+        "title": "Key Features"
+      },
+      "sustainability": {
+        "title": "Sustainability Metrics"
+      },
+      "hazards": {
+        "title": "Hazard Pictograms",
+        "health": "Health Hazard",
+        "corrosive": "Corrosive",
+        "warning": "Warning",
+        "explosive": "Explosive",
+        "environmental": "Environmental Hazard"
+      },
+      "safety": {
+        "title": "Safety Measures",
+        "measures": {
+          "careful": "Always carry the batteries carefully.",
+          "upright": "Always keep in the upright position.",
+          "ventilation": "Charge in a well-ventilated place.",
+          "water": "Do not add extra quantities of pure water. (Pure water level must not be more than 1.5 cm above the plates.)",
+          "goggles": "During battery maintenance (addition of water, cleaning, battery charge), absolutely wear protective goggles suitable with working conditions.",
+          "clothing": "In case of any possible acid splash risk, wear protective clothing."
+        }
+      },
+      "emergency": {
+        "title": "Emergency Procedures",
+        "procedures": {
+          "contact": "In case of contact with eyes or skin wash with plenty of water.",
+          "clothing": "Immediately remove contaminated clothing.",
+          "ingestion": "Ingestion: Drink plenty of water and milk. Consult a physician.",
+          "spill": "Spill: Wash small-spills with water.",
+          "gases": "Operating batteries emit highly flammable hydrogen and oxygen gases.",
+          "spark": "Do not smoke or avoid any sources and acts which may cause sparks near batteries which are being charged, operating on the vehicle, or stopped after a long operation period.",
+          "fire": "Keep fire away.",
+          "devices": "Use all devices with great care."
+        }
+      },
+      "storage": {
+        "title": "Storage Guidelines",
+        "general": {
+          "title": "General Storage",
+          "dry": "Always store in a dry and cool place in the upright position. (10°C to 25°C).",
+          "pallet": "Place batteries on a wood pallet for avoiding direct contact with concrete ground."
+        },
+        "charge": {
+          "title": "Charge Level Monitoring",
+          "sale": "Charge level of the battery must be greater than 12.6V before sale.",
+          "minimum": "During storage, the minimum voltage must be 12.4V.",
+          "damage": "For preventing permanent damage, unpack and charge at 16.1V and 1/20Cn current if voltage is low."
+        },
+        "installation": {
+          "title": "Installation Steps",
+          "verify": "Verify battery compatibility with vehicle manual",
+          "engine": "Ensure engine is switched off",
+          "remove": "Remove old battery (negative terminal first)",
+          "control": "Conduct short-circuit control",
+          "clean": "Clean battery compartment and terminals",
+          "install": "Install new battery (connect positive cable first)",
+          "check": "Check charge current compatibility"
+        }
+      }
+    }
+  },
+  "products": {
+    "title": "Certified Products",
+    "description": "Explore our collection of certified sustainable products with verified Digital Product Passports.",
+    "loading": "Loading products...",
+    "list": {
+      "categories": {
+        "textile": "Textile",
+        "battery": "Battery",
+        "automotive": "Automotive",
+        "electronics": "Electronics",
+        "clothing": "Clothing",
+        "women's clothing": "Women's Clothing",
+        "automotive batteries": "Automotive Batteries",
+        "marine batteries": "Marine Batteries"
+      },
+      "sustainability": {
+        "score": "Sustainability Score",
+        "carbonFootprint": "Carbon Footprint"
+      }
+    },
+    "ProductDocuments": {
+      "uploadNewDocument": "Upload New Document",
+      "documentType": "Document Type",
+      "select": "Select",
+      "qualityCertificate": "Quality Certificate",
+      "safetyCertificate": "Safety Certificate",
+      "testReports": "Test Reports",
+      "technicalDocumentation": "Technical Documentation",
+      "complianceDocuments": "Compliance Documents",
+      "file": "File",
+      "selectedFile": "Selected file:",
+      "additionalInfo": "Additional Info",
+      "version": "Version",
+      "validUntilOptional": "Optional",
+      "notesOptional": "Optional",
+      "documentNotesPlaceholder": "Document notes...",
+      "cancel": "Cancel",
+      "uploading": "Uploading...",
+      "uploadDocument": "Upload Document",
+      "noDocumentsFound": "No Documents Found",
+      "noDocumentsDescription": "This product has no documents attached.",
+      "documentName": "Document Name",
+      "type": "Type",
+      "status": "Status",
+      "validUntil": "Valid Until",
+      "actions": "Actions",
+      "openMenu": "Open menu",
+      "download": "Download",
+      "view": "View",
+      "viewHistory": "View History",
+      "reject": "Reject",
+      "reupload": "Reupload",
+      "documentDetails": "Document Details",
+      "generalInfo": "General Info",
+      "fileSize": "File Size",
+      "uploadDate": "Upload Date",
+      "notes": "Notes",
+      "rejectionReason": "Rejection Reason",
+      "rejectDocument": "Reject Document",
+      "rejectDescription": "Please enter a reason for rejecting the document.",
+      "rejectionReasonPlaceholder": "Rejection reason...",
+      "confirm": "Confirm",
+      "productDocuments": "Product Documents",
+      "productNotFound": "Product Not Found",
+      "productNotFoundDescription": "The requested product could not be found.",
+      "notAvailable": "Not Available",
+      "success": "Success",
+      "documentUploadedSuccessfully": "Document uploaded successfully"
+    },
+    "featured": {
+      "title": "Featured Products",
+      "description": "Browse our curated selection of certified sustainable products",
+      "sections": {
+        "traceability": {
+          "title": "Product Traceability",
+          "description": "Track product journey from source to store"
+        },
+        "supplyChain": {
+          "title": "Supply Chain History",
+          "description": "Complete transparency of product lifecycle"
+        },
+        "certifications": {
+          "title": "Verified Certifications",
+          "description": "Authenticated sustainability credentials"
+        }
+      }
+    },
+    "details": {
+      "backToProducts": "Back to Products",
+      "battery": {
+        "features": {
+          "0": "Advanced lithium-ion technology for optimal performance",
+          "1": "Built-in safety features and protection circuits",
+          "2": "Extended cycle life and reliable power output"
+        },
+        "healthAndSafety": {
+          "title": "Health and Safety Measures",
+          "measures": {
+            "0": "Always handle batteries with care",
+            "1": "Keep in upright position at all times",
+            "2": "Charge in a well-ventilated area",
+            "3": "Do not add pure water (Pure water level should be 1.5 cm above plates)",
+            "4": "Always wear protective goggles suitable for working conditions during battery maintenance (adding water, cleaning, charging)",
+            "5": "Wear protective clothing if there is a risk of acid splashing"
+          }
+        },
+        "storage": {
+          "title": "Storage and Installation Guidelines",
+          "sections": {
+            "general": "General Storage",
+            "chargeLevel": "Charge Level Monitoring",
+            "installation": "Installation Steps",
+            "items": {
+              "general": {
+                "0": "Always store upright in a dry and cool place (10°C - 25°C)",
+                "1": "Place batteries on wooden pallets to avoid direct contact with concrete floor"
+              },
+              "chargeLevel": {
+                "0": "Pre-sale battery charge level should be above 12.6V",
+                "1": "Minimum voltage during storage should be 12.4V",
+                "2": "If voltage is low, open package and charge at 16.1V and 1/20Cn current to prevent permanent damage"
+              },
+              "installation": {
+                "0": "Verify battery compatibility from vehicle manual",
+                "1": "Ensure engine is off",
+                "2": "Remove old battery (negative terminal first)",
+                "3": "Check for short circuits",
+                "4": "Clean battery compartment and terminals",
+                "5": "Install new battery (connect positive cable first)",
+                "6": "Check charging current compatibility"
+              }
+            }
+          }
+        },
+        "emergencyProcedures": {
+          "title": "Emergency Procedures",
+          "procedures": {
+            "0": "In case of damage, immediately disconnect and isolate",
+            "1": "Contact emergency services if leakage or fire occurs",
+            "2": "Follow proper disposal procedures for damaged items",
+            "3": "Document and report any safety incidents",
+            "4": "In case of eye or skin contact, rinse with plenty of water",
+            "5": "Remove contaminated clothing immediately",
+            "6": "If swallowed: Drink plenty of water and milk. Consult a doctor",
+            "7": "Spillage: Wash small spills with water"
+          }
+        }
+      },
+      "textile": {
+        "careInstructions": {
+          "title": "Care Instructions",
+          "washing": "Washing",
+          "drying": "Drying",
+          "ironing": "Ironing",
+          "bleaching": "Bleaching",
+          "dryClean": "Dry Clean",
+          "specialCare": "Special Care Notes"
+        }
+      },
+      "layoutNotAvailable": "DPP layout not available for product type:",
+      "quickInfo": {
+        "title": "Quick Information",
+        "model": "Model",
+        "manufacturer": "Manufacturer",
+        "category": "Category"
+      },
+      "keyFeatures": {
+        "title": "Key Features"
+      },
+      "materials": {
+        "title": "Materials",
+        "table": {
+          "material": "Material",
+          "percentage": "Percentage",
+          "recyclable": "Recyclable",
+          "description": "Description"
+        },
+        "recyclable": {
+          "yes": "Yes",
+          "no": "No"
+        }
+      },
+      "healthAndSafety": {
+        "title": "Health and Safety",
+        "measures": {
+          "0": "Always follow proper handling and storage guidelines",
+          "1": "Keep away from extreme temperatures and moisture",
+          "2": "Use appropriate personal protective equipment when handling",
+          "3": "Regular maintenance and inspection required"
+        }
+      },
+      "certifications": {
+        "title": "Certifications",
+        "table": {
+          "name": "Certificate",
+          "issuedBy": "Issued By",
+          "validUntil": "Valid Until",
+          "status": "Status",
+          "document": "Document"
+        },
+        "status": {
+          "statusPending": "Pending",
+          "statusApproved": "Approved",
+          "statusRejected": "Rejected"
+        },
+        "actions": {
+          "download": "Download"
+        }
+      },
+      "sustainability": {
+        "title": "Sustainability Metrics",
+        "carbonFootprint": "Carbon Footprint",
+        "waterUsage": "Water Usage",
+        "energyEfficiency": "Energy Efficiency",
+        "recycledContent": "Recycled Content",
+        "metrics": {
+          "low": "Low",
+          "medium": "Medium",
+          "high": "High"
+        }
+      },
+      "qr": {
+        "title": "Product QR Code",
+        "description": "Scan this QR code to verify product authenticity and access detailed information",
+        "instructions": "Use your smartphone camera or QR code reader app to scan"
+      }
+    }
+  },
+  "productManagement": {
+    "title": "Product Management",
+    "description": "Manage and track all your products",
+    "search": {
+      "placeholder": "Search products..."
+    },
+    "filters": {
+      "type": {
+        "label": "Product Type",
+        "all": "All Types",
+        "agm": "AGM",
+        "efb": "EFB",
+        "standard": "Standard",
+        "marine": "Marine"
+      },
+      "status": {
+        "label": "Status",
+        "all": "All Statuses",
+        "active": "Active",
+        "pending": "Pending",
+        "draft": "Draft"
+      }
+    },
+    "actions": {
+      "download": "Download",
+      "addProduct": "New Product",
+      "menu": "Actions",
+      "viewDetails": "View Details",
+      "editProduct": "Edit Product",
+      "viewDocuments": "View Documents",
+      "deleteProduct": "Delete Product"
+    },
+    "list": {
+      "title": "Product List",
+      "description": "View and manage all your products",
+      "loading": "Loading products...",
+      "empty": {
+        "title": "No Products Found",
+        "description": "You don't have any products yet. Use the 'New Product' button to add one."
+      },
+      "columns": {
+        "product": "Product",
+        "type": "Type",
+        "category": "Category",
+        "status": "Status",
+        "createdAt": "Created At",
+        "actions": "Actions",
+        "basicInfo": "Basic Info",
+        "manufacturer": "Manufacturer"
+      }
+    },
+    "delete": {
+      "confirm": {
+        "title": "Delete Product",
+        "description": "Are you sure you want to delete this product? This action cannot be undone.",
+        "cancel": "Cancel",
+        "confirm": "Delete"
+      }
+    },
+    "addProduct": {
+      "title": "Add New Product",
+      "description": "Fill in the form to add a new product",
+      "form": {
+        "steps": {
+          "manufacturer": "Manufacturer"
+        },
+        "fields": {
+          "manufacturer": {
+            "label": "Manufacturer",
+            "placeholder": "Select or enter manufacturer",
+            "description": "Select the product manufacturer or add a new one"
+          }
+        },
+        "navigation": {
+          "next": "Next",
+          "back": "Back",
+          "finish": "Finish"
+        }
+      }
+    },
+    "editProduct": "Edit Product",
+    "deleteProduct": "Delete Product",
+    "search": {
+      "placeholder": "Search products..."
+    },
+    "filters": {
+      "type": {
+        "label": "Product Type",
+        "all": "All Types",
+        "agm": "AGM Batteries",
+        "efb": "EFB Batteries",
+        "standard": "Standard Batteries",
+        "marine": "Marine Batteries"
+      },
+      "status": {
+        "label": "Status",
+        "all": "All Status",
+        "APPROVED": "Approved",
+        "REJECTED": "Rejected",
+        "PENDING": "Pending"
+      }
+    },
+    "list": {
+      "title": "Product List",
+      "description": "View and manage your products",
+      "loading": "Loading products...",
+      "empty": {
+        "title": "No Products Found",
+        "description": "No products have been added yet. Use the button below to add a new product."
+      },
+      "columns": {
+        "product": "Product",
+        "type": "Type",
+        "category": "Category",
+        "basicInfo": "Basic Info",
+        "status": "Status",
+        "createdAt": "Created At",
+        "actions": "Actions",
+        "manufacturer": "Manufacturer"
+      }
+    },
+    "actions": {
+      "openMenu": "Open menu",
+      "menu": "Actions",
+      "viewDetails": "View Details",
+      "editProduct": "Edit Product",
+      "viewDocuments": "View Documents",
+      "deleteProduct": "Delete Product",
+      "addProduct": "Add Product",
+      "download": "Download"
+    },
+    "table": {
+      "productName": "Product Name",
+      "model": "Model",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "showing": "Showing {start} to {end} of {total} products"
+    },
+    "status": {
+      "draft": "Draft",
+      "published": "Published",
+      "archived": "Archived"
+    },
+    "delete": {
+      "title": "Delete Product",
+      "description": "Product deleted successfully",
+      "confirm": {
+        "title": "Delete Product",
+        "description": "Are you sure you want to delete this product? This action cannot be undone.",
+        "cancel": "Cancel",
+        "confirm": "Delete"
+      },
+      "error": {
+        "title": "Error",
+        "description": "Failed to delete product"
+      }
+    },
+
+    "productTypes": {
+      "detergents": "Detergents",
+      "textile": "Textile",
+      "battery": "Battery",
+      "automotive": "Automotive",
+      "electronics": "Electronics",
+      "clothing": "Clothing",
+      "agm": "AGM",
+      "efb": "EFB",
+      "standard": "Standard",
+      "marine": "Marine"
+    },
+    "common": {
+      "status": {
+        "new": "NEW",
+        "draft": "Draft",
+        "active": "Active",
+        "pending": "Pending"
+      }
+    }
+  },
+  "common": {
+    "status": {
+      "new": "NEW",
+      "draft": "Draft",
+      "active": "Active",
+      "pending": "Pending"
+    },
+    "loading": "Loading...",
+    "buttons": {
+      "back": "Back",
+      "login": "Login",
+      "dashboard": "Go to Dashboard",
+      "addNew": "Add New",
+      "viewDetails": "View Details"
+    },
+
+    "auth": {
+      "required": "Authentication Required",
+      "loginRequired": "You need to login to view this page.",
+      "companyRequired": "Please make sure you are associated with a company."
+    },
+    "labels": {
+      "notAvailable": "Not Available"
+    },
+    "error": {
+      "title": "Error",
+      "description": "An error occurred",
+      "tryAgain": "Please try again",
+      "notFound": "Not Found",
+      "unauthorized": "Unauthorized Access",
+      "forbidden": "Access Denied",
+      "serverError": "Server Error"
+    },
+    "success": {
+      "title": "Success",
+      "saved": "Saved",
+      "updated": "Updated",
+      "deleted": "Deleted",
+      "created": "Created"
+    },
+    "validation": {
+      "required": "This field is required",
+      "email": "Please enter a valid email address",
+      "minLength": "Must be at least {length} characters",
+      "maxLength": "Must be at most {length} characters",
+      "password": "Password must be at least 8 characters",
+      "passwordMatch": "Passwords do not match"
+    }
+  },
+  "productCategories": {
+    "detergents": "Detergents",
+    "textile": "Textile",
+    "battery": "Battery",
+    "automotive": "Automotive",
+    "electronics": "Electronics",
+    "clothing": "Clothing"
+  },
+  "productTypes": {
+    "detergents": "Detergents",
+    "textile": "Textile",
+    "battery": "Battery",
+    "automotive": "Automotive",
+    "electronics": "Electronics",
+    "clothing": "Clothing"
+  },
+  "documentManagement": {
+    "title": "Document Management",
+    "description": "Manage your company documents and certificates",
+    "repository": {
+      "title": "Document Repository",
+      "description": "View and manage your company documents and certificates",
+      "columns": {
+        "document": "Document",
+        "type": "Type",
+        "category": "Category",
+        "status": "Status",
+        "expiryDate": "Expiry Date",
+        "updatedBy": "Updated By",
+        "actions": "Actions"
+      }
+    },
+    "categories": {
+      "qualityManagement": "Quality Management",
+      "safetyAndHealth": "Safety & Health",
+      "batteryStandards": "Battery Standards"
+    },
+    "status": {
+      "approved": "Approved",
+      "expiringSoon": "Expiring Soon",
+      "pending": "Pending",
+      "rejected": "Rejected"
+    },
+    "filters": {
+      "allDocuments": "All Documents",
+      "allStatuses": "All Statuses"
+    },
+    "actions": {
+      "upload": "Upload"
+    }
+  },
+  "adminDashboard": {
+    "title": "Admin Dashboard",
+    "description": "Monitor and manage system-wide operations",
+    "period": {
+      "select": "Select period",
+      "today": "Today",
+      "thisWeek": "This Week",
+      "thisMonth": "This Month",
+      "thisQuarter": "This Quarter"
+    },
+    "metrics": {
+      "totalManufacturers": "Total Manufacturers",
+      "pendingApprovals": "Pending Approvals",
+      "activeDPCs": "Active DPCs",
+      "documentVerifications": "Document Verifications",
+      "systemAlerts": "System Alerts",
+      "verificationRate": "Verification Rate",
+      "vsLastMonth": "vs Last Month"
+    },
+    "recentApprovals": {
+      "title": "Recent Approvals",
+      "noApprovals": "No approvals yet"
+    },
+    "systemAlerts": {
+      "title": "System Alerts",
+      "noAlerts": "No active alerts",
+      "severity": {
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low"
+      }
+    },
+    "manufacturers": {
+      "list": {
+        "title": "Registered Manufacturers",
+        "description": "View and manage manufacturer registrations",
+        "columns": {
+          "company": "Company",
+          "status": "Status",
+          "documents": "Documents",
+          "products": "Products",
+          "date": "Registration Date",
+          "actions": "Actions"
+        },
+        "actions": {
+          "viewDetails": "View Details",
+          "reviewDocuments": "Review Documents",
+          "viewProducts": "View Products",
+          "approve": "Approve",
+          "reject": "Reject"
+        },
+        "status": {
+          "pending": "Pending",
+          "approved": "Approved",
+          "rejected": "Rejected"
+        }
+      },
+      "filters": {
+        "status": "Filter by status",
+        "allManufacturers": "All Manufacturers",
+        "pendingApproval": "Pending Approval",
+        "approved": "Approved",
+        "rejected": "Rejected"
+      },
+      "actions": {
+        "addNew": "Add New",
+        "reject": "Reject",
+        "approve": "Approve"
+      },
+      "details": {
+        "backToList": "Back to List",
+        "actions": {
+          "reject": "Reject",
+          "approve": "Approve"
+        },
+        "status": {
+          "approved": "Approved",
+          "rejected": "Rejected",
+          "pending": "Pending"
+        },
+        "companyInfo": {
+          "title": "Company Information",
+          "email": "Email",
+          "phone": "Phone",
+          "address": "Address",
+          "taxId": "Tax ID",
+          "registrationDate": "Registration Date"
+        },
+        "verification": {
+          "title": "Verification Status",
+          "document": "Document Verification",
+          "taxId": "Tax ID Verification",
+          "address": "Address Verification",
+          "contact": "Contact Verification",
+          "status": {
+            "inProgress": "In Progress",
+            "verified": "Verified",
+            "pending": "Pending"
+          }
+        }
+      }
+    },
+    "sections": {
+      "pendingApprovals": {
+        "title": "Pending Approvals",
+        "description": "Recent approval requests requiring attention"
+      },
+      "systemAlerts": {
+        "title": "System Alerts",
+        "description": "Recent system notifications and alerts",
+        "alerts": {
+          "highVolume": "High volume of pending approvals detected",
+          "failedVerification": "Blockchain verification attempt failed",
+          "maintenance": "System maintenance scheduled for tonight"
+        }
+      }
+    },
+    "labels": {
+      "manufacturer": "Manufacturer",
+      "document": "Document",
+      "dpc": "DPC",
+      "minutes": "minutes",
+      "hour": "hour",
+      "ago": "ago"
+    },
+    "actions": {
+      "review": "Review"
+    },
+    "documents": {
+      "title": "Document Management",
+      "description": "Review and manage document submissions",
+      "repository": {
+        "title": "Document Repository",
+        "description": "View and manage all uploaded documents",
+        "columns": {
+          "document": "Document",
+          "type": "Type",
+          "manufacturer": "Manufacturer",
+          "status": "Status",
+          "validUntil": "Valid Until",
+          "version": "Version",
+          "actions": "Actions"
+        },
+        "status": {
+          "pending": "Pending",
+          "approved": "Approved",
+          "rejected": "Rejected",
+          "expired": "Expired"
+        },
+        "types": {
+          "certification": "Certification",
+          "compliance": "Compliance",
+          "quality": "Quality",
+          "legal": "Legal"
+        }
+      },
+      "filters": {
+        "allDocuments": "All Documents",
+        "allStatus": "All Status"
+      },
+      "actions": {
+        "upload": "Upload"
+      }
+    }
+  },
+  "admin": {
+    "products": {
+      "steps": {
+       "documentUpload": {
+       "title": "Upload Product Documents",
+       "description": "Upload the required documents for your product",
+       "verifyDocuments": "Verify Documents",
+       "verifyDocumentsDescription": "Verify the authenticity of all uploaded documents",
+       "addDocument": "Add Document",
+       "uploadDocuments": "Upload Documents",
+       "productDocuments": "Product Documents",
+       "verificationRequired": "Document verification required",
+       "pleaseVerifyDocuments": "Please verify the documents before proceeding",
+       "invalidUploadParameters": "Invalid upload parameters",
+       "invalidFileType": "Invalid file type",
+       "fileSizeExceedsLimit": "File size exceeds limit",
+       "uploadIssues": "Upload Issues",
+       "documentTypes": {
+            "testReports": "Test Reports",
+            "technicalDocumentation": "Technical Documentation"
+          }
+        }
+      }
+    },
+    "sidebar": {
+      "dashboard": "Dashboard",
+      "manufacturers": "Manufacturers",
+      "documents": "Documents",
+      "certifications": "Certifications",
+      "dppTemplates": "DPP Templates",
+      "products": "Products"
+    },
+    "products": {
+      "title": "Products",
+      "description": "Manage and review all products in the system",
+      "loading": "Loading products...",
+      "searchPlaceholder": "Search products...",
+      "filterByManufacturer": "Filter by manufacturer",
+      "filterByStatus": "Filter by status",
+      "allManufacturers": "All Manufacturers",
+      "allStatus": "All Status",
+      "allApproved": "All Approved",
+      "pendingReview": "Pending Review",
+      "hasRejectedDocuments": "Has Rejected Documents",
+      "noDocuments": "No Documents",
+      "noProductsFound": "No Products Found",
+      "noProductsAdded": "No products have been added yet.",
+      "noProductsMatchFilter": "No products match the current filter criteria.",
+      "manufacturer": "Manufacturer",
+      "category": "Category",
+      "documents": "Documents",
+      "status": "Status",
+      "uncategorized": "Uncategorized",
+      "viewDetails": "View Details",
+      "viewDocuments": "View Documents",
+      "addNewProduct": "Add New Product",
+      "created": "Created",
+      "documentCount": "{count} document",
+      "documentCount_plural": "{count} documents",
+      "unknownManufacturer": "Unknown Manufacturer",
+      "details": {
+        "backButton": "Back to Products",
+        "viewDocuments": "View Documents",
+        "productInfo": {
+          "title": "Product Information",
+          "id": "Product ID",
+          "manufacturer": "Manufacturer",
+          "type": "Type",
+          "status": "Status",
+          "created": "Created",
+          "description": "Description"
+        },
+        "documents": {
+          "title": "Documents",
+          "totalDocuments": "Total Documents",
+          "documentStatus": "Document Status",
+          "description": "Document information and status",
+          "id": "Document ID",
+          "type": "Type",
+          "validUntil": "Valid Until",
+          "rejectionReason": "Rejection Reason",
+          "viewDocument": "View Document",
+          "documentStatuses": {
+            "noDocuments": "No Documents",
+            "hasRejected": "Has Rejected Documents",
+            "pending": "Pending Review",
+            "hasExpired": "Has Expired Documents",
+            "allApproved": "All Approved",
+            "unknown": "Unknown Status"
+          }
+        },
+        "errorLoadingProduct": "Error Loading Product",
+        "unexpectedError": "An unexpected error occurred"
+      },
+      "errors": {
+        "notFound": "Product Not Found",
+        "notFoundDescription": "The requested product could not be found. It may have been deleted or you may not have permission to view it."
+      }
+    },
+    "dpc": {
+      "title": "DPC Applications",
+      "description": "View and manage DPC applications",
+      "columns": {
+        "product": "Product",
+        "category": "Category",
+        "manufacturer": "Manufacturer",
+        "status": "Status",
+        "score": "Score",
+        "documents": "Documents"
+      },
+      "status": {
+        "pending": "Pending",
+        "approved": "Approved",
+        "rejected": "Rejected",
+        "verified": "Verified",
+        "passed": "Passed"
+      },
+      "actions": {
+        "title": "Actions",
+        "newDPC": "New DPC Application",
+        "download": "Download",
+        "view": "View",
+        "approve": "Approve",
+        "reject": "Reject",
+        "back": "Back"
+      }
+    }
+  },
+  "auth": {
+  }
+}

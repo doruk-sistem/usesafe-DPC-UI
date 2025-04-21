@@ -2,6 +2,7 @@
 
 import { Factory, MoreHorizontal, FileText, ExternalLink, Box } from "lucide-react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
@@ -39,6 +40,7 @@ export function SupplierList() {
   const [isLoading, setIsLoading] = useState(true);
   const { company } = useAuth();
   const { toast } = useToast();
+  const t = useTranslations("suppliers");
 
   useEffect(() => {
     const fetchSuppliers = async () => {
@@ -51,8 +53,8 @@ export function SupplierList() {
       } catch (error) {
         console.error('Error fetching suppliers:', error);
         toast({
-          title: "Error",
-          description: "Failed to load suppliers",
+          title: t("error.title"),
+          description: t("error.description"),
           variant: "destructive",
         });
       } finally {
@@ -61,14 +63,14 @@ export function SupplierList() {
     };
 
     fetchSuppliers();
-  }, [company?.id, toast]);
+  }, [company?.id, toast, t]);
 
   if (isLoading) {
     return (
       <Card>
         <CardContent className="p-6">
           <div className="flex items-center justify-center">
-            <span className="text-muted-foreground">Loading suppliers...</span>
+            <span className="text-muted-foreground">{t("list.loading")}</span>
           </div>
         </CardContent>
       </Card>
@@ -80,9 +82,9 @@ export function SupplierList() {
       <Card>
         <CardContent className="flex flex-col items-center justify-center py-12">
           <Factory className="h-12 w-12 text-muted-foreground mb-4" />
-          <h2 className="text-xl font-semibold mb-2">No Suppliers Found</h2>
+          <h2 className="text-xl font-semibold mb-2">{t("list.empty.title")}</h2>
           <p className="text-muted-foreground mb-4 text-center max-w-sm">
-            You don&apos;t have any suppliers yet. They will appear here when you add products from manufacturers or material suppliers.
+            {t("list.empty.description")}
           </p>
         </CardContent>
       </Card>
@@ -92,20 +94,20 @@ export function SupplierList() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Supplier List</CardTitle>
+        <CardTitle>{t("list.title")}</CardTitle>
         <CardDescription>
-          View and manage your company&apos;s suppliers
+          {t("list.description")}
         </CardDescription>
       </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Company</TableHead>
-              <TableHead>Type</TableHead>
-              <TableHead>Tax ID</TableHead>
-              <TableHead>Products</TableHead>
-              <TableHead>Status</TableHead>
+              <TableHead>{t("list.columns.company")}</TableHead>
+              <TableHead>{t("list.columns.type")}</TableHead>
+              <TableHead>{t("list.columns.taxId")}</TableHead>
+              <TableHead>{t("list.columns.products")}</TableHead>
+              <TableHead>{t("list.columns.status")}</TableHead>
               <TableHead></TableHead>
             </TableRow>
           </TableHeader>
@@ -122,47 +124,47 @@ export function SupplierList() {
                 </TableCell>
                 <TableCell>
                   <Badge variant="secondary">
-                    {supplier.companyType}
+                    {t(`list.types.${supplier.companyType.toLowerCase()}`)}
                   </Badge>
                 </TableCell>
                 <TableCell>{supplier.taxInfo.taxNumber}</TableCell>
                 <TableCell>
                   <Link href={`/dashboard/products?manufacturer=${supplier.id}`}>
                     <Button variant="ghost" size="sm">
-                      View Products
+                      {t("list.actions.viewProducts")}
                     </Button>
                   </Link>
                 </TableCell>
                 <TableCell>
-                  <Badge variant="success">Active</Badge>
+                  <Badge variant="success">{t("list.status.active")}</Badge>
                 </TableCell>
                 <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" size="icon">
                         <MoreHorizontal className="h-4 w-4" />
-                        <span className="sr-only">Open menu</span>
+                        <span className="sr-only">{t("list.actions.more")}</span>
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                      <DropdownMenuLabel>{t("list.actions.more")}</DropdownMenuLabel>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem asChild>
                         <Link href={`/dashboard/products?manufacturer=${supplier.id}`}>
                           <Box className="h-4 w-4 mr-2" />
-                          View Products
+                          {t("list.actions.viewProducts")}
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
                         <Link href={`/dashboard/documents?manufacturer=${supplier.id}`}>
                           <FileText className="h-4 w-4 mr-2" />
-                          View Documents
+                          {t("list.actions.viewDocuments")}
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
                         <Link href={`/dashboard/certifications?manufacturer=${supplier.id}`}>
                           <ExternalLink className="h-4 w-4 mr-2" />
-                          View Certifications
+                          {t("list.actions.viewCertifications")}
                         </Link>
                       </DropdownMenuItem>
                     </DropdownMenuContent>

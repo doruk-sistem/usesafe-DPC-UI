@@ -8,9 +8,12 @@ import {
   FileText,
   ShieldCheck,
   Bell,
+  ClipboardCheck,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTranslations } from 'next-intl';
+import { useMemo } from 'react';
 
 import { ComplateRegistrationForm } from "@/components/dashboard/complate-registration-form";
 import { Button } from "@/components/ui/button";
@@ -30,40 +33,8 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { useAuth } from "@/lib/hooks/use-auth";
+import { CompanyType } from "@/lib/types/company";
 import { cn } from "@/lib/utils";
-
-const sidebarItems = [
-  {
-    title: "Dashboard",
-    href: "/dashboard",
-    icon: LayoutDashboard,
-  },
-  {
-    title: "Products",
-    href: "/dashboard/products",
-    icon: Box,
-  },
-  {
-    title: "DPPs",
-    href: "/dashboard/dpps",
-    icon: QrCode,
-  },
-  {
-    title: "Suppliers",
-    href: "/dashboard/suppliers",
-    icon: Factory,
-  },
-  {
-    title: "Documents",
-    href: "/dashboard/documents",
-    icon: FileText,
-  },
-  {
-    title: "Certifications",
-    href: "/dashboard/certifications",
-    icon: ShieldCheck,
-  },
-];
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -72,6 +43,46 @@ interface DashboardLayoutProps {
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const pathname = usePathname();
   const { company } = useAuth();
+  const t = useTranslations('dashboard');
+
+  const sidebarItems = useMemo(() => [
+    {
+      title: t('menu.dashboard'),
+      href: "/dashboard",
+      icon: LayoutDashboard,
+    },
+    {
+      title: t('menu.products'),
+      href: "/dashboard/products",
+      icon: Box,
+    },
+    {
+      title: t('menu.pendingProducts'),
+      href: "/dashboard/pending-products",
+      icon: ClipboardCheck,
+      show: company?.companyType === CompanyType.MANUFACTURER
+    },
+    {
+      title: t('menu.dpps'),
+      href: "/dashboard/dpps",
+      icon: QrCode,
+    },
+    {
+      title: t('menu.suppliers'),
+      href: "/dashboard/suppliers",
+      icon: Factory,
+    },
+    {
+      title: t('menu.documents'),
+      href: "/dashboard/documents",
+      icon: FileText,
+    },
+    {
+      title: t('menu.certifications'),
+      href: "/dashboard/certifications",
+      icon: ShieldCheck,
+    },
+  ].filter(item => item.show === undefined || item.show === true), [t, company]);
 
   return (
     <>
@@ -79,10 +90,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         <Dialog open={!company} modal={true}>
           <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>Complete Registration</DialogTitle>
+              <DialogTitle>{t('registration.title')}</DialogTitle>
               <DialogDescription>
-                Please complete your company registration before starting to use
-                UseSafe.
+                {t('registration.description')}
               </DialogDescription>
             </DialogHeader>
             <ComplateRegistrationForm />

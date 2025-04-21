@@ -1,11 +1,14 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { headers } from 'next/headers';
+import { notFound } from "next/navigation";
+import { NextIntlClientProvider } from 'next-intl';
 
-import { Navbar } from "@/components/layout/navbar";
 import ReactQueryProvider from "@/components/providers/react-query-provider";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
+import { Navbar } from "@/components/layout/navbar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -33,13 +36,35 @@ export const metadata: Metadata = {
     'theme-color': '#ffffff',
   },
 };
-export default function RootLayout({
+
+// Can be imported from a shared config
+const locales = ['en', 'tr'];
+
+export function generateStaticParams() {
+  return [{ locale: 'tr' }, { locale: 'en' }];
+}
+
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const headersList = await headers();
+  const locale = headersList.get('x-next-locale') || 'tr';
+  
+  // Validate that the incoming locale is valid
+  if (!locales.includes(locale as string)) notFound();
+  
+  let messages;
+  try {
+    messages = (await import(`./i18n/locales/${locale}.json`)).default;
+  } catch (error) {
+    console.error('Failed to load messages:', error);
+    notFound();
+  }
+ 
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       <head>
         <meta httpEquiv="Permissions-Policy" content="camera=*" />
       </head>
@@ -50,13 +75,15 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <ReactQueryProvider>
-            <div className="relative min-h-screen bg-background">
-              <Navbar />
-              <main className="relative">{children}</main>
-            </div>
-            <Toaster />
-          </ReactQueryProvider>
+          <NextIntlClientProvider messages={messages} locale={locale}>
+            <ReactQueryProvider>
+              <div className="relative min-h-screen bg-background">
+                <Navbar />
+                <main className="relative">{children}</main>
+              </div>
+              <Toaster />
+            </ReactQueryProvider>
+          </NextIntlClientProvider>
         </ThemeProvider>
       </body>
     </html>

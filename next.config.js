@@ -1,3 +1,7 @@
+const createNextIntlPlugin = require('next-intl/plugin');
+
+const withNextIntl = createNextIntlPlugin('./app/i18n/request.ts');
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
@@ -16,9 +20,10 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   typescript: {
-    ignoreBuildErrors: true
+    ignoreBuildErrors: true,
   },
-  swcMinify: false,
+  swcMinify: false, 
+
   webpack: (config) => {
     config.resolve.fallback = {
       ...config.resolve.fallback,
@@ -27,7 +32,7 @@ const nextConfig = {
       tls: false,
     };
     return config;
-  },
+  }
 };
 
-module.exports = nextConfig;
+module.exports = withNextIntl(nextConfig);

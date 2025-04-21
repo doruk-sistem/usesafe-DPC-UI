@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Download } from "lucide-react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -20,34 +21,54 @@ interface Certification {
   name: string;
   issuedBy: string;
   validUntil: string;
-  status: "valid" | "expired";
+  status: "active" | "valid" | "expired" | "pending" | "unknown";
   documentUrl?: string;
 }
 
 interface CertificationsCardProps {
+  title: string;
   certifications: Certification[];
-  itemVariants: any;
 }
 
 export function CertificationsCard({ 
-  certifications, 
-  itemVariants 
+  title,
+  certifications
 }: CertificationsCardProps) {
+  const t = useTranslations("products.details.certifications");
+
+  const getStatusVariant = (status: Certification["status"]) => {
+    switch (status) {
+      case "active":
+      case "valid":
+        return "success";
+      case "expired":
+        return "destructive";
+      case "pending":
+        return "warning";
+      default:
+        return "secondary";
+    }
+  };
+
   return (
     <Card className="lg:col-span-2">
       <CardHeader>
-        <CardTitle>Certifications</CardTitle>
+        <CardTitle>{title}</CardTitle>
       </CardHeader>
       <CardContent>
-        <motion.div variants={itemVariants}>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Certification</TableHead>
-                <TableHead>Issued By</TableHead>
-                <TableHead>Valid Until</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Document</TableHead>
+                <TableHead>{t("table.name")}</TableHead>
+                <TableHead>{t("table.issuedBy")}</TableHead>
+                <TableHead>{t("table.validUntil")}</TableHead>
+                <TableHead>{t("table.status")}</TableHead>
+                <TableHead>{t("table.document")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -57,8 +78,8 @@ export function CertificationsCard({
                   <TableCell>{cert.issuedBy}</TableCell>
                   <TableCell>{new Date(cert.validUntil).toLocaleDateString()}</TableCell>
                   <TableCell>
-                    <Badge variant={cert.status === "valid" ? "success" : "destructive"}>
-                      {cert.status}
+                    <Badge variant={getStatusVariant(cert.status)}>
+                      {t(`status.${cert.status}`)}
                     </Badge>
                   </TableCell>
                   <TableCell>
@@ -66,7 +87,7 @@ export function CertificationsCard({
                       <Button variant="ghost" size="sm" asChild>
                         <Link href={cert.documentUrl}>
                           <Download className="h-4 w-4 mr-2" />
-                          Download
+                          {t("actions.download")}
                         </Link>
                       </Button>
                     )}

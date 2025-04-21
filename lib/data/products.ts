@@ -8,6 +8,7 @@ export const products: Product[] = [
     name: "AGM LEO Advanced Battery",
     description: "Advanced Absorbent Glass Mat (AGM) battery with superior performance, designed for modern vehicles with high electrical demands.",
     company_id: "INCI-001",
+    manufacturer_id: "INCI-001",
     product_type: "battery",
     model: "AGM-LEO-12V-65AH",
     status: "NEW",
@@ -307,6 +308,7 @@ export const products: Product[] = [
     name: "EFB MAX TIGRIS Enhanced Flooded Battery",
     description: "Enhanced Flooded Battery (EFB) with high capacity and advanced cycling performance for start-stop vehicles.",
     company_id: "INCI-001",
+    manufacturer_id: "INCI-001",
     product_type: "battery",
     model: "EFB-TIGRIS-12V-145AH",
     status: "NEW",
@@ -594,6 +596,7 @@ export const products: Product[] = [
     name: "MAXIM A GORILLA Heavy Duty Battery",
     description: "Robust and powerful battery designed for heavy-duty applications, offering exceptional performance and durability.",
     company_id: "INCI-001",
+    manufacturer_id: "INCI-001",
     product_type: "battery",
     model: "MAXIM-GORILLA-12V-105AH",
     status: "NEW",
@@ -650,13 +653,238 @@ export const products: Product[] = [
       }
     ],
     created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
+    updated_at: new Date().toISOString(),
+    dpp_config: {
+      sections: [
+        {
+          id: "basic-info",
+          title: "Basic Information",
+          fields: [
+            { id: "manufacturer", name: "Manufacturer", type: "text", required: true, value: "İnci Akü" },
+            { id: "category", name: "Category", type: "text", required: true, value: "Automotive Batteries" }
+          ],
+          required: true,
+          order: 0
+        },
+        {
+          id: "materials",
+          title: "Material Composition",
+          fields: [
+            { 
+              id: "lead",
+              name: "Lead",
+              type: "material",
+              required: true,
+              value: {
+                percentage: 62,
+                recyclable: true,
+                description: "CAS No: 7439-92-1"
+              }
+            },
+            { 
+              id: "sulfuric-acid",
+              name: "Sulfuric Acid",
+              type: "material",
+              required: true,
+              value: {
+                percentage: 31,
+                recyclable: false,
+                description: "CAS No: 7664-93-9 - Electrolyte"
+              }
+            },
+            { 
+              id: "antimony",
+              name: "Antimony",
+              type: "material",
+              required: true,
+              value: {
+                percentage: 1,
+                recyclable: true,
+                description: "CAS No: 7440-36-0"
+              }
+            },
+            { 
+              id: "tin",
+              name: "Tin",
+              type: "material",
+              required: true,
+              value: {
+                percentage: 0.2,
+                recyclable: true,
+                description: "CAS No: 7440-31-5"
+              }
+            },
+            { 
+              id: "arsenic",
+              name: "Arsenic",
+              type: "material",
+              required: true,
+              value: {
+                percentage: 0.1,
+                recyclable: false,
+                description: "CAS No: 7440-38-2"
+              }
+            },
+            { 
+              id: "polypropylene",
+              name: "Polypropylene",
+              type: "material",
+              required: true,
+              value: {
+                percentage: 3.5,
+                recyclable: true,
+                description: "CAS No: 9003-07-0 - Case material"
+              }
+            },
+            { 
+              id: "silica",
+              name: "Silica",
+              type: "material",
+              required: true,
+              value: {
+                percentage: 1.2,
+                recyclable: true,
+                description: "CAS No: 112926-00-8"
+              }
+            },
+            { 
+              id: "natural-rubber",
+              name: "Natural Rubber",
+              type: "material",
+              required: true,
+              value: {
+                percentage: 0.5,
+                recyclable: true,
+                description: "CAS No: 9006-04-6"
+              }
+            },
+            { 
+              id: "oil",
+              name: "Oil",
+              type: "material",
+              required: true,
+              value: {
+                percentage: 0.5,
+                recyclable: false,
+                description: "CAS No: 64742-52-5"
+              }
+            }
+          ],
+          required: true,
+          order: 1
+        },
+        {
+          id: "certifications",
+          title: "Certifications",
+          fields: [
+            {
+              id: "ce-cert",
+              name: "CE Sertifikası",
+              type: "certification",
+              required: true,
+              value: {
+                issuedBy: "TSE",
+                validUntil: "2025-04-01",
+                status: "valid",
+                documentUrl: "/certificates/ce-gorilla.pdf"
+              }
+            },
+            {
+              id: "tse-cert",
+              name: "TSE",
+              type: "certification",
+              required: true,
+              value: {
+                issuedBy: "Turkish Standards Institution",
+                validUntil: "2025-04-01",
+                status: "valid",
+                documentUrl: "/certificates/tse-gorilla.pdf"
+              }
+            },
+            {
+              id: "iec-62040-1",
+              name: "IEC 62040-1",
+              type: "certification",
+              required: true,
+              value: {
+                issuedBy: "TSE",
+                validUntil: "2025-04-01",
+                status: "valid",
+                documentUrl: "/certificates/iec-62040-1-gorilla.pdf"
+              }
+            },
+            {
+              id: "iec-62477-1",
+              name: "IEC 62477-1",
+              type: "certification",
+              required: true,
+              value: {
+                issuedBy: "TSE",
+                validUntil: "2025-04-01",
+                status: "valid",
+                documentUrl: "/certificates/iec-62477-1-gorilla.pdf"
+              }
+            },
+            {
+              id: "iec-60896",
+              name: "IEC 60896",
+              type: "certification",
+              required: true,
+              value: {
+                issuedBy: "TSE",
+                validUntil: "2025-04-01",
+                status: "valid",
+                documentUrl: "/certificates/iec-60896-gorilla.pdf"
+              }
+            },
+            {
+              id: "rohs",
+              name: "RoHS Belgesi",
+              type: "certification",
+              required: true,
+              value: {
+                issuedBy: "Eurocert",
+                validUntil: "2025-04-01",
+                status: "valid",
+                documentUrl: "/certificates/rohs-gorilla.pdf"
+              }
+            }
+          ],
+          required: true,
+          order: 2
+        },
+        {
+          id: "environmental",
+          title: "Environmental Impact",
+          fields: [
+            {
+              id: "sustainability-score",
+              name: "Sustainability Score",
+              type: "number",
+              required: true,
+              value: 82
+            },
+            {
+              id: "carbon-footprint",
+              name: "Carbon Footprint",
+              type: "text",
+              required: true,
+              value: "25.5 kg CO2e"
+            }
+          ],
+          required: true,
+          order: 3
+        }
+      ],
+      lastUpdated: new Date().toISOString()
+    }
   },
   {
     id: "PROD-2024-015",
     name: "SUPRA SENTOR Premium Battery",
     description: "High-performance battery with superior energy storage and reliability, ideal for modern vehicles with complex electrical systems.",
     company_id: "INCI-001",
+    manufacturer_id: "INCI-001",
     product_type: "battery",
     model: "SUPRA-SENTOR-12V-90AH",
     status: "NEW",
@@ -713,13 +941,238 @@ export const products: Product[] = [
       }
     ],
     created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
+    updated_at: new Date().toISOString(),
+    dpp_config: {
+      sections: [
+        {
+          id: "basic-info",
+          title: "Basic Information",
+          fields: [
+            { id: "manufacturer", name: "Manufacturer", type: "text", required: true, value: "İnci Akü" },
+            { id: "category", name: "Category", type: "text", required: true, value: "Automotive Batteries" }
+          ],
+          required: true,
+          order: 0
+        },
+        {
+          id: "materials",
+          title: "Material Composition",
+          fields: [
+            { 
+              id: "lead",
+              name: "Lead",
+              type: "material",
+              required: true,
+              value: {
+                percentage: 62,
+                recyclable: true,
+                description: "CAS No: 7439-92-1"
+              }
+            },
+            { 
+              id: "sulfuric-acid",
+              name: "Sulfuric Acid",
+              type: "material",
+              required: true,
+              value: {
+                percentage: 31,
+                recyclable: false,
+                description: "CAS No: 7664-93-9 - Electrolyte"
+              }
+            },
+            { 
+              id: "antimony",
+              name: "Antimony",
+              type: "material",
+              required: true,
+              value: {
+                percentage: 1,
+                recyclable: true,
+                description: "CAS No: 7440-36-0"
+              }
+            },
+            { 
+              id: "tin",
+              name: "Tin",
+              type: "material",
+              required: true,
+              value: {
+                percentage: 0.2,
+                recyclable: true,
+                description: "CAS No: 7440-31-5"
+              }
+            },
+            { 
+              id: "arsenic",
+              name: "Arsenic",
+              type: "material",
+              required: true,
+              value: {
+                percentage: 0.1,
+                recyclable: false,
+                description: "CAS No: 7440-38-2"
+              }
+            },
+            { 
+              id: "polypropylene",
+              name: "Polypropylene",
+              type: "material",
+              required: true,
+              value: {
+                percentage: 3.5,
+                recyclable: true,
+                description: "CAS No: 9003-07-0 - Case material"
+              }
+            },
+            { 
+              id: "silica",
+              name: "Silica",
+              type: "material",
+              required: true,
+              value: {
+                percentage: 1.2,
+                recyclable: true,
+                description: "CAS No: 112926-00-8"
+              }
+            },
+            { 
+              id: "natural-rubber",
+              name: "Natural Rubber",
+              type: "material",
+              required: true,
+              value: {
+                percentage: 0.5,
+                recyclable: true,
+                description: "CAS No: 9006-04-6"
+              }
+            },
+            { 
+              id: "oil",
+              name: "Oil",
+              type: "material",
+              required: true,
+              value: {
+                percentage: 0.5,
+                recyclable: false,
+                description: "CAS No: 64742-52-5"
+              }
+            }
+          ],
+          required: true,
+          order: 1
+        },
+        {
+          id: "certifications",
+          title: "Certifications",
+          fields: [
+            {
+              id: "ce-cert",
+              name: "CE Sertifikası",
+              type: "certification",
+              required: true,
+              value: {
+                issuedBy: "TSE",
+                validUntil: "2025-04-01",
+                status: "valid",
+                documentUrl: "/certificates/ce-sentor.pdf"
+              }
+            },
+            {
+              id: "tse-cert",
+              name: "TSE",
+              type: "certification",
+              required: true,
+              value: {
+                issuedBy: "Turkish Standards Institution",
+                validUntil: "2025-04-01",
+                status: "valid",
+                documentUrl: "/certificates/tse-sentor.pdf"
+              }
+            },
+            {
+              id: "iec-62040-1",
+              name: "IEC 62040-1",
+              type: "certification",
+              required: true,
+              value: {
+                issuedBy: "TSE",
+                validUntil: "2025-04-01",
+                status: "valid",
+                documentUrl: "/certificates/iec-62040-1-sentor.pdf"
+              }
+            },
+            {
+              id: "iec-62477-1",
+              name: "IEC 62477-1",
+              type: "certification",
+              required: true,
+              value: {
+                issuedBy: "TSE",
+                validUntil: "2025-04-01",
+                status: "valid",
+                documentUrl: "/certificates/iec-62477-1-sentor.pdf"
+              }
+            },
+            {
+              id: "iec-60896",
+              name: "IEC 60896",
+              type: "certification",
+              required: true,
+              value: {
+                issuedBy: "TSE",
+                validUntil: "2025-04-01",
+                status: "valid",
+                documentUrl: "/certificates/iec-60896-sentor.pdf"
+              }
+            },
+            {
+              id: "rohs",
+              name: "RoHS Belgesi",
+              type: "certification",
+              required: true,
+              value: {
+                issuedBy: "Eurocert",
+                validUntil: "2025-04-01",
+                status: "valid",
+                documentUrl: "/certificates/rohs-sentor.pdf"
+              }
+            }
+          ],
+          required: true,
+          order: 2
+        },
+        {
+          id: "environmental",
+          title: "Environmental Impact",
+          fields: [
+            {
+              id: "sustainability-score",
+              name: "Sustainability Score",
+              type: "number",
+              required: true,
+              value: 84
+            },
+            {
+              id: "carbon-footprint",
+              name: "Carbon Footprint",
+              type: "text",
+              required: true,
+              value: "22.5 kg CO2e"
+            }
+          ],
+          required: true,
+          order: 3
+        }
+      ],
+      lastUpdated: new Date().toISOString()
+    }
   },
   {
     id: "PROD-2024-016",
     name: "MARİN & KARAVAN Battery",
     description: "Specialized battery for marine and caravan applications, designed for robust performance in challenging environments.",
     company_id: "INCI-001",
+    manufacturer_id: "INCI-001",
     product_type: "battery",
     model: "L5 Marine",
     status: "NEW",
@@ -776,6 +1229,230 @@ export const products: Product[] = [
       }
     ],
     created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
+    updated_at: new Date().toISOString(),
+    dpp_config: {
+      sections: [
+        {
+          id: "basic-info",
+          title: "Basic Information",
+          fields: [
+            { id: "manufacturer", name: "Manufacturer", type: "text", required: true, value: "İnci Akü" },
+            { id: "category", name: "Category", type: "text", required: true, value: "Marine Batteries" }
+          ],
+          required: true,
+          order: 0
+        },
+        {
+          id: "materials",
+          title: "Material Composition",
+          fields: [
+            { 
+              id: "lead",
+              name: "Lead",
+              type: "material",
+              required: true,
+              value: {
+                percentage: 62,
+                recyclable: true,
+                description: "CAS No: 7439-92-1"
+              }
+            },
+            { 
+              id: "sulfuric-acid",
+              name: "Sulfuric Acid",
+              type: "material",
+              required: true,
+              value: {
+                percentage: 31,
+                recyclable: false,
+                description: "CAS No: 7664-93-9 - Electrolyte"
+              }
+            },
+            { 
+              id: "antimony",
+              name: "Antimony",
+              type: "material",
+              required: true,
+              value: {
+                percentage: 1,
+                recyclable: true,
+                description: "CAS No: 7440-36-0"
+              }
+            },
+            { 
+              id: "tin",
+              name: "Tin",
+              type: "material",
+              required: true,
+              value: {
+                percentage: 0.2,
+                recyclable: true,
+                description: "CAS No: 7440-31-5"
+              }
+            },
+            { 
+              id: "arsenic",
+              name: "Arsenic",
+              type: "material",
+              required: true,
+              value: {
+                percentage: 0.1,
+                recyclable: false,
+                description: "CAS No: 7440-38-2"
+              }
+            },
+            { 
+              id: "polypropylene",
+              name: "Polypropylene",
+              type: "material",
+              required: true,
+              value: {
+                percentage: 3.5,
+                recyclable: true,
+                description: "CAS No: 9003-07-0 - Case material"
+              }
+            },
+            { 
+              id: "silica",
+              name: "Silica",
+              type: "material",
+              required: true,
+              value: {
+                percentage: 1.2,
+                recyclable: true,
+                description: "CAS No: 112926-00-8"
+              }
+            },
+            { 
+              id: "natural-rubber",
+              name: "Natural Rubber",
+              type: "material",
+              required: true,
+              value: {
+                percentage: 0.5,
+                recyclable: true,
+                description: "CAS No: 9006-04-6"
+              }
+            },
+            { 
+              id: "oil",
+              name: "Oil",
+              type: "material",
+              required: true,
+              value: {
+                percentage: 0.5,
+                recyclable: false,
+                description: "CAS No: 64742-52-5"
+              }
+            }
+          ],
+          required: true,
+          order: 1
+        },
+        {
+          id: "certifications",
+          title: "Certifications",
+          fields: [
+            {
+              id: "ce-cert",
+              name: "CE Sertifikası",
+              type: "certification",
+              required: true,
+              value: {
+                issuedBy: "TSE",
+                validUntil: "2025-04-01",
+                status: "valid",
+                documentUrl: "/certificates/ce-marine.pdf"
+              }
+            },
+            {
+              id: "tse-cert",
+              name: "TSE",
+              type: "certification",
+              required: true,
+              value: {
+                issuedBy: "Turkish Standards Institution",
+                validUntil: "2025-04-01",
+                status: "valid",
+                documentUrl: "/certificates/tse-marine.pdf"
+              }
+            },
+            {
+              id: "iec-62040-1",
+              name: "IEC 62040-1",
+              type: "certification",
+              required: true,
+              value: {
+                issuedBy: "TSE",
+                validUntil: "2025-04-01",
+                status: "valid",
+                documentUrl: "/certificates/iec-62040-1-marine.pdf"
+              }
+            },
+            {
+              id: "iec-62477-1",
+              name: "IEC 62477-1",
+              type: "certification",
+              required: true,
+              value: {
+                issuedBy: "TSE",
+                validUntil: "2025-04-01",
+                status: "valid",
+                documentUrl: "/certificates/iec-62477-1-marine.pdf"
+              }
+            },
+            {
+              id: "iec-60896",
+              name: "IEC 60896",
+              type: "certification",
+              required: true,
+              value: {
+                issuedBy: "TSE",
+                validUntil: "2025-04-01",
+                status: "valid",
+                documentUrl: "/certificates/iec-60896-marine.pdf"
+              }
+            },
+            {
+              id: "rohs",
+              name: "RoHS Belgesi",
+              type: "certification",
+              required: true,
+              value: {
+                issuedBy: "Eurocert",
+                validUntil: "2025-04-01",
+                status: "valid",
+                documentUrl: "/certificates/rohs-marine.pdf"
+              }
+            }
+          ],
+          required: true,
+          order: 2
+        },
+        {
+          id: "environmental",
+          title: "Environmental Impact",
+          fields: [
+            {
+              id: "sustainability-score",
+              name: "Sustainability Score",
+              type: "number",
+              required: true,
+              value: 86
+            },
+            {
+              id: "carbon-footprint",
+              name: "Carbon Footprint",
+              type: "text",
+              required: true,
+              value: "19.5 kg CO2e"
+            }
+          ],
+          required: true,
+          order: 3
+        }
+      ],
+      lastUpdated: new Date().toISOString()
+    }
   }
 ];

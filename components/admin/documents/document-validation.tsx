@@ -1,42 +1,55 @@
-import { CheckCircle, XCircle, AlertTriangle } from "lucide-react";
+"use client";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { useTranslations } from "next-intl";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { getStatusColor, getStatusIcon } from "@/lib/utils/document-utils";
+
+type ValidationStatus = "verified" | "valid" | "failed" | "warning" | "pending";
+
+interface ValidationCheck {
+  status: ValidationStatus;
+  details: string;
+  timestamp: string;
+}
+
+interface DocumentValidation {
+  authenticity: ValidationCheck;
+  completeness: ValidationCheck;
+  format: ValidationCheck;
+  expiration: ValidationCheck;
+  issuerVerification: ValidationCheck;
+}
 
 // Mock data - In a real app, this would come from an API
-const validationData = {
+const validationData: Record<string, DocumentValidation> = {
   "DOC-001": {
-    status: "in_progress",
-    progress: 65,
-    checks: [
-      {
-        name: "Digital Signature",
-        status: "passed",
-        details: "Valid digital signature detected",
-      },
-      {
-        name: "Document Format",
-        status: "passed",
-        details: "PDF format verified",
-      },
-      {
-        name: "Required Fields",
-        status: "warning",
-        details: "Optional metadata missing",
-      },
-      {
-        name: "Issuer Verification",
-        status: "pending",
-        details: "Awaiting issuer confirmation",
-      },
-      {
-        name: "Expiration Check",
-        status: "passed",
-        details: "Document is within valid period",
-      },
-    ],
+    authenticity: {
+      status: "verified",
+      details: "Dijital imza başarıyla doğrulandı",
+      timestamp: "2024-03-15T10:31:00",
+    },
+    completeness: {
+      status: "verified",
+      details: "Tüm gerekli alanlar mevcut",
+      timestamp: "2024-03-15T10:32:00",
+    },
+    format: {
+      status: "verified",
+      details: "Belge formatı gereksinimleri karşılıyor",
+      timestamp: "2024-03-15T10:33:00",
+    },
+    expiration: {
+      status: "valid",
+      details: "Belge geçerlilik süresi içinde",
+      timestamp: "2024-03-15T10:34:00",
+    },
+    issuerVerification: {
+      status: "pending",
+      details: "Düzenleyen doğrulaması devam ediyor",
+      timestamp: "2024-03-15T10:35:00",
+    },
   },
 };
 
@@ -45,74 +58,45 @@ interface DocumentValidationProps {
 }
 
 export function DocumentValidation({ documentId }: DocumentValidationProps) {
+  const t = useTranslations("documentManagement.repository.validation");
   const validation = validationData[documentId];
 
   if (!validation) {
-    return <div>Validation data not found</div>;
+    return <div>{t("noData.title")}</div>;
   }
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case "passed":
-        return <CheckCircle className="h-5 w-5 text-green-500" />;
-      case "failed":
-        return <XCircle className="h-5 w-5 text-red-500" />;
-      case "warning":
-        return <AlertTriangle className="h-5 w-5 text-yellow-500" />;
-      default:
-        return <AlertTriangle className="h-5 w-5 text-muted-foreground" />;
-    }
-  };
-
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "passed":
-        return <Badge variant="success">Passed</Badge>;
-      case "failed":
-        return <Badge variant="destructive">Failed</Badge>;
-      case "warning":
-        return <Badge variant="warning">Warning</Badge>;
-      default:
-        return <Badge variant="secondary">Pending</Badge>;
-    }
+  const calculateProgress = () => {
+    const total = Object.keys(validation).length;
+    const completed = Object.values(validation).filter(
+      (check) => check.status === "verified" || check.status === "valid"
+    ).length;
+    return (completed / total) * 100;
   };
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Document Validation</CardTitle>
+        <CardTitle className="flex items-center justify-between">
+          <span>{t("title")}</span>
+          <Progress value={calculateProgress()} className="w-[100px]" />
+        </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="space-y-2">
-          <div className="flex justify-between text-sm">
-            <span>Validation Progress</span>
-            <span>{validation.progress}%</span>
-          </div>
-          <Progress value={validation.progress} className="h-2" />
-        </div>
-
-        <div className="space-y-4">
-          {validation.checks.map((check, index) => (
-            <div
-              key={index}
-              className="flex items-start justify-between space-x-4 rounded-lg border p-4"
-            >
-              <div className="flex items-start space-x-4">
-                {getStatusIcon(check.status)}
-                <div>
-                  <p className="font-medium">{check.name}</p>
-                  <p className="text-sm text-muted-foreground">{check.details}</p>
-                </div>
-              </div>
-              {getStatusBadge(check.status)}
+        {Object.entries(validation).map(([key, check]) => (
+          <div key={key} className="flex items-start gap-4">
+            {getStatusIcon(check.status)}
+            <div className="flex-1 space-y-1">
+              <p className="font-medium capitalize">{t(`checks.${key}.title`)}</p>
+              <p className="text-sm text-muted-foreground">{t(`checks.${key}.${check.status}`)}</p>
+              <p className="text-xs text-muted-foreground">
+                {new Date(check.timestamp).toLocaleString()}
+              </p>
             </div>
-          ))}
-        </div>
-
-        <div className="flex justify-end space-x-2">
-          <Button variant="outline">Cancel Validation</Button>
-          <Button>Complete Validation</Button>
-        </div>
+            <span className={`text-sm font-medium ${getStatusColor(check.status)} capitalize`}>
+              {t(`checks.${check.status}`)}
+            </span>
+          </div>
+        ))}
       </CardContent>
     </Card>
   );

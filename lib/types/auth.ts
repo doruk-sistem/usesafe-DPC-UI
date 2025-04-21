@@ -7,7 +7,7 @@ export interface User {
     company_id?: string;
     full_name?: string;
     role?: "admin" | "manufacturer";
-    email_verified: boolean;
+    email_verified?: boolean;
     email?: string;
     phone_verified?: boolean;
     sub?: any;

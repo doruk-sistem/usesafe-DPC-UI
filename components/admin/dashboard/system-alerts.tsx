@@ -1,78 +1,101 @@
-import { AlertTriangle, Bell } from "lucide-react";
+"use client";
 
-import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { motion } from "framer-motion";
+import { AlertTriangle, AlertCircle, Info } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
 
-const alerts = [
-  {
-    id: 1,
-    type: "warning",
-    message: "High volume of pending approvals detected",
-    timestamp: "10 minutes ago",
-  },
-  {
-    id: 2,
-    type: "error",
-    message: "Failed blockchain verification attempt",
-    timestamp: "25 minutes ago",
-  },
-  {
-    id: 3,
-    type: "info",
-    message: "System maintenance scheduled for tonight",
-    timestamp: "1 hour ago",
-  },
-];
+import { Card } from "@/components/ui/card";
+import { Error } from "@/components/ui/error";
+import { getSystemAlerts, type SystemAlert } from "@/lib/hooks/useMetrics";
 
 export function SystemAlerts() {
+  const t = useTranslations("adminDashboard");
+  const [alerts, setAlerts] = useState<SystemAlert[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchAlerts = async () => {
+      try {
+        const alerts = await getSystemAlerts();
+        setAlerts(alerts);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchAlerts();
+  }, []);
+
+  const getSeverityIcon = (severity: string) => {
+    switch (severity) {
+      case 'high':
+        return <AlertTriangle className="w-4 h-4 text-red-600" />;
+      case 'medium':
+        return <AlertCircle className="w-4 h-4 text-amber-600" />;
+      default:
+        return <Info className="w-4 h-4 text-blue-600" />;
+    }
+  };
+
+  const getSeverityColor = (severity: string) => {
+    switch (severity) {
+      case 'high':
+        return 'bg-red-100';
+      case 'medium':
+        return 'bg-amber-100';
+      default:
+        return 'bg-blue-100';
+    }
+  };
+
+  if (error) {
+    return <Error error={error} />;
+  }
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <AlertTriangle className="h-5 w-5" />
-          System Alerts
-        </CardTitle>
-        <CardDescription>Recent system notifications and warnings</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          {alerts.map((alert) => (
-            <div
-              key={alert.id}
-              className="flex items-start space-x-4 rounded-lg border p-4"
-            >
-              <Bell className="h-5 w-5 text-muted-foreground" />
-              <div className="flex-1 space-y-1">
-                <p className="text-sm font-medium leading-none">
-                  {alert.message}
-                </p>
-                <div className="flex items-center gap-2">
-                  <Badge
-                    variant={
-                      alert.type === "error"
-                        ? "destructive"
-                        : alert.type === "warning"
-                        ? "warning"
-                        : "secondary"
-                    }
-                  >
-                    {alert.type}
-                  </Badge>
-                  <p className="text-xs text-muted-foreground">
-                    {alert.timestamp}
-                  </p>
-                </div>
+    <Card className="p-6">
+      <h3 className="text-lg font-semibold mb-4">{t("systemAlerts.title")}</h3>
+      <div className="space-y-4">
+        {isLoading ? (
+          Array(3).fill(0).map((_, index) => (
+            <div key={index} className="animate-pulse flex items-center gap-3">
+              <div className="w-8 h-8 bg-gray-200 rounded-full" />
+              <div className="flex-1 space-y-2">
+                <div className="h-4 bg-gray-200 rounded w-3/4" />
+                <div className="h-3 bg-gray-200 rounded w-1/2" />
               </div>
             </div>
-          ))}
-        </div>
-      </CardContent>
+          ))
+        ) : alerts.length === 0 ? (
+          <p className="text-muted-foreground text-sm">
+            {t("systemAlerts.noAlerts")}
+          </p>
+        ) : (
+          alerts.map((alert, index) => (
+            <motion.div
+              key={alert.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+              className="flex items-center gap-3"
+            >
+              <div className={`w-8 h-8 rounded-full ${getSeverityColor(alert.severity)} flex items-center justify-center`}>
+                {getSeverityIcon(alert.severity)}
+              </div>
+              <div>
+                <p className="font-medium">{alert.message}</p>
+                <p className="text-sm text-muted-foreground">
+                  {new Date(alert.timestamp).toLocaleTimeString()} • {t(`systemAlerts.severity.${alert.severity}`)}
+                </p>
+              </div>
+            </motion.div>
+          ))
+        )}
+      </div>
     </Card>
   );
 }

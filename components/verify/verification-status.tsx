@@ -2,6 +2,7 @@
 
 import { CheckCircle2, AlertTriangle, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from 'next-intl';
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -14,6 +15,7 @@ interface VerificationStatusProps {
 
 export function VerificationStatus({ code }: VerificationStatusProps) {
   const router = useRouter();
+  const t = useTranslations('verify');
   const [status, setStatus] = useState<"validating" | "valid" | "invalid">("validating");
   const [error, setError] = useState<string>("");
 
@@ -34,16 +36,16 @@ export function VerificationStatus({ code }: VerificationStatusProps) {
           }, 1000);
         } else {
           setStatus("invalid");
-          setError("Product not found in our database");
+          setError(t('status.invalid.notFound'));
         }
       } catch (error) {
         setStatus("invalid");
-        setError("Failed to validate product code");
+        setError(t('status.invalid.error'));
       }
     };
 
     validateCode();
-  }, [code, router]);
+  }, [code, router, t]);
 
   return (
     <Card className="border-2">
@@ -58,9 +60,9 @@ export function VerificationStatus({ code }: VerificationStatusProps) {
                 </div>
               </div>
               <div className="space-y-2">
-                <h2 className="text-2xl font-semibold">Validating Product</h2>
+                <h2 className="text-2xl font-semibold">{t('status.validating.title')}</h2>
                 <p className="text-muted-foreground">
-                  Please wait while we verify the product authenticity...
+                  {t('status.validating.description')}
                 </p>
               </div>
             </>
@@ -75,9 +77,9 @@ export function VerificationStatus({ code }: VerificationStatusProps) {
                 </div>
               </div>
               <div className="space-y-2">
-                <h2 className="text-2xl font-semibold">Product Verified</h2>
+                <h2 className="text-2xl font-semibold">{t('status.valid.title')}</h2>
                 <p className="text-muted-foreground">
-                  Redirecting to product details...
+                  {t('status.valid.description')}
                 </p>
               </div>
             </>
@@ -92,10 +94,10 @@ export function VerificationStatus({ code }: VerificationStatusProps) {
                 </div>
               </div>
               <div className="space-y-2">
-                <h2 className="text-2xl font-semibold">Validation Failed</h2>
+                <h2 className="text-2xl font-semibold">{t('status.invalid.title')}</h2>
                 <p className="text-red-500">{error}</p>
                 <p className="text-muted-foreground">
-                  The product code could not be verified. Please try again or contact support.
+                  {t('status.invalid.description')}
                 </p>
               </div>
               <Button
@@ -103,7 +105,7 @@ export function VerificationStatus({ code }: VerificationStatusProps) {
                 onClick={() => router.push("/verify")}
                 className="mt-4"
               >
-                Try Again
+                {t('status.invalid.button')}
               </Button>
             </>
           )}

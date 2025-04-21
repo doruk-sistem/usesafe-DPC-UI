@@ -1,6 +1,7 @@
 "use client";
 
 import { Download } from "lucide-react";
+import { useTranslations } from 'next-intl';
 import QRCode from "qrcode";
 import { useEffect, useState } from "react";
 
@@ -11,11 +12,14 @@ import { useToast } from "@/components/ui/use-toast";
 interface ProductQRProps {
   productId: string;
   productName: string;
+  title: string;
+  description: string;
 }
 
-export function ProductQR({ productId, productName }: ProductQRProps) {
+export function ProductQR({ productId, productName, title, description }: ProductQRProps) {
   const [qrDataUrl, setQrDataUrl] = useState<string>("");
   const { toast } = useToast();
+  const t = useTranslations('product.details.qr');
   
   useEffect(() => {
     const generateQR = async () => {
@@ -33,21 +37,21 @@ export function ProductQR({ productId, productName }: ProductQRProps) {
       } catch (error) {
         console.error('Failed to generate QR code:', error);
         toast({
-          title: "Error",
-          description: "Failed to generate QR code",
+          title: t('error.title'),
+          description: t('error.generate'),
           variant: "destructive",
         });
       }
     };
 
     generateQR();
-  }, [productId, toast]);
+  }, [productId, toast, t]);
 
   const downloadQR = () => {
     if (!qrDataUrl) {
       toast({
-        title: "Error",
-        description: "QR code is not ready yet",
+        title: t('error.title'),
+        description: t('error.notReady'),
         variant: "destructive",
       });
       return;
@@ -61,32 +65,32 @@ export function ProductQR({ productId, productName }: ProductQRProps) {
     document.body.removeChild(link);
 
     toast({
-      title: "Success",
-      description: "QR code downloaded successfully",
+      title: t('success.title'),
+      description: t('success.download'),
     });
   };
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-center">Product QR Code</CardTitle>
+        <CardTitle className="text-center">{title}</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col items-center space-y-4">
         {qrDataUrl && (
           <div className="bg-white p-4 rounded-lg">
             <img
               src={qrDataUrl}
-              alt="Product QR Code"
+              alt={t('imageAlt')}
               className="w-[200px] h-[200px]"
             />
           </div>
         )}
         <Button variant="outline" onClick={downloadQR}>
           <Download className="mr-2 h-4 w-4" />
-          Download QR Code
+          {t('downloadButton')}
         </Button>
         <p className="text-sm text-muted-foreground text-center">
-          Scan this code to verify product authenticity
+          {description}
         </p>
       </CardContent>
     </Card>

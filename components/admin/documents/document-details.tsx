@@ -1,42 +1,87 @@
+"use client";
+
 import { ArrowLeft, Download, FileText } from "lucide-react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
-// Mock data - In a real app, this would come from an API
-const documentsData = {
-  "DOC-001": {
-    id: "DOC-001",
-    name: "ISO 9001:2015 Certificate",
-    type: "Certification",
-    manufacturer: "TechFabrics Ltd",
-    status: "pending",
-    validUntil: "2025-03-15",
-    uploadedAt: "2024-03-15T10:30:00",
-    fileSize: "2.4 MB",
-    version: "1.0",
-    description: "Quality Management System certification for textile manufacturing processes",
-    issuer: "International Standards Organization",
-    verificationStatus: {
-      authenticity: "verified",
-      completeness: "verified",
-      signature: "pending",
-      expiration: "valid",
-    },
-  },
-};
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/components/ui/use-toast";
 
 interface DocumentDetailsProps {
   documentId: string;
 }
 
+interface Document {
+  id: string;
+  name: string;
+  status: "approved" | "rejected" | "pending";
+  // Add other document properties as needed
+}
+
+// Temporary mock data - replace with API call
+const documentsData: Record<string, Document> = {
+  "1": {
+    id: "1",
+    name: "Document 1",
+    status: "pending",
+  },
+  // Add more mock documents as needed
+};
+
 export function DocumentDetails({ documentId }: DocumentDetailsProps) {
+  const t = useTranslations("documentManagement.repository");
+  const { toast } = useToast();
+  const [comment, setComment] = useState("");
   const document = documentsData[documentId];
 
+  const handleApprove = async () => {
+    try {
+      // TODO: API çağrısı eklenecek
+      toast({
+        title: t("toast.approved.title"),
+        description: t("toast.approved.description"),
+      });
+    } catch (error) {
+      toast({
+        title: t("toast.error.title"),
+        description: t("toast.error.approveDescription"),
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleReject = async () => {
+    if (!comment.trim()) {
+      toast({
+        title: t("toast.error.title"),
+        description: "Lütfen bir yorum ekleyin",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      // TODO: API çağrısı eklenecek
+      toast({
+        title: t("toast.rejected.title"),
+        description: t("toast.rejected.description"),
+      });
+    } catch (error) {
+      toast({
+        title: t("toast.error.title"),
+        description: t("toast.error.rejectDescription"),
+        variant: "destructive",
+      });
+    }
+  };
+
   if (!document) {
-    return <div>Document not found</div>;
+    return <div>{t("noData.title")}</div>;
   }
 
   return (
@@ -46,7 +91,7 @@ export function DocumentDetails({ documentId }: DocumentDetailsProps) {
           <Link href="/admin/documents">
             <Button variant="ghost" size="sm">
               <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Documents
+              {t("details.backToList")}
             </Button>
           </Link>
           <h1 className="text-2xl font-semibold">{document.name}</h1>
@@ -59,87 +104,55 @@ export function DocumentDetails({ documentId }: DocumentDetailsProps) {
                 : "warning"
             }
           >
-            {document.status}
+            {t(`status.${document.status}`)}
           </Badge>
         </div>
         <div className="flex gap-2">
           <Button variant="outline">
             <Download className="mr-2 h-4 w-4" />
-            Download
+            {t("actions.download")}
           </Button>
-          <Button variant="outline">Reject</Button>
-          <Button>Approve</Button>
+          {document.status === "pending" && (
+            <>
+              <Button variant="outline" onClick={handleReject}>
+                {t("actions.reject")}
+              </Button>
+              <Button onClick={handleApprove}>
+                {t("actions.approve")}
+              </Button>
+            </>
+          )}
         </div>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid grid-cols-2 gap-6">
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <FileText className="h-5 w-5" />
-              Document Information
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <p className="text-sm text-muted-foreground">Document ID</p>
-                <p className="font-medium">{document.id}</p>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Version</p>
-                <p className="font-medium">v{document.version}</p>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Type</p>
-                <p className="font-medium">{document.type}</p>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">File Size</p>
-                <p className="font-medium">{document.fileSize}</p>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Uploaded</p>
-                <p className="font-medium">
-                  {new Date(document.uploadedAt).toLocaleDateString()}
-                </p>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Valid Until</p>
-                <p className="font-medium">
-                  {new Date(document.validUntil).toLocaleDateString()}
-                </p>
-              </div>
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground">Description</p>
-              <p className="mt-1">{document.description}</p>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Verification Status</CardTitle>
+            <CardTitle>{t("details.documentInfo")}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {Object.entries(document.verificationStatus).map(([key, value]) => (
-                <div key={key} className="flex items-center justify-between">
-                  <span className="capitalize">{key}</span>
-                  <Badge
-                    variant={
-                      value === "verified"
-                        ? "success"
-                        : value === "invalid"
-                        ? "destructive"
-                        : "warning"
-                    }
-                  >
-                    {value}
-                  </Badge>
+              <div>
+                <Label>{t("details.name")}</Label>
+                <p className="text-sm text-muted-foreground">{document.name}</p>
+              </div>
+              <div>
+                <Label>{t("details.status")}</Label>
+                <p className="text-sm text-muted-foreground">
+                  {t(`status.${document.status}`)}
+                </p>
+              </div>
+              {document.status === "pending" && (
+                <div>
+                  <Label htmlFor="comment">{t("details.comment")}</Label>
+                  <Textarea
+                    id="comment"
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                    placeholder={t("details.commentPlaceholder")}
+                  />
                 </div>
-              ))}
+              )}
             </div>
           </CardContent>
         </Card>

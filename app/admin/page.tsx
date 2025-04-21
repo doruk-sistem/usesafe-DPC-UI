@@ -6,6 +6,7 @@ import { Shield } from "lucide-react";
 import { DashboardHeader } from "@/components/admin/dashboard/header";
 import { DashboardMetrics } from "@/components/admin/dashboard/metrics";
 import { PendingApprovals } from "@/components/admin/dashboard/pending-approvals";
+import { RecentApprovals } from "@/components/admin/dashboard/recent-approvals";
 import { SystemAlerts } from "@/components/admin/dashboard/system-alerts";
 
 const containerVariants = {
@@ -52,6 +53,12 @@ export default function AdminDashboard() {
         </motion.div>
         <motion.div variants={itemVariants}>
           <SystemAlerts />
+        </motion.div>
+      </div>
+
+      <div className="grid gap-6 md:grid-cols-2">
+        <motion.div variants={itemVariants}>
+          <RecentApprovals />
         </motion.div>
       </div>
     </motion.div>

@@ -2,6 +2,7 @@
 
 import { Html5Qrcode } from "html5-qrcode";
 import { Camera } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -16,6 +17,7 @@ export function QRScanner({ onScan }: QRScannerProps) {
   const [isScanning, setIsScanning] = useState(false);
   const scannerRef = useRef<Html5Qrcode | null>(null);
   const scannerId = "qr-scanner-reader";
+  const t = useTranslations("verify.verification.scanner");
 
   useEffect(() => {
     return () => {
@@ -86,8 +88,8 @@ export function QRScanner({ onScan }: QRScannerProps) {
       }
 
       toast({
-        title: "Camera Error",
-        description: "Failed to access camera. Please check permissions and try again.",
+        title: t("error.title"),
+        description: t("error.description"),
         variant: "destructive",
       });
       setIsScanning(false);
@@ -121,7 +123,7 @@ export function QRScanner({ onScan }: QRScannerProps) {
         onClick={toggleScanner}
       >
         <Camera className="mr-2 h-4 w-4" />
-        {isScanning ? "Stop Scanner" : "Start Scanner"}
+        {isScanning ? t("stop") : t("start")}
       </Button>
 
       <div className="relative">
@@ -141,7 +143,7 @@ export function QRScanner({ onScan }: QRScannerProps) {
               <div className="animate-pulse w-16 h-1 bg-primary rounded" />
             </div>
             <p className="text-sm text-muted-foreground text-center">
-              Position the QR code within the frame to scan
+              {t("positioning")}
             </p>
           </div>
         )}

@@ -47,6 +47,7 @@ const productSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   description: z.string().min(5, "Product description is required"),
   product_type: z.string().min(1, "Product type is required"),
+  product_subcategory: z.string().min(1, "Product subcategory is required"),
   model: z.string().min(1, "Product model is required"),
   images: z
     .array(
@@ -75,7 +76,7 @@ const productSchema = z.object({
 type FormData = z.infer<typeof productSchema>;
 
 interface ProductFormProps {
-  onSubmit: (data: NewProduct) => Promise<void>;
+  onSubmit: (data: any) => Promise<void>;
   defaultValues?: Partial<FormData>;
 }
 
@@ -110,12 +111,7 @@ export function ProductForm({
       setIsSubmitting(true);
       await onSubmit({
         ...data,
-        name: data.name || "",
-        description: data.description || "",
-        product_type: data.product_type || "",
-        model: data.model || "",
         company_id: "",
-        manufacturer_id: data.manufacturer_id || "",
         images: data.images.map((img) => ({
           url: img.url || "",
           alt: img.alt || "",
@@ -127,6 +123,7 @@ export function ProductForm({
           value: feature.value || "",
           unit: feature.unit,
         })),
+        documents: data.documents,
       });
     } finally {
       setIsSubmitting(false);

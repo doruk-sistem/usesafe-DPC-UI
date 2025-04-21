@@ -1,4 +1,6 @@
-import { StatusTransition, ProductImage, KeyFeature } from "./product"
+import { Document } from "./document"
+import { StatusTransition, ProductImage, KeyFeature, ProductStatus } from "./product"
+
 
 export type Json =
   | string
@@ -13,22 +15,22 @@ export interface Database {
     Tables: {
       products: {
         Row: {
-          dpp_config?: any
           id: string
           name: string
           description: string
           company_id: string
           product_type: string
           product_subcategory: string
-          model: string
-          status: "DRAFT" | "NEW" | "DELETED" | "ARCHIVED"
+          model?: string
+          status: ProductStatus
           status_history: StatusTransition[]
           images: ProductImage[]
           key_features: KeyFeature[]
           created_at: string
           updated_at: string
-          documents?: Json
           manufacturer_id: string
+          documents?: Document[]
+          document_status?: string
         }
         Insert: {
           id?: string
@@ -36,9 +38,9 @@ export interface Database {
           description: string | null
           company_id: string
           product_type: string
-          product_subcategory?: string
+          product_subcategory: string
           model: string
-          status?: 'DRAFT' | 'NEW' | 'DELETED' | 'ARCHIVED'
+          status?: ProductStatus
           status_history?: StatusTransition[]
           images: {
             url: string;
@@ -48,15 +50,16 @@ export interface Database {
           key_features?: KeyFeature[]
           created_at?: string
           updated_at?: string
-          documents?: Json
+          documents?: Document[];
           manufacturer_id: string
+          document_status?: string
         }
         Update: {
           id?: string
           name?: string
           description?: string | null
           company_id?: string
-          status?: 'DRAFT' | 'NEW' | 'DELETED' | 'ARCHIVED'
+          status?: ProductStatus
           status_history?: StatusTransition[]
           images?: {
             url: string;
@@ -69,8 +72,9 @@ export interface Database {
           product_type?: string
           product_subcategory?: string
           model?: string
-          documents?: Json
+          documents?: Document[]
           manufacturer_id?: string
+          document_status?: string
         }
       }
     }

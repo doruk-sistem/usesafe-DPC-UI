@@ -1,5 +1,8 @@
+"use client";
+
 import { Box, ExternalLink } from "lucide-react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -40,12 +43,13 @@ interface ManufacturerProductsProps {
 }
 
 export function ManufacturerProducts({ manufacturerId }: ManufacturerProductsProps) {
+  const t = useTranslations("adminDashboard.sections.manufacturers.details");
   const products = productsData[manufacturerId] || [];
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Registered Products</CardTitle>
+        <CardTitle>{t("products.title")}</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
@@ -59,14 +63,14 @@ export function ManufacturerProducts({ manufacturerId }: ManufacturerProductsPro
                 <div>
                   <p className="font-medium">{product.name}</p>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <span>{product.category}</span>
+                    <span>{t("products.category")}: {product.category}</span>
                     <span>·</span>
                     <span>{product.id}</span>
                     {product.certifiedAt && (
                       <>
                         <span>·</span>
                         <span>
-                          Certified {new Date(product.certifiedAt).toLocaleDateString()}
+                          {t("products.certifiedAt")} {new Date(product.certifiedAt).toLocaleDateString()}
                         </span>
                       </>
                     )}
@@ -77,7 +81,7 @@ export function ManufacturerProducts({ manufacturerId }: ManufacturerProductsPro
                 <Badge
                   variant={product.status === "certified" ? "success" : "warning"}
                 >
-                  {product.status}
+                  {t(`products.status.${product.status}`)}
                 </Badge>
                 <Button variant="ghost" size="icon" asChild>
                   <Link href={`/admin/certifications/${product.dpcId}`}>

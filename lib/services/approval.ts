@@ -1,9 +1,10 @@
-import { NotificationService } from './notifications';
+import { supabase } from '@/lib/supabase/client';
 
+import { NotificationService } from './notifications';
 export class ApprovalService {
   static async approveManufacturer(manufacturerId: string): Promise<void> {
     try {
-      await api.post(`/api/manufacturers/${manufacturerId}/approve`);
+      await supabase.from('manufacturers').update({ status: 'approved' }).eq('id', manufacturerId);
       await NotificationService.notify({
         recipientId: manufacturerId,
         type: 'manufacturer_approval',
@@ -17,7 +18,7 @@ export class ApprovalService {
 
   static async rejectManufacturer(manufacturerId: string, reason: string): Promise<void> {
     try {
-      await api.post(`/api/manufacturers/${manufacturerId}/reject`, { reason });
+      await supabase.from('manufacturers').update({ status: 'rejected' }).eq('id', manufacturerId);
       await NotificationService.notify({
         recipientId: manufacturerId,
         type: 'manufacturer_approval',
@@ -32,7 +33,7 @@ export class ApprovalService {
 
   static async approveDocument(documentId: string): Promise<void> {
     try {
-      await api.post(`/api/documents/${documentId}/approve`);
+      await supabase.from('documents').update({ status: 'approved' }).eq('id', documentId);
       await NotificationService.notify({
         recipientId: documentId,
         type: 'document_approval',
@@ -46,7 +47,7 @@ export class ApprovalService {
 
   static async rejectDocument(documentId: string, reason: string): Promise<void> {
     try {
-      await api.post(`/api/documents/${documentId}/reject`, { reason });
+      await supabase.from('documents').update({ status: 'rejected' }).eq('id', documentId);
       await NotificationService.notify({
         recipientId: documentId,
         type: 'document_approval',
@@ -61,7 +62,7 @@ export class ApprovalService {
 
   static async approveDPC(dpcId: string): Promise<void> {
     try {
-      await api.post(`/api/certifications/${dpcId}/approve`);
+      await supabase.from('certifications').update({ status: 'approved' }).eq('id', dpcId);
       await NotificationService.notify({
         recipientId: dpcId,
         type: 'dpc_approval',
@@ -75,7 +76,7 @@ export class ApprovalService {
 
   static async rejectDPC(dpcId: string, reason: string): Promise<void> {
     try {
-      await api.post(`/api/certifications/${dpcId}/reject`, { reason });
+      await supabase.from('certifications').update({ status: 'rejected' }).eq('id', dpcId);
       await NotificationService.notify({
         recipientId: dpcId,
         type: 'dpc_approval',

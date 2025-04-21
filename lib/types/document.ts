@@ -1,7 +1,28 @@
 export interface Document {
+  id: string;
   name: string;
   url: string;
   type: string;
+  size?: number;
+  created_at?: string;
+  updated_at?: string;
+  uploadedAt?: string;
+  status: string;
+  rejection_reason?: string;
+  metadata?: Record<string, any>;
+  manufacturerId?: string;
+  manufacturer?: string;
+  productId?: string;
+  fileSize?: string;
+  validUntil?: string;
+  version?: string;
+  notes?: string;
+}
+
+export interface DocumentWithMetadata extends Document {
+  metadata: {
+    [key: string]: any;
+  };
 }
 
 export type DocumentType = 
@@ -10,3 +31,10 @@ export type DocumentType =
   | 'test_reports'
   | 'technical_docs'
   | 'compliance_docs';
+
+export enum DocumentStatus {
+  PENDING = 'pending',
+  APPROVED = 'approved',
+  REJECTED = 'rejected',
+  EXPIRED = 'expired'
+}

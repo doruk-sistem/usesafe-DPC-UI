@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 import { ProductForm } from "@/components/dashboard/products/product-form";
 import { Card } from "@/components/ui/card";
@@ -16,6 +17,7 @@ export default function NewProductPageClient() {
   const { user, company } = useAuth();
   const { toast } = useToast();
   const router = useRouter();
+  const t = useTranslations("productManagement.addProduct");
 
   const handleSubmit = async (data: NewProduct) => {
     if (!user?.id || !company?.id) return;
@@ -33,9 +35,8 @@ export default function NewProductPageClient() {
 
             if (!uploadedUrl) {
               toast({
-                title: "Image Upload Error",
-                description:
-                  "Failed to upload one or more images. Please try again.",
+                title: t("error.title"),
+                description: t("error.imageUpload"),
                 variant: "destructive",
               });
               return null;
@@ -55,8 +56,8 @@ export default function NewProductPageClient() {
 
       if (validImages.length === 0) {
         toast({
-          title: "Error",
-          description: "No images could be uploaded",
+          title: t("error.title"),
+          description: t("error.noImages"),
           variant: "destructive",
         });
         return;
@@ -80,7 +81,7 @@ export default function NewProductPageClient() {
 
       if (response.error) {
         toast({
-          title: "Error",
+          title: t("error.title"),
           description: response.error.message,
           variant: "destructive",
         });
@@ -91,27 +92,40 @@ export default function NewProductPageClient() {
         throw new Error("Product ID not received from server");
       }
 
-      // Blockchain kaydı oluştur
+      // Blockchain kaydı oluştur - Temporarily disabled due to insufficient HBAR balance
+      /*
       try {
+        console.log('Starting blockchain record creation...', {
+          productId: response.data.id,
+          name: data.name,
+          manufacturer: data.manufacturer_id,
+          description: data.description
+        });
+
         const blockchainResult =
           await productBlockchainService.recordProductAction(
             response.data.id,
             data.name,
             data.manufacturer_id,
-            data.description,
+            data.description ?? "",
             "CREATE"
           );
 
-        // Update the product with contract address
-        // await ProductService.updateProduct(response.data.id, {
-        //   contract_address: blockchainResult.contractAddress,
-        // });
+        console.log('Blockchain record created successfully:', blockchainResult);
 
         toast({
-          title: "Success",
-          description: `Product created and recorded to blockchain. Contract Address: ${blockchainResult.contractAddress}`,
+          title: t("success.title"),
+          description: t("success.blockchain", {
+            address: blockchainResult.contractAddress,
+          }),
         });
       } catch (blockchainError) {
+        console.error('Detailed blockchain error:', {
+          error: blockchainError,
+          message: blockchainError instanceof Error ? blockchainError.message : 'Unknown error',
+          stack: blockchainError instanceof Error ? blockchainError.stack : undefined
+        });
+
         toast({
           title: "Warning",
           description:
@@ -122,6 +136,7 @@ export default function NewProductPageClient() {
           variant: "destructive",
         });
       }
+      */
 
       // Validate if product can be moved to NEW status
       if (ProductStatusService.validateStatus(response.data)) {
@@ -134,8 +149,8 @@ export default function NewProductPageClient() {
       }
 
       toast({
-        title: "Success",
-        description: "Product created successfully",
+        title: t("success.title"),
+        description: t("success.description"),
       });
 
       // Başarılı kayıt sonrası detay sayfasına yönlendir
@@ -143,8 +158,8 @@ export default function NewProductPageClient() {
     } catch (error) {
       console.error("Error creating product:", error);
       toast({
-        title: "Error",
-        description: "An unexpected error occurred while creating the product",
+        title: t("error.title"),
+        description: t("error.description"),
         variant: "destructive",
       });
       throw error;
@@ -154,16 +169,12 @@ export default function NewProductPageClient() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold">Add New Product</h1>
-        <p className="text-sm text-muted-foreground">
-          Create a new product and configure its Digital Product Passport
-        </p>
+        <h1 className="text-2xl font-semibold">{t("title")}</h1>
+        <p className="text-sm text-muted-foreground">{t("description")}</p>
       </div>
 
       <Card className="p-6">
-        <ProductForm
-          onSubmit={handleSubmit as any} // TODO: Fix type mismatch between NewProduct and handleSubmit
-        />
+        <ProductForm onSubmit={handleSubmit} />
       </Card>
     </div>
   );

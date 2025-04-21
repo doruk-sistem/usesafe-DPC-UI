@@ -2,6 +2,7 @@
 
 import { Battery, MoreHorizontal, FileText, ExternalLink, CheckCircle, XCircle, Clock } from "lucide-react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -28,6 +29,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+
+import { getStatusIcon } from "../../../lib/utils/document-utils";
 
 // Sample data - In a real app, this would come from an API
 const certifications = [
@@ -71,16 +74,7 @@ const certifications = [
 ];
 
 export function CertificationList() {
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case "approved":
-        return <CheckCircle className="h-4 w-4" />;
-      case "rejected":
-        return <XCircle className="h-4 w-4" />;
-      default:
-        return <Clock className="h-4 w-4" />;
-    }
-  };
+  const t = useTranslations();
 
   const getStatusVariant = (status: string) => {
     switch (status) {
@@ -96,21 +90,21 @@ export function CertificationList() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>DPC Applications</CardTitle>
+        <CardTitle>{t("dpc.applications.title")}</CardTitle>
         <CardDescription>
-          View and manage your Digital Product Certification applications
+          {t("dpc.applications.description")}
         </CardDescription>
       </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Product</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Submitted</TableHead>
-              <TableHead>Valid Until</TableHead>
-              <TableHead>Documents</TableHead>
-              <TableHead>Certifications</TableHead>
+              <TableHead>{t("dpc.applications.columns.product")}</TableHead>
+              <TableHead>{t("dpc.applications.columns.status")}</TableHead>
+              <TableHead>{t("dpc.applications.columns.submitted")}</TableHead>
+              <TableHead>{t("dpc.applications.columns.validUntil")}</TableHead>
+              <TableHead>{t("dpc.applications.columns.documents")}</TableHead>
+              <TableHead>{t("dpc.applications.columns.certifications")}</TableHead>
               <TableHead></TableHead>
             </TableRow>
           </TableHeader>
@@ -134,7 +128,7 @@ export function CertificationList() {
                     className="flex w-fit items-center gap-1"
                   >
                     {getStatusIcon(cert.status)}
-                    {cert.status}
+                    {t(`dpc.applications.status.${cert.status}`)}
                   </Badge>
                 </TableCell>
                 <TableCell>
@@ -147,7 +141,7 @@ export function CertificationList() {
                 </TableCell>
                 <TableCell>
                   <span className="text-sm text-muted-foreground">
-                    {cert.testReports} Reports · {cert.documents} Documents
+                    {cert.testReports} {t("dpc.applications.documents.reports")} · {cert.documents} {t("dpc.applications.documents.documents")}
                   </span>
                 </TableCell>
                 <TableCell>
@@ -168,25 +162,25 @@ export function CertificationList() {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                      <DropdownMenuLabel>{t("dpc.applications.actions.title")}</DropdownMenuLabel>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem asChild>
                         <Link href={`/dashboard/certifications/${cert.id}`}>
                           <Battery className="h-4 w-4 mr-2" />
-                          View Details
+                          {t("dpc.applications.actions.view")}
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
                         <Link href={`/dashboard/certifications/${cert.id}/documents`}>
                           <FileText className="h-4 w-4 mr-2" />
-                          View Documents
+                          {t("dpc.applications.actions.download")}
                         </Link>
                       </DropdownMenuItem>
                       {cert.status === "approved" && (
                         <DropdownMenuItem asChild>
                           <Link href={`/dashboard/certifications/${cert.id}/verify`}>
                             <ExternalLink className="h-4 w-4 mr-2" />
-                            Verify DPC
+                            {t("dpc.applications.actions.verify")}
                           </Link>
                         </DropdownMenuItem>
                       )}
@@ -194,13 +188,13 @@ export function CertificationList() {
                         <DropdownMenuItem asChild>
                           <Link href={`/dashboard/certifications/${cert.id}/resubmit`}>
                             <ExternalLink className="h-4 w-4 mr-2" />
-                            Resubmit
+                            {t("dpc.applications.actions.resubmit")}
                           </Link>
                         </DropdownMenuItem>
                       )}
                       <DropdownMenuSeparator />
                       <DropdownMenuItem className="text-red-600">
-                        Delete
+                        {t("dpc.applications.actions.delete")}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
