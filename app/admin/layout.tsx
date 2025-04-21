@@ -6,6 +6,7 @@ import {
   FileCheck,
   Shield,
   Bell,
+  Building2,
   Package,
 } from "lucide-react";
 import Link from "next/link";
@@ -41,6 +42,11 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       title: t("manufacturers"),
       href: "/admin/manufacturers",
       icon: Users,
+    },
+    {
+      title: t("companies"),
+      href: "/admin/companies",
+      icon: Building2,
     },
     {
       title: t("products"),
