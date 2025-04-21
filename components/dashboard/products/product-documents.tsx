@@ -68,18 +68,20 @@ interface ProductDocumentsProps {
   showApprovalOptions?: boolean;
 }
 
-const documentTypeLabels: Record<string, string> = {
-  quality_cert: "Quality Certificate",
-  safety_cert: "Safety Certificate",
-  test_reports: "Test Reports",
-  technical_docs: "Technical Documentation",
-  compliance_docs: "Compliance Documents",
-};
-
 export function ProductDocuments({
   productId,
   showApprovalOptions = false,
 }: ProductDocumentsProps) {
+  const t = useTranslations("products.ProductDocuments");
+  
+  const documentTypeLabels: Record<string, string> = {
+    quality_cert: t("qualityCertificate"),
+    safety_cert: t("safetyCertificate"),
+    test_reports: t("testReports"),
+    technical_docs: t("technicalDocumentation"),
+    compliance_docs: t("complianceDocuments"),
+  };
+
   const [documents, setDocuments] = useState<Document[]>([]);
   const [product, setProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -100,7 +102,6 @@ export function ProductDocuments({
   const [showAdditionalFields, setShowAdditionalFields] = useState(false);
   const [rejectionReason, setRejectionReason] = useState<string>("");
   const [showRejectDialog, setShowRejectDialog] = useState(false);
-  const t = useTranslations("ProductDocuments");
 
   useEffect(() => {}, [showApprovalOptions]);
 
@@ -111,11 +112,6 @@ export function ProductDocuments({
       setDocuments(documents);
     } catch (error) {
       console.error("Error fetching product documents:", error);
-      toast({
-        title: t("error"),
-        description: t("failedToLoadDocuments"),
-        variant: "destructive",
-      });
     } finally {
       setIsLoading(false);
     }
@@ -139,11 +135,6 @@ export function ProductDocuments({
       document.body.removeChild(a);
     } catch (error) {
       console.error("Error downloading document:", error);
-      toast({
-        title: "Error",
-        description: "Failed to download document",
-        variant: "destructive",
-      });
     }
   };
 
@@ -155,11 +146,6 @@ export function ProductDocuments({
   const handleViewHistory = (doc: Document) => {
     // Check if document has a valid ID
     if (!doc.id) {
-      toast({
-        title: "Error",
-        description: "Document ID is missing",
-        variant: "destructive",
-      });
       return;
     }
 
@@ -202,9 +188,9 @@ export function ProductDocuments({
       <Card>
         <CardContent className="flex flex-col items-center justify-center py-12">
           <FileText className="h-12 w-12 text-muted-foreground mb-4" />
-          <h2 className="text-xl font-semibold mb-2">Product Not Found</h2>
+          <h2 className="text-xl font-semibold mb-2">{t("productNotFound")}</h2>
           <p className="text-muted-foreground">
-            The requested product could not be found.
+            {t("productNotFoundDescription")}
           </p>
         </CardContent>
       </Card>
@@ -215,7 +201,7 @@ export function ProductDocuments({
     <div className="max-h-[calc(100vh-200px)] overflow-y-auto">
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>Product Documents</CardTitle>
+          <CardTitle>{t("productDocuments")}</CardTitle>
           <div className="flex gap-2">
             <Button
               onClick={() => setShowUploadForm(!showUploadForm)}
@@ -225,12 +211,12 @@ export function ProductDocuments({
               {showUploadForm ? (
                 <>
                   <X className="h-4 w-4" />
-                  İptal
+                  {t("cancel")}
                 </>
               ) : (
                 <>
                   <Plus className="h-4 w-4" />
-                  Belge Yükle
+                  {t("uploadDocument")}
                 </>
               )}
             </Button>
@@ -248,11 +234,11 @@ export function ProductDocuments({
 
           {showUploadForm && (
             <div className="mb-6 p-4 border rounded-md bg-muted/30">
-              <h3 className="text-lg font-medium mb-4">Yeni Belge Yükle</h3>
+              <h3 className="text-lg font-medium mb-4">{t("uploadNewDocument")}</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="documentType" className="flex items-center">
-                    Belge Tipi <span className="text-red-500 ml-1">*</span>
+                    {t("documentType")} <span className="text-red-500 ml-1">*</span>
                   </Label>
                   <select
                     id="documentType"
@@ -260,18 +246,18 @@ export function ProductDocuments({
                     value={documentType}
                     onChange={(e) => setDocumentType(e.target.value)}
                   >
-                    <option value="">Seçiniz</option>
-                    <option value="quality_cert">Kalite Belgesi</option>
-                    <option value="safety_cert">Güvenlik Belgesi</option>
-                    <option value="test_reports">Test Raporları</option>
-                    <option value="technical_docs">Teknik Dokümantasyon</option>
-                    <option value="compliance_docs">Uyumluluk Belgeleri</option>
+                    <option value="">{t("select")}</option>
+                    <option value="quality_cert">{t("qualityCertificate")}</option>
+                    <option value="safety_cert">{t("safetyCertificate")}</option>
+                    <option value="test_reports">{t("testReports")}</option>
+                    <option value="technical_docs">{t("technicalDocumentation")}</option>
+                    <option value="compliance_docs">{t("complianceDocuments")}</option>
                   </select>
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="file" className="flex items-center">
-                    Dosya <span className="text-red-500 ml-1">*</span>
+                    {t("file")} <span className="text-red-500 ml-1">*</span>
                   </Label>
                   <input
                     id="file"
@@ -282,7 +268,7 @@ export function ProductDocuments({
                   />
                   {selectedFile && (
                     <p className="text-sm text-muted-foreground mt-1">
-                      Seçilen dosya: {selectedFile.name}
+                      {t("selectedFile")}: {selectedFile.name}
                     </p>
                   )}
                 </div>
@@ -295,7 +281,7 @@ export function ProductDocuments({
                       setShowAdditionalFields(!showAdditionalFields)
                     }
                   >
-                    <span>Ek Bilgiler</span>
+                    <span>{t("additionalInfo")}</span>
                     {showAdditionalFields ? (
                       <ChevronUp className="h-4 w-4" />
                     ) : (
@@ -306,7 +292,7 @@ export function ProductDocuments({
                   {showAdditionalFields && (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2 p-2 border rounded-md">
                       <div className="space-y-2">
-                        <Label htmlFor="version">Versiyon</Label>
+                        <Label htmlFor="version">{t("version")}</Label>
                         <input
                           id="version"
                           type="text"
@@ -319,7 +305,7 @@ export function ProductDocuments({
 
                       <div className="space-y-2">
                         <Label htmlFor="validUntil">
-                          Geçerlilik Tarihi (Opsiyonel)
+                          {t("validUntil")} ({t("optional")})
                         </Label>
                         <input
                           id="validUntil"
@@ -331,12 +317,12 @@ export function ProductDocuments({
                       </div>
 
                       <div className="col-span-1 md:col-span-2 space-y-2">
-                        <Label htmlFor="notes">Notlar (Opsiyonel)</Label>
+                        <Label htmlFor="notes">{t("notes")} ({t("optional")})</Label>
                         <Textarea
                           id="notes"
                           value={notes}
                           onChange={(e) => setNotes(e.target.value)}
-                          placeholder="Belge hakkında notlar..."
+                          placeholder={t("documentNotesPlaceholder")}
                           className="min-h-[100px]"
                         />
                       </div>
@@ -357,7 +343,7 @@ export function ProductDocuments({
                       setShowAdditionalFields(false);
                     }}
                   >
-                    İptal
+                    {t("cancel")}
                   </Button>
                   <Button
                     onClick={() => {
@@ -366,7 +352,7 @@ export function ProductDocuments({
                     }}
                     disabled={isUploading || !selectedFile || !documentType}
                   >
-                    {isUploading ? "Yükleniyor..." : "Belge Yükle"}
+                    {isUploading ? t("uploading") : t("uploadDocument")}
                   </Button>
                 </div>
               </div>
@@ -376,9 +362,9 @@ export function ProductDocuments({
           {documents.length === 0 ? (
             <div className="text-center py-8">
               <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-medium mb-2">No Documents Found</h3>
+              <h3 className="text-lg font-medium mb-2">{t("noDocumentsFound")}</h3>
               <p className="text-muted-foreground">
-                This product has no documents attached.
+                {t("noDocumentsDescription")}
               </p>
             </div>
           ) : (
@@ -386,13 +372,13 @@ export function ProductDocuments({
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-[30%]">Document Name</TableHead>
-                    <TableHead className="w-[15%]">Type</TableHead>
-                    <TableHead className="w-[15%]">Status</TableHead>
-                    <TableHead className="w-[15%]">Valid Until</TableHead>
-                    <TableHead className="w-[10%]">Version</TableHead>
+                    <TableHead className="w-[30%]">{t("documentName")}</TableHead>
+                    <TableHead className="w-[15%]">{t("type")}</TableHead>
+                    <TableHead className="w-[15%]">{t("status")}</TableHead>
+                    <TableHead className="w-[15%]">{t("validUntil")}</TableHead>
+                    <TableHead className="w-[10%]">{t("version")}</TableHead>
                     <TableHead className="w-[15%] text-right">
-                      Actions
+                      {t("actions")}
                     </TableHead>
                   </TableRow>
                 </TableHeader>
@@ -449,7 +435,7 @@ export function ProductDocuments({
                       <TableCell className="whitespace-nowrap">
                         {document.validUntil
                           ? new Date(document.validUntil).toLocaleDateString()
-                          : "N/A"}
+                          : t("notAvailable")}
                       </TableCell>
                       <TableCell className="whitespace-nowrap">
                         v{document.version}
@@ -463,29 +449,29 @@ export function ProductDocuments({
                               className="h-8 w-8"
                             >
                               <FileText className="h-4 w-4" />
-                              <span className="sr-only">Open menu</span>
+                              <span className="sr-only">{t("openMenu")}</span>
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuLabel>{t("actions")}</DropdownMenuLabel>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem
                               onClick={() => handleDownload(document)}
                             >
                               <Download className="h-4 w-4 mr-2" />
-                              Download
+                              {t("download")}
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               onClick={() => handleView(document)}
                             >
                               <Eye className="h-4 w-4 mr-2" />
-                              View
+                              {t("view")}
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               onClick={() => handleViewHistory(document)}
                             >
                               <History className="h-4 w-4 mr-2" />
-                              View History
+                              {t("viewHistory")}
                             </DropdownMenuItem>
                             {showApprovalOptions && (
                               <>
@@ -497,7 +483,7 @@ export function ProductDocuments({
                                   }}
                                 >
                                   <XCircle className="h-4 w-4 mr-2 text-red-500" />
-                                  Reddet
+                                  {t("reject")}
                                 </DropdownMenuItem>
                               </>
                             )}
@@ -507,7 +493,7 @@ export function ProductDocuments({
                                   onClick={() => handleReupload(document)}
                                 >
                                   <FileText className="h-4 w-4 mr-2" />
-                                  Yeniden Yükle
+                                  {t("reupload")}
                                 </DropdownMenuItem>
                               )}
                           </DropdownMenuContent>
@@ -526,24 +512,24 @@ export function ProductDocuments({
       <Dialog open={showDocumentDetails} onOpenChange={setShowDocumentDetails}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
-            <DialogTitle>Belge Detayları</DialogTitle>
+            <DialogTitle>{t("documentDetails")}</DialogTitle>
             <DialogDescription>{selectedDocument?.name}</DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <h4 className="font-medium mb-2">Genel Bilgiler</h4>
+              <h4 className="font-medium mb-2">{t("generalInfo")}</h4>
               <div className="grid grid-cols-2 gap-2 text-sm">
                 <div>
-                  <span className="text-muted-foreground">Dosya Boyutu:</span>
+                  <span className="text-muted-foreground">{t("fileSize")}:</span>
                   <p>{selectedDocument?.fileSize}</p>
                 </div>
                 <div>
-                  <span className="text-muted-foreground">Versiyon:</span>
+                  <span className="text-muted-foreground">{t("version")}:</span>
                   <p>v{selectedDocument?.version}</p>
                 </div>
                 <div>
                   <span className="text-muted-foreground">
-                    Yüklenme Tarihi:
+                    {t("uploadDate")}:
                   </span>
                   <p>
                     {new Date(
@@ -554,7 +540,7 @@ export function ProductDocuments({
                 {selectedDocument?.validUntil && (
                   <div>
                     <span className="text-muted-foreground">
-                      Geçerlilik Tarihi:
+                      {t("validUntil")}:
                     </span>
                     <p>
                       {new Date(
@@ -568,7 +554,7 @@ export function ProductDocuments({
 
             {selectedDocument?.notes && (
               <div>
-                <h4 className="font-medium mb-2">Notlar</h4>
+                <h4 className="font-medium mb-2">{t("notes")}</h4>
                 <p className="text-sm text-muted-foreground">
                   {selectedDocument.notes}
                 </p>
@@ -577,7 +563,7 @@ export function ProductDocuments({
 
             {selectedDocument?.rejection_reason && (
               <div>
-                <h4 className="font-medium mb-2">Red Nedeni</h4>
+                <h4 className="font-medium mb-2">{t("rejectionReason")}</h4>
                 <p className="text-sm text-red-500">
                   {selectedDocument.rejection_reason}
                 </p>
@@ -591,19 +577,19 @@ export function ProductDocuments({
       <Dialog open={showRejectDialog} onOpenChange={setShowRejectDialog}>
         <DialogContent className="sm:max-w-[400px]">
           <DialogHeader>
-            <DialogTitle>Belge Reddet</DialogTitle>
+            <DialogTitle>{t("rejectDocument")}</DialogTitle>
             <DialogDescription>
-              Belgenin reddedilmesi için neden girin.
+              {t("rejectDescription")}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <Label htmlFor="rejectionReason">Red Nedeni</Label>
+              <Label htmlFor="rejectionReason">{t("rejectionReason")}</Label>
               <Textarea
                 id="rejectionReason"
                 value={rejectionReason}
                 onChange={(e) => setRejectionReason(e.target.value)}
-                placeholder="Reddetme nedeni..."
+                placeholder={t("rejectionReasonPlaceholder")}
                 className="min-h-[100px]"
               />
             </div>
@@ -612,7 +598,7 @@ export function ProductDocuments({
                 variant="outline"
                 onClick={() => setShowRejectDialog(false)}
               >
-                İptal
+                {t("cancel")}
               </Button>
               <Button
                 onClick={() => {
@@ -621,7 +607,7 @@ export function ProductDocuments({
                 }}
                 disabled={!rejectionReason}
               >
-                Onayla
+                {t("confirm")}
               </Button>
             </div>
           </div>
