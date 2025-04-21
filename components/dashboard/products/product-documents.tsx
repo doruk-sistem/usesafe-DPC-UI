@@ -14,8 +14,8 @@ import {
   ChevronUp,
   X,
 } from "lucide-react";
-import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -54,14 +54,15 @@ import {
 } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
 import { Product } from "@/lib/data/products";
-import { Document } from "@/lib/types/document";
-import { getStatusIcon } from "@/lib/utils/document-utils";
 import {
   getDocuments,
   approveDocument,
   rejectDocument,
   uploadDocument,
+  updateDocument,
 } from "@/lib/services/documents";
+import { Document } from "@/lib/types/document";
+import { getStatusIcon } from "@/lib/utils/document-utils";
 
 interface ProductDocumentsProps {
   productId: string;
@@ -221,6 +222,47 @@ export function ProductDocuments({
       });
     } finally {
       setIsUploading(false);
+    }
+  };
+
+  const handleApprove = async (documentId: string) => {
+    try {
+      await updateDocument(productId, documentId, { status: "approved" });
+      toast({
+        title: t("success"),
+        description: t("documentApproved"),
+      });
+      await fetchProduct();
+    } catch (error) {
+      console.error("Error approving document:", error);
+      toast({
+        title: t("error"),
+        description: t("errorApprovingDocument"),
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleReject = async (documentId: string, reason: string) => {
+    try {
+      await updateDocument(productId, documentId, {
+        status: "rejected",
+        rejection_reason: reason,
+      });
+      toast({
+        title: t("success"),
+        description: t("documentRejected"),
+      });
+      setShowRejectDialog(false);
+      setRejectionReason("");
+      await fetchProduct();
+    } catch (error) {
+      console.error("Error rejecting document:", error);
+      toast({
+        title: t("error"),
+        description: t("errorRejectingDocument"),
+        variant: "destructive",
+      });
     }
   };
 

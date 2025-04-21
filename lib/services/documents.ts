@@ -1,6 +1,7 @@
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+
 import { Document } from '@/lib/types/document';
 import { Product } from '@/lib/types/product';
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 const supabase = createClientComponentClient();
 
@@ -194,6 +195,66 @@ export async function uploadDocument(
     if (updateError) throw updateError;
   } catch (error) {
     console.error("Error uploading document:", error);
+    throw error;
+  }
+}
+
+export async function updateDocument(
+  productId: string,
+  documentId: string,
+  updates: {
+    status?: string;
+    rejection_reason?: string;
+    notes?: string;
+  }
+): Promise<void> {
+  try {
+    // 1. Önce mevcut ürünü ve dokümanları al
+    const { data: product, error: productError } = await supabase
+      .from("products")
+      .select("documents")
+      .eq("id", productId)
+      .single();
+
+    if (productError) throw productError;
+    if (!product) throw new Error("Product not found");
+
+    // 2. Tüm doküman tiplerini kontrol et
+    const updatedDocuments = { ...product.documents };
+    let documentFound = false;
+
+    Object.keys(updatedDocuments).forEach((type) => {
+      const documents = updatedDocuments[type];
+      if (Array.isArray(documents)) {
+        const updatedTypeDocuments = documents.map((doc) => {
+          if (doc.id === documentId) {
+            documentFound = true;
+            return {
+              ...doc,
+              ...updates,
+            };
+          }
+          return doc;
+        });
+        updatedDocuments[type] = updatedTypeDocuments;
+      }
+    });
+
+    if (!documentFound) {
+      throw new Error("Document not found");
+    }
+
+    // 3. Güncellenmiş dokümanları kaydet
+    const { error: updateError } = await supabase
+      .from("products")
+      .update({
+        documents: updatedDocuments,
+      })
+      .eq("id", productId);
+
+    if (updateError) throw updateError;
+  } catch (error) {
+    console.error("Error updating document:", error);
     throw error;
   }
 } 
