@@ -95,22 +95,6 @@ export function ProductDocuments({
   const [showUploadForm, setShowUploadForm] = useState(false);
   const [showAdditionalFields, setShowAdditionalFields] = useState(false);
 
-  const fetchProduct = async () => {
-    try {
-      const { documents, product } = await getDocuments(productId);
-      setProduct(product || null);
-      setDocuments(documents);
-    } catch (error) {
-      console.error("Error fetching product documents:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchProduct();
-  }, [productId, toast]);
-
   const handleDownload = async (doc: Document) => {
     try {
       const response = await fetch(doc.url);
@@ -205,8 +189,10 @@ export function ProductDocuments({
       setNotes("");
       setShowUploadForm(false);
 
-      // Refresh documents
-      await fetchProduct();
+      // Refresh documents using getDocuments
+      const { documents, product } = await getDocuments(productId);
+      setProduct(product || null);
+      setDocuments(documents);
     } catch (error) {
       console.error("Error uploading document:", error);
       toast({
@@ -218,6 +204,22 @@ export function ProductDocuments({
       setIsUploading(false);
     }
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { documents, product } = await getDocuments(productId);
+        setProduct(product || null);
+        setDocuments(documents);
+      } catch (error) {
+        console.error("Error fetching product documents:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [productId, toast]);
 
   if (isLoading) {
     return <Loading />;
