@@ -7,13 +7,12 @@ import {
   FileText,
   Eye,
   History,
-  CheckCircle,
-  XCircle,
   Plus,
   ChevronDown,
   ChevronUp,
   X,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
@@ -52,36 +51,40 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
-import { Product } from "@/lib/data/products";
+import {
+  getDocuments,
+  approveDocument,
+  rejectDocument,
+  uploadDocument,
+  updateDocument,
+} from "@/lib/services/documents";
 import { Document } from "@/lib/types/document";
+import { BaseProduct } from "@/lib/types/product";
 import { getStatusIcon } from "@/lib/utils/document-utils";
 
 interface ProductDocumentsProps {
   productId: string;
-  showApprovalOptions?: boolean;
 }
-
-const documentTypeLabels: Record<string, string> = {
-  quality_cert: "Quality Certificate",
-  safety_cert: "Safety Certificate",
-  test_reports: "Test Reports",
-  technical_docs: "Technical Documentation",
-  compliance_docs: "Compliance Documents",
-};
 
 export function ProductDocuments({
   productId,
-  showApprovalOptions = false,
 }: ProductDocumentsProps) {
+  const t = useTranslations("products.ProductDocuments");
+  
+  const documentTypeLabels: Record<string, string> = {
+    quality_cert: t("qualityCertificate"),
+    safety_cert: t("safetyCertificate"),
+    test_reports: t("testReports"),
+    technical_docs: t("technicalDocumentation"),
+    compliance_docs: t("complianceDocuments"),
+  };
+
   const [documents, setDocuments] = useState<Document[]>([]);
-  const [product, setProduct] = useState<Product | null>(null);
+  const [product, setProduct] = useState<BaseProduct | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedDocument, setSelectedDocument] = useState<Document | null>(
-    null
-  );
+  const [selectedDocument, setSelectedDocument] = useState<Document | null>(null);
   const [showDocumentDetails, setShowDocumentDetails] = useState(false);
   const { toast } = useToast();
-  const supabase = createClientComponentClient();
   const queryClient = useQueryClient();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [documentType, setDocumentType] = useState<string>("");
@@ -91,64 +94,6 @@ export function ProductDocuments({
   const [isUploading, setIsUploading] = useState(false);
   const [showUploadForm, setShowUploadForm] = useState(false);
   const [showAdditionalFields, setShowAdditionalFields] = useState(false);
-
-  useEffect(() => {}, [showApprovalOptions]);
-
-  const fetchProduct = async () => {
-    try {
-      const { data, error } = await supabase
-        .from("products")
-        .select("name, status, documents, manufacturer_id")
-        .eq("id", productId)
-        .single();
-
-      if (error) throw error;
-
-      setProduct(data);
-
-      // Flatten all document arrays into a single array
-      const allDocuments: Document[] = [];
-      if (data?.documents) {
-        Object.entries(data.documents).forEach(([type, docs]) => {
-          if (Array.isArray(docs)) {
-            docs.forEach((doc) => {
-              allDocuments.push({
-                id:
-                  doc.id ||
-                  `doc-${Date.now()}-${Math.random()
-                    .toString(36)
-                    .substr(2, 9)}`,
-                name: doc.name,
-                url: doc.url,
-                type: type,
-                status: doc.status || "pending",
-                validUntil: doc.validUntil,
-                version: doc.version || "1.0",
-                uploadedAt: doc.uploadedAt || new Date().toISOString(),
-                fileSize: doc.fileSize || "N/A",
-                rejection_reason: doc.rejection_reason,
-                notes: doc.notes,
-              });
-            });
-          }
-        });
-      }
-      setDocuments(allDocuments);
-    } catch (error) {
-      console.error("Error fetching product documents:", error);
-      toast({
-        title: "Error",
-        description: "Failed to load documents",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchProduct();
-  }, [productId, supabase, toast]);
 
   const handleDownload = async (doc: Document) => {
     try {
@@ -164,11 +109,6 @@ export function ProductDocuments({
       document.body.removeChild(a);
     } catch (error) {
       console.error("Error downloading document:", error);
-      toast({
-        title: "Error",
-        description: "Failed to download document",
-        variant: "destructive",
-      });
     }
   };
 
@@ -180,106 +120,21 @@ export function ProductDocuments({
   const handleViewHistory = (doc: Document) => {
     // Check if document has a valid ID
     if (!doc.id) {
-      toast({
-        title: "Error",
-        description: "Document ID is missing",
-        variant: "destructive",
-      });
       return;
     }
 
     // Navigate to document history page
-    window.location.href = `/dashboard/documents/${doc.id}/history`;
+    window.location.href = `/dashboard/documents/${doc.id as string}/history`;
   };
 
   const handleReupload = (doc: Document) => {
-    // Navigate to the product edit page with a query parameter to indicate re-upload
-    window.location.href = `/dashboard/products/${productId}/edit?reupload=${doc.id}`;
-  };
-
-  const handleApproveDocument = async (doc: Document) => {
-    try {
-      // Doğrudan Supabase'e güncelleme yap
-      const supabase = createClientComponentClient();
-
-      // Önce ürünü al
-      const { data: product, error: fetchError } = await supabase
-        .from("products")
-        .select("*")
-        .eq("id", productId)
-        .single();
-
-      if (fetchError) throw fetchError;
-      if (!product) throw new Error("Product not found");
-
-      // Belgeleri güncelle
-      const updatedDocuments = { ...product.documents };
-      let documentFound = false;
-
-      // Belge tipine göre arama yap
-      if (doc.type && updatedDocuments[doc.type]) {
-        const documentArray = updatedDocuments[doc.type];
-
-        // Belge adına göre eşleştir
-        const documentIndex = documentArray.findIndex(
-          (d: any) => d.name === doc.name
-        );
-
-        if (documentIndex !== -1) {
-          // Belgeyi güncelle
-          updatedDocuments[doc.type][documentIndex] = {
-            ...updatedDocuments[doc.type][documentIndex],
-            status: "approved",
-            updatedAt: new Date().toISOString(),
-          };
-          documentFound = true;
-        }
-      }
-
-      if (!documentFound) {
-        throw new Error(`Document with name ${doc.name} not found in product`);
-      }
-
-      // Ürünü güncelle
-      const { error: updateError } = await supabase
-        .from("products")
-        .update({ documents: updatedDocuments })
-        .eq("id", productId);
-
-      if (updateError) throw updateError;
-
-      // Update local state
-      setDocuments(
-        documents.map((d) => {
-          if (d.id === doc.id) {
-            return { ...d, status: "approved" };
-          }
-          return d;
-        })
-      );
-
-      // Invalidate the product query to refresh the data
-      await queryClient.invalidateQueries({ queryKey: ["product", productId] });
-      await queryClient.invalidateQueries({ queryKey: ["products"] });
-
-      toast({
-        title: "Başarılı",
-        description: "Belge onaylandı",
-      });
-    } catch (error) {
-      console.error("Error approving document:", error);
-      toast({
-        title: "Hata",
-        description:
-          "Belge onaylanırken bir hata oluştu: " +
-          (error instanceof Error ? error.message : JSON.stringify(error)),
-        variant: "destructive",
-      });
+    // Check if document has a valid ID
+    if (!doc.id) {
+      return;
     }
-  };
 
-  const handleRejectDocument = (doc: Document) => {
-    setSelectedDocument(doc);
+    // Navigate to the product edit page with a query parameter to indicate re-upload
+    window.location.href = `/dashboard/products/${productId}/edit?reupload=${doc.id as string}`;
   };
 
   const getStatusVariant = (status: string) => {
@@ -303,11 +158,11 @@ export function ProductDocuments({
     }
   };
 
-  const handleUploadDocument = async () => {
+  const handleUpload = async () => {
     if (!selectedFile || !documentType) {
       toast({
-        title: "Hata",
-        description: "Lütfen dosya ve belge tipini seçin",
+        title: t("error"),
+        description: t("pleaseSelectFileAndType"),
         variant: "destructive",
       });
       return;
@@ -315,54 +170,15 @@ export function ProductDocuments({
 
     setIsUploading(true);
     try {
-      const fileExt = selectedFile.name.split('.').pop();
-      const fileName = `${Math.random()}.${fileExt}`;
-      const filePath = `${productId}/${fileName}`;
-
-      const { error: uploadError, data } = await supabase.storage
-        .from('product-documents')
-        .upload(filePath, selectedFile);
-
-      if (uploadError) {
-        console.error('Upload error:', uploadError);
-        throw uploadError;
-      }
-
-      const { data: { publicUrl } } = supabase.storage
-        .from('product-documents')
-        .getPublicUrl(filePath);
-
-      const newDocument: Document = {
-        id: fileName,
-        name: selectedFile.name,
-        url: publicUrl,
-        type: documentType,
-        status: "pending",
+      await uploadDocument(productId, selectedFile, documentType, {
         version: documentVersion,
-        uploadedAt: new Date().toISOString(),
-        fileSize: `${(selectedFile.size / 1024 / 1024).toFixed(2)} MB`,
-        validUntil: validUntil || undefined,
-        notes: notes || undefined,
-      };
-
-      const { error: updateError } = await supabase
-        .from('products')
-        .update({
-          documents: {
-            ...product?.documents,
-            [documentType]: [...(product?.documents[documentType] || []), newDocument],
-          },
-        })
-        .eq('id', productId);
-
-      if (updateError) {
-        console.error('Update error:', updateError);
-        throw updateError;
-      }
+        validUntil: validUntil,
+        notes: notes,
+      });
 
       toast({
-        title: "Başarılı",
-        description: "Belge başarıyla yüklendi",
+        title: t("success"),
+        description: t("documentUploadedSuccessfully"),
       });
 
       // Reset form
@@ -372,21 +188,38 @@ export function ProductDocuments({
       setValidUntil("");
       setNotes("");
       setShowUploadForm(false);
-      setShowAdditionalFields(false);
 
-      // Refresh documents
-      fetchProduct();
+      // Refresh documents using getDocuments
+      const { documents, product } = await getDocuments(productId);
+      setProduct(product || null);
+      setDocuments(documents);
     } catch (error) {
-      console.error('Error uploading document:', error);
+      console.error("Error uploading document:", error);
       toast({
-        title: "Hata",
-        description: "Belge yüklenirken bir hata oluştu",
+        title: t("error"),
+        description: t("errorUploadingDocument"),
         variant: "destructive",
       });
     } finally {
       setIsUploading(false);
     }
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { documents, product } = await getDocuments(productId);
+        setProduct(product || null);
+        setDocuments(documents);
+      } catch (error) {
+        console.error("Error fetching product documents:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [productId, toast]);
 
   if (isLoading) {
     return <Loading />;
@@ -397,9 +230,9 @@ export function ProductDocuments({
       <Card>
         <CardContent className="flex flex-col items-center justify-center py-12">
           <FileText className="h-12 w-12 text-muted-foreground mb-4" />
-          <h2 className="text-xl font-semibold mb-2">Product Not Found</h2>
+          <h2 className="text-xl font-semibold mb-2">{t("productNotFound")}</h2>
           <p className="text-muted-foreground">
-            The requested product could not be found.
+            {t("productNotFoundDescription")}
           </p>
         </CardContent>
       </Card>
@@ -410,7 +243,7 @@ export function ProductDocuments({
     <div className="max-h-[calc(100vh-200px)] overflow-y-auto">
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>Product Documents</CardTitle>
+          <CardTitle>{t("productDocuments")}</CardTitle>
           <div className="flex gap-2">
             <Button
               onClick={() => setShowUploadForm(!showUploadForm)}
@@ -420,12 +253,12 @@ export function ProductDocuments({
               {showUploadForm ? (
                 <>
                   <X className="h-4 w-4" />
-                  İptal
+                  {t("cancel")}
                 </>
               ) : (
                 <>
                   <Plus className="h-4 w-4" />
-                  Belge Yükle
+                  {t("uploadDocument")}
                 </>
               )}
             </Button>
@@ -435,19 +268,19 @@ export function ProductDocuments({
           <div className="mb-6">
             <h3 className="text-lg font-medium mb-2">{product.name}</h3>
             <div className="flex items-center gap-2">
-              <Badge variant={getStatusVariant(product.status)}>
-                {getStatusVariant(product.status).toLowerCase()}
+              <Badge variant={getStatusVariant(product.status || "")}>
+                {getStatusVariant(product.status || "").toLowerCase()}
               </Badge>
             </div>
           </div>
 
           {showUploadForm && (
             <div className="mb-6 p-4 border rounded-md bg-muted/30">
-              <h3 className="text-lg font-medium mb-4">Yeni Belge Yükle</h3>
+              <h3 className="text-lg font-medium mb-4">{t("uploadNewDocument")}</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="documentType" className="flex items-center">
-                    Belge Tipi <span className="text-red-500 ml-1">*</span>
+                    {t("documentType")} <span className="text-red-500 ml-1">*</span>
                   </Label>
                   <select
                     id="documentType"
@@ -455,18 +288,18 @@ export function ProductDocuments({
                     value={documentType}
                     onChange={(e) => setDocumentType(e.target.value)}
                   >
-                    <option value="">Seçiniz</option>
-                    <option value="quality_cert">Kalite Belgesi</option>
-                    <option value="safety_cert">Güvenlik Belgesi</option>
-                    <option value="test_reports">Test Raporları</option>
-                    <option value="technical_docs">Teknik Dokümantasyon</option>
-                    <option value="compliance_docs">Uyumluluk Belgeleri</option>
+                    <option value="">{t("select")}</option>
+                    <option value="quality_cert">{t("qualityCertificate")}</option>
+                    <option value="safety_cert">{t("safetyCertificate")}</option>
+                    <option value="test_reports">{t("testReports")}</option>
+                    <option value="technical_docs">{t("technicalDocumentation")}</option>
+                    <option value="compliance_docs">{t("complianceDocuments")}</option>
                   </select>
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="file" className="flex items-center">
-                    Dosya <span className="text-red-500 ml-1">*</span>
+                    {t("file")} <span className="text-red-500 ml-1">*</span>
                   </Label>
                   <input
                     id="file"
@@ -477,7 +310,7 @@ export function ProductDocuments({
                   />
                   {selectedFile && (
                     <p className="text-sm text-muted-foreground mt-1">
-                      Seçilen dosya: {selectedFile.name}
+                      {t("selectedFile")}: {selectedFile.name}
                     </p>
                   )}
                 </div>
@@ -486,20 +319,22 @@ export function ProductDocuments({
                   <Button
                     variant="ghost"
                     className="flex items-center justify-between w-full p-2"
-                    onClick={() => setShowAdditionalFields(!showAdditionalFields)}
+                    onClick={() =>
+                      setShowAdditionalFields(!showAdditionalFields)
+                    }
                   >
-                    <span>Ek Bilgiler</span>
+                    <span>{t("additionalInfo")}</span>
                     {showAdditionalFields ? (
                       <ChevronUp className="h-4 w-4" />
                     ) : (
                       <ChevronDown className="h-4 w-4" />
                     )}
                   </Button>
-                  
+
                   {showAdditionalFields && (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2 p-2 border rounded-md">
                       <div className="space-y-2">
-                        <Label htmlFor="version">Versiyon</Label>
+                        <Label htmlFor="version">{t("version")}</Label>
                         <input
                           id="version"
                           type="text"
@@ -511,7 +346,9 @@ export function ProductDocuments({
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="validUntil">Geçerlilik Tarihi (Opsiyonel)</Label>
+                        <Label htmlFor="validUntil">
+                          {t("validUntil")} ({t("validUntilOptional")})
+                        </Label>
                         <input
                           id="validUntil"
                           type="date"
@@ -522,12 +359,12 @@ export function ProductDocuments({
                       </div>
 
                       <div className="col-span-1 md:col-span-2 space-y-2">
-                        <Label htmlFor="notes">Notlar (Opsiyonel)</Label>
+                        <Label htmlFor="notes">{t("notes")} ({t("notesOptional")})</Label>
                         <Textarea
                           id="notes"
                           value={notes}
                           onChange={(e) => setNotes(e.target.value)}
-                          placeholder="Belge hakkında notlar..."
+                          placeholder={t("documentNotesPlaceholder")}
                           className="min-h-[100px]"
                         />
                       </div>
@@ -548,13 +385,13 @@ export function ProductDocuments({
                       setShowAdditionalFields(false);
                     }}
                   >
-                    İptal
+                    {t("cancel")}
                   </Button>
                   <Button
-                    onClick={handleUploadDocument}
+                    onClick={handleUpload}
                     disabled={isUploading || !selectedFile || !documentType}
                   >
-                    {isUploading ? "Yükleniyor..." : "Belge Yükle"}
+                    {isUploading ? t("uploading") : t("uploadDocument")}
                   </Button>
                 </div>
               </div>
@@ -564,9 +401,9 @@ export function ProductDocuments({
           {documents.length === 0 ? (
             <div className="text-center py-8">
               <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-medium mb-2">No Documents Found</h3>
+              <h3 className="text-lg font-medium mb-2">{t("noDocumentsFound")}</h3>
               <p className="text-muted-foreground">
-                This product has no documents attached.
+                {t("noDocumentsDescription")}
               </p>
             </div>
           ) : (
@@ -574,12 +411,15 @@ export function ProductDocuments({
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-[30%]">Document Name</TableHead>
-                    <TableHead className="w-[15%]">Type</TableHead>
-                    <TableHead className="w-[15%]">Status</TableHead>
-                    <TableHead className="w-[15%]">Valid Until</TableHead>
-                    <TableHead className="w-[10%]">Version</TableHead>
-                    <TableHead className="w-[15%] text-right">Actions</TableHead>
+                    <TableHead className="w-[25%]">{t("documentName")}</TableHead>
+                    <TableHead className="w-[15%]">{t("type")}</TableHead>
+                    <TableHead className="w-[15%]">{t("status")}</TableHead>
+                    <TableHead className="w-[15%]">{t("validUntil")}</TableHead>
+                    <TableHead className="w-[10%]">{t("version")}</TableHead>
+                    <TableHead className="w-[10%]">{t("notes")}</TableHead>
+                    <TableHead className="w-[10%] text-right">
+                      {t("actions")}
+                    </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -592,7 +432,7 @@ export function ProductDocuments({
                             <TooltipProvider>
                               <Tooltip>
                                 <TooltipTrigger asChild>
-                                  <p 
+                                  <p
                                     className="font-medium truncate cursor-pointer hover:text-primary"
                                     onClick={() => {
                                       setSelectedDocument(document);
@@ -616,7 +456,10 @@ export function ProductDocuments({
                         </div>
                       </TableCell>
                       <TableCell>
-                        <Badge variant="secondary" className="whitespace-nowrap">
+                        <Badge
+                          variant="secondary"
+                          className="whitespace-nowrap"
+                        >
                           {documentTypeLabels[document.type] || document.type}
                         </Badge>
                       </TableCell>
@@ -632,9 +475,14 @@ export function ProductDocuments({
                       <TableCell className="whitespace-nowrap">
                         {document.validUntil
                           ? new Date(document.validUntil).toLocaleDateString()
-                          : "N/A"}
+                          : t("notAvailable")}
                       </TableCell>
-                      <TableCell className="whitespace-nowrap">v{document.version}</TableCell>
+                      <TableCell className="whitespace-nowrap">
+                        v{document.version}
+                      </TableCell>
+                      <TableCell className="max-w-[150px] truncate">
+                        {document.notes || t("noNotes")}
+                      </TableCell>
                       <TableCell className="text-right">
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
@@ -644,56 +492,24 @@ export function ProductDocuments({
                               className="h-8 w-8"
                             >
                               <FileText className="h-4 w-4" />
-                              <span className="sr-only">Open menu</span>
+                              <span className="sr-only">{t("openMenu")}</span>
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuLabel>{t("actions")}</DropdownMenuLabel>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem
-                              onClick={() => handleDownload(document)}
-                            >
+                            <DropdownMenuItem onClick={() => handleDownload(document)}>
                               <Download className="h-4 w-4 mr-2" />
-                              Download
+                              {t("download")}
                             </DropdownMenuItem>
-                            <DropdownMenuItem
-                              onClick={() => handleView(document)}
-                            >
+                            <DropdownMenuItem onClick={() => handleView(document)}>
                               <Eye className="h-4 w-4 mr-2" />
-                              View
+                              {t("view")}
                             </DropdownMenuItem>
-                            <DropdownMenuItem
-                              onClick={() => handleViewHistory(document)}
-                            >
+                            <DropdownMenuItem onClick={() => handleViewHistory(document)}>
                               <History className="h-4 w-4 mr-2" />
-                              View History
+                              {t("viewHistory")}
                             </DropdownMenuItem>
-                            {showApprovalOptions && (
-                              <>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem
-                                  onClick={() => handleApproveDocument(document)}
-                                >
-                                  <CheckCircle className="h-4 w-4 mr-2 text-green-500" />
-                                  Onayla
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
-                                  onClick={() => handleRejectDocument(document)}
-                                >
-                                  <XCircle className="h-4 w-4 mr-2 text-red-500" />
-                                  Reddet
-                                </DropdownMenuItem>
-                              </>
-                            )}
-                            {showApprovalOptions &&
-                              document.status === "rejected" && (
-                                <DropdownMenuItem
-                                  onClick={() => handleReupload(document)}
-                                >
-                                  <FileText className="h-4 w-4 mr-2" />
-                                  Yeniden Yükle
-                                </DropdownMenuItem>
-                              )}
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </TableCell>
@@ -710,31 +526,41 @@ export function ProductDocuments({
       <Dialog open={showDocumentDetails} onOpenChange={setShowDocumentDetails}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
-            <DialogTitle>Belge Detayları</DialogTitle>
-            <DialogDescription>
-              {selectedDocument?.name}
-            </DialogDescription>
+            <DialogTitle>{t("documentDetails")}</DialogTitle>
+            <DialogDescription>{selectedDocument?.name}</DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <h4 className="font-medium mb-2">Genel Bilgiler</h4>
+              <h4 className="font-medium mb-2">{t("generalInfo")}</h4>
               <div className="grid grid-cols-2 gap-2 text-sm">
                 <div>
-                  <span className="text-muted-foreground">Dosya Boyutu:</span>
+                  <span className="text-muted-foreground">{t("fileSize")}:</span>
                   <p>{selectedDocument?.fileSize}</p>
                 </div>
                 <div>
-                  <span className="text-muted-foreground">Versiyon:</span>
+                  <span className="text-muted-foreground">{t("version")}:</span>
                   <p>v{selectedDocument?.version}</p>
                 </div>
                 <div>
-                  <span className="text-muted-foreground">Yüklenme Tarihi:</span>
-                  <p>{new Date(selectedDocument?.uploadedAt || "").toLocaleDateString()}</p>
+                  <span className="text-muted-foreground">
+                    {t("uploadDate")}:
+                  </span>
+                  <p>
+                    {new Date(
+                      selectedDocument?.uploadedAt || ""
+                    ).toLocaleDateString()}
+                  </p>
                 </div>
                 {selectedDocument?.validUntil && (
                   <div>
-                    <span className="text-muted-foreground">Geçerlilik Tarihi:</span>
-                    <p>{new Date(selectedDocument.validUntil).toLocaleDateString()}</p>
+                    <span className="text-muted-foreground">
+                      {t("validUntil")}:
+                    </span>
+                    <p>
+                      {new Date(
+                        selectedDocument.validUntil
+                      ).toLocaleDateString()}
+                    </p>
                   </div>
                 )}
               </div>
@@ -742,7 +568,7 @@ export function ProductDocuments({
 
             {selectedDocument?.notes && (
               <div>
-                <h4 className="font-medium mb-2">Notlar</h4>
+                <h4 className="font-medium mb-2">{t("notes")}</h4>
                 <p className="text-sm text-muted-foreground">
                   {selectedDocument.notes}
                 </p>
@@ -751,7 +577,7 @@ export function ProductDocuments({
 
             {selectedDocument?.rejection_reason && (
               <div>
-                <h4 className="font-medium mb-2">Red Nedeni</h4>
+                <h4 className="font-medium mb-2">{t("rejectionReason")}</h4>
                 <p className="text-sm text-red-500">
                   {selectedDocument.rejection_reason}
                 </p>
