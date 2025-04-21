@@ -56,7 +56,12 @@ import { useToast } from "@/components/ui/use-toast";
 import { Product } from "@/lib/data/products";
 import { Document } from "@/lib/types/document";
 import { getStatusIcon } from "@/lib/utils/document-utils";
-import { getDocuments, approveDocument, rejectDocument, uploadDocument } from "@/lib/services/documents";
+import {
+  getDocuments,
+  approveDocument,
+  rejectDocument,
+  uploadDocument,
+} from "@/lib/services/documents";
 
 interface ProductDocumentsProps {
   productId: string;
@@ -167,51 +172,6 @@ export function ProductDocuments({
     window.location.href = `/dashboard/products/${productId}/edit?reupload=${doc.id}`;
   };
 
-  const handleApproveDocument = async (doc: Document) => {
-    try {
-      await approveDocument(doc.id);
-      toast({
-        title: t("success"),
-        description: t("documentApproved"),
-      });
-      fetchProduct();
-    } catch (error) {
-      console.error("Error approving document:", error);
-      toast({
-        title: t("error"),
-        description: t("failedToApproveDocument"),
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleRejectDocument = (doc: Document) => {
-    setSelectedDocument(doc);
-  };
-
-  const handleRejectConfirm = async () => {
-    if (!selectedDocument || !rejectionReason) return;
-
-    try {
-      await rejectDocument(selectedDocument.id, rejectionReason);
-      toast({
-        title: t("success"),
-        description: t("documentRejected"),
-      });
-      setShowRejectDialog(false);
-      setSelectedDocument(null);
-      setRejectionReason("");
-      fetchProduct();
-    } catch (error) {
-      console.error("Error rejecting document:", error);
-      toast({
-        title: t("error"),
-        description: t("failedToRejectDocument"),
-        variant: "destructive",
-      });
-    }
-  };
-
   const getStatusVariant = (status: string) => {
     switch (status) {
       case "ARCHIVED":
@@ -230,52 +190,6 @@ export function ProductDocuments({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setSelectedFile(e.target.files[0]);
-    }
-  };
-
-  const handleUploadDocument = async () => {
-    if (!selectedFile || !documentType) {
-      toast({
-        title: t("error"),
-        description: t("pleaseSelectFileAndType"),
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsUploading(true);
-    try {
-      await uploadDocument(productId, selectedFile, documentType, {
-        version: documentVersion,
-        validUntil: validUntil || undefined,
-        notes: notes || undefined,
-      });
-
-      toast({
-        title: t("success"),
-        description: t("documentUploaded"),
-      });
-
-      // Reset form
-      setSelectedFile(null);
-      setDocumentType("");
-      setDocumentVersion("1.0");
-      setValidUntil("");
-      setNotes("");
-      setShowUploadForm(false);
-      setShowAdditionalFields(false);
-
-      // Refresh documents
-      fetchProduct();
-    } catch (error) {
-      console.error("Error uploading document:", error);
-      toast({
-        title: t("error"),
-        description: t("failedToUploadDocument"),
-        variant: "destructive",
-      });
-    } finally {
-      setIsUploading(false);
     }
   };
 
@@ -377,7 +291,9 @@ export function ProductDocuments({
                   <Button
                     variant="ghost"
                     className="flex items-center justify-between w-full p-2"
-                    onClick={() => setShowAdditionalFields(!showAdditionalFields)}
+                    onClick={() =>
+                      setShowAdditionalFields(!showAdditionalFields)
+                    }
                   >
                     <span>Ek Bilgiler</span>
                     {showAdditionalFields ? (
@@ -386,7 +302,7 @@ export function ProductDocuments({
                       <ChevronDown className="h-4 w-4" />
                     )}
                   </Button>
-                  
+
                   {showAdditionalFields && (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2 p-2 border rounded-md">
                       <div className="space-y-2">
@@ -402,7 +318,9 @@ export function ProductDocuments({
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="validUntil">Geçerlilik Tarihi (Opsiyonel)</Label>
+                        <Label htmlFor="validUntil">
+                          Geçerlilik Tarihi (Opsiyonel)
+                        </Label>
                         <input
                           id="validUntil"
                           type="date"
@@ -442,7 +360,10 @@ export function ProductDocuments({
                     İptal
                   </Button>
                   <Button
-                    onClick={handleUploadDocument}
+                    onClick={() => {
+                      setIsUploading(true);
+                      // Handle upload logic here
+                    }}
                     disabled={isUploading || !selectedFile || !documentType}
                   >
                     {isUploading ? "Yükleniyor..." : "Belge Yükle"}
@@ -470,7 +391,9 @@ export function ProductDocuments({
                     <TableHead className="w-[15%]">Status</TableHead>
                     <TableHead className="w-[15%]">Valid Until</TableHead>
                     <TableHead className="w-[10%]">Version</TableHead>
-                    <TableHead className="w-[15%] text-right">Actions</TableHead>
+                    <TableHead className="w-[15%] text-right">
+                      Actions
+                    </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -483,7 +406,7 @@ export function ProductDocuments({
                             <TooltipProvider>
                               <Tooltip>
                                 <TooltipTrigger asChild>
-                                  <p 
+                                  <p
                                     className="font-medium truncate cursor-pointer hover:text-primary"
                                     onClick={() => {
                                       setSelectedDocument(document);
@@ -507,7 +430,10 @@ export function ProductDocuments({
                         </div>
                       </TableCell>
                       <TableCell>
-                        <Badge variant="secondary" className="whitespace-nowrap">
+                        <Badge
+                          variant="secondary"
+                          className="whitespace-nowrap"
+                        >
                           {documentTypeLabels[document.type] || document.type}
                         </Badge>
                       </TableCell>
@@ -525,7 +451,9 @@ export function ProductDocuments({
                           ? new Date(document.validUntil).toLocaleDateString()
                           : "N/A"}
                       </TableCell>
-                      <TableCell className="whitespace-nowrap">v{document.version}</TableCell>
+                      <TableCell className="whitespace-nowrap">
+                        v{document.version}
+                      </TableCell>
                       <TableCell className="text-right">
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
@@ -563,12 +491,6 @@ export function ProductDocuments({
                               <>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem
-                                  onClick={() => handleApproveDocument(document)}
-                                >
-                                  <CheckCircle className="h-4 w-4 mr-2 text-green-500" />
-                                  Onayla
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
                                   onClick={() => {
                                     setSelectedDocument(document);
                                     setShowRejectDialog(true);
@@ -605,9 +527,7 @@ export function ProductDocuments({
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
             <DialogTitle>Belge Detayları</DialogTitle>
-            <DialogDescription>
-              {selectedDocument?.name}
-            </DialogDescription>
+            <DialogDescription>{selectedDocument?.name}</DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div>
@@ -622,13 +542,25 @@ export function ProductDocuments({
                   <p>v{selectedDocument?.version}</p>
                 </div>
                 <div>
-                  <span className="text-muted-foreground">Yüklenme Tarihi:</span>
-                  <p>{new Date(selectedDocument?.uploadedAt || "").toLocaleDateString()}</p>
+                  <span className="text-muted-foreground">
+                    Yüklenme Tarihi:
+                  </span>
+                  <p>
+                    {new Date(
+                      selectedDocument?.uploadedAt || ""
+                    ).toLocaleDateString()}
+                  </p>
                 </div>
                 {selectedDocument?.validUntil && (
                   <div>
-                    <span className="text-muted-foreground">Geçerlilik Tarihi:</span>
-                    <p>{new Date(selectedDocument.validUntil).toLocaleDateString()}</p>
+                    <span className="text-muted-foreground">
+                      Geçerlilik Tarihi:
+                    </span>
+                    <p>
+                      {new Date(
+                        selectedDocument.validUntil
+                      ).toLocaleDateString()}
+                    </p>
                   </div>
                 )}
               </div>
@@ -683,7 +615,10 @@ export function ProductDocuments({
                 İptal
               </Button>
               <Button
-                onClick={handleRejectConfirm}
+                onClick={() => {
+                  setIsUploading(true);
+                  // Handle reject logic here
+                }}
                 disabled={!rejectionReason}
               >
                 Onayla
