@@ -305,7 +305,7 @@ export function ProductDocuments({
 
                       <div className="space-y-2">
                         <Label htmlFor="validUntil">
-                          {t("validUntil")} ({t("optional")})
+                          {t("validUntil")} ({t("validUntilOptional")})
                         </Label>
                         <input
                           id="validUntil"
@@ -317,7 +317,7 @@ export function ProductDocuments({
                       </div>
 
                       <div className="col-span-1 md:col-span-2 space-y-2">
-                        <Label htmlFor="notes">{t("notes")} ({t("optional")})</Label>
+                        <Label htmlFor="notes">{t("notes")} ({t("notesOptional")})</Label>
                         <Textarea
                           id="notes"
                           value={notes}
