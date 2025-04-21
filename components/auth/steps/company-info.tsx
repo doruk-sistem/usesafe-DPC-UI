@@ -1,6 +1,7 @@
 "use client";
 
 import type { UseFormReturn } from "react-hook-form";
+import { useTranslations } from "next-intl";
 
 import {
   FormControl,
@@ -25,6 +26,8 @@ interface CompanyInfoStepProps {
 }
 
 export function CompanyInfoStep({ form }: CompanyInfoStepProps) {
+  const t = useTranslations("auth.companyInfo");
+
   return (
     <div className="space-y-4">
       <FormField
@@ -32,24 +35,24 @@ export function CompanyInfoStep({ form }: CompanyInfoStepProps) {
         name="companyType"
         render={({ field, fieldState }) => (
           <FormItem>
-            <FormLabel>Company Type *</FormLabel>
+            <FormLabel>{t("companyType.label")}</FormLabel>
             <Select onValueChange={field.onChange} defaultValue={field.value}>
               <FormControl>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select company type" />
+                  <SelectValue placeholder={t("companyType.placeholder")} />
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                <SelectItem value="brand_owner">Brand Owner</SelectItem>
-                <SelectItem value="factory">Factory</SelectItem>
-                <SelectItem value="manufacturer">Manufacturer</SelectItem>
+                <SelectItem value="brand_owner">{t("companyType.options.brandOwner")}</SelectItem>
+                <SelectItem value="factory">{t("companyType.options.factory")}</SelectItem>
+                <SelectItem value="manufacturer">{t("companyType.options.manufacturer")}</SelectItem>
                 <SelectItem value="material_supplier">
-                  Material Supplier
+                  {t("companyType.options.materialSupplier")}
                 </SelectItem>
               </SelectContent>
             </Select>
             <FormDescription>
-              Select your company&apos;s primary business type
+              {t("companyType.description")}
             </FormDescription>
             <FormMessage />
           </FormItem>
@@ -60,7 +63,7 @@ export function CompanyInfoStep({ form }: CompanyInfoStepProps) {
         name="companyName"
         render={({ field, fieldState }) => (
           <FormItem>
-            <FormLabel>Company Name *</FormLabel>
+            <FormLabel>{t("companyName.label")}</FormLabel>
             <FormControl>
               <Input
                 {...field}

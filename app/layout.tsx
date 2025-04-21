@@ -5,10 +5,10 @@ import { headers } from 'next/headers';
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from 'next-intl';
 
-import { Navbar } from "@/components/layout/navbar";
 import ReactQueryProvider from "@/components/providers/react-query-provider";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
+import { Navbar } from "@/components/layout/navbar";
 
 const inter = Inter({ subsets: ["latin"] });
 

@@ -16,6 +16,13 @@ export enum CompanyType {
   ADMIN = "admin",
 }
 
+
+export enum CompanyStatus {
+  ACTIVE = "active",
+  INACTIVE = "inactive",
+  PENDING = "pending",
+}
+
 export enum DocumentType {
   SIGNATURE_CIRCULAR = "signature_circular",
   TRADE_REGISTRY_GAZETTE = "trade_registry_gazette",
@@ -36,9 +43,12 @@ export interface Company {
     tradeRegistryNo?: string;
     mersisNo?: string;
   };
-  status: boolean;
-  createdAt?: Date;
-  updatedAt?: Date;
+  // status tipini boolean'dan CompanyStatus'a değiştirin
+  status: CompanyStatus;
+  email?: string;
+  phone?: string;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
 }
 
 export interface CompanyAddress {
@@ -49,8 +59,9 @@ export interface CompanyAddress {
   city: string;
   district: string;
   postalCode?: string;
-  createdAt: Date;
-  updatedAt: Date;
+  country?: string;
+  createdAt: Date | string;
+  updatedAt: Date | string;
 }
 
 export interface CompanyDocument {
@@ -60,6 +71,24 @@ export interface CompanyDocument {
   filePath: string;
   status: DocumentStatus;
   rejectionReason?: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: Date | string;
+  updatedAt: Date | string;
+}
+
+export interface CompanyContact {
+  id: string;
+  companyId: string;
+  name: string;
+  position?: string;
+  email: string;
+  phone?: string;
+  createdAt: Date | string;
+  updatedAt: Date | string;
+}
+
+export interface CompanyStats {
+  total: number;
+  active: number;
+  pending: number;
+  categories: Array<{ name: string; count: number }>;
 }

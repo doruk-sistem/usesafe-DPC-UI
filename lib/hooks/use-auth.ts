@@ -9,9 +9,9 @@ import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
 import { useToast } from "@/components/ui/use-toast";
+import { companyApiHooks } from "@/lib/hooks/use-company";
 import { supabase } from "@/lib/supabase/client";
 
-import { companyApiHooks } from "./use-company";
 
 export function useAuth() {
   const [user, setUser] = useState<SupabaseUser | null>(null);

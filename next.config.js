@@ -20,9 +20,10 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   typescript: {
-    ignoreBuildErrors: true
+    ignoreBuildErrors: true,
   },
-  swcMinify: false,
+  swcMinify: false, 
+
   webpack: (config) => {
     config.resolve.fallback = {
       ...config.resolve.fallback,
