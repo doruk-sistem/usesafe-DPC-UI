@@ -5,9 +5,69 @@
     "verifyProducts": "Ürün Doğrula",
     "signIn": "Giriş Yap"
   },
+  "home": {
+    "hero": {
+      "title": "Dijital Ürün Pasaportu Platformu",
+      "description": "Üreticiler ve tüketiciler için güvenli, şeffaf ve izlenebilir ürün sertifikasyonu",
+      "getStarted": "Hemen Başla",
+      "verifyProduct": "Ürün Doğrula"
+    },
+    "features": {
+      "manufacturers": {
+        "title": "Üreticiler İçin",
+        "description": "Şirketinizi kaydedin ve ürün sertifikalarınızı dijital olarak yönetmeye başlayın",
+        "buttonText": "Hemen Kayıt Ol"
+      },
+      "traceability": {
+        "title": "Ürün İzlenebilirliği",
+        "description": "Güvenli dijital pasaportlar ile ürünlerinizi yaşam döngüleri boyunca takip edin",
+        "buttonText": "Daha Fazla Bilgi"
+      },
+      "history": {
+        "title": "Ürün Geçmişi",
+        "description": "Eksiksiz ürün geçmişi ve sertifika kayıtlarına erişin",
+        "buttonText": "Ürünleri Görüntüle"
+      },
+      "connectedData": {
+        "title": "Bağlantılı Veriler",
+        "description": "Tüm ürün verileriniz tek bir yerde bağlantılı ve erişilebilir",
+        "buttonText": "Keşfet"
+      }
+    },
+    "traceability": {
+      "title": "Nasıl Çalışır",
+      "description": "Ürününüzün hammaddeden sertifikalı son ürüne kadar olan yolculuğunu takip edin",
+      "steps": {
+        "rawMaterials": {
+          "title": "Hammaddeler",
+          "description": "Hammaddelerin kaynağını ve kalitesini takip edin"
+        },
+        "manufacturing": {
+          "title": "Üretim",
+          "description": "Üretim sürecini ve kalite kontrollerini izleyin"
+        },
+        "certification": {
+          "title": "Sertifikasyon",
+          "description": "Ürün sertifikalarını doğrulayın ve yönetin"
+        }
+      }
+    }
+  },
+  "pages": {
+    "pendingProducts": {
+      "title": "Bekleyen Ürünler",
+      "description": "Onay bekleyen ürünlerin listesi"
+    }
+  },
+  "error": {
+    "404": {
+      "title": "404",
+      "description": "Bu sayfa bulunamadı.",
+      "backHome": "Ana Sayfaya Dön"
+    }
+  },
   "admin": {
     "sidebar": {
-      "companies": "Firmalar",
       "dashboard": "Kontrol Paneli",
       "products": "Ürünler",
       "users": "Kullanıcılar",
@@ -15,7 +75,8 @@
       "manufacturers": "Üreticiler",
       "documents": "Belgeler",
       "certifications": "Sertifikalar",
-      "dppTemplates": "DPP Şablonları"
+      "dppTemplates": "DPP Şablonları",
+      "pendingProducts": "Bekleyen Ürünler"
     },
     "labels": {
       "manufacturer": "Üretici",
@@ -389,160 +450,6 @@
       }
     }
   },
-  "dashboard": {
-    "title": "Kontrol Paneli",
-    "welcome": "Hoş Geldiniz",
-    "overview": {
-      "title": "Panel Genel Bakış",
-      "description": "Ürünlerinizi, sertifikalarınızı ve belgelerinizi takip edin"
-    },
-    "period": {
-      "select": "Dönem seçin",
-      "today": "Bugün",
-      "thisWeek": "Bu Hafta",
-      "thisMonth": "Bu Ay",
-      "thisQuarter": "Bu Çeyrek"
-    },
-    "metrics": {
-      "totalProducts": "Toplam Ürün",
-      "pendingCertifications": "Bekleyen Sertifikalar",
-      "approvedDocuments": "Onaylı Belgeler",
-      "complianceRate": "Uyumluluk Oranı"
-    },
-    "applications": {
-      "title": "Bekleyen Başvurular",
-      "submitted": "Gönderildi",
-      "status": {
-        "pending": "Beklemede",
-        "review": "İncelemede",
-        "rejected": "Reddedildi"
-      }
-    },
-    "activities": {
-      "title": "Son Aktiviteler",
-      "noActivities": "Son aktivite bulunamadı",
-      "status": {
-        "NEW": "Yeni",
-        "DRAFT": "Taslak",
-        "DELETED": "Silindi"
-      }
-    },
-    "menu": {
-      "dashboard": "Panel",
-      "products": "Ürünler",
-      "profile": "Profil",
-      "settings": "Ayarlar",
-      "dpps": "DPP'ler",
-      "suppliers": "Tedarikçiler",
-      "documents": "Belgeler",
-      "certifications": "Sertifikalar"
-    },
-    "registration": {
-      "title": "Kayıt",
-      "description": "Firma kaydınızı tamamlayın ve dijital sertifikasyon sistemimizi kullanmaya başlayın",
-      "steps": {
-        "companyInfo": {
-          "title": "Firma Bilgileri",
-          "companyName": "Firma Adı",
-          "taxId": "Vergi No",
-          "tradeRegisterNumber": "Ticaret Sicil No",
-          "mersisNumber": "MERSİS No"
-        },
-        "ownerInfo": {
-          "title": "Yetkili Bilgileri",
-          "nationalId": "TC Kimlik No",
-          "countryCode": "Ülke Kodu",
-          "phone": "Telefon Numarası"
-        },
-        "address": {
-          "title": "Adres Bilgileri",
-          "headquarters": "Merkez Adres",
-          "city": "Şehir",
-          "district": "İlçe",
-          "postalCode": "Posta Kodu"
-        },
-        "documents": {
-          "title": "Belgeler",
-          "required": "Zorunlu Belgeler",
-          "optional": "İsteğe Bağlı Belgeler",
-          "signatureCircular": "İmza Sirküleri",
-          "tradeRegistry": "Ticaret Sicil Gazetesi",
-          "taxPlate": "Vergi Levhası",
-          "activityCertificate": "Faaliyet Belgesi",
-          "isoCertificates": "ISO Sertifikaları",
-          "qualityCertificates": "Kalite Sertifikaları",
-          "exportDocuments": "İhracat Belgeleri",
-          "productionPermits": "Üretim İzinleri"
-        },
-        "success": {
-          "title": "Kayıt Başarıyla Tamamlandı",
-          "description": "UseSafe'e kaydolduğunuz için teşekkür ederiz.",
-          "emailSent": "Kayıtlı e-posta adresinize doğrulama e-postası gönderdik.",
-          "checkEmail": "Lütfen hesabınızı doğrulamak için e-postanızı kontrol edin",
-          "nextSteps": {
-            "title": "Sonraki adımlar:",
-            "verifyEmail": "E-posta adresinizi doğrulayın",
-            "waitReview": "Yönetici incelemesini bekleyin (genellikle 1-2 iş günü)",
-            "approval": "Onay bildirimini alın",
-            "onboarding": "Platform oryantasyonunu tamamlayın"
-          }
-        },
-        "navigation": {
-          "next": "İleri",
-          "previous": "Geri",
-          "submit": "Kaydı Tamamla"
-        }
-      }
-    }
-  },
-  "home": {
-    "hero": {
-      "title": "Dijital Ürün Sertifikasyonu ve İzlenebilirlik Sistemi",
-      "description": "Blockchain destekli sertifikasyon ve tedarik zinciri izlenebilirliği ile ürünlerinizi takip edin, doğrulayın ve orijinalliğini garanti altına alın",
-      "getStarted": "Başlayın",
-      "verifyProduct": "Ürün Doğrula"
-    },
-    "features": {
-      "manufacturers": {
-        "title": "Üreticiler İçin",
-        "description": "Şirketinizi kaydedin ve ürünlerinizi dijital sertifikasyon sistemimizle sertifikalandırın.",
-        "buttonText": "Hemen Kaydol"
-      },
-      "traceability": {
-        "title": "Ürün İzlenebilirliği",
-        "description": "Blockchain doğrulaması ile hammadde kaynağından perakendeye kadar ürün yolculuğunu takip edin.",
-        "buttonText": "Ürünleri Keşfet"
-      },
-      "history": {
-        "title": "Tedarik Zinciri Geçmişi",
-        "description": "Anında tam tedarik zinciri geçmişine erişin ve ürün orijinalliğini doğrulayın.",
-        "buttonText": "Şimdi Doğrula"
-      },
-      "connectedData": {
-        "title": "Bağlantılı Veri",
-        "description": "Ürün verilerini, sertifikaları ve sürdürülebilirlik metriklerini tek bir yerde birleştirin.",
-        "buttonText": "Daha Fazla Bilgi"
-      }
-    },
-    "traceability": {
-      "title": "Uçtan Uca İzlenebilirlik",
-      "description": "Ürününüzün yolculuğundaki her adımı tam şeffaflık ve doğrulama ile takip edin",
-      "steps": {
-        "rawMaterials": {
-          "title": "Hammaddeler",
-          "description": "Doğrulanmış sürdürülebilirlik bilgileriyle malzeme kaynağını ve kökenini takip edin"
-        },
-        "manufacturing": {
-          "title": "Üretim",
-          "description": "Üretim süreçlerini ve sürdürülebilirlik metriklerini gerçek zamanlı izleyin"
-        },
-        "certification": {
-          "title": "Sertifikasyon",
-          "description": "Blockchain destekli dijital sertifikasyon ile orijinalliği doğrulayın"
-        }
-      }
-    }
-  },
   "product": {
     "details": {
       "navigation": {
@@ -565,16 +472,30 @@
       },
       "hazards": {
         "title": "Tehlike Piktogramları",
-        "health": "Sağlık Tehlikesi",
-        "healthDesc": "Solunum yollarında tahrişe neden olabilir",
-        "corrosive": "Aşındırıcı",
-        "corrosiveDesc": "Aşındırıcı malzemeler içerir",
-        "warning": "Uyarı",
-        "warningDesc": "Genel güvenlik uyarısı",
-        "explosive": "Patlayıcı",
-        "explosiveDesc": "Belirli koşullar altında patlama riski",
-        "environmental": "Çevresel Tehlike",
-        "environmentalDesc": "Su kaynaklarını kirletebilir"
+        "health": {
+          "title": "Sağlık Tehlikesi",
+          "description": "İnsan sağlığına yönelik potansiyel riskler"
+        },
+        "environmental": {
+          "title": "Çevresel Tehlike",
+          "description": "Çevreye yönelik potansiyel riskler"
+        },
+        "physical": {
+          "title": "Fiziksel Tehlike",
+          "description": "Potansiyel fiziksel riskler"
+        },
+        "corrosive": {
+          "title": "Aşındırıcı Tehlike",
+          "description": "Potansiyel aşındırıcı riskler"
+        },
+        "explosive": {
+          "title": "Patlayıcı Tehlike",
+          "description": "Potansiyel patlama riskleri"
+        },
+        "warning": {
+          "title": "Uyarı",
+          "description": "Önemli güvenlik bilgileri"
+        }
       },
       "materials": {
         "title": "Malzemeler"
@@ -626,12 +547,19 @@
           "install": "Yeni pili takın (önce pozitif kabloyu bağlayın)",
           "check": "Şarj akımı uyumluluğunu kontrol edin"
         }
+      },
+      "qr": {
+        "title": "Ürün QR Kodu",
+        "description": "Ürünü doğrulamak için bu kodu tarayın",
+        "download": "QR Kodu İndir",
+        "imageAlt": "Ürün QR Kodu"
       }
     }
   },
   "products": {
     "title": "Sertifikalı Ürünler",
     "description": "Dijital Ürün Pasaportu ile doğrulanmış sertifikalı sürdürülebilir ürünlerimizi keşfedin.",
+    "loading": "Ürünler yükleniyor...",
     "list": {
       "categories": {
         "textile": "Tekstil",
@@ -639,9 +567,9 @@
         "automotive": "Otomotiv",
         "electronics": "Elektronik",
         "clothing": "Giyim",
-        "women's clothing": "Kadın Giyim",
-        "automotive batteries": "Otomotiv Aküleri",
-        "marine batteries": "Deniz Aküleri",
+        "womens_clothing": "Kadın Giyim",
+        "automotive_batteries": "Otomotiv Aküleri",
+        "marine_batteries": "Deniz Aküleri",
         "detergents": "Deterjanlar"
       },
       "sustainability": {
@@ -657,16 +585,16 @@
       "button": "Ürün Doğrula"
     },
     "features": {
-      "traceability": {
-        "title": "Ürün İzlenebilirliği",
-        "description": "Kaynaktan mağazaya ürün yolculuğunu takip edin"
-      },
-      "supplyChain": {
-        "title": "Tedarik Zinciri Geçmişi",
-        "description": "Ürün yaşam döngüsünün tam şeffaflığı"
-      },
-      "certifications": {
-        "title": "Doğrulanmış Sertifikalar",
+        "traceability": {
+          "title": "Ürün İzlenebilirliği",
+          "description": "Kaynaktan mağazaya ürün yolculuğunu takip edin"
+        },
+        "supplyChain": {
+          "title": "Tedarik Zinciri Geçmişi",
+          "description": "Ürün yaşam döngüsünün tam şeffaflığı"
+        },
+        "certifications": {
+          "title": "Doğrulanmış Sertifikalar",
         "description": "Onaylanmış sürdürülebilirlik belgeleri"
       }
     },
@@ -777,37 +705,41 @@
         "title": "Sertifikalar"
       },
       "sustainability": {
-        "title": "Sürdürülebilirlik Metrikleri",
-        "badge": "Sürdürülebilir",
-        "progress": "Genel Sürdürülebilirlik İlerlemesi",
-        "carbonFootprint": "Karbon Ayak İzi",
+        "title": "Sürdürülebilirlik Özellikleri",
+        "description": "Sürdürülebilirlik metriklerini takip edin ve yönetin",
+        "badge": "Sürdürülebilirlik Rozeti",
+        "badgeTitle": "Sürdürülebilirlik Puanı",
+        "badgeDescription": "Genel sürdürülebilirlik değerlendirmesi",
+        "badgeScore": "%{score}",
+        "badgeCarbonFootprint": "{value}kg CO2e",
+        "progress": "İlerleme",
         "metrics": {
+          "carbonFootprint": "Karbon Ayak İzi",
+          "carbon-footprint": "Karbon Ayak İzi",
+          "waterUsage": "Su Kullanımı",
           "water-usage": "Su Kullanımı",
           "water-saving": "Su Tasarrufu",
+          "energyConsumption": "Enerji Tüketimi",
           "energy-consumption": "Enerji Tüketimi",
           "renewable-energy": "Yenilenebilir Enerji",
+          "recycledMaterials": "Geri Dönüştürülmüş Malzemeler",
           "recycled-materials": "Geri Dönüştürülmüş Malzemeler",
           "recycled-content": "Geri Dönüştürülmüş İçerik",
+          "wasteReduction": "Atık Azaltma",
+          "waste-reduction": "Atık Azaltma",
+          "chemicalReduction": "Kimyasal Azaltma",
           "chemical-reduction": "Kimyasal Azaltma",
           "chemical-usage": "Kimyasal Kullanımı",
-          "biodegradability": "Biyolojik Bozunabilirlik",
-          "sustainability-score": "Sürdürülebilirlik Puanı"
+          "packaging": "Ambalajlama",
+          "biodegradability": "Biyolojik Bozunabilirlik"
         }
       },
       "qr": {
         "title": "Ürün QR Kodu",
-        "description": "Ürün orijinalliğini doğrulamak için bu kodu tarayın",
-        "imageAlt": "Ürün QR Kodu",
+        "description": "Ürünü doğrulamak için bu kodu tarayın",
+        "download": "QR Kodu İndir",
         "downloadButton": "QR Kodu İndir",
-        "error": {
-          "title": "Hata",
-          "generate": "QR kodu oluşturulamadı",
-          "notReady": "QR kodu henüz hazır değil"
-        },
-        "success": {
-          "title": "Başarılı",
-          "download": "QR kodu başarıyla indirildi"
-        }
+        "imageAlt": "Ürün QR Kodu"
       },
       "care": {
         "title": "Bakım Talimatları"
@@ -1281,25 +1213,25 @@
     }
   },
   "verify": {
-    "title": "Ürün Doğrulama",
-    "description": "Ürün ID'sini girin veya QR kodu tarayarak orijinalliğini doğrulayın ve Dijital Ürün Pasaportunu görüntüleyin.",
+    "title": "Ürün Doğrula",
+    "description": "Ürünün orijinalliğini doğrulamak ve Dijital Ürün Pasaportunu görüntülemek için bir ürün kimliği girin veya QR kodu tarayın.",
     "card": {
       "title": "Ürün Doğrulama",
-      "description": "Ürün kodunu veya QR kodu kullanarak ürün orijinalliğini doğrulayın"
+      "description": "Ürün kodu veya QR kod kullanarak ürün orijinalliğini doğrulayın"
     },
     "input": {
-      "placeholder": "Ürün ID'si girin (örn. PROD-2024-001)",
+      "placeholder": "Ürün Kimliğini Girin (örn. PROD-2024-001)",
       "button": "Doğrula",
-      "or": "veya QR kodu tarayın"
+      "or": "veya QR kodu tara"
     },
     "status": {
       "validating": {
         "title": "Ürün Doğrulanıyor",
-        "description": "Lütfen ürün orijinalliği doğrulanırken bekleyin..."
+        "description": "Ürün orijinalliği doğrulanırken lütfen bekleyin..."
       },
       "valid": {
         "title": "Ürün Doğrulandı",
-        "description": "Ürün detaylarına yönlendiriliyorsunuz..."
+        "description": "Ürün detaylarına yönlendiriliyor..."
       },
       "invalid": {
         "title": "Doğrulama Başarısız",
@@ -1312,35 +1244,18 @@
     "toast": {
       "error": {
         "title": "Geçersiz Ürün Kodu",
-        "description": "Lütfen geçerli bir ürün kodu girin veya geçerli bir QR kodu tarayın."
-      }
-    },
-    "verification": {
-      "title": "Ürün Doğrulama",
-      "description": "Ürün kimliğini girerek veya QR kodunu tarayarak ürünün orijinalliğini doğrulayın",
-      "manualInput": {
-        "placeholder": "Ürün kimliğini girin veya QR kodunu tarayın",
-        "verify": "Doğrula"
-      },
-      "orScanQR": "veya QR kodu tarayın",
-      "scanner": {
-        "title": "QR Kodu Tara",
-        "description": "Ürün üzerindeki QR kodunu taramak için kameranızı kullanın",
-        "permission": "Kamera izni gerekli",
-        "notSupported": "Tarayıcınız kamera erişimini desteklemiyor",
-        "start": "Taramayı Başlat"
+        "description": "Lütfen geçerli bir ürün kodu girin veya geçerli bir QR kod tarayın."
       }
     },
     "scan": {
-      "title": "QR Kodu Tara",
-      "description": "Ürün üzerindeki QR kodunu taramak için kameranızı kullanın",
-      "permission": "Kamera izni gerekli",
-      "notSupported": "Tarayıcınız kamera erişimini desteklemiyor"
+      "title": "QR Kod Tara",
+      "description": "Ürün QR kodunu taramak için kameranızı kullanın"
     },
     "result": {
-      "authentic": "Orijinal Ürün",
-      "notFound": "Ürün Bulunamadı",
-      "invalid": "Geçersiz Ürün Kimliği"
+      "title": "Doğrulama Sonucu",
+      "authentic": "Ürün orijinaldir",
+      "notFound": "Ürün bulunamadı",
+      "invalid": "Geçersiz ürün kimliği"
     }
   },
   "settings": {
@@ -1358,65 +1273,149 @@
       "name": {
         "label": "Şirket Adı",
         "description": "Şirket adını güncellemek için destek ile iletişime geçin"
-      },
-      "taxId": {
-        "label": "Vergi Numarası",
-        "description": "Vergi numarasını güncellemek için destek ile iletişime geçin"
-      },
-      "tradeRegisterNumber": {
-        "label": "Ticaret Sicil Numarası"
-      },
-      "mersisNumber": {
-        "label": "MERSIS Numarası"
       }
     },
-    "contact": {
-      "title": "İletişim Bilgileri",
-      "email": "E-posta",
-      "phone": "Telefon",
-      "fax": "Faks",
-      "website": "Web Sitesi",
-      "address": {
-        "title": "Adres Bilgileri",
-        "headquarters": "Merkez Adresi",
-        "factory": "Fabrika Adresi",
-        "branches": "Şube Adresleri"
-      },
-      "authorized": {
-        "title": "Yetkili Kişi",
-        "name": "Ad Soyad",
-        "position": "Ünvan",
-        "department": "Departman",
-        "email": "E-posta",
-        "phone": "Telefon"
+    "recentApprovals": {
+      "title": "Son Onaylar",
+      "noApprovals": "Henüz onay yok"
+    },
+    "systemAlerts": {
+      "title": "Sistem Uyarıları",
+      "noAlerts": "Aktif uyarı yok",
+      "severity": {
+        "high": "Yüksek",
+        "medium": "Orta",
+        "low": "Düşük"
       }
     },
-    "notifications": {
-      "title": "Bildirim Tercihleri",
-      "email": {
-        "label": "E-posta Bildirimleri",
-        "description": "Önemli güncellemeler ve hatırlatmalar için e-posta bildirimleri alın"
+    "manufacturers": {
+      "list": {
+        "title": "Kayıtlı Üreticiler",
+        "description": "Üretici kayıtlarını görüntüleyin ve yönetin",
+        "columns": {
+          "company": "Şirket",
+          "status": "Durum",
+          "documents": "Belgeler",
+          "products": "Ürünler",
+          "date": "Kayıt Tarihi",
+          "actions": "İşlemler"
+        },
+        "actions": {
+          "viewDetails": "Detayları Görüntüle",
+          "reviewDocuments": "Belgeleri İncele",
+          "viewProducts": "Ürünleri Görüntüle",
+          "approve": "Onayla",
+          "reject": "Reddet"
+        },
+        "status": {
+          "pending": "Beklemede",
+          "approved": "Onaylandı",
+          "rejected": "Reddedildi"
+        }
       },
-      "sms": {
-        "label": "SMS Bildirimleri",
-        "description": "Acil durumlar ve önemli hatırlatmalar için SMS bildirimleri alın"
+      "filters": {
+        "status": "Duruma göre filtrele",
+        "allManufacturers": "Tüm Üreticiler",
+        "pendingApproval": "Onay Bekleyen",
+        "approved": "Onaylanmış",
+        "rejected": "Reddedilmiş"
       },
-      "system": {
-        "label": "Sistem Uyarıları",
-        "description": "Platform içi bildirimler ve uyarılar alın"
+      "actions": {
+        "addNew": "Yeni Ekle",
+        "reject": "Reddet",
+        "approve": "Onayla"
       },
-      "documents": {
-        "label": "Belge Hatırlatmaları",
-        "description": "Belge yüklemeleri ve güncellemeleri için hatırlatmalar alın"
-      },
-      "certifications": {
-        "label": "Sertifika Uyarıları",
-        "description": "Sertifika yenilemeleri ve son kullanma tarihleri için bildirimler alın"
+      "details": {
+        "backToList": "Listeye Dön",
+        "actions": {
+          "reject": "Reddet",
+          "approve": "Onayla"
+        },
+        "status": {
+          "approved": "Onaylandı",
+          "rejected": "Reddedildi",
+          "pending": "Beklemede"
+        },
+        "companyInfo": {
+          "title": "Şirket Bilgileri",
+          "email": "E-posta",
+          "phone": "Telefon",
+          "address": "Adres",
+          "taxId": "Vergi No",
+          "registrationDate": "Kayıt Tarihi"
+        },
+        "verification": {
+          "title": "Doğrulama Durumu",
+          "document": "Belge Doğrulama",
+          "taxId": "Vergi No Doğrulama",
+          "address": "Adres Doğrulama",
+          "contact": "İletişim Doğrulama",
+          "status": {
+            "inProgress": "Devam Ediyor",
+            "verified": "Doğrulandı",
+            "pending": "Beklemede"
+          }
+        }
       }
     },
-    "success": {
-      "title": "Ayarlar güncellendi",
-      "description": "Ayarlarınız başarıyla kaydedildi."
+    "sections": {
+      "pendingApprovals": {
+        "title": "Bekleyen Onaylar",
+        "description": "İlgilenilmesi gereken son onay istekleri"
+      },
+      "systemAlerts": {
+        "title": "Sistem Uyarıları",
+        "description": "Son sistem bildirimleri ve uyarıları",
+        "alerts": {
+          "highVolume": "Yüksek sayıda bekleyen onay tespit edildi",
+          "failedVerification": "Blok zinciri doğrulama denemesi başarısız oldu",
+          "maintenance": "Bu gece için sistem bakımı planlandı"
+        }
+      }
+    },
+    "labels": {
+      "manufacturer": "Üretici",
+      "document": "Belge",
+      "dpc": "DPC",
+      "minutes": "dakika",
+      "hour": "saat",
+      "ago": "önce"
+    },
+    "actions": {
+      "review": "İncele"
+    },
+    "documents": {
+      "title": "Belge Yönetimi",
+      "description": "Belge gönderimlerini inceleyin ve yönetin",
+      "repository": {
+        "title": "Belge Deposu",
+        "description": "Tüm yüklenen belgeleri görüntüleyin ve yönetin",
+        "columns": {
+          "document": "Belge",
+          "type": "Tür",
+          "manufacturer": "Üretici",
+          "status": "Durum",
+          "validUntil": "Geçerlilik Tarihi",
+          "version": "Versiyon",
+          "actions": "İşlemler"
+        },
+        "status": {
+          "pending": "Beklemede",
+          "approved": "Onaylandı",
+          "rejected": "Reddedildi",
+          "expired": "Süresi Doldu"
+        },
+        "types": {
+          "certification": "Sertifikasyon",
+          "compliance": "Uygunluk",
+          "quality": "Kalite",
+          "legal": "Yasal"
+        }
+      },
+      "filters": {
+        "allDocuments": "Tüm Belgeler",
+        "allStatus": "Tüm Durumlar"
+      }
     }
   },
   "productManagement": {
@@ -1424,8 +1423,6 @@
     "description": "Tüm ürünlerinizi yönetin ve takip edin",
     "loading": "Ürünler yükleniyor...",
     "noProducts": "Ürün bulunamadı",
-    "editProduct": "Ürünü Düzenle",
-    "deleteProduct": "Ürünü Sil",
     "search": {
       "placeholder": "Ürün ara..."
     },
@@ -1436,7 +1433,7 @@
         "agm": "AGM Aküler",
         "efb": "EFB Aküler",
         "standard": "Standart Aküler",
-        "marine": "Marin Aküler",
+        "marine": "Deniz Aküleri",
         "detergents": "Deterjanlar",
         "textile": "Tekstil"
       },
@@ -1451,15 +1448,6 @@
         "label": "Kategori",
         "all": "Tüm Kategoriler"
       }
-    },
-    "actions": {
-      "download": "İndir",
-      "addProduct": "Yeni Ürün",
-      "menu": "İşlemler",
-      "viewDetails": "Detayları Görüntüle",
-      "editProduct": "Ürünü Düzenle",
-      "viewDocuments": "Belgeleri Görüntüle",
-      "deleteProduct": "Ürünü Sil"
     },
     "list": {
       "title": "Ürün Listesi",
@@ -1476,36 +1464,32 @@
         "status": "Durum",
         "createdAt": "Oluşturulma Tarihi",
         "actions": "İşlemler",
-        "basicInfo": "Temel Bilgiler"
+        "basicInfo": "Temel Bilgiler",
+        "manufacturer": "Üretici"
       }
     },
+    "actions": {
+      "openMenu": "Menüyü Aç",
+      "menu": "İşlemler",
+      "viewDetails": "Detayları Görüntüle",
+      "editProduct": "Ürünü Düzenle",
+      "viewDocuments": "Belgeleri Görüntüle",
+      "deleteProduct": "Ürünü Sil",
+      "addProduct": "Ürün Ekle",
+      "download": "İndir"
+    },
     "delete": {
+      "title": "Ürünü Sil",
+      "description": "Ürün başarıyla silindi",
       "confirm": {
         "title": "Ürünü Sil",
         "description": "Bu ürünü silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.",
         "cancel": "İptal",
         "confirm": "Sil"
-      }
-    },
-    "addProduct": {
-      "title": "Yeni Ürün Ekle",
-      "description": "Yeni bir ürün eklemek için formu doldurun",
-      "form": {
-        "steps": {
-          "manufacturer": "Üretici"
-        },
-        "fields": {
-          "manufacturer": {
-            "label": "Üretici",
-            "placeholder": "Üretici seçin veya girin",
-            "description": "Ürünün üreticisini seçin veya yeni bir üretici ekleyin"
-          }
-        },
-        "navigation": {
-          "next": "İleri",
-          "back": "Geri",
-          "finish": "Tamamla"
-        }
+      },
+      "error": {
+        "title": "Hata",
+        "description": "Ürün silinirken bir hata oluştu"
       }
     },
     "productTypes": {
@@ -1554,8 +1538,8 @@
       "columns": {
         "document": "Belge",
         "type": "Tür",
-        "manufacturer": "Üretici",
-        "status": "Durum",
+          "manufacturer": "Üretici",
+          "status": "Durum",
         "validUntil": "Geçerlilik",
         "version": "Versiyon",
         "actions": "İşlemler",
@@ -1729,22 +1713,36 @@
       "compliance": "Uygunluk",
       "quality": "Kalite",
       "legal": "Yasal"
-    },
-    "status": {
-      "pending": "Beklemede",
-      "approved": "Onaylandı",
+      },
+      "status": {
+        "pending": "Beklemede",
+        "approved": "Onaylandı",
       "rejected": "Reddedildi",
       "expired": "Süresi Dolmuş",
       "expiringSoon": "Süresi Yakında Dolacak"
     },
-    "delete": {
-      "title": "Ürünü Sil",
-      "description": "Ürün başarıyla silindi",
-      "confirm": {
-        "title": "Ürünü Sil",
-        "description": "Bu ürünü silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.",
-        "cancel": "İptal",
-        "confirm": "Sil"
+    "actions": {
+      "title": "İşlemler",
+      "upload": "Yükle",
+        "download": "İndir",
+      "approve": "Onayla",
+      "reject": "Reddet",
+      "viewDetails": "Detayları Görüntüle",
+      "viewHistory": "Geçmişi Görüntüle"
+    },
+    "toast": {
+      "approved": {
+        "title": "Belge Onaylandı",
+        "description": "Belge başarıyla onaylandı."
+      },
+      "rejected": {
+        "title": "Belge Reddedildi",
+        "description": "Belge reddedildi."
+      },
+      "error": {
+        "title": "Hata",
+        "approveDescription": "Belge onaylanırken bir hata oluştu. Lütfen tekrar deneyin.",
+        "rejectDescription": "Belge reddedilirken bir hata oluştu. Lütfen tekrar deneyin."
       }
     },
     "productTypes": {
@@ -1824,50 +1822,50 @@
         "status": {
           "pending": "Beklemede",
           "approved": "Onaylandı",
-          "rejected": "Reddedildi"}
-        },
-        "filters": {
-          "status": "Duruma göre filtrele",
-          "allManufacturers": "Tüm Üreticiler",
-          "pendingApproval": "Onay Bekleyenler",
-          "approved": "Onaylananlar",
-          "rejected": "Reddedilenler"
-        },
+          "rejected": "Reddedildi"
+        }
+      },
+      "filters": {
+        "status": "Duruma göre filtrele",
+        "allManufacturers": "Tüm Üreticiler",
+        "pendingApproval": "Onay Bekleyenler",
+        "approved": "Onaylananlar",
+        "rejected": "Reddedilenler"
+      },
+      "actions": {
+        "addNew": "Yeni Ekle",
+        "reject": "Reddet",
+        "approve": "Onayla"
+      },
+      "details": {
+        "backToList": "Listeye Dön",
         "actions": {
-          "addNew": "Yeni Ekle",
           "reject": "Reddet",
           "approve": "Onayla"
         },
-        "details": {
-          "backToList": "Listeye Dön",
-          "actions": {
-            "reject": "Reddet",
-            "approve": "Onayla"
-          },
+        "status": {
+          "approved": "Onaylandı",
+          "rejected": "Reddedildi",
+          "pending": "Beklemede"
+        },
+        "companyInfo": {
+          "title": "Firma Bilgileri",
+          "email": "E-posta",
+          "phone": "Telefon",
+          "address": "Adres",
+          "taxId": "Vergi No",
+          "registrationDate": "Kayıt Tarihi"
+        },
+        "verification": {
+          "title": "Doğrulama Durumu",
+          "document": "Belge Doğrulama",
+          "taxId": "Vergi No Doğrulama",
+          "address": "Adres Doğrulama",
+          "contact": "İletişim Doğrulama",
           "status": {
-            "approved": "Onaylandı",
-            "rejected": "Reddedildi",
+            "inProgress": "İşlemde",
+            "verified": "Doğrulandı",
             "pending": "Beklemede"
-          },
-          "companyInfo": {
-            "title": "Firma Bilgileri",
-            "email": "E-posta",
-            "phone": "Telefon",
-            "address": "Adres",
-            "taxId": "Vergi No",
-            "registrationDate": "Kayıt Tarihi"
-          },
-          "verification": {
-            "title": "Doğrulama Durumu",
-            "document": "Belge Doğrulama",
-            "taxId": "Vergi No Doğrulama",
-            "address": "Adres Doğrulama",
-            "contact": "İletişim Doğrulama",
-            "status": {
-              "inProgress": "İşlemde",
-              "verified": "Doğrulandı",
-              "pending": "Beklemede"
-            }
           }
         }
       },
@@ -1900,11 +1898,14 @@
   "loading": "Yükleniyor...",
   "errorFetching": "Hata: Bilgiler alınamadı.",
   "auth": {
+    "required": "Kimlik Doğrulama Gerekli",
+    "loginRequired": "Bu sayfayı görüntülemek için giriş yapmanız gerekiyor.",
+    "companyRequired": "Lütfen bir şirketle ilişkili olduğunuzdan emin olun.",
     "companyInfo": {
       "companyType": {
-        "label": "Firma Türü *",
-        "placeholder": "Firma türü seçin",
-        "description": "Firmanızın ana faaliyet alanını seçin",
+        "label": "Şirket Türü *",
+        "placeholder": "Şirket türü seçin",
+        "description": "Şirketinizin ana faaliyet alanını seçin",
         "options": {
           "brandOwner": "Marka Sahibi",
           "factory": "Fabrika",
@@ -1913,62 +1914,149 @@
         }
       },
       "companyName": {
-        "label": "Firma Adı *"
+        "label": "Şirket Adı *",
+        "placeholder": "Şirket adını girin",
+        "description": "Şirketinizin resmi adını girin"
+      },
+      "taxId": {
+        "label": "Vergi Numarası *",
+        "placeholder": "Vergi numarasını girin",
+        "description": "Şirketinizin vergi numarasını girin"
+      },
+      "address": {
+        "label": "Adres *",
+        "placeholder": "Şirket adresini girin",
+        "description": "Şirketinizin resmi adresini girin"
+      },
+      "phone": {
+        "label": "Telefon *",
+        "placeholder": "Telefon numarasını girin",
+        "description": "Şirketinizin iletişim numarasını girin"
+      },
+      "email": {
+        "label": "E-posta *",
+        "placeholder": "Kurumsal e-posta adresini girin",
+        "description": "Şirketinizin kurumsal e-posta adresini girin"
       }
     },
-    "actions": {
-      "review": "İncele"
+    "signIn": {
+      "title": "Giriş Yap",
+      "description": "Hesabınıza giriş yapın",
+      "form": {
+        "email": "E-posta",
+        "password": "Şifre",
+        "submit": "Giriş Yap",
+        "forgotPassword": "Şifremi Unuttum",
+        "noAccount": "Hesabınız yok mu?",
+        "createAccount": "Hesap Oluştur"
+      }
     },
-    "documents": {
-      "title": "Belge Yönetimi",
-      "description": "Belge yüklemelerini inceleyin ve yönetin",
-      "repository": {
-        "title": "Belge Deposu",
-        "description": "Tüm belgeleri görüntüleyin ve yönetin",
-        "columns": {
-          "document": "Belge",
-          "type": "Tür",
-          "category": "Kategori",
-          "status": "Durum",
-          "expiryDate": "Geçerlilik Tarihi",
-          "updatedBy": "Versiyon",
-          "actions": "İşlemler"
-        },
-        "filters": {
-          "allStatuses": "Duruma göre filtrele",
-          "allDocuments": "Tüm Belgeler"
-        },
-        "status": {
-          "pending": "Beklemede",
-          "approved": "Onaylandı",
-          "rejected": "Reddedildi",
-          "expired": "Süresi Dolmuş",
-          "expiringSoon": "Süresi Yakında Dolacak"
-        },
-        "actions": {
-          "title": "İşlemler",
-          "viewDetails": "Detayları Görüntüle",
-          "download": "İndir",
-          "viewHistory": "Geçmişi Görüntüle",
-          "approve": "Onayla",
-          "reject": "Reddet"
-        },
-        "toast": {
-          "approved": {
-            "title": "Belge Onaylandı",
-            "description": "Belge başarıyla onaylandı"
-          },
-          "rejected": {
-            "title": "Belge Reddedildi",
-            "description": "Belge reddedildi"
-          },
-          "error": {
-            "title": "Hata",
-            "approveDescription": "Belge onaylanırken bir hata oluştu",
-            "rejectDescription": "Belge reddedilirken bir hata oluştu"
-          }
-        }
+    "signUp": {
+      "title": "Kayıt Ol",
+      "description": "Yeni bir hesap oluşturun",
+      "form": {
+        "name": "Ad Soyad",
+        "email": "E-posta",
+        "password": "Şifre",
+        "confirmPassword": "Şifreyi Onayla",
+        "submit": "Kayıt Ol",
+        "haveAccount": "Zaten hesabınız var mı?",
+        "signIn": "Giriş Yap"
+      }
+    },
+    "forgotPassword": {
+      "title": "Şifremi Unuttum",
+      "description": "Şifrenizi sıfırlamak için e-posta adresinizi girin",
+      "form": {
+        "email": "E-posta",
+        "submit": "Sıfırlama Bağlantısı Gönder",
+        "backToSignIn": "Giriş Sayfasına Dön"
+      }
+    },
+    "resetPassword": {
+      "title": "Şifre Sıfırlama",
+      "description": "Yeni şifrenizi belirleyin",
+      "form": {
+        "password": "Yeni Şifre",
+        "confirmPassword": "Şifreyi Onayla",
+        "submit": "Şifreyi Sıfırla"
+      }
+    },
+    "verifyEmail": {
+      "title": "E-posta Doğrulama",
+      "description": "E-posta adresinizi doğrulayın",
+      "checkInbox": "Lütfen gelen kutunuzu kontrol edin",
+      "didNotReceive": "E-posta almadınız mı?",
+      "resend": "Tekrar Gönder"
+    },
+    "validation": {
+      "required": "Bu alan zorunludur",
+      "email": "Geçerli bir e-posta adresi girin",
+      "password": {
+        "min": "Şifre en az 8 karakter olmalıdır",
+        "match": "Şifreler eşleşmiyor"
+      }
+    },
+    "success": {
+      "signIn": {
+        "title": "Giriş Başarılı",
+        "description": "Hesabınıza başarıyla giriş yaptınız"
+      },
+      "signUp": {
+        "title": "Kayıt Başarılı",
+        "description": "Hesabınız başarıyla oluşturuldu. Lütfen e-posta adresinizi doğrulayın."
+      },
+      "signOut": {
+        "title": "Çıkış Başarılı",
+        "description": "Hesabınızdan başarıyla çıkış yaptınız"
+      },
+      "updateUser": {
+        "title": "Güncelleme Başarılı",
+        "description": "Kullanıcı bilgileriniz başarıyla güncellendi"
+      },
+      "resetPassword": {
+        "title": "Şifre Sıfırlama Başarılı",
+        "description": "Şifreniz başarıyla sıfırlandı"
+      },
+      "verifyEmail": {
+        "title": "E-posta Doğrulama Başarılı",
+        "description": "E-posta adresiniz başarıyla doğrulandı"
+      }
+    },
+    "errors": {
+      "signIn": {
+        "title": "Giriş Başarısız",
+        "description": "E-posta veya şifre hatalı",
+        "userNotFound": "Kullanıcı bulunamadı",
+        "invalidPassword": "Geçersiz şifre",
+        "tooManyAttempts": "Çok fazla başarısız deneme. Lütfen daha sonra tekrar deneyin."
+      },
+      "signUp": {
+        "title": "Kayıt Başarısız",
+        "description": "Kayıt işlemi sırasında bir hata oluştu",
+        "emailInUse": "Bu e-posta adresi zaten kullanımda",
+        "invalidEmail": "Geçersiz e-posta adresi",
+        "weakPassword": "Şifre çok zayıf"
+      },
+      "signOut": {
+        "title": "Çıkış Başarısız",
+        "description": "Çıkış işlemi sırasında bir hata oluştu"
+      },
+      "updateUser": {
+        "title": "Güncelleme Başarısız",
+        "description": "Kullanıcı bilgileri güncellenirken bir hata oluştu"
+      },
+      "resetPassword": {
+        "title": "Şifre Sıfırlama Başarısız",
+        "description": "Şifre sıfırlama işlemi sırasında bir hata oluştu",
+        "invalidToken": "Geçersiz veya süresi dolmuş sıfırlama bağlantısı"
+      },
+      "verifyEmail": {
+        "title": "E-posta Doğrulama Başarısız",
+        "description": "E-posta doğrulama işlemi sırasında bir hata oluştu",
+        "invalidToken": "Geçersiz veya süresi dolmuş doğrulama bağlantısı"
       }
     }
   }
-} 
+}
+}
