@@ -1,24 +1,19 @@
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-
-import { Document } from '@/lib/types/document';
-import { BaseProduct } from '@/lib/types/product';
+import { Document } from "@/lib/types/document";
+import { BaseProduct } from "@/lib/types/product";
 
 const supabase = createClientComponentClient();
 
-export async function getDocuments(productId: string): Promise<{ documents: Document[], product?: BaseProduct }> {
+export async function getDocuments(productId: string): Promise<{ documents: Document[], product: BaseProduct }> {
   try {
-    // Fetch from Supabase
-    const { data: productData, error: productError } = await supabase
+    const { data: product, error } = await supabase
       .from("products")
       .select("*")
       .eq("id", productId)
       .single();
 
-    if (productError) throw productError;
-    if (!productData) throw new Error("Product not found");
-
-    // Convert to BaseProduct type
-    const product = productData as BaseProduct;
+    if (error) throw error;
+    if (!product) throw new Error("Product not found");
 
     // Flatten all document arrays into a single array
     const allDocuments: Document[] = [];
@@ -44,29 +39,25 @@ export async function getDocuments(productId: string): Promise<{ documents: Docu
       });
     }
 
-    return { documents: allDocuments, product };
+    return { documents: allDocuments, product: product as BaseProduct };
   } catch (error) {
-    console.error('Error fetching documents:', error);
+    console.error("Error fetching documents:", error);
     throw error;
   }
 }
 
-export async function getDocumentById(
-  productId: string,
-  documentId: string
-): Promise<Document> {
+export async function getDocumentById(productId: string, documentId: string): Promise<Document> {
   try {
-    // 1. Get the product and its documents
-    const { data: product, error: productError } = await supabase
+    const { data: product, error } = await supabase
       .from("products")
       .select("documents")
       .eq("id", productId)
       .single();
 
-    if (productError) throw productError;
+    if (error) throw error;
     if (!product) throw new Error("Product not found");
 
-    // 2. Find the document in the product's documents
+    // Find the document in the product's documents
     let foundDocument: Document | null = null;
 
     Object.entries(product.documents || {}).forEach(([type, docs]) => {
@@ -101,10 +92,7 @@ export async function getDocumentById(
   }
 }
 
-export async function approveDocument(
-  productId: string,
-  documentId: string
-): Promise<void> {
+export async function approveDocument(productId: string, documentId: string): Promise<void> {
   try {
     // 1. Get the product and its documents
     const { data: product, error: productError } = await supabase
@@ -156,11 +144,7 @@ export async function approveDocument(
   }
 }
 
-export async function rejectDocument(
-  productId: string,
-  documentId: string,
-  reason: string
-): Promise<void> {
+export async function rejectDocument(productId: string, documentId: string, reason: string): Promise<void> {
   try {
     // 1. Get the product and its documents
     const { data: product, error: productError } = await supabase
@@ -224,7 +208,7 @@ export async function uploadDocument(
   }
 ): Promise<void> {
   try {
-    // 1. Önce mevcut ürünü ve dokümanları al
+    // 1. Get the product and its documents
     const { data: product, error: productError } = await supabase
       .from("products")
       .select("documents")
@@ -232,8 +216,9 @@ export async function uploadDocument(
       .single();
 
     if (productError) throw productError;
+    if (!product) throw new Error("Product not found");
 
-    // 2. Yeni dosyayı yükle
+    // 2. Upload the file
     const fileExt = file.name.split('.').pop();
     const fileName = `${Math.random()}.${fileExt}`;
     const filePath = `${productId}/${fileName}`;
@@ -248,7 +233,7 @@ export async function uploadDocument(
       .from('product-documents')
       .getPublicUrl(filePath);
 
-    // 3. Yeni doküman objesini oluştur
+    // 3. Create the new document object
     const newDocument = {
       id: fileName,
       name: file.name,
@@ -262,8 +247,8 @@ export async function uploadDocument(
       notes: metadata.notes,
     };
 
-    // 4. Mevcut dokümanları koru ve yeni dokümanı ekle
-    const currentDocuments = product?.documents || {};
+    // 4. Update the product's documents
+    const currentDocuments = product.documents || {};
     const currentTypeDocuments = currentDocuments[documentType] || [];
     
     const updatedDocuments = {
@@ -271,7 +256,7 @@ export async function uploadDocument(
       [documentType]: [...currentTypeDocuments, newDocument],
     };
 
-    // 5. Güncellenmiş dokümanları kaydet
+    // 5. Save the updated documents
     const { error: updateError } = await supabase
       .from('products')
       .update({
