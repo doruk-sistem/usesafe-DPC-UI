@@ -329,7 +329,9 @@
       "productDocuments": "Product Documents",
       "productNotFound": "Product Not Found",
       "productNotFoundDescription": "The requested product could not be found.",
-      "notAvailable": "Not Available"
+      "notAvailable": "Not Available",
+      "success": "Success",
+      "documentUploadedSuccessfully": "Document uploaded successfully"
     },
     "featured": {
       "title": "Featured Products",

@@ -330,7 +330,9 @@
       "productDocuments": "Ürün Belgeleri",
       "productNotFound": "Ürün Bulunamadı",
       "productNotFoundDescription": "İstenilen ürün bulunamadı.",
-      "notAvailable": "Belirtilmemiş"
+      "notAvailable": "Belirtilmemiş",
+      "success":"Başarılı",
+      "documentUploadedSuccessfully": "Belge başarıyla yüklendi"
     },
     "featured": {
       "title": "Öne Çıkan Ürünler",

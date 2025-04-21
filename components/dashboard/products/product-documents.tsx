@@ -179,6 +179,51 @@ export function ProductDocuments({
     }
   };
 
+  const handleUpload = async () => {
+    if (!selectedFile || !documentType) {
+      toast({
+        title: t("error"),
+        description: t("pleaseSelectFileAndType"),
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsUploading(true);
+    try {
+      await uploadDocument(productId, selectedFile, documentType, {
+        version: documentVersion,
+        validUntil: validUntil,
+        notes: notes,
+      });
+
+      toast({
+        title: t("success"),
+        description: t("documentUploadedSuccessfully"),
+      });
+
+      // Reset form
+      setSelectedFile(null);
+      setDocumentType("");
+      setDocumentVersion("1.0");
+      setValidUntil("");
+      setNotes("");
+      setShowUploadForm(false);
+
+      // Refresh documents
+      await fetchProduct();
+    } catch (error) {
+      console.error("Error uploading document:", error);
+      toast({
+        title: t("error"),
+        description: t("errorUploadingDocument"),
+        variant: "destructive",
+      });
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   if (isLoading) {
     return <Loading />;
   }
@@ -346,10 +391,7 @@ export function ProductDocuments({
                     {t("cancel")}
                   </Button>
                   <Button
-                    onClick={() => {
-                      setIsUploading(true);
-                      // Handle upload logic here
-                    }}
+                    onClick={handleUpload}
                     disabled={isUploading || !selectedFile || !documentType}
                   >
                     {isUploading ? t("uploading") : t("uploadDocument")}
@@ -372,12 +414,13 @@ export function ProductDocuments({
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-[30%]">{t("documentName")}</TableHead>
+                    <TableHead className="w-[25%]">{t("documentName")}</TableHead>
                     <TableHead className="w-[15%]">{t("type")}</TableHead>
                     <TableHead className="w-[15%]">{t("status")}</TableHead>
                     <TableHead className="w-[15%]">{t("validUntil")}</TableHead>
                     <TableHead className="w-[10%]">{t("version")}</TableHead>
-                    <TableHead className="w-[15%] text-right">
+                    <TableHead className="w-[10%]">{t("notes")}</TableHead>
+                    <TableHead className="w-[10%] text-right">
                       {t("actions")}
                     </TableHead>
                   </TableRow>
@@ -439,6 +482,9 @@ export function ProductDocuments({
                       </TableCell>
                       <TableCell className="whitespace-nowrap">
                         v{document.version}
+                      </TableCell>
+                      <TableCell className="max-w-[150px] truncate">
+                        {document.notes || t("noNotes")}
                       </TableCell>
                       <TableCell className="text-right">
                         <DropdownMenu>

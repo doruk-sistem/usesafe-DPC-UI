@@ -136,6 +136,16 @@ export async function uploadDocument(
   }
 ): Promise<void> {
   try {
+    // 1. Önce mevcut ürünü ve dokümanları al
+    const { data: product, error: productError } = await supabase
+      .from("products")
+      .select("documents")
+      .eq("id", productId)
+      .single();
+
+    if (productError) throw productError;
+
+    // 2. Yeni dosyayı yükle
     const fileExt = file.name.split('.').pop();
     const fileName = `${Math.random()}.${fileExt}`;
     const filePath = `${productId}/${fileName}`;
@@ -150,6 +160,7 @@ export async function uploadDocument(
       .from('product-documents')
       .getPublicUrl(filePath);
 
+    // 3. Yeni doküman objesini oluştur
     const newDocument = {
       id: fileName,
       name: file.name,
@@ -163,12 +174,20 @@ export async function uploadDocument(
       notes: metadata.notes,
     };
 
+    // 4. Mevcut dokümanları koru ve yeni dokümanı ekle
+    const currentDocuments = product?.documents || {};
+    const currentTypeDocuments = currentDocuments[documentType] || [];
+    
+    const updatedDocuments = {
+      ...currentDocuments,
+      [documentType]: [...currentTypeDocuments, newDocument],
+    };
+
+    // 5. Güncellenmiş dokümanları kaydet
     const { error: updateError } = await supabase
       .from('products')
       .update({
-        documents: {
-          [documentType]: [newDocument],
-        },
+        documents: updatedDocuments,
       })
       .eq('id', productId);
 
