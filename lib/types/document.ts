@@ -32,8 +32,9 @@ export type DocumentType =
   | 'technical_docs'
   | 'compliance_docs';
 
-export type DocumentStatus = 
-  | 'pending'
-  | 'approved'
-  | 'rejected'
-  | 'expired';
+export enum DocumentStatus {
+  PENDING = 'pending',
+  APPROVED = 'approved',
+  REJECTED = 'rejected',
+  EXPIRED = 'expired'
+}

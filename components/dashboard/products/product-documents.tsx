@@ -15,6 +15,7 @@ import {
   X,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -55,6 +56,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { Product } from "@/lib/data/products";
 import { Document } from "@/lib/types/document";
 import { getStatusIcon } from "@/lib/utils/document-utils";
+import { getDocuments, approveDocument, rejectDocument, uploadDocument } from "@/lib/services/documents";
 
 interface ProductDocumentsProps {
   productId: string;
@@ -91,54 +93,22 @@ export function ProductDocuments({
   const [isUploading, setIsUploading] = useState(false);
   const [showUploadForm, setShowUploadForm] = useState(false);
   const [showAdditionalFields, setShowAdditionalFields] = useState(false);
+  const [rejectionReason, setRejectionReason] = useState<string>("");
+  const [showRejectDialog, setShowRejectDialog] = useState(false);
+  const t = useTranslations("ProductDocuments");
 
   useEffect(() => {}, [showApprovalOptions]);
 
   const fetchProduct = async () => {
     try {
-      const { data, error } = await supabase
-        .from("products")
-        .select("name, status, documents, manufacturer_id")
-        .eq("id", productId)
-        .single();
-
-      if (error) throw error;
-
-      setProduct(data);
-
-      // Flatten all document arrays into a single array
-      const allDocuments: Document[] = [];
-      if (data?.documents) {
-        Object.entries(data.documents).forEach(([type, docs]) => {
-          if (Array.isArray(docs)) {
-            docs.forEach((doc) => {
-              allDocuments.push({
-                id:
-                  doc.id ||
-                  `doc-${Date.now()}-${Math.random()
-                    .toString(36)
-                    .substr(2, 9)}`,
-                name: doc.name,
-                url: doc.url,
-                type: type,
-                status: doc.status || "pending",
-                validUntil: doc.validUntil,
-                version: doc.version || "1.0",
-                uploadedAt: doc.uploadedAt || new Date().toISOString(),
-                fileSize: doc.fileSize || "N/A",
-                rejection_reason: doc.rejection_reason,
-                notes: doc.notes,
-              });
-            });
-          }
-        });
-      }
-      setDocuments(allDocuments);
+      const { documents, product } = await getDocuments(productId);
+      setProduct(product || null);
+      setDocuments(documents);
     } catch (error) {
       console.error("Error fetching product documents:", error);
       toast({
-        title: "Error",
-        description: "Failed to load documents",
+        title: t("error"),
+        description: t("failedToLoadDocuments"),
         variant: "destructive",
       });
     } finally {
@@ -199,80 +169,17 @@ export function ProductDocuments({
 
   const handleApproveDocument = async (doc: Document) => {
     try {
-      // Doğrudan Supabase'e güncelleme yap
-      const supabase = createClientComponentClient();
-
-      // Önce ürünü al
-      const { data: product, error: fetchError } = await supabase
-        .from("products")
-        .select("*")
-        .eq("id", productId)
-        .single();
-
-      if (fetchError) throw fetchError;
-      if (!product) throw new Error("Product not found");
-
-      // Belgeleri güncelle
-      const updatedDocuments = { ...product.documents };
-      let documentFound = false;
-
-      // Belge tipine göre arama yap
-      if (doc.type && updatedDocuments[doc.type]) {
-        const documentArray = updatedDocuments[doc.type];
-
-        // Belge adına göre eşleştir
-        const documentIndex = documentArray.findIndex(
-          (d: any) => d.name === doc.name
-        );
-
-        if (documentIndex !== -1) {
-          // Belgeyi güncelle
-          updatedDocuments[doc.type][documentIndex] = {
-            ...updatedDocuments[doc.type][documentIndex],
-            status: "approved",
-            updatedAt: new Date().toISOString(),
-          };
-          documentFound = true;
-        }
-      }
-
-      if (!documentFound) {
-        throw new Error(`Document with name ${doc.name} not found in product`);
-      }
-
-      // Ürünü güncelle
-      const { error: updateError } = await supabase
-        .from("products")
-        .update({ documents: updatedDocuments })
-        .eq("id", productId);
-
-      if (updateError) throw updateError;
-
-      // Update local state
-      setDocuments(
-        documents.map((d) => {
-          if (d.id === doc.id) {
-            return { ...d, status: "approved" };
-          }
-          return d;
-        })
-      );
-
-      // Invalidate the product query to refresh the data
-      await queryClient.invalidateQueries({ queryKey: ["product", productId] });
-      await queryClient.invalidateQueries({ queryKey: ["products"] });
-
+      await approveDocument(doc.id);
       toast({
-        title: "Başarılı",
-        description: "Belge onaylandı",
+        title: t("success"),
+        description: t("documentApproved"),
       });
+      fetchProduct();
     } catch (error) {
       console.error("Error approving document:", error);
       toast({
-        title: "Hata",
-        description:
-          "Belge onaylanırken bir hata oluştu: " +
-          (error instanceof Error ? error.message : JSON.stringify(error)),
+        title: t("error"),
+        description: t("failedToApproveDocument"),
         variant: "destructive",
       });
     }
@@ -280,6 +187,29 @@ export function ProductDocuments({
 
   const handleRejectDocument = (doc: Document) => {
     setSelectedDocument(doc);
+  };
+
+  const handleRejectConfirm = async () => {
+    if (!selectedDocument || !rejectionReason) return;
+
+    try {
+      await rejectDocument(selectedDocument.id, rejectionReason);
+      toast({
+        title: t("success"),
+        description: t("documentRejected"),
+      });
+      setShowRejectDialog(false);
+      setSelectedDocument(null);
+      setRejectionReason("");
+      fetchProduct();
+    } catch (error) {
+      console.error("Error rejecting document:", error);
+      toast({
+        title: t("error"),
+        description: t("failedToRejectDocument"),
+        variant: "destructive",
+      });
+    }
   };
 
   const getStatusVariant = (status: string) => {
@@ -306,8 +236,8 @@ export function ProductDocuments({
   const handleUploadDocument = async () => {
     if (!selectedFile || !documentType) {
       toast({
-        title: "Hata",
-        description: "Lütfen dosya ve belge tipini seçin",
+        title: t("error"),
+        description: t("pleaseSelectFileAndType"),
         variant: "destructive",
       });
       return;
@@ -315,54 +245,15 @@ export function ProductDocuments({
 
     setIsUploading(true);
     try {
-      const fileExt = selectedFile.name.split('.').pop();
-      const fileName = `${Math.random()}.${fileExt}`;
-      const filePath = `${productId}/${fileName}`;
-
-      const { error: uploadError, data } = await supabase.storage
-        .from('product-documents')
-        .upload(filePath, selectedFile);
-
-      if (uploadError) {
-        console.error('Upload error:', uploadError);
-        throw uploadError;
-      }
-
-      const { data: { publicUrl } } = supabase.storage
-        .from('product-documents')
-        .getPublicUrl(filePath);
-
-      const newDocument: Document = {
-        id: fileName,
-        name: selectedFile.name,
-        url: publicUrl,
-        type: documentType,
-        status: "pending",
+      await uploadDocument(productId, selectedFile, documentType, {
         version: documentVersion,
-        uploadedAt: new Date().toISOString(),
-        fileSize: `${(selectedFile.size / 1024 / 1024).toFixed(2)} MB`,
         validUntil: validUntil || undefined,
         notes: notes || undefined,
-      };
-
-      const { error: updateError } = await supabase
-        .from('products')
-        .update({
-          documents: {
-            ...product?.documents,
-            [documentType]: [...(product?.documents[documentType] || []), newDocument],
-          },
-        })
-        .eq('id', productId);
-
-      if (updateError) {
-        console.error('Update error:', updateError);
-        throw updateError;
-      }
+      });
 
       toast({
-        title: "Başarılı",
-        description: "Belge başarıyla yüklendi",
+        title: t("success"),
+        description: t("documentUploaded"),
       });
 
       // Reset form
@@ -377,10 +268,10 @@ export function ProductDocuments({
       // Refresh documents
       fetchProduct();
     } catch (error) {
-      console.error('Error uploading document:', error);
+      console.error("Error uploading document:", error);
       toast({
-        title: "Hata",
-        description: "Belge yüklenirken bir hata oluştu",
+        title: t("error"),
+        description: t("failedToUploadDocument"),
         variant: "destructive",
       });
     } finally {
@@ -678,7 +569,10 @@ export function ProductDocuments({
                                   Onayla
                                 </DropdownMenuItem>
                                 <DropdownMenuItem
-                                  onClick={() => handleRejectDocument(document)}
+                                  onClick={() => {
+                                    setSelectedDocument(document);
+                                    setShowRejectDialog(true);
+                                  }}
                                 >
                                   <XCircle className="h-4 w-4 mr-2 text-red-500" />
                                   Reddet
@@ -757,6 +651,44 @@ export function ProductDocuments({
                 </p>
               </div>
             )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Reject Dialog'u */}
+      <Dialog open={showRejectDialog} onOpenChange={setShowRejectDialog}>
+        <DialogContent className="sm:max-w-[400px]">
+          <DialogHeader>
+            <DialogTitle>Belge Reddet</DialogTitle>
+            <DialogDescription>
+              Belgenin reddedilmesi için neden girin.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="rejectionReason">Red Nedeni</Label>
+              <Textarea
+                id="rejectionReason"
+                value={rejectionReason}
+                onChange={(e) => setRejectionReason(e.target.value)}
+                placeholder="Reddetme nedeni..."
+                className="min-h-[100px]"
+              />
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button
+                variant="outline"
+                onClick={() => setShowRejectDialog(false)}
+              >
+                İptal
+              </Button>
+              <Button
+                onClick={handleRejectConfirm}
+                disabled={!rejectionReason}
+              >
+                Onayla
+              </Button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>

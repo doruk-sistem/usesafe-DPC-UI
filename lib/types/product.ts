@@ -104,3 +104,13 @@ export interface ProductResponse {
   data?: BaseProduct;
   error?: ProductError;
 }
+
+export interface Product {
+  id: string;
+  name: string;
+  status: string;
+  manufacturer_id?: string;
+  documents?: Record<string, any>;
+  created_at?: string;
+  updated_at?: string;
+}

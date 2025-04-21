@@ -3,7 +3,8 @@ import {
   RegistrationResponse,
 } from "@/lib/data/manufacturer";
 import { supabase } from "@/lib/supabase/client";
-import { DocumentStatus, DocumentType } from "@/lib/types/company";
+import { DocumentType } from "@/lib/types/company";
+import { DocumentStatus } from "@/lib/types/document";
 
 export class ManufacturerService {
   static async register(
