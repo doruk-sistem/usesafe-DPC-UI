@@ -15,7 +15,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useCompany } from "@/lib/hooks/use-company";
+import { companyApiHooks } from "@/lib/hooks/use-company";
 
 
 interface CompanyDetailsProps {
@@ -24,7 +24,13 @@ interface CompanyDetailsProps {
 
 export function CompanyDetails({ companyId }: CompanyDetailsProps) {
   const t = useTranslations("admin.companies.details");
-  const { data: company, isLoading, error } = useCompany(companyId);
+  const { data: company, isLoading, error } = companyApiHooks.useGetCompanyQuery(
+    { id: companyId },
+    { 
+      enabled: !!companyId,
+      retry: false
+    }
+  );
   
   if (!companyId) {
     return (
