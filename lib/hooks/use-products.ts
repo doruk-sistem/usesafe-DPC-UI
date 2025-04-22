@@ -1,6 +1,7 @@
-import { useAuth } from "./use-auth";
 import { createApiHooks } from "../create-api-hooks";
 import { productService } from "../services/product";
+
+import { useAuth } from "./use-auth";
 
 export const productsApiHooks = createApiHooks(productService);
 

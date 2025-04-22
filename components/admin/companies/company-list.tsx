@@ -2,18 +2,11 @@
 
 import { Building2, Package, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
-import { useCompanies } from "../../../lib/hooks/use-company";
-import { Company, CompanyStatus } from "../../../lib/types/company";
+import { useTranslations } from "next-intl";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,8 +15,19 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useTranslations } from "next-intl";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+
+import { useCompanies } from "../../../lib/hooks/use-company";
+import { Company, CompanyStatus } from "../../../lib/types/company";
+
+
 
 const getStatusBadgeVariant = (status: CompanyStatus) => {
   switch (status) {

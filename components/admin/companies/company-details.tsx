@@ -1,9 +1,12 @@
 "use client";
 
-import { Package, CheckCircle, Clock, Building2, Mail, Phone } from "lucide-react";
+import { Package, CheckCircle, Clock, Building2, Mail, Phone , AlertCircle } from "lucide-react";
+import Link from "next/link";
+import { useTranslations } from "next-intl";
+
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { useTranslations } from "next-intl";
 import {
   Card,
   CardContent,
@@ -11,11 +14,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import Link from "next/link";
-import { useCompanies } from "@/lib/hooks/use-company";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
+import { useCompanies } from "@/lib/hooks/use-company";
+
 
 interface CompanyDetailsProps {
   companyId: string;

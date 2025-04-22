@@ -1,12 +1,13 @@
 "use client";
 
-import { useCompany } from "@/lib/hooks/use-company";
-import { CompanyDetails } from "@/components/admin/companies/company-details";
-import { CompanyProducts } from "@/components/admin/companies/company-products";
-import { CompanyDocuments } from "@/components/admin/companies/company-documents";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTranslations } from "next-intl";
 import { use } from "react";
+
+import { CompanyDetails } from "@/components/admin/companies/company-details";
+import { CompanyDocuments } from "@/components/admin/companies/company-documents";
+import { CompanyProducts } from "@/components/admin/companies/company-products";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useCompany } from "@/lib/hooks/use-company";
 
 interface CompanyPageProps {
   params: Promise<{
