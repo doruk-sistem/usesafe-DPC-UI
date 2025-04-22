@@ -3,7 +3,7 @@
 import { Building2, Package, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 import { useCompanies } from "../../../lib/hooks/use-company";
-import { Company } from "../../../lib/types/company";
+import { Company, CompanyStatus } from "../../../lib/types/company";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,13 +25,13 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useTranslations } from "next-intl";
 
-const getStatusBadgeVariant = (status: string) => {
+const getStatusBadgeVariant = (status: CompanyStatus) => {
   switch (status) {
-    case "ACTIVE":
+    case CompanyStatus.ACTIVE:
       return "success";
-    case "INACTIVE":
+    case CompanyStatus.INACTIVE:
       return "secondary";
-    case "PENDING":
+    case CompanyStatus.PENDING:
       return "warning";
     default:
       return "secondary";
@@ -39,7 +39,7 @@ const getStatusBadgeVariant = (status: string) => {
 };
 
 export function CompanyList() {
-  const { data: companies = [], isLoading, error } = useCompanies({});
+  const { companies = [], isLoading, error } = useCompanies({});
   const t = useTranslations("admin.companies");
 
   if (error) {
@@ -108,7 +108,7 @@ export function CompanyList() {
                 <TableCell>{company.taxInfo.taxNumber}</TableCell>
                 <TableCell>
                   <Badge variant={getStatusBadgeVariant(company.status)}>
-                    {t(`status.${company.status.toLowerCase()}`)}
+                    {t(`status.${company.status}`)}
                   </Badge>
                 </TableCell>
                 <TableCell>

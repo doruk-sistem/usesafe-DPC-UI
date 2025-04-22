@@ -271,7 +271,7 @@ export const productService = createService({
     companyId: string;
   }): Promise<ProductResponse> => {
     // Admin şirketi için özel durum - tüm ürünleri göster
-    if (companyId === ADMIN_COMPANY_ID) {
+    if (companyId === "admin") {
       const { data, error } = await supabase
         .from("products")
         .select(

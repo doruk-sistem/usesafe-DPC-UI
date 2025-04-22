@@ -12,7 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import Link from "next/link";
-import { useCompany } from "@/lib/hooks/use-company";
+import { useCompanies } from "@/lib/hooks/use-company";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
@@ -23,7 +23,8 @@ interface CompanyDetailsProps {
 
 export function CompanyDetails({ companyId }: CompanyDetailsProps) {
   const t = useTranslations("admin.companies.details");
-  const { data: company, isLoading, error } = useCompany(companyId);
+  const { companies = [], isLoading, error } = useCompanies({});
+  const company = companies.find(c => c.id === companyId);
   
   if (!companyId) {
     return (
