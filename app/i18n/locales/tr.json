@@ -1563,11 +1563,7 @@
       "battery": "Akü",
       "automotive": "Otomotiv",
       "electronics": "Elektronik",
-      "clothing": "Giyim",
-      "agm": "AGM",
-      "efb": "EFB",
-      "standard": "Standart",
-      "marine": "Deniz"
+      "clothing": "Giyim"
     },
     "common": {
       "status": {
@@ -2017,6 +2013,80 @@
             "rejectDescription": "Belge reddedilirken bir hata oluştu"
           }
         }
+      }
+    },
+    "createAccount": {
+      "title": "Hesap Oluştur",
+      "description": "Başlamak için yeni bir hesap oluşturun",
+      "form": {
+        "name": "Ad Soyad",
+        "companyName": "Şirket Adı",
+        "taxId": "Vergi Numarası",
+        "email": "E-posta",
+        "password": "Şifre",
+        "confirmPassword": "Şifreyi Onayla",
+        "phone": "Telefon",
+        "address": "Adres",
+        "country": "Ülke",
+        "city": "Şehir",
+        "postalCode": "Posta Kodu",
+        "website": "Web Sitesi",
+        "companyType": "Şirket Türü",
+        "industry": "Sektör",
+        "submit": "Hesap Oluştur",
+        "haveAccount": "Zaten hesabınız var mı?",
+        "signIn": "Giriş Yap",
+        "placeholders": {
+          "name": "Adınızı ve soyadınızı girin",
+          "companyName": "Şirket adınızı girin",
+          "taxId": "Vergi numaranızı girin",
+          "email": "E-posta adresinizi girin",
+          "password": "Şifrenizi girin",
+          "confirmPassword": "Şifrenizi onaylayın",
+          "phone": "Telefon numaranızı girin",
+          "address": "Adresinizi girin",
+          "country": "Ülkenizi seçin",
+          "city": "Şehrinizi girin",
+          "postalCode": "Posta kodunuzu girin",
+          "website": "Web sitenizin URL'sini girin",
+          "companyType": "Şirket türünüzü seçin",
+          "industry": "Sektörünüzü seçin"
+        },
+        "descriptions": {
+          "name": "Resmi belgelerde görünen adınız ve soyadınız",
+          "companyName": "Şirketinizin resmi adı",
+          "taxId": "Şirketinizin vergi kimlik numarası",
+          "email": "Şirket e-posta adresiniz",
+          "password": "Güçlü bir şifre oluşturun",
+          "confirmPassword": "Şifrenizi tekrar girin",
+          "phone": "Şirket telefon numaranız",
+          "address": "Şirketinizin fiziksel adresi",
+          "country": "Şirketinizin kayıtlı olduğu ülke",
+          "city": "Şirketinizin bulunduğu şehir",
+          "postalCode": "Şirketinizin posta kodu",
+          "website": "Şirketinizin web sitesi URL'si",
+          "companyType": "Şirket türünüzü seçin",
+          "industry": "Şirket sektörünüzü seçin"
+        }
+      },
+      "success": {
+        "title": "Hesap Oluşturuldu",
+        "description": "Hesabınız başarıyla oluşturuldu. Lütfen hesabınızı doğrulamak için e-postanızı kontrol edin."
+      },
+      "error": {
+        "title": "Hesap Oluşturma Başarısız",
+        "description": "Hesabınız oluşturulurken bir hata oluştu. Lütfen tekrar deneyin.",
+        "emailExists": "Bu e-posta adresi zaten kullanımda",
+        "invalidEmail": "Geçersiz e-posta adresi",
+        "weakPassword": "Şifre çok zayıf",
+        "passwordsDontMatch": "Şifreler eşleşmiyor",
+        "invalidTaxId": "Geçersiz vergi numarası",
+        "invalidPhone": "Geçersiz telefon numarası",
+        "invalidPostalCode": "Geçersiz posta kodu",
+        "invalidWebsite": "Geçersiz web sitesi URL'si",
+        "requiredField": "Bu alan zorunludur",
+        "invalidCompanyType": "Geçersiz şirket türü",
+        "invalidIndustry": "Geçersiz sektör"
       }
     }
   }
