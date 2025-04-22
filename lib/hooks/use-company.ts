@@ -3,14 +3,18 @@ import { companyService } from "../services/company";
 
 export const companyApiHooks = createApiHooks(companyService);
 
-export function useCompanies(params: any = {}) {
-  const { data = [], isLoading, error } = companyApiHooks.useGetCompaniesQuery(params, {
-    retry: false
-  });
+export function useCompany(id: string) {
+  const { data, isLoading, error } = companyApiHooks.useGetCompanyQuery(
+    { id },
+    { 
+      enabled: !!id,
+      retry: false
+    }
+  );
 
-  return {
-    companies: data,
-    isLoading,
+  return { 
+    data, 
+    isLoading, 
     error
   };
 }

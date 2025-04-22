@@ -15,7 +15,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useCompanies } from "@/lib/hooks/use-company";
+import { useCompany } from "@/lib/hooks/use-company";
 
 
 interface CompanyDetailsProps {
@@ -24,8 +24,7 @@ interface CompanyDetailsProps {
 
 export function CompanyDetails({ companyId }: CompanyDetailsProps) {
   const t = useTranslations("admin.companies.details");
-  const { companies = [], isLoading, error } = useCompanies({});
-  const company = companies.find(c => c.id === companyId);
+  const { data: company, isLoading, error } = useCompany(companyId);
   
   if (!companyId) {
     return (
