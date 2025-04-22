@@ -6,6 +6,7 @@ import {
   MoreHorizontal,
   FileText,
   Eye,
+  ImageOff,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -40,6 +41,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { documentsApiHooks } from "@/lib/hooks/use-documents";
+import { useImageUrl } from "@/lib/hooks/use-image-url";
 import { BaseProduct, ProductStatus } from "@/lib/types/product";
 
 
@@ -48,6 +50,7 @@ export function ProductList() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [manufacturerFilter, setManufacturerFilter] = useState("all");
+  const { getImageUrl } = useImageUrl();
 
   const { data: products = [], isLoading } = documentsApiHooks.useGetProducts();
 
@@ -174,7 +177,10 @@ export function ProductList() {
                 </SelectItem>
               </SelectContent>
             </Select>
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <Select
+              value={statusFilter}
+              onValueChange={setStatusFilter}
+            >
               <SelectTrigger className="w-[200px] bg-background">
                 <SelectValue placeholder={t("admin.products.filterByStatus")} />
               </SelectTrigger>
@@ -226,19 +232,21 @@ export function ProductList() {
                     <div className="relative w-full h-full">
                       <div className="absolute inset-0 flex items-center justify-center">
                         <Image
-                          src={
+                          src={getImageUrl(
                             product.images.find((img) => img.is_primary)?.url ||
                             product.images[0].url
-                          }
+                          )}
                           alt={
                             product.images.find((img) => img.is_primary)?.alt ||
                             product.name
                           }
+                          width={300}
+                          height={300}
                           className="max-w-full max-h-full w-auto h-auto object-contain group-hover:scale-105 transition-transform duration-300"
                           loading="lazy"
                           onError={(e) => {
                             const target = e.target as HTMLImageElement;
-                            target.src = "https://placehold.co/400x400?text=No+Image";
+                            target.src = "/images/placeholder-product.png";
                           }}
                         />
                       </div>
@@ -250,7 +258,7 @@ export function ProductList() {
                     </div>
                   )}
                 </div>
-                <CardHeader className="p-4 pb-2">
+                <CardHeader className="p-4">
                   <div className="flex justify-between items-start">
                     <div>
                       <CardTitle className="text-lg font-medium line-clamp-1">
@@ -274,7 +282,7 @@ export function ProductList() {
                           <MoreHorizontal className="h-4 w-4" />
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-[160px]">
+                      <DropdownMenuContent>
                         <DropdownMenuLabel>{t("productManagement.actions.menu")}</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem asChild>
@@ -299,7 +307,7 @@ export function ProductList() {
                     </DropdownMenu>
                   </div>
                 </CardHeader>
-                <CardContent className="p-4 pt-2">
+                <CardContent className="p-4 pt-0">
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-muted-foreground">

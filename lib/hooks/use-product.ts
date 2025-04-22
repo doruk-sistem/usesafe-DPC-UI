@@ -8,7 +8,7 @@ import { productsApiHooks } from "./use-products";
 
 export function useProduct(id: string) {
   const { user, company } = useAuth();
-  const isAdminValue = user?.user_metadata?.role === "admin";
+  const isAdmin = user?.user_metadata?.role === "admin";
 
   const {
     data: product,
@@ -19,9 +19,9 @@ export function useProduct(id: string) {
     queryFn: () =>
       productService.getProduct({
         id,
-        companyId: isAdminValue ? "" : company?.id || "",
+        companyId: isAdmin ? "admin" : company?.id || "",
       }),
-    enabled: !!id && (!!company?.id || isAdminValue),
+    enabled: !!id && (!!company?.id || isAdmin),
   });
 
   const determineProductStatus = (
