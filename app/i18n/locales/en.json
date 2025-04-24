@@ -333,7 +333,7 @@
       "success": "Success",
       "documentUploadedSuccessfully": "Document uploaded successfully"
     },
-    "featured": {
+    "features": {
       "title": "Featured Products",
       "description": "Browse our curated selection of certified sustainable products",
       "sections": {
