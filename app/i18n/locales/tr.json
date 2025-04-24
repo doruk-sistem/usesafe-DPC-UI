@@ -115,7 +115,10 @@
           "overview": "Genel Bakış",
           "products": "Ürünler",
           "documents": "Belgeler",
-          "history": "Geçmiş"
+          "history": "Geçmiş",
+          "traceability": "İzlenebilirlik",
+          "supplyChain": "Tedarik Zinciri",
+          "certifications": "Sertifikalar"
         },
         "actions": {
           "edit": "Düzenle",
@@ -367,6 +370,17 @@
     },
     "details": {
       "title": "Ürün Detayları",
+      "description": "Ürün detaylarını görüntüleyin",
+      "quickInfo": {
+        "title": "Hızlı Bilgi",
+        "description": "Ürün hakkında hızlı bilgiler",
+        "model": "Model",
+        "manufacturer": "Üretici"
+      },
+      "keyFeatures": {
+        "title": "Önemli Özellikler",
+        "description": "Ürünün önemli özelliklerini görüntüleyin"
+      },
       "basicInfo": {
         "title": "Temel Bilgiler",
         "productCode": "Ürün Kodu",
@@ -374,19 +388,37 @@
         "sku": "SKU",
         "category": "Kategori",
         "status": "Durum",
-        "addedDate": "Eklenme Tarihi"
+        "addedDate": "Eklenme Tarihi",
+        "manufacturer": "Üretici",
+        "backToProducts": "Ürünlere Dön"
       },
-      "actions": {
-        "edit": "Düzenle",
-        "delete": "Sil",
-        "approve": "Onayla",
-        "reject": "Reddet"
+      "materials": {
+        "title": "Malzemeler",
+        "description": "Ürünün malzeme bileşimi"
       },
-      "tabs": {
-        "overview": "Genel Bakış",
-        "documents": "Belgeler",
-        "history": "Geçmiş"
-      }
+      "textile": {
+        "title": "Tekstil Ürün Detayları",
+        "description": "Tekstil ürün detaylarını görüntüleyin",
+        "composition": "Kompozisyon",
+        "careInstructions": "Bakım Talimatları",
+        "sustainability": "Sürdürülebilirlik",
+        "certifications": "Sertifikalar",
+        "environmentalMetrics": "Çevresel Metrikler"
+      },
+      "sustainability": {
+        "title": "Sürdürülebilirlik",
+        "description": "Ürün sürdürülebilirlik metriklerini görüntüleyin",
+        "metrics": {
+          "waterUsage": "Su Kullanımı",
+          "carbonFootprint": "Karbon Ayak İzi",
+          "energyConsumption": "Enerji Tüketimi"
+        }
+      },
+      "qrCode": {
+        "title": "QR Kod",
+        "description": "Ürün doğrulama için QR kod"
+      },
+      "backToProducts": "Ürünlere Dön"
     }
   },
   "dashboard": {
@@ -553,15 +585,18 @@
         "title": "Hızlı Bilgi",
         "model": "Model",
         "manufacturer": "Üretici",
-        "unknown": "Bilinmiyor"
+        "unknown": "Bilinmiyor",
+        "description": "Hızlı bilgi"
       },
       "keyFeatures": {
-        "title": "Önemli Özellikler"
+        "title": "Önemli Özellikler",
+        "description": "Önemli özellikleri görüntüleyin"
       },
       "basicInfo": {
         "title": "Temel Bilgiler",
         "manufacturer": "Üretici",
         "category": "Kategori"
+        
       },
       "hazards": {
         "title": "Tehlike Piktogramları",
@@ -631,7 +666,89 @@
   },
   "products": {
     "title": "Sertifikalı Ürünler",
-    "description": "Dijital Ürün Pasaportu ile doğrulanmış sertifikalı sürdürülebilir ürünlerimizi keşfedin.",
+    "description": "Dijital Ürün Pasaportu doğrulanmış sürdürülebilir ürünlerimizi keşfedin.",
+    "loading": "Ürünler yükleniyor...",
+    "backToProducts": "Ürünlere Dön",
+
+    "error": {
+      "title": "Hata",
+      "description": "Ürünler yüklenirken bir hata oluştu"
+
+    },      
+    "verify": {
+      "button": "Ürünü Doğrula"
+
+    },
+    "details": {
+      "title": "Ürün Detayları",
+      "description": "Ürün detaylarını görüntüleyin",
+      "quickInfo": {
+        "title": "Hızlı Bilgi",
+        "description": "Ürün hakkında hızlı bilgiler",
+        "model": "Model",
+        "manufacturer": "Üretici",
+        "unknown": "Bilinmiyor",
+        "description": "Hızlı bilgi"
+      },
+      "keyFeatures": {
+        "title": "Önemli Özellikler",
+        "description": "Ürünün önemli özelliklerini görüntüleyin"
+      },
+      "basicInfo": {
+        "title": "Temel Bilgiler",
+        "productCode": "Ürün Kodu",
+        "productName": "Ürün Adı",
+        "sku": "SKU",
+        "category": "Kategori",
+        "status": "Durum",
+        "addedDate": "Eklenme Tarihi",
+        "manufacturer": "Üretici",
+
+        "backToProducts": "Ürünlere Dön"
+
+
+
+      },
+      "actions": {
+        "edit": "Düzenle",
+        "delete": "Sil",
+        "approve": "Onayla",
+        "reject": "Reddet"
+
+      },
+      "tabs": {
+        "overview": "Genel Bakış",
+        "documents": "Belgeler",
+        "history": "Geçmiş"
+
+      },
+      "backToProducts": "Ürünlere Dön"
+    },
+    "features": {
+      
+      "title": "Ürün Özellikleri",
+      "description": "Ürünlerimizin öne çıkan özellikleri",
+      "button": "Ürünü Doğrula",
+
+
+      "sections": {
+        "traceability": {
+          "title": "Ürün İzlenebilirliği",
+          "description": "Kaynaktan mağazaya ürün yolculuğunu takip edin",
+          "button": "Ürünü Doğrula"
+        },
+        "supplyChain": {
+          "title": "Tedarik Zinciri",
+          "description": "Ürünün tedarik zinciri sürecini takip edin",
+          "button": "Ürünü Doğrula"
+             
+        },
+        "certifications": {
+          "title": "Sertifikalar",
+          "description": "Ürün sertifikalarını görüntüleyin"
+        }
+      }
+    },
     "list": {
       "categories": {
         "textile": "Tekstil",
@@ -642,224 +759,15 @@
         "women's clothing": "Kadın Giyim",
         "automotive batteries": "Otomotiv Aküleri",
         "marine batteries": "Deniz Aküleri",
+        "industrial batteries": "Endüstriyel Aküler",
+        "standard batteries": "Standart Aküler",
+        "agm batteries": "AGM Aküler",
+        "efb batteries": "EFB Aküler",
         "detergents": "Deterjanlar"
       },
       "sustainability": {
         "score": "Sürdürülebilirlik Puanı",
         "carbonFootprint": "Karbon Ayak İzi"
-      }
-    },
-    "ProductDocuments": {
-      "uploadNewDocument": "Yeni Belge Yükle",
-      "documentType": "Belge Tipi",
-      "select": "Seçiniz",
-      "qualityCertificate": "Kalite Sertifikası",
-      "safetyCertificate": "Güvenlik Sertifikası",
-      "testReports": "Test Raporları",
-      "technicalDocumentation": "Teknik Dokümantasyon",
-      "complianceDocuments": "Uyumluluk Belgeleri",
-      "file": "Dosya",
-      "selectedFile": "Seçilen dosya:",
-      "additionalInfo": "Ek Bilgiler",
-      "version": "Versiyon",
-      "validUntilOptional": "Opsiyonel",
-      "notesOptional": "Opsiyonel",
-      "documentNotesPlaceholder": "Belge hakkında notlar...",
-      "cancel": "İptal",
-      "uploading": "Yükleniyor...",
-      "uploadDocument": "Belge Yükle",
-      "noDocumentsFound": "Belge Bulunamadı",
-      "noDocumentsDescription": "Bu ürüne ait belge bulunmamaktadır.",
-      "documentName": "Belge Adı",
-      "type": "Tip",
-      "status": "Durum",
-      "validUntil": "Geçerlilik Tarihi",
-      "actions": "İşlemler",
-      "openMenu": "Menüyü aç",
-      "download": "İndir",
-      "view": "Görüntüle",
-      "viewHistory": "Geçmişi Görüntüle",
-      "reject": "Reddet",
-      "reupload": "Yeniden Yükle",
-      "documentDetails": "Belge Detayları",
-      "generalInfo": "Genel Bilgiler",
-      "fileSize": "Dosya Boyutu",
-      "uploadDate": "Yüklenme Tarihi",
-      "notes": "Notlar",
-      "rejectionReason": "Red Nedeni",
-      "rejectDocument": "Belge Reddet",
-      "rejectDescription": "Belgenin reddedilmesi için neden girin.",
-      "rejectionReasonPlaceholder": "Reddetme nedeni...",
-      "confirm": "Onayla",
-      "productDocuments": "Ürün Belgeleri",
-      "productNotFound": "Ürün Bulunamadı",
-      "productNotFoundDescription": "İstenilen ürün bulunamadı.",
-      "notAvailable": "Belirtilmemiş",
-      "success":"Başarılı",
-      "documentUploadedSuccessfully": "Belge başarıyla yüklendi"
-    },
-    "featured": {
-      "title": "Öne Çıkan Ürünler",
-      "description": "Seçilmiş sertifikalı sürdürülebilir ürünlerimize göz atın"
-    },
-    "verify": {
-      "button": "Ürün Doğrula"
-    },
-    "features": {
-      "traceability": {
-        "title": "Ürün İzlenebilirliği",
-        "description": "Kaynaktan mağazaya ürün yolculuğunu takip edin"
-      },
-      "supplyChain": {
-        "title": "Tedarik Zinciri Geçmişi",
-        "description": "Ürün yaşam döngüsünün tam şeffaflığı"
-      },
-      "certifications": {
-        "title": "Doğrulanmış Sertifikalar",
-        "description": "Onaylanmış sürdürülebilirlik belgeleri"
-      }
-    },
-    "details": {
-      "backToProducts": "Ürünlere Geri Dön",
-      "battery": {
-        "features": {
-          "0": "Optimum performans için gelişmiş lityum-iyon teknolojisi",
-          "1": "Dahili güvenlik özellikleri ve koruma devreleri",
-          "2": "Uzun döngü ömrü ve güvenilir güç çıkışı"
-        },
-        "healthAndSafety": {
-          "title": "Sağlık ve Güvenlik Önlemleri",
-          "measures": {
-            "0": "Aküleri her zaman dikkatli taşıyın",
-            "1": "Her zaman dik konumda tutun",
-            "2": "İyi havalandırılan bir yerde şarj edin",
-            "3": "Saf su eklemeyin (Saf su seviyesi plakaların 1.5 cm üzerinde olmamalıdır)",
-            "4": "Akü bakımı sırasında (su ekleme, temizlik, şarj) mutlaka çalışma koşullarına uygun koruyucu gözlük takın",
-            "5": "Asit sıçrama riski varsa koruyucu giysi giyin"
-          }
-        },
-        "storage": {
-          "title": "Depolama ve Kurulum Kılavuzu",
-          "sections": {
-            "general": "Genel Depolama",
-            "chargeLevel": "Şarj Seviyesi İzleme",
-            "installation": "Kurulum Adımları",
-            "items": {
-              "general": {
-                "0": "Her zaman kuru ve serin bir yerde dik konumda saklayın (10°C - 25°C)",
-                "1": "Beton zeminle doğrudan temas etmemesi için aküleri ahşap palet üzerine yerleştirin"
-              },
-              "chargeLevel": {
-                "0": "Satış öncesi akü şarj seviyesi 12.6V'dan yüksek olmalıdır",
-                "1": "Depolama sırasında minimum voltaj 12.4V olmalıdır",
-                "2": "Kalıcı hasarı önlemek için voltaj düşükse, paketi açın ve 16.1V ve 1/20Cn akımda şarj edin"
-              },
-              "installation": {
-                "0": "Araç kılavuzundan akü uyumluluğunu doğrulayın",
-                "1": "Motorun kapalı olduğundan emin olun",
-                "2": "Eski aküyü çıkarın (önce negatif terminal)",
-                "3": "Kısa devre kontrolü yapın",
-                "4": "Akü bölmesini ve terminalleri temizleyin",
-                "5": "Yeni aküyü takın (önce pozitif kabloyu bağlayın)",
-                "6": "Şarj akımı uyumluluğunu kontrol edin"
-              }
-            }
-          }
-        },
-        "emergencyProcedures": {
-          "title": "Acil Durum Prosedürleri",
-          "procedures": {
-            "0": "Hasar durumunda hemen bağlantıyı kesin ve izole edin",
-            "1": "Sızıntı veya yangın durumunda acil servisleri arayın",
-            "2": "Hasarlı ürünler için uygun imha prosedürlerini uygulayın",
-            "3": "Güvenlik olaylarını belgeleyin ve raporlayın",
-            "4": "Göz veya cilt teması durumunda bol su ile yıkayın",
-            "5": "Kirlenmiş giysileri hemen çıkarın",
-            "6": "Yutma: Bol su ve süt için. Bir doktora danışın",
-            "7": "Dökülme: Küçük dökülmeleri su ile yıkayın"
-          }
-        }
-      },
-      "textile": {
-        "careInstructions": "Bakım Talimatları"
-      },
-      "layoutNotAvailable": "DPP düzeni bu ürün tipi için mevcut değil:",
-      "quickInfo": {
-        "title": "Hızlı Bilgi",
-        "model": "Model",
-        "manufacturer": "Üretici",
-        "category": "Kategori"
-      },
-      "keyFeatures": {
-        "title": "Önemli Özellikler"
-      },
-      "materials": {
-        "title": "Malzemeler",
-        "table": {
-          "material": "Malzeme",
-          "percentage": "Yüzde",
-          "recyclable": "Geri Dönüştürülebilir",
-          "description": "Açıklama"
-        },
-        "recyclable": {
-          "yes": "Evet",
-          "no": "Hayır"
-        }
-      },
-      "healthAndSafety": {
-        "title": "Sağlık ve Güvenlik",
-        "measures": {
-          "0": "Her zaman uygun taşıma ve depolama kılavuzlarını takip edin",
-          "1": "Aşırı sıcaklık ve nemden uzak tutun",
-          "2": "Kullanırken uygun kişisel koruyucu ekipman kullanın",
-          "3": "Düzenli bakım ve kontrol gereklidir"
-        }
-      },
-      "emergencyProcedures": {
-        "title": "Acil Durum Prosedürleri",
-        "0": "Hasar durumunda hemen bağlantıyı kesin ve izole edin",
-        "1": "Sızıntı veya yangın durumunda acil servisleri arayın",
-        "2": "Hasar görmüş ürünler için uygun imha prosedürlerini takip edin",
-        "3": "Güvenlik olaylarını belgeleyin ve raporlayın"
-      },
-      "certifications": {
-        "title": "Sertifikalar"
-      },
-      "sustainability": {
-        "title": "Sürdürülebilirlik Metrikleri",
-        "badge": "Sürdürülebilir",
-        "progress": "Genel Sürdürülebilirlik İlerlemesi",
-        "carbonFootprint": "Karbon Ayak İzi",
-        "metrics": {
-          "water-usage": "Su Kullanımı",
-          "water-saving": "Su Tasarrufu",
-          "energy-consumption": "Enerji Tüketimi",
-          "renewable-energy": "Yenilenebilir Enerji",
-          "recycled-materials": "Geri Dönüştürülmüş Malzemeler",
-          "recycled-content": "Geri Dönüştürülmüş İçerik",
-          "chemical-reduction": "Kimyasal Azaltma",
-          "chemical-usage": "Kimyasal Kullanımı",
-          "biodegradability": "Biyolojik Bozunabilirlik",
-          "sustainability-score": "Sürdürülebilirlik Puanı"
-        }
-      },
-      "qr": {
-        "title": "Ürün QR Kodu",
-        "description": "Ürün orijinalliğini doğrulamak için bu kodu tarayın",
-        "imageAlt": "Ürün QR Kodu",
-        "downloadButton": "QR Kodu İndir",
-        "error": {
-          "title": "Hata",
-          "generate": "QR kodu oluşturulamadı",
-          "notReady": "QR kodu henüz hazır değil"
-        },
-        "success": {
-          "title": "Başarılı",
-          "download": "QR kodu başarıyla indirildi"
-        }
-      },
-      "care": {
-        "title": "Bakım Talimatları"
       }
     }
   },
@@ -933,7 +841,9 @@
           "model": {
             "label": "Model",
             "placeholder": "Ürün modelini girin"
+
           },
+        
           "name": {
             "label": "Ad",
             "placeholder": "Ürün adını girin"
@@ -1754,10 +1664,12 @@
       }
     },
     "table": {
+      "title": "Belge Listesi",
       "name": "Ad",
       "model": "Model",
       "status": "Durum",
       "actions": "İşlemler"
+
     },
     "pagination": {
       "previous": "Önceki",
@@ -2038,6 +1950,172 @@
       "error": {
         "title": "Hata",
         "description": "Hesap oluşturulurken bir hata oluştu"
+      }
+    }
+  },
+  "battery": {
+    "title": "Akü Yönetimi",
+    "description": "Akü ürünlerinizi ve sertifikalarınızı yönetin",
+    "list": {
+      "title": "Akü Listesi",
+      "description": "Akü ürünlerinizi görüntüleyin ve yönetin",
+      "search": "Akü ara...",
+      "filter": "Filtrele",
+      "sort": "Sırala",
+      "columns": {
+        "name": "Ad",
+        "model": "Model",
+        "type": "Tip",
+        "capacity": "Kapasite",
+        "voltage": "Voltaj",
+        "status": "Durum",
+        "actions": "İşlemler"
+      },
+      "actions": {
+        "view": "Görüntüle",
+        "edit": "Düzenle",
+        "delete": "Sil",
+        "verify": "Doğrula"
+      },
+      "empty": "Akü bulunamadı",
+      "loading": "Aküler yükleniyor..."
+    },
+    "types": {
+      "agm": "AGM Akü",
+      "efb": "EFB Akü",
+      "standard": "Standart Akü",
+      "marine": "Deniz Aküsü"
+    },
+    "details": {
+      "title": "Akü Detayları",
+      "description": "Akü hakkında detaylı bilgileri görüntüleyin",
+      "basicInfo": {
+        "title": "Temel Bilgiler",
+        "name": "Ad",
+        "model": "Model",
+        "type": "Tip",
+        "capacity": "Kapasite",
+        "voltage": "Voltaj",
+        "dimensions": "Boyutlar",
+        "weight": "Ağırlık"
+      },
+      "technicalSpecs": {
+        "title": "Teknik Özellikler",
+        "coldCrankingAmps": "Soğuk Marş Akımı",
+        "reserveCapacity": "Yedek Kapasite",
+        "cycleLife": "Çevrim Ömrü",
+        "operatingTemperature": "Çalışma Sıcaklığı"
+      },
+      "certifications": {
+        "title": "Sertifikalar",
+        "description": "Akü sertifikalarını ve uygunluk belgelerini görüntüleyin"
+      },
+      "documents": {
+        "title": "Belgeler",
+        "description": "Akü ile ilgili belgeleri ve test raporlarını görüntüleyin"
+      }
+    }
+  },
+  "certifications": {
+    "title": "Sertifikalar",
+    "description": "Ürün sertifikalarınızı yönetin",
+    "list": {
+      "title": "Sertifika Listesi",
+      "description": "Ürün sertifikalarınızı görüntüleyin ve yönetin",
+      "search": "Sertifika ara...",
+      "filter": "Filtrele",
+      "sort": "Sırala",
+      "columns": {
+        "name": "Ad",
+        "type": "Tip",
+        "validUntil": "Geçerlilik Tarihi",
+        "status": "Durum",
+        "actions": "İşlemler"
+      },
+      "actions": {
+        "view": "Görüntüle",
+        "download": "İndir",
+        "renew": "Yenile",
+        "revoke": "İptal Et"
+      },
+      "empty": "Sertifika bulunamadı",
+      "loading": "Sertifikalar yükleniyor..."
+    },
+    "types": {
+      "iso9001": "ISO 9001",
+      "iso14001": "ISO 14001",
+      "iso45001": "ISO 45001",
+      "ce": "CE İşareti",
+      "rohs": "RoHS",
+      "reach": "REACH"
+    },
+    "details": {
+      "title": "Sertifika Detayları",
+      "description": "Sertifika hakkında detaylı bilgileri görüntüleyin",
+      "basicInfo": {
+        "title": "Temel Bilgiler",
+        "name": "Ad",
+        "type": "Tip",
+        "issuer": "Düzenleyen",
+        "issueDate": "Düzenleme Tarihi",
+        "validUntil": "Geçerlilik Tarihi",
+        "status": "Durum"
+      },
+      "scope": {
+        "title": "Kapsam",
+        "description": "Sertifika kapsamı ve içeriği"
+      },
+      "documents": {
+        "title": "Belgeler",
+        "description": "Sertifika ile ilgili belgeleri görüntüleyin"
+      },
+      "history": {
+        "title": "Geçmiş",
+        "description": "Sertifika geçmişini ve değişiklikleri görüntüleyin"
+      }
+    }
+  },
+  "analytics": {
+    "title": "Analitik",
+    "description": "Analitik ve raporları görüntüleyin",
+    "dashboard": {
+      "title": "Analitik Paneli",
+      "description": "Kapsamlı analitik ve raporları görüntüleyin",
+      "metrics": {
+        "totalProducts": "Toplam Ürün",
+        "certifiedProducts": "Sertifikalı Ürünler",
+        "pendingCertifications": "Bekleyen Sertifikalar",
+        "complianceRate": "Uyumluluk Oranı",
+        "documentApprovalRate": "Belge Onay Oranı",
+        "averageProcessingTime": "Ortalama İşlem Süresi"
+      },
+      "charts": {
+        "certificationStatus": "Sertifika Durumu",
+        "documentStatus": "Belge Durumu",
+        "processingTime": "İşlem Süresi",
+        "complianceTrend": "Uyumluluk Trendi"
+      }
+    },
+    "reports": {
+      "title": "Raporlar",
+      "description": "Detaylı raporlar oluşturun ve görüntüleyin",
+      "types": {
+        "compliance": "Uyumluluk Raporu",
+        "certification": "Sertifika Raporu",
+        "document": "Belge Raporu",
+        "processing": "İşlem Raporu"
+      },
+      "filters": {
+        "dateRange": "Tarih Aralığı",
+        "productType": "Ürün Tipi",
+        "certificationType": "Sertifika Tipi",
+        "status": "Durum"
+      },
+      "actions": {
+        "generate": "Rapor Oluştur",
+        "download": "İndir",
+        "export": "Dışa Aktar",
+        "schedule": "Rapor Planla"
       }
     }
   }

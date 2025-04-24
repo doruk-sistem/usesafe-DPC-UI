@@ -156,6 +156,7 @@
         "title": "Connected Data",
         "description": "Link product data, certifications, and sustainability metrics in one place.",
         "buttonText": "Learn More"
+
       }
     },
     "traceability": {
@@ -268,6 +269,9 @@
     "title": "Certified Products",
     "description": "Explore our collection of certified sustainable products with verified Digital Product Passports.",
     "loading": "Loading products...",
+    "verify": {
+      "button": "Verify Product"
+    },
     "list": {
       "categories": {
         "textile": "Textile",
@@ -277,7 +281,12 @@
         "clothing": "Clothing",
         "women's clothing": "Women's Clothing",
         "automotive batteries": "Automotive Batteries",
-        "marine batteries": "Marine Batteries"
+        "marine batteries": "Marine Batteries",
+        "industrial batteries": "Industrial Batteries",
+        "standard batteries": "Standard Batteries",
+        "agm batteries": "AGM Batteries",
+        "efb batteries": "EFB Batteries"
+        
       },
       "sustainability": {
         "score": "Sustainability Score",
@@ -416,11 +425,13 @@
         "careInstructions": {
           "title": "Care Instructions",
           "washing": "Washing",
-          "drying": "Drying",
+          "washingTemp": "Wash at 30 degrees",
           "ironing": "Ironing",
+          "ironingTemp": "Iron at medium temperature",
           "bleaching": "Bleaching",
-          "dryClean": "Dry Clean",
-          "specialCare": "Special Care Notes"
+          "bleachingInst": "Do not bleach",
+          "drying": "Drying",
+          "dryingInst": "Lay flat to dry"
         }
       },
       "layoutNotAvailable": "DPP layout not available for product type:",
@@ -432,6 +443,7 @@
       },
       "keyFeatures": {
         "title": "Key Features"
+          
       },
       "materials": {
         "title": "Materials",
@@ -439,7 +451,9 @@
           "material": "Material",
           "percentage": "Percentage",
           "recyclable": "Recyclable",
-          "description": "Description"
+          "description": "Description",
+          "yes": "Yes",
+          "no": "No"
         },
         "recyclable": {
           "yes": "Yes",
@@ -959,7 +973,17 @@
        "uploadIssues": "Upload Issues",
        "documentTypes": {
             "testReports": "Test Reports",
-            "technicalDocumentation": "Technical Documentation"
+            "technicalDocumentation": "Technical Documentation",
+            "certifications": "Certifications",
+            "qualityCertificates": "Quality Certificates",
+            "safetyCertificates": "Safety Certificates",
+            "environmentalCertificates": "Environmental Certificates",
+            "otherCertificates": "Other Certificates",
+            "productionPermits": "Production Permits",
+            "exportDocuments": "Export Documents",
+            "isoCertificates": "ISO Certificates",
+            "otherDocuments": "Other Documents"
+            
           }
         }
       }
@@ -1089,6 +1113,69 @@
         "title": "Error",
         "description": "Failed to create account"
       }
+    }
+  },
+  "verify": {
+    "title": "Product Verification",
+    "description": "Enter product ID or scan QR code to verify authenticity and view Digital Product Passport.",
+    "card": {
+      "title": "Product Verification",
+      "description": "Verify product authenticity using product code or QR code"
+    },
+    "input": {
+      "placeholder": "Enter product ID (e.g. PROD-2024-001)",
+      "button": "Verify",
+      "or": "or scan QR code"
+    },
+    "status": {
+      "validating": {
+        "title": "Verifying Product",
+        "description": "Please wait while we verify product authenticity..."
+      },
+      "valid": {
+        "title": "Product Verified",
+        "description": "Redirecting to product details..."
+      },
+      "invalid": {
+        "title": "Verification Failed",
+        "description": "Product code could not be verified. Please try again or contact support.",
+        "notFound": "Product not found in our database",
+        "error": "Product code could not be verified",
+        "button": "Try Again"
+      }
+    },
+    "toast": {
+      "error": {
+        "title": "Invalid Product Code",
+        "description": "Please enter a valid product code or scan a valid QR code."
+      }
+    },
+    "verification": {
+      "title": "Product Verification",
+      "description": "Enter product ID or scan QR code to verify product authenticity",
+      "manualInput": {
+        "placeholder": "Enter product ID or scan QR code",
+        "verify": "Verify"
+      },
+      "orScanQR": "or scan QR code",
+      "scanner": {
+        "title": "Scan QR Code",
+        "description": "Use your camera to scan the QR code on the product",
+        "permission": "Camera permission required",
+        "notSupported": "Your browser does not support camera access",
+        "start": "Start Scanning"
+      }
+    },
+    "scan": {
+      "title": "Scan QR Code",
+      "description": "Use your camera to scan the QR code on the product",
+      "permission": "Camera permission required",
+      "notSupported": "Your browser does not support camera access"
+    },
+    "result": {
+      "authentic": "Authentic Product",
+      "notFound": "Product Not Found",
+      "invalid": "Invalid Product ID"
     }
   }
 }
