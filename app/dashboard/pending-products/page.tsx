@@ -2,7 +2,16 @@
 
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Plus, MoreHorizontal, FileText, Eye, CheckCircle, XCircle, Info, Edit } from "lucide-react";
+import {
+  Plus,
+  MoreHorizontal,
+  FileText,
+  Eye,
+  CheckCircle,
+  XCircle,
+  Info,
+  Edit,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState, useEffect } from "react";
 
@@ -55,11 +64,14 @@ export default function PendingProductsPage() {
   const [pageIndex, setPageIndex] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const { user } = useAuth();
-  const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(
+    null
+  );
   const [showDocumentsDialog, setShowDocumentsDialog] = useState(false);
   const [showRejectDialog, setShowRejectDialog] = useState(false);
   const [rejectionReason, setRejectionReason] = useState("");
-  const [showSubManufacturerDialog, setShowSubManufacturerDialog] = useState(false);
+  const [showSubManufacturerDialog, setShowSubManufacturerDialog] =
+    useState(false);
   const [subManufacturer, setSubManufacturer] = useState<string>("");
   const queryClient = useQueryClient();
   const supabase = createClientComponentClient();
@@ -71,11 +83,7 @@ export default function PendingProductsPage() {
         return Promise.reject(new Error("User email is not available"));
       }
 
-      return ProductService.getPendingProducts(
-        user.email,
-        pageIndex,
-        pageSize
-      );
+      return ProductService.getPendingProducts(pageIndex, pageSize);
     },
     enabled: !!user?.email,
   });
@@ -84,12 +92,6 @@ export default function PendingProductsPage() {
     setSelectedProductId(productId);
     setShowDocumentsDialog(true);
   };
-
-  // Debug için useEffect ekleyelim
-  useEffect(() => {
-    if (selectedProductId) {
-    }
-  }, [selectedProductId]);
 
   const handleApproveProduct = async (productId: string) => {
     if (!user?.id) {
@@ -121,7 +123,7 @@ export default function PendingProductsPage() {
         from: product.status,
         to: "ARCHIVED",
         timestamp: new Date().toISOString(),
-        userId: user.id
+        userId: user.id,
       };
 
       // Ürünü güncelle - belgelerin durumunu değiştirmeden
@@ -129,7 +131,7 @@ export default function PendingProductsPage() {
         .from("products")
         .update({
           status: "ARCHIVED",
-          status_history: [...(product.status_history || []), transition]
+          status_history: [...(product.status_history || []), transition],
         })
         .eq("id", productId)
         .select();
@@ -147,7 +149,10 @@ export default function PendingProductsPage() {
     } catch (error) {
       toast({
         title: "Hata",
-        description: error instanceof Error ? error.message : "Ürün onaylanırken bir hata oluştu",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Ürün onaylanırken bir hata oluştu",
         variant: "destructive",
       });
     }
@@ -188,20 +193,22 @@ export default function PendingProductsPage() {
       let documentsUpdated = false;
 
       // Dökümanları güncelle
-      if (updatedDocuments && typeof updatedDocuments === 'object') {
+      if (updatedDocuments && typeof updatedDocuments === "object") {
         for (const docType in updatedDocuments) {
           if (Array.isArray(updatedDocuments[docType])) {
-            updatedDocuments[docType] = updatedDocuments[docType].map((doc: any) => {
-              if (doc.status === "pending") {
-                documentsUpdated = true;
-                return {
-                  ...doc,
-                  status: "rejected",
-                  updatedAt: new Date().toISOString()
-                };
+            updatedDocuments[docType] = updatedDocuments[docType].map(
+              (doc: any) => {
+                if (doc.status === "pending") {
+                  documentsUpdated = true;
+                  return {
+                    ...doc,
+                    status: "rejected",
+                    updatedAt: new Date().toISOString(),
+                  };
+                }
+                return doc;
               }
-              return doc;
-            });
+            );
           }
         }
       }
@@ -212,7 +219,7 @@ export default function PendingProductsPage() {
         to: "DELETED",
         timestamp: new Date().toISOString(),
         userId: user.id,
-        reason: rejectionReason
+        reason: rejectionReason,
       };
 
       // Ürünü güncelle
@@ -221,7 +228,7 @@ export default function PendingProductsPage() {
         .update({
           status: "DELETED",
           status_history: [...(product.status_history || []), transition],
-          documents: updatedDocuments
+          documents: updatedDocuments,
         })
         .eq("id", selectedProductId)
         .select();
@@ -232,8 +239,8 @@ export default function PendingProductsPage() {
 
       toast({
         title: "Başarılı",
-        description: documentsUpdated 
-          ? "Ürün ve tüm dökümanları başarıyla reddedildi" 
+        description: documentsUpdated
+          ? "Ürün ve tüm dökümanları başarıyla reddedildi"
           : "Ürün başarıyla reddedildi",
       });
       // Verileri yenile
@@ -244,7 +251,10 @@ export default function PendingProductsPage() {
     } catch (error) {
       toast({
         title: "Hata",
-        description: error instanceof Error ? error.message : "Ürün reddedilirken bir hata oluştu",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Ürün reddedilirken bir hata oluştu",
         variant: "destructive",
       });
     }
@@ -252,8 +262,8 @@ export default function PendingProductsPage() {
 
   const hasPendingDocuments = (product: BaseProduct) => {
     if (!product.documents) return false;
-    return Object.values(product.documents).some((doc: Document) =>
-      doc.status === "pending"
+    return Object.values(product.documents).some(
+      (doc: Document) => doc.status === "pending"
     );
   };
 
@@ -280,7 +290,7 @@ export default function PendingProductsPage() {
   };
 
   const fetchProducts = async () => {
-    await queryClient.invalidateQueries({ queryKey: ['pendingProducts'] });
+    await queryClient.invalidateQueries({ queryKey: ["pendingProducts"] });
   };
 
   const handleUpdateSubManufacturer = async () => {
@@ -288,9 +298,9 @@ export default function PendingProductsPage() {
 
     try {
       const { error } = await supabase
-        .from('products')
+        .from("products")
         .update({ sub_manufacturer: subManufacturer })
-        .eq('id', selectedProductId);
+        .eq("id", selectedProductId);
 
       if (error) throw error;
 
@@ -391,13 +401,17 @@ export default function PendingProductsPage() {
                           <DropdownMenuContent align="end">
                             <DropdownMenuLabel>İşlemler</DropdownMenuLabel>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem onClick={() => handleViewDocuments(product.id)}>
+                            <DropdownMenuItem
+                              onClick={() => handleViewDocuments(product.id)}
+                            >
                               <FileText className="h-4 w-4 mr-2" />
                               Belgeleri Görüntüle
                             </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => {
-                              window.location.href = `/dashboard/products/${product.id}`;
-                            }}>
+                            <DropdownMenuItem
+                              onClick={() => {
+                                window.location.href = `/dashboard/products/${product.id}`;
+                              }}
+                            >
                               <Eye className="h-4 w-4 mr-2" />
                               Detayları Görüntüle
                             </DropdownMenuItem>
@@ -405,21 +419,25 @@ export default function PendingProductsPage() {
                               <>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuLabel>Kontrol</DropdownMenuLabel>
-                                <DropdownMenuItem 
-                                  onClick={() => handleApproveProduct(product.id)}
+                                <DropdownMenuItem
+                                  onClick={() =>
+                                    handleApproveProduct(product.id)
+                                  }
                                   className="text-green-600 hover:text-green-700 hover:bg-green-50"
                                 >
                                   <CheckCircle className="h-4 w-4 mr-2 text-green-600" />
                                   Ürünü Onayla
                                 </DropdownMenuItem>
-                                <DropdownMenuItem 
-                                  onClick={() => handleRejectProduct(product.id)}
+                                <DropdownMenuItem
+                                  onClick={() =>
+                                    handleRejectProduct(product.id)
+                                  }
                                   className="text-red-600 hover:text-red-700 hover:bg-red-50"
                                 >
                                   <XCircle className="h-4 w-4 mr-2 text-red-600" />
                                   Ürünü Reddet
                                 </DropdownMenuItem>
-                                <DropdownMenuItem 
+                                <DropdownMenuItem
                                   onClick={() => {
                                     setSelectedProductId(product.id);
                                     setShowSubManufacturerDialog(true);
@@ -449,7 +467,7 @@ export default function PendingProductsPage() {
           </DialogHeader>
           {selectedProductId && (
             <div className="space-y-4">
-              <ProductDocuments productId={selectedProductId} showApprovalOptions={false} />
+              <ProductDocuments productId={selectedProductId} />
             </div>
           )}
         </DialogContent>
@@ -490,7 +508,10 @@ export default function PendingProductsPage() {
         </DialogContent>
       </Dialog>
 
-      <Dialog open={showSubManufacturerDialog} onOpenChange={setShowSubManufacturerDialog}>
+      <Dialog
+        open={showSubManufacturerDialog}
+        onOpenChange={setShowSubManufacturerDialog}
+      >
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>Alt Üretici Bilgisi</DialogTitle>
@@ -518,9 +539,7 @@ export default function PendingProductsPage() {
             >
               İptal
             </Button>
-            <Button onClick={handleUpdateSubManufacturer}>
-              Kaydet
-            </Button>
+            <Button onClick={handleUpdateSubManufacturer}>Kaydet</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
