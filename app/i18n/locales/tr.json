@@ -5,6 +5,12 @@
     "verifyProducts": "Ürün Doğrula",
     "signIn": "Giriş Yap"
   },
+  "pages": {
+    "pendingProducts": {
+      "title": "Bekleyen Ürünler",
+      "description": "Bekleyen ürünlerin listesi"
+    }
+  },
   "admin": {
     "sidebar": {
       "companies": "Firmalar",
@@ -435,7 +441,8 @@
       "dpps": "DPP'ler",
       "suppliers": "Tedarikçiler",
       "documents": "Belgeler",
-      "certifications": "Sertifikalar"
+      "certifications": "Sertifikalar",
+      "pendingProducts": "Bekleyen Ürünler"
     },
     "registration": {
       "title": "Kayıt",
@@ -1576,7 +1583,7 @@
         "active": "Aktif",
         "pending": "Beklemede"
       }
-    }
+   }
   },
   "productCategories": {
     "detergents": "Deterjanlar",
@@ -1816,7 +1823,46 @@
       "deleted": "Silindi"
     },
     "loading": "Yükleniyor...",
-    "actions": "İşlemler"
+    "actions": "İşlemler",
+    "buttons": {
+      "back": "Geri",
+      "login": "Giriş Yap",
+      "dashboard": "Panele Git",
+      "addNew": "Yeni Ürün",
+      "viewDetails": "Detayları Görüntüle"
+    },
+    "auth": {
+      "required": "Kimlik Doğrulama Gerekli",
+      "loginRequired": "Bu sayfayı görüntülemek için giriş yapmanız gerekiyor.",
+      "companyRequired": "Lütfen bir firmaya bağlı olduğunuzdan emin olun."
+    },
+    "labels": {
+      "notAvailable": "Mevcut Değil"
+    },
+    "error": {
+      "title": "Hata",
+      "description": "Bir hata oluştu",
+      "tryAgain": "Lütfen tekrar deneyin",
+      "notFound": "Bulunamadı",
+      "unauthorized": "Yetkisiz Erişim",
+      "forbidden": "Erişim Reddedildi",
+      "serverError": "Sunucu Hatası"
+    },
+    "success": {
+      "title": "Başarılı",
+      "saved": "Kaydedildi",
+      "updated": "Güncellendi",
+      "deleted": "Silindi",
+      "created": "Oluşturuldu"
+    },
+    "validation": {
+      "required": "Bu alan zorunludur",
+      "email": "Lütfen geçerli bir e-posta adresi girin",
+      "minLength": "En az {length} karakter olmalıdır",
+      "maxLength": "En fazla {length} karakter olmalıdır",
+      "password": "Şifre en az 8 karakter olmalıdır",
+      "passwordMatch": "Şifreler eşleşmiyor"
+    }
   },
   "adminDashboard": {
     "title": "Yönetici Paneli",
