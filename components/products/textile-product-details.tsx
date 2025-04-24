@@ -27,42 +27,70 @@ interface TextileProductDetailsProps {
 export function TextileProductDetails({ product }: TextileProductDetailsProps) {
   const t = useTranslations("products.details");
 
-  // Extract data from DPP config
+  // Early return if product is not available
+  if (!product) {
+    return (
+      <div className="text-center p-8">
+        <p className="text-muted-foreground">{t("notAvailable")}</p>
+      </div>
+    );
+  }
+
+  // Extract data from DPP config with null checks
   const getFieldValue = (sectionId: string, fieldId: string) => {
-    const section = product.dpp_config?.sections.find(s => s.id === sectionId);
+    if (!product.dpp_config?.sections) return undefined;
+    const section = product.dpp_config.sections.find(s => s.id === sectionId);
     const field = section?.fields.find(f => f.id === fieldId);
     return field?.value;
   };
 
   const getFieldsByType = (sectionId: string, fieldType: string) => {
-    const section = product.dpp_config?.sections.find(s => s.id === sectionId);
+    if (!product.dpp_config?.sections) return [];
+    const section = product.dpp_config.sections.find(s => s.id === sectionId);
     return section?.fields.filter(f => f.type === fieldType) || [];
   };
 
-  // Get manufacturer and category from basic info section
-  const manufacturer = getFieldValue("basic-info", "manufacturer") as string || "";
-  const category = getFieldValue("basic-info", "category") as string || "";
+  // Get manufacturer and category from basic info section with fallbacks
+  const manufacturer = getFieldValue("basic-info", "manufacturer") as string || t("common.unknown");
+  const category = getFieldValue("basic-info", "category") as string || t("common.unknown");
 
-  // Get materials from materials section
-  const materials = getFieldsByType("materials", "material").map(field => ({
-    name: field.name,
-    percentage: (field.value as any).percentage,
-    recyclable: (field.value as any).recyclable,
-    description: (field.value as any).description
-  }));
+  // Get materials from materials section with type safety
+  const materials = getFieldsByType("materials", "material").map(field => {
+    const value = field.value as { 
+      percentage?: number; 
+      recyclable?: boolean; 
+      description?: string;
+      name?: string;
+    };
+    return {
+      name: value?.name ?? field.name,
+      percentage: value?.percentage ?? 0,
+      recyclable: value?.recyclable ?? false,
+      description: value?.description ?? ""
+    };
+  });
 
-  // Get certifications from certifications section
-  const certifications = getFieldsByType("certifications", "certification").map(field => ({
-    name: field.name,
-    issuedBy: (field.value as any).issuedBy,
-    validUntil: (field.value as any).validUntil,
-    status: (field.value as any).status,
-    documentUrl: (field.value as any).documentUrl
-  }));
+  // Get certifications from certifications section with type safety
+  const certifications = getFieldsByType("certifications", "certification").map(field => {
+    const value = field.value as { 
+      issuedBy?: string; 
+      validUntil?: string; 
+      status?: "valid" | "expired" | "unknown" | "active" | "pending"; 
+      documentUrl?: string;
+      name?: string;
+    };
+    return {
+      name: value?.name ?? field.name,
+      issuedBy: value?.issuedBy ?? "",
+      validUntil: value?.validUntil ?? "",
+      status: value?.status ?? "unknown",
+      documentUrl: value?.documentUrl ?? ""
+    };
+  });
 
   // Get environmental metrics with proper type checking and conversion
   const environmentalFields = product.dpp_config?.sections
-    .find(s => s.id === "environmental")
+    ?.find(s => s.id === "environmental")
     ?.fields.map(field => {
       let value: string | number = 0;
       if (typeof field.value === "string" || typeof field.value === "number") {
@@ -79,8 +107,13 @@ export function TextileProductDetails({ product }: TextileProductDetailsProps) {
       };
     }) || [];
 
-  // Get care instructions
-  const careInstructions = product.dpp_config?.sections.find(s => s.id === "care-instructions")?.fields || [];
+  // Get care instructions with null check
+  const careInstructions = product.dpp_config?.sections
+    ?.find(s => s.id === "care-instructions")
+    ?.fields.map(field => ({
+      name: field.name,
+      value: typeof field.value === "string" ? field.value : JSON.stringify(field.value)
+    })) || [];
 
   return (
     <div className="container mx-auto space-y-16 px-4 py-12 max-w-7xl">
@@ -102,7 +135,7 @@ export function TextileProductDetails({ product }: TextileProductDetailsProps) {
       <div className="grid gap-12 lg:grid-cols-2 items-start max-w-[1400px] mx-auto">
         {/* Image Gallery */}
         <ProductImageGallery 
-          images={product.images} 
+          images={product.images ?? []} 
           name={product.name}
         />
 
@@ -111,25 +144,25 @@ export function TextileProductDetails({ product }: TextileProductDetailsProps) {
           {/* Product Title and Description */}
           <ProductHeader 
             name={product.name} 
-            description={product.description}
+            description={product.description ?? ""}
           />
 
           {/* Quick Info Cards */}
           <ProductQuickInfo 
             title={t("quickInfo.title")}
-            model={product.model} 
+            model={product.model ?? ""} 
             manufacturer={manufacturer}
           />
 
           {/* Key Features */}
           <ProductKeyFeatures 
             title={t("keyFeatures.title")}
-            features={product.key_features}
+            features={product.key_features ?? []}
           />
         </div>
       </div>
 
-      <div className="grid gap-8 lg:grid-cols-2 mt-16 max-w-[1400px] mx-auto">
+      <div className="grid gap-8 lg:grid-cols-2">
         {/* Basic Information */}
         <BasicInformationCard 
           title={t("basicInfo.title")}

@@ -34,7 +34,7 @@ export function CertificationsCard({
   title,
   certifications
 }: CertificationsCardProps) {
-  const t = useTranslations("products.details.certifications");
+  const t = useTranslations("products.details.sections.certifications");
 
   const getStatusVariant = (status: Certification["status"]) => {
     switch (status) {

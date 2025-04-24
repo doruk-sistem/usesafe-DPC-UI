@@ -7,33 +7,14 @@ import { useEffect, useState } from "react";
 
 import { Card } from "@/components/ui/card";
 import { Error } from "@/components/ui/error";
-import { getRecentApprovals, type RecentApproval } from "@/lib/hooks/useMetrics";
+import { useMetrics, type RecentApproval } from "@/lib/hooks/useMetrics";
 
 export function RecentApprovals() {
   const t = useTranslations("adminDashboard");
-  const [approvals, setApprovals] = useState<RecentApproval[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchApprovals = async () => {
-      try {
-        const data = await getRecentApprovals();
-        setApprovals(data);
-      } catch (err: unknown) {
-        setError(typeof err === 'object' && err !== null && 'message' in err
-          ? (err as Error).message
-          : 'An error occurred');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchApprovals();
-  }, []);
+  const { approvals, isLoading, error } = useMetrics();
 
   if (error) {
-    return <Error error={error} />;
+    return <Error error={error.message} />;
   }
 
   return (
@@ -78,4 +59,4 @@ export function RecentApprovals() {
       </div>
     </Card>
   );
-} 
+}

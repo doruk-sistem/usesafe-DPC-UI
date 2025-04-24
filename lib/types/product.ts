@@ -104,3 +104,9 @@ export interface ProductResponse {
   data?: BaseProduct;
   error?: ProductError;
 }
+
+export interface Product extends BaseProduct {
+  dpp_config?: DPPConfig;
+  key_features?: KeyFeature[];
+  images?: ProductImage[];
+}

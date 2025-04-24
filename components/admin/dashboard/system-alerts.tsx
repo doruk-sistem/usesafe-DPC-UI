@@ -3,33 +3,14 @@
 import { motion } from "framer-motion";
 import { AlertTriangle, AlertCircle, Info } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
 
 import { Card } from "@/components/ui/card";
 import { Error } from "@/components/ui/error";
-import { getSystemAlerts, type SystemAlert } from "@/lib/hooks/useMetrics";
+import { useMetrics } from "@/lib/hooks/useMetrics";
 
 export function SystemAlerts() {
   const t = useTranslations("adminDashboard");
-  const [alerts, setAlerts] = useState<SystemAlert[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchAlerts = async () => {
-      try {
-        const alerts = await getSystemAlerts();
-        setAlerts(alerts);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchAlerts();
-  }, []);
-
+  const { alerts, isLoading, error } = useMetrics(); 
   const getSeverityIcon = (severity: string) => {
     switch (severity) {
       case 'high':
@@ -53,7 +34,7 @@ export function SystemAlerts() {
   };
 
   if (error) {
-    return <Error error={error} />;
+    return <Error error={error.message} />;
   }
 
   return (

@@ -15,16 +15,14 @@ import { EnhancedCard } from "@/components/ui/enhanced-card";
 import { useProducts } from "@/lib/hooks/use-products";
 import { cn } from "@/lib/utils";
 import { calculateProductGrowth } from "@/lib/utils/metrics";
+import { useMetrics } from "@/lib/hooks/useMetrics";
 
 export function DashboardMetrics() {
   const t = useTranslations("dashboard.metrics");
   const { products } = useProducts();
   const productGrowth = calculateProductGrowth(products);
 
-  // Dummy values for demonstration; replace with actual data fetching logic
-  const pendingCertifications = 7; // Replace with actual value if available
-  const approvedDocuments = 128; // Replace with actual value if available
-  const complianceRate = 94; // Replace with actual value if available
+  const { metrics, isLoading } = useMetrics(); // 🎯 hook ile veri çekiliyor
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -46,24 +44,36 @@ export function DashboardMetrics() {
     },
     {
       title: t("pendingCertifications"),
-      value: pendingCertifications ? pendingCertifications.toString() : "0",
+      value: isLoading
+        ? "..."
+        : metrics?.pendingApprovals?.count.toString() ?? "0",
       icon: AlertTriangle,
       gradient: "from-yellow-500 to-yellow-700",
-      trend: "+3.2%",
+      trend: isLoading
+        ? ""
+        : `${metrics?.pendingApprovals?.change ?? 0}%`,
     },
     {
       title: t("approvedDocuments"),
-      value: approvedDocuments ? approvedDocuments.toString() : "0",
+      value: isLoading
+        ? "..."
+        : metrics?.documentVerifications?.count.toString() ?? "0",
       icon: FileText,
       gradient: "from-green-500 to-green-700",
-      trend: "+22.1%",
+      trend: isLoading
+        ? ""
+        : `${metrics?.documentVerifications?.change ?? 0}%`,
     },
     {
       title: t("complianceRate"),
-      value: complianceRate ? `${complianceRate}%` : "0%",
+      value: isLoading
+        ? "..."
+        : `${metrics?.verificationRate?.rate.toFixed(1) ?? 0}%`,
       icon: ShieldCheck,
       gradient: "from-purple-500 to-purple-700",
-      trend: "+5.6%",
+      trend: isLoading
+        ? ""
+        : `${metrics?.verificationRate?.change ?? 0}%`,
     },
   ];
 
@@ -92,19 +102,23 @@ export function DashboardMetrics() {
             <div>
               <p className="text-sm text-white/80 mb-2">{card.title}</p>
               <h3 className="text-3xl font-bold text-white">{card.value}</h3>
-              <div
-                className={cn(
-                  "flex items-center mt-2 text-xs",
-                  card.trend.startsWith("+") ? "text-green-300" : "text-red-300"
-                )}
-              >
-                {card.trend.startsWith("+") ? (
-                  <TrendingUp className="h-4 w-4 mr-1" />
-                ) : (
-                  <TrendingDown className="h-4 w-4 mr-1" />
-                )}
-                <span>{card.trend}</span>
-              </div>
+              {card.trend && (
+                <div
+                  className={cn(
+                    "flex items-center mt-2 text-xs",
+                    card.trend.startsWith("+")
+                      ? "text-green-300"
+                      : "text-red-300"
+                  )}
+                >
+                  {card.trend.startsWith("+") ? (
+                    <TrendingUp className="h-4 w-4 mr-1" />
+                  ) : (
+                    <TrendingDown className="h-4 w-4 mr-1" />
+                  )}
+                  <span>{card.trend}</span>
+                </div>
+              )}
             </div>
             <card.icon className="h-12 w-12 text-white/30" />
           </motion.div>

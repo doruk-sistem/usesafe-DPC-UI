@@ -131,8 +131,12 @@ export function ProductList() {
         const carbonFootprint = getCarbonFootprint(product);
         const manufacturer = getManufacturer(product);
         const category = getCategory(product);
-        const primaryImage =
-          product.images.find((img) => img.is_primary) || product.images[0];
+        const defaultImage = {
+          url: '/placeholder-image.png',
+          alt: 'Ürün görseli',
+          is_primary: true
+        };
+        const primaryImage = product.images?.find((img) => img.is_primary) || product.images?.[0] || defaultImage;
 
         return (
           <motion.div

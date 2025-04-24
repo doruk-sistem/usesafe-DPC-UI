@@ -1,8 +1,11 @@
+"use client";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import type { z } from "zod";
+import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
@@ -19,6 +22,7 @@ import { CompanyInfoStep } from "./steps/company-info";
 import { DocumentsStep } from "./steps/documents";
 import { OwnerInfoStep } from "./steps/owner-info";
 import { RegistrationSuccess } from "./steps/registration-success";
+import { Card } from "@/components/ui/card";
 
 type FormData = z.infer<typeof registerSchema>;
 
@@ -35,6 +39,7 @@ export function RegisterForm() {
   const { signUp } = useAuth();
   const { toast } = useToast();
   const router = useRouter();
+  const t = useTranslations("auth.createAccount");
 
   const form = useForm<FormData>({
     resolver: zodResolver(registerSchema),
@@ -82,33 +87,19 @@ export function RegisterForm() {
           const response = await ManufacturerService.register(registrationData);
 
           if (!response.success) {
-            throw new Error(response.message || "Registration failed");
+            throw new Error(response.message || t("error.description"));
           }
-
-          // Create Supabase user
-          // await signUp(formData.email, formData.password, {
-          //   full_name: formData.ownerName,
-          //   company_id: response.registrationId,
-          //   role: "manufacturer",
-          // });
 
           setIsSubmitted(true);
           toast({
-            title: "Registration Submitted Successfully",
-            description: "Please check your email to verify your account.",
+            title: t("success.title"),
+            description: t("success.description"),
           });
 
-          // // Redirect after showing success message
-          // setTimeout(() => {
-          //   router.push("/auth/pending-approval");
-          // }, 5000);
         } catch (error) {
           toast({
-            title: "Registration Failed",
-            description:
-              error instanceof Error
-                ? error.message
-                : "There was an error submitting your registration. Please try again.",
+            title: t("error.title"),
+            description: error instanceof Error ? error.message : t("error.description"),
             variant: "destructive",
           });
           throw error;
@@ -116,11 +107,8 @@ export function RegisterForm() {
       }
     } catch (error) {
       toast({
-        title: "Registration Failed",
-        description:
-          error instanceof Error
-            ? error.message
-            : "There was an error submitting your registration. Please try again.",
+        title: t("error.title"),
+        description: error instanceof Error ? error.message : t("error.description"),
         variant: "destructive",
       });
     } finally {
@@ -142,50 +130,54 @@ export function RegisterForm() {
   const CurrentStepComponent = steps[currentStep].component;
 
   return (
-    <div className="space-y-8">
-      <div className="space-y-2">
-        <Progress value={progress} className="h-2" />
-        <div className="flex justify-between text-sm text-muted-foreground">
-          <span>
-            Step {currentStep + 1} of {totalSteps}
-          </span>
-          <span>{steps[currentStep].title}</span>
-        </div>
-      </div>
-
-      <Form {...form}>
-        <form
-          className="space-y-8" // Add these for debugging
-          onKeyDown={handleKeyPress}
-        >
-          <CurrentStepComponent form={form} />
-
-          <div className="flex justify-between pt-4">
-            {currentStep > 0 && (
-              <Button
-                type="button"
-                variant="outline"
-                onClick={prevStep}
-                disabled={isSubmitting}
-              >
-                Previous
-              </Button>
-            )}
-            <Button
-              type="button"
-              className="ml-auto"
-              disabled={isSubmitting}
-              onClick={() => onNextStep()}
-            >
-              {isSubmitting
-                ? "Submitting..."
-                : isLastStep
-                ? "Submit Registration"
-                : "Next"}
-            </Button>
+    <div className="container flex h-screen w-screen flex-col items-center justify-center">
+      <Card className="w-full max-w-md">
+        <div className="space-y-8">
+          <div className="space-y-2">
+            <Progress value={progress} className="h-2" />
+            <div className="flex justify-between text-sm text-muted-foreground">
+              <span>
+                {t("step")} {currentStep + 1} {t("of")} {totalSteps}
+              </span>
+              <span>{t(`steps.${steps[currentStep].title}`)}</span>
+            </div>
           </div>
-        </form>
-      </Form>
+
+          <Form {...form}>
+            <form
+              className="space-y-8"
+              onKeyDown={handleKeyPress}
+            >
+              <CurrentStepComponent form={form} />
+
+              <div className="flex justify-between pt-4">
+                {currentStep > 0 && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={prevStep}
+                    disabled={isSubmitting}
+                  >
+                    {t("buttons.previous")}
+                  </Button>
+                )}
+                <Button
+                  type="button"
+                  className="ml-auto"
+                  disabled={isSubmitting}
+                  onClick={() => onNextStep()}
+                >
+                  {isSubmitting
+                    ? t("buttons.submitting")
+                    : isLastStep
+                    ? t("buttons.submit")
+                    : t("buttons.next")}
+                </Button>
+              </div>
+            </form>
+          </Form>
+        </div>
+      </Card>
     </div>
   );
 }

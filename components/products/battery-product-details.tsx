@@ -237,7 +237,7 @@ export function BatteryProductDetails({ product }: BatteryProductDetailsProps) {
       >
         {/* Image Gallery */}
         <ProductImageGallery
-          images={product.images}
+          images={product.images || []}
           name={product.name}
         />
 
@@ -252,14 +252,14 @@ export function BatteryProductDetails({ product }: BatteryProductDetailsProps) {
           {/* Quick Info Cards */}
           <ProductQuickInfo
             title={t('quickInfo.model')}
-            model={product.model}
+            model={product.model || ''}
             manufacturer={manufacturer}
           />
 
           {/* Key Features */}
           <ProductKeyFeatures 
             title={t('keyFeatures.title')}
-            features={features} 
+            features={product.key_features || []} 
           />
         </motion.div>
       </motion.div>
