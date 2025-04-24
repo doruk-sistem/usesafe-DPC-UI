@@ -2018,6 +2018,27 @@
           }
         }
       }
+    },
+    "createAccount": {
+      "title": "Hesap Oluştur",
+      "description": "Yeni bir hesap oluşturun",
+      "name": "Ad",
+      "email": "E-posta",
+      "form": {
+        "name": "Ad",
+        "email": "E-posta",
+        "password": "Parola",
+        "confirmPassword": "Parola Onay",
+        "submit": "Gönder"
+      },
+      "success": {
+        "title": "Başarı",
+        "description": "Hesap başarıyla oluşturuldu"
+      },
+      "error": {
+        "title": "Hata",
+        "description": "Hesap oluşturulurken bir hata oluştu"
+      }
     }
   }
 } 

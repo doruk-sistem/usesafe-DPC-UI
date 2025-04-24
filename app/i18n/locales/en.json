@@ -1069,5 +1069,26 @@
     }
   },
   "auth": {
+    "createAccount": {
+      "title": "Create Account",
+      "description": "Create a new account",
+      "name": "Name",
+      "email": "Email",
+      "form": {
+        "name": "Name",
+        "email": "Email",
+        "password": "Password",
+        "confirmPassword": "Confirm Password",
+        "submit": "Submit"
+      },
+      "success": {
+        "title": "Success",
+        "description": "Account created successfully"
+      },
+      "error": {
+        "title": "Error",
+        "description": "Failed to create account"
+      }
+    }
   }
 }
