@@ -5,10 +5,36 @@
     "verifyProducts": "Ürün Doğrula",
     "signIn": "Giriş Yap"
   },
-  "pages": {
+"pages": {
     "pendingProducts": {
       "title": "Bekleyen Ürünler",
-      "description": "Bekleyen ürünlerin listesi"
+      "description": "Bekleyen ürünlerin listesi",
+      "columns": {
+        "documents": "Belgeler"
+      },
+      "status": {
+        "pendingDocuments": "Bekleyen Belgeler",
+        "allDocumentsApproved": "Tüm Belgeler Onaylı"
+      },
+      "actions": {
+        "title": "İşlemler",
+        "viewDocuments": "Belgeleri Görüntüle",
+        "viewDetails": "Detayları Görüntüle",
+        "control": "Kontrol",
+        "approve": "Onayla",
+        "reject": "Reddet"
+      },
+      "documentsDialog": {
+        "title": "Ürün Belgeleri"
+      },
+      "rejectDialog": {
+        "title": "Ürünü Reddet",
+        "description": "Lütfen reddetme sebebini belirtin.",
+        "reasonLabel": "Reddetme Sebebi",
+        "reasonPlaceholder": "Reddetme sebebini girin...",
+        "cancel": "İptal",
+        "reject": "Reddet"
+      }
     }
   },
   "admin": {
@@ -330,6 +356,56 @@
           "status": "Durum",
           "addedDate": "Eklenme Tarihi",
           "actions": "İşlemler"
+        },
+        "ProductDocuments": {
+          "uploadNewDocument": "Yeni Belge Yükle",
+          "documentType": "Belge Türü",
+          "select": "Seç",
+          "qualityCertificate": "Kalite Sertifikası",
+          "safetyCertificate": "Güvenlik Sertifikası",
+          "testReports": "Test Raporları",
+          "technicalDocumentation": "Teknik Dokümantasyon",
+          "complianceDocuments": "Uygunluk Belgeleri",
+          "file": "Dosya",
+          "selectedFile": "Seçilen dosya:",
+          "additionalInfo": "Ek Bilgiler",
+          "version": "Versiyon",
+          "validUntilOptional": "İsteğe Bağlı",
+          "notesOptional": "İsteğe Bağlı",
+          "documentNotesPlaceholder": "Belge notları...",
+          "cancel": "İptal",
+          "uploading": "Yükleniyor...",
+          "uploadDocument": "Belge Yükle",
+          "noDocumentsFound": "Belge Bulunamadı",
+          "noDocumentsDescription": "Bu ürüne ait belge bulunmamaktadır.",
+          "documentName": "Belge Adı",
+          "type": "Tür",
+          "status": "Durum",
+          "validUntil": "Geçerlilik Tarihi",
+          "actions": "İşlemler",
+          "openMenu": "Menüyü aç",
+          "download": "İndir",
+          "view": "Görüntüle",
+          "viewHistory": "Geçmişi Görüntüle",
+          "reject": "Reddet",
+          "reupload": "Yeniden Yükle",
+          "documentDetails": "Belge Detayları",
+          "generalInfo": "Genel Bilgiler",
+          "fileSize": "Dosya Boyutu",
+          "uploadDate": "Yükleme Tarihi",
+          "notes": "Notlar",
+          "rejectionReason": "Reddetme Nedeni",
+          "rejectDocument": "Belgeyi Reddet",
+          "rejectDescription": "Lütfen belgeyi reddetme nedeninizi girin.",
+          "rejectionReasonPlaceholder": "Reddetme nedeni...",
+          "confirm": "Onayla",
+          "productDocuments": "Ürün Belgeleri",
+          "productNotFound": "Ürün Bulunamadı",
+          "productNotFoundDescription": "İstenen ürün bulunamadı.",
+          "notAvailable": "Mevcut Değil",
+          "success": "Başarılı",
+          "documentUploadedSuccessfully": "Belge başarıyla yüklendi",
+          "noNotes": "Not yok"
         },
         "status": {
           "active": "Aktif",
@@ -676,7 +752,56 @@
     "description": "Dijital Ürün Pasaportu doğrulanmış sürdürülebilir ürünlerimizi keşfedin.",
     "loading": "Ürünler yükleniyor...",
     "backToProducts": "Ürünlere Dön",
-
+    "ProductDocuments": {
+      "uploadNewDocument": "Yeni Belge Yükle",
+      "documentType": "Belge Türü",
+      "select": "Seç",
+      "qualityCertificate": "Kalite Sertifikası",
+      "safetyCertificate": "Güvenlik Sertifikası",
+      "testReports": "Test Raporları",
+      "technicalDocumentation": "Teknik Dokümantasyon",
+      "complianceDocuments": "Uygunluk Belgeleri",
+      "file": "Dosya",
+      "selectedFile": "Seçilen dosya:",
+      "additionalInfo": "Ek Bilgiler",
+      "version": "Versiyon",
+      "validUntilOptional": "İsteğe Bağlı",
+      "notesOptional": "İsteğe Bağlı",
+      "documentNotesPlaceholder": "Belge notları...",
+      "cancel": "İptal",
+      "uploading": "Yükleniyor...",
+      "uploadDocument": "Belge Yükle",
+      "noDocumentsFound": "Belge Bulunamadı",
+      "noDocumentsDescription": "Bu ürüne ait belge bulunmamaktadır.",
+      "documentName": "Belge Adı",
+      "type": "Tür",
+      "status": "Durum",
+      "validUntil": "Geçerlilik Tarihi",
+      "actions": "İşlemler",
+      "openMenu": "Menüyü aç",
+      "download": "İndir",
+      "view": "Görüntüle",
+      "viewHistory": "Geçmişi Görüntüle",
+      "reject": "Reddet",
+      "reupload": "Yeniden Yükle",
+      "documentDetails": "Belge Detayları",
+      "generalInfo": "Genel Bilgiler",
+      "fileSize": "Dosya Boyutu",
+      "uploadDate": "Yükleme Tarihi",
+      "notes": "Notlar",
+      "rejectionReason": "Reddetme Nedeni",
+      "rejectDocument": "Belgeyi Reddet",
+      "rejectDescription": "Lütfen belgeyi reddetme nedeninizi girin.",
+      "rejectionReasonPlaceholder": "Reddetme nedeni...",
+      "confirm": "Onayla",
+      "productDocuments": "Ürün Belgeleri",
+      "productNotFound": "Ürün Bulunamadı",
+      "productNotFoundDescription": "İstenen ürün bulunamadı.",
+      "notAvailable": "Mevcut Değil",
+      "success": "Başarılı",
+      "documentUploadedSuccessfully": "Belge başarıyla yüklendi",
+      "noNotes": "Not yok"
+    },
     "error": {
       "title": "Hata",
       "description": "Ürünler yüklenirken bir hata oluştu"

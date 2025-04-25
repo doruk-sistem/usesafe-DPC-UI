@@ -151,7 +151,9 @@ export default function PendingProductsPage() {
                 <TableHead>
                   {t("productManagement.list.columns.status")}
                 </TableHead>
-                <TableHead>Belgeler</TableHead>
+                <TableHead>
+                  {t("pages.pendingProducts.columns.documents")}
+                </TableHead>
                 <TableHead>
                   {t("productManagement.list.columns.createdAt")}
                 </TableHead>
@@ -180,9 +182,9 @@ export default function PendingProductsPage() {
                     </TableCell>
                     <TableCell>
                       {pendingDocs ? (
-                        <Badge variant="warning">Bekleyen Belgeler</Badge>
+                        <Badge variant="warning">{t("pages.pendingProducts.status.pendingDocuments")}</Badge>
                       ) : (
-                        <Badge variant="success">Tüm Belgeler Onaylı</Badge>
+                        <Badge variant="success">{t("pages.pendingProducts.status.allDocumentsApproved")}</Badge>
                       )}
                     </TableCell>
                     <TableCell>
@@ -197,13 +199,13 @@ export default function PendingProductsPage() {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>İşlemler</DropdownMenuLabel>
+                            <DropdownMenuLabel>{t("pages.pendingProducts.actions.title")}</DropdownMenuLabel>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem
                               onClick={() => handleViewDocuments(product.id)}
                             >
                               <FileText className="h-4 w-4 mr-2" />
-                              Belgeleri Görüntüle
+                              {t("pages.pendingProducts.actions.viewDocuments")}
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               onClick={() => {
@@ -211,12 +213,12 @@ export default function PendingProductsPage() {
                               }}
                             >
                               <Eye className="h-4 w-4 mr-2" />
-                              Detayları Görüntüle
+                              {t("pages.pendingProducts.actions.viewDetails")}
                             </DropdownMenuItem>
                             {product.status === "NEW" && (
                               <>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuLabel>Kontrol</DropdownMenuLabel>
+                                <DropdownMenuLabel>{t("pages.pendingProducts.actions.control")}</DropdownMenuLabel>
                                 <DropdownMenuItem
                                   onClick={() =>
                                     handleApproveProduct(product.id)
@@ -224,7 +226,7 @@ export default function PendingProductsPage() {
                                   className="text-green-600 hover:text-green-700 hover:bg-green-50"
                                 >
                                   <CheckCircle className="h-4 w-4 mr-2 text-green-600" />
-                                  Ürünü Onayla
+                                  {t("pages.pendingProducts.actions.approve")}
                                 </DropdownMenuItem>
                                 <DropdownMenuItem
                                   onClick={() =>
@@ -233,7 +235,7 @@ export default function PendingProductsPage() {
                                   className="text-red-600 hover:text-red-700 hover:bg-red-50"
                                 >
                                   <XCircle className="h-4 w-4 mr-2 text-red-600" />
-                                  Ürünü Reddet
+                                  {t("pages.pendingProducts.actions.reject")}
                                 </DropdownMenuItem>
                               </>
                             )}
@@ -252,7 +254,7 @@ export default function PendingProductsPage() {
       <Dialog open={showDocumentsDialog} onOpenChange={setShowDocumentsDialog}>
         <DialogContent className="max-w-4xl">
           <DialogHeader>
-            <DialogTitle>Ürün Belgeleri</DialogTitle>
+            <DialogTitle>{t("pages.pendingProducts.documentsDialog.title")}</DialogTitle>
           </DialogHeader>
           {selectedProductId && (
             <div className="space-y-4">
@@ -265,18 +267,20 @@ export default function PendingProductsPage() {
       <Dialog open={showRejectDialog} onOpenChange={setShowRejectDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Ürünü Reddet</DialogTitle>
+            <DialogTitle>{t("pages.pendingProducts.rejectDialog.title")}</DialogTitle>
             <DialogDescription>
-              Lütfen reddetme sebebini belirtin.
+              {t("pages.pendingProducts.rejectDialog.description")}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
-            <Label htmlFor="rejection-reason">Reddetme Sebebi</Label>
+            <Label htmlFor="rejection-reason">
+              {t("pages.pendingProducts.rejectDialog.reasonLabel")}
+            </Label>
             <Textarea
               id="rejection-reason"
               value={rejectionReason}
               onChange={(e) => setRejectionReason(e.target.value)}
-              placeholder="Reddetme sebebini girin..."
+              placeholder={t("pages.pendingProducts.rejectDialog.reasonPlaceholder")}
             />
           </div>
           <DialogFooter>
@@ -288,10 +292,10 @@ export default function PendingProductsPage() {
                 setSelectedProductId(null);
               }}
             >
-              İptal
+              {t("pages.pendingProducts.rejectDialog.cancel")}
             </Button>
             <Button variant="destructive" onClick={handleRejectConfirm}>
-              Reddet
+              {t("pages.pendingProducts.rejectDialog.reject")}
             </Button>
           </DialogFooter>
         </DialogContent>
