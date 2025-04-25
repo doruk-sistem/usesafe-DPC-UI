@@ -279,13 +279,15 @@ export class ProductService {
 
     if (createError) throw createError;
 
-    // Orijinal pending ürünü sil
+    // Orijinal pending ürünü silme işlemini yorum satırına alıyoruz
+    /*
     const { error: deleteError } = await supabase
       .from("products")
       .delete()
       .eq("id", productId);
 
     if (deleteError) throw deleteError;
+    */
   }
 
   static async rejectProduct(
