@@ -21,7 +21,8 @@
         "allDocumentsApproved": "All Documents Approved",
         "draft":"Draft",
         "pending":"Pending",
-        "rejected":"Rejected"
+        "rejected":"Rejected",
+        "new":"New"
       },
       "actions": {
         "title": "Actions",

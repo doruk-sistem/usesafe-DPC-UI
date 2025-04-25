@@ -17,7 +17,8 @@
         "allDocumentsApproved": "Tüm Belgeler Onaylı",
         "draft": "Taslak",
         "pending": "Beklemede",
-        "rejected": "Reddedildi"
+        "rejected": "Reddedildi",
+        "new": "Yeni"
       },
       "actions": {
         "title": "İşlemler",

@@ -56,12 +56,15 @@ export default function PendingProductsPage() {
   const t = useTranslations();
   const [pageIndex, setPageIndex] = useState(0);
   const [pageSize, setPageSize] = useState(10);
-  const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(
+    null
+  );
   const [showDocumentsDialog, setShowDocumentsDialog] = useState(false);
   const [showRejectDialog, setShowRejectDialog] = useState(false);
   const [rejectionReason, setRejectionReason] = useState("");
 
-  const { data, isLoading, error, approveProduct, rejectProduct } = usePendingProducts(pageIndex, pageSize);
+  const { data, isLoading, error, approveProduct, rejectProduct } =
+    usePendingProducts(pageIndex, pageSize);
 
   const handleViewDocuments = (productId: string) => {
     setSelectedProductId(productId);
@@ -79,7 +82,7 @@ export default function PendingProductsPage() {
 
   const handleRejectConfirm = () => {
     if (!selectedProductId) return;
-    
+
     rejectProduct({ productId: selectedProductId, reason: rejectionReason });
     setShowRejectDialog(false);
     setRejectionReason("");
@@ -94,6 +97,8 @@ export default function PendingProductsPage() {
 
   const getStatusDisplay = (status: string) => {
     switch (status) {
+      case "NEW":
+        return t("pages.pendingProducts.status.new");
       case "DRAFT":
         return t("pages.pendingProducts.status.draft");
       case "PENDING":
@@ -182,9 +187,15 @@ export default function PendingProductsPage() {
                     </TableCell>
                     <TableCell>
                       {pendingDocs ? (
-                        <Badge variant="warning">{t("pages.pendingProducts.status.pendingDocuments")}</Badge>
+                        <Badge variant="warning">
+                          {t("pages.pendingProducts.status.pendingDocuments")}
+                        </Badge>
                       ) : (
-                        <Badge variant="success">{t("pages.pendingProducts.status.allDocumentsApproved")}</Badge>
+                        <Badge variant="success">
+                          {t(
+                            "pages.pendingProducts.status.allDocumentsApproved"
+                          )}
+                        </Badge>
                       )}
                     </TableCell>
                     <TableCell>
@@ -199,13 +210,17 @@ export default function PendingProductsPage() {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>{t("pages.pendingProducts.actions.title")}</DropdownMenuLabel>
+                            <DropdownMenuLabel>
+                              {t("pages.pendingProducts.actions.title")}
+                            </DropdownMenuLabel>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem
                               onClick={() => handleViewDocuments(product.id)}
                             >
                               <FileText className="h-4 w-4 mr-2" />
-                              {t("pages.pendingProducts.actions.icons.documents")}
+                              {t(
+                                "pages.pendingProducts.actions.icons.documents"
+                              )}
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               onClick={() => {
@@ -218,7 +233,9 @@ export default function PendingProductsPage() {
                             {product.status === "NEW" && (
                               <>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuLabel>{t("pages.pendingProducts.actions.control")}</DropdownMenuLabel>
+                                <DropdownMenuLabel>
+                                  {t("pages.pendingProducts.actions.control")}
+                                </DropdownMenuLabel>
                                 <DropdownMenuItem
                                   onClick={() =>
                                     handleApproveProduct(product.id)
@@ -226,7 +243,9 @@ export default function PendingProductsPage() {
                                   className="text-green-600 hover:text-green-700 hover:bg-green-50"
                                 >
                                   <CheckCircle className="h-4 w-4 mr-2 text-green-600" />
-                                  {t("pages.pendingProducts.actions.icons.approve")}
+                                  {t(
+                                    "pages.pendingProducts.actions.icons.approve"
+                                  )}
                                 </DropdownMenuItem>
                                 <DropdownMenuItem
                                   onClick={() =>
@@ -235,7 +254,9 @@ export default function PendingProductsPage() {
                                   className="text-red-600 hover:text-red-700 hover:bg-red-50"
                                 >
                                   <XCircle className="h-4 w-4 mr-2 text-red-600" />
-                                  {t("pages.pendingProducts.actions.icons.reject")}
+                                  {t(
+                                    "pages.pendingProducts.actions.icons.reject"
+                                  )}
                                 </DropdownMenuItem>
                               </>
                             )}
@@ -254,7 +275,9 @@ export default function PendingProductsPage() {
       <Dialog open={showDocumentsDialog} onOpenChange={setShowDocumentsDialog}>
         <DialogContent className="max-w-4xl">
           <DialogHeader>
-            <DialogTitle>{t("pages.pendingProducts.documentsDialog.title")}</DialogTitle>
+            <DialogTitle>
+              {t("pages.pendingProducts.documentsDialog.title")}
+            </DialogTitle>
           </DialogHeader>
           {selectedProductId && (
             <div className="space-y-4">
@@ -267,7 +290,9 @@ export default function PendingProductsPage() {
       <Dialog open={showRejectDialog} onOpenChange={setShowRejectDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{t("pages.pendingProducts.rejectDialog.title")}</DialogTitle>
+            <DialogTitle>
+              {t("pages.pendingProducts.rejectDialog.title")}
+            </DialogTitle>
             <DialogDescription>
               {t("pages.pendingProducts.rejectDialog.description")}
             </DialogDescription>
@@ -280,7 +305,9 @@ export default function PendingProductsPage() {
               id="rejection-reason"
               value={rejectionReason}
               onChange={(e) => setRejectionReason(e.target.value)}
-              placeholder={t("pages.pendingProducts.rejectDialog.reasonPlaceholder")}
+              placeholder={t(
+                "pages.pendingProducts.rejectDialog.reasonPlaceholder"
+              )}
             />
           </div>
           <DialogFooter>
