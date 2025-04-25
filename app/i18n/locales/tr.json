@@ -1800,7 +1800,14 @@
       "saving": "Kaydediliyor...",
       "updateProduct": "Ürünü Güncelle",
       "createProduct": "Ürün Oluştur"
+    },
+    "delete": {
+      "title": "Delete",
+      "description": "Are you sure you want to delete this item?",
+      "cancel": "Cancel",
+      "confirm": "Delete"
     }
+
   },
   "adminDashboard": {
     "title": "Yönetici Paneli",
