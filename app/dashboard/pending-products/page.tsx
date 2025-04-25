@@ -1,6 +1,5 @@
 "use client";
 
-import { useQueryClient } from "@tanstack/react-query";
 import {
   Plus,
   MoreHorizontal,
@@ -49,10 +48,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
-import { toast } from "@/components/ui/use-toast";
-import { useAuth } from "@/lib/hooks/use-auth";
 import { usePendingProducts } from "@/lib/hooks/use-pending-products";
-import { ProductService } from "@/lib/services/product";
 import { Document } from "@/lib/types/document";
 import { BaseProduct } from "@/lib/types/product";
 
@@ -60,47 +56,20 @@ export default function PendingProductsPage() {
   const t = useTranslations();
   const [pageIndex, setPageIndex] = useState(0);
   const [pageSize, setPageSize] = useState(10);
-  const { user } = useAuth();
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const [showDocumentsDialog, setShowDocumentsDialog] = useState(false);
   const [showRejectDialog, setShowRejectDialog] = useState(false);
   const [rejectionReason, setRejectionReason] = useState("");
-  const queryClient = useQueryClient();
 
-  const { data, isLoading, error } = usePendingProducts(pageIndex, pageSize);
+  const { data, isLoading, error, approveProduct, rejectProduct } = usePendingProducts(pageIndex, pageSize);
 
   const handleViewDocuments = (productId: string) => {
     setSelectedProductId(productId);
     setShowDocumentsDialog(true);
   };
 
-  const handleApproveProduct = async (productId: string) => {
-    if (!user?.id) {
-      toast({
-        title: "Hata",
-        description: "Kullanıcı bilgisi bulunamadı",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    try {
-      await ProductService.approveProduct(productId, user.id);
-      toast({
-        title: "Başarılı",
-        description: "Ürün başarıyla onaylandı ve taslak olarak kopyalandı.",
-      });
-      queryClient.invalidateQueries({ queryKey: ["pending-products"] });
-    } catch (error) {
-      toast({
-        title: "Hata",
-        description:
-          error instanceof Error
-            ? error.message
-            : "Ürün onaylanırken bir hata oluştu",
-        variant: "destructive",
-      });
-    }
+  const handleApproveProduct = (productId: string) => {
+    approveProduct(productId);
   };
 
   const handleRejectProduct = (productId: string) => {
@@ -108,35 +77,12 @@ export default function PendingProductsPage() {
     setShowRejectDialog(true);
   };
 
-  const handleRejectConfirm = async () => {
-    if (!selectedProductId || !user?.id) {
-      toast({
-        title: "Hata",
-        description: "Kullanıcı bilgisi veya ürün ID'si bulunamadı",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    try {
-      await ProductService.rejectProduct(selectedProductId, user.id, rejectionReason);
-      toast({
-        title: "Başarılı",
-        description: "Ürün başarıyla reddedildi",
-      });
-      queryClient.invalidateQueries({ queryKey: ["pending-products"] });
-      setShowRejectDialog(false);
-      setRejectionReason("");
-    } catch (error) {
-      toast({
-        title: "Hata",
-        description:
-          error instanceof Error
-            ? error.message
-            : "Ürün reddedilirken bir hata oluştu",
-        variant: "destructive",
-      });
-    }
+  const handleRejectConfirm = () => {
+    if (!selectedProductId) return;
+    
+    rejectProduct({ productId: selectedProductId, reason: rejectionReason });
+    setShowRejectDialog(false);
+    setRejectionReason("");
   };
 
   const hasPendingDocuments = (product: BaseProduct) => {
