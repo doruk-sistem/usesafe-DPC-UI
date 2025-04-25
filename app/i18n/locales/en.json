@@ -554,6 +554,38 @@
     "search": {
       "placeholder": "Search products..."
     },
+    "form": {
+      "images": {
+        "title": "Product Images",
+        "upload": "Upload Image"
+      },
+      "name": {
+        "label": "Product Name",
+        "placeholder": "Enter product name"
+      },
+      "type": {
+        "label": "Product Type",
+        "placeholder": "Select Product Type"
+      },
+      "subcategory": {
+        "label": "Product Subcategory",
+        "placeholder": "Select Subcategory"
+      },
+      "model": {
+        "label": "Model",
+        "placeholder": "Select Model"
+      },
+      "description": {
+        "label": "Description",
+        "placeholder": "Enter product description"
+      },
+      "keyFeatures": {
+        "title": "Key Features",
+        "name": "Feature Name",
+        "value": "Value",
+        "unit": "Unit (optional)"
+      }
+    },
     "filters": {
       "type": {
         "label": "Product Type",

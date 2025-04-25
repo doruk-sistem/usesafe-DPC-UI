@@ -1568,6 +1568,38 @@
     "search": {
       "placeholder": "Ürün ara..."
     },
+    "form": {
+      "images": {
+        "title": "Ürün Görseli",
+        "upload": "Görsel Yükle"
+      },
+      "name": {
+        "label": "Ürün Adı",
+        "placeholder": "Ürün adı girin"
+      },
+      "type": {
+        "label": "Ürün Tipi",
+        "placeholder": "Ürün tipi seçin"
+      },
+      "subcategory": {
+        "label": "Ürün Alt Kategori",
+        "placeholder": "Ürün alt kategori seçin"
+      },
+      "model": {
+        "label": "Ürün Modeli",
+        "placeholder": "Ürün modeli seçin"
+      },
+      "description": {
+        "label": "Ürün Açıklaması",
+        "placeholder": "Ürün açıklaması girin"
+      },
+      "keyFeatures": {
+        "title": "Ana Özellikler",
+        "name": "Özellik Adı",
+        "value": "Değer",
+        "unit": "Birim (isteğe bağlı)"
+      }
+    },
     "filters": {
       "type": {
         "label": "Ürün Tipi",

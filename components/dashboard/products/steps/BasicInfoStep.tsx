@@ -5,6 +5,7 @@ import { Plus, Upload, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { UseFormReturn } from "react-hook-form";
 import Select from "react-select";
+import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -56,6 +57,7 @@ const selectClassNames = {
 };
 
 export function BasicInfoStep({ form }: BasicInfoStepProps) {
+  const t = useTranslations("productManagement.form");
   const [subcategories, setSubcategories] = useState<SubcategoryOption[]>([]);
 
   const productType = form.watch("product_type");
@@ -103,7 +105,7 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
           name="images"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Product Images</FormLabel>
+              <FormLabel>{t("images.title")}</FormLabel>
               <FormControl>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {field.value.map((image, index) => (
@@ -139,7 +141,7 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
                   <label className="flex flex-col items-center justify-center gap-2 cursor-pointer aspect-square rounded-lg border-2 border-dashed hover:border-primary transition-colors">
                     <Upload className="h-8 w-8 text-muted-foreground" />
                     <span className="text-sm text-muted-foreground">
-                      Upload Image
+                      {t("images.upload")}
                     </span>
                     <input
                       type="file"
@@ -173,9 +175,9 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Product Name</FormLabel>
+              <FormLabel>{t("name.label")}</FormLabel>
               <FormControl>
-                <Input placeholder="Enter product name" {...field} />
+                <Input placeholder={t("name.placeholder")} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -187,7 +189,7 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
           name="product_type"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Product Type</FormLabel>
+              <FormLabel>{t("type.label")}</FormLabel>
               <FormControl>
                 <Select
                   options={PRODUCT_TYPE_OPTIONS}
@@ -200,7 +202,7 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
 
                     form.setValue("product_subcategory", "");
                   }}
-                  placeholder="Select Product Type"
+                  placeholder={t("type.placeholder")}
                   classNames={selectClassNames}
                 />
               </FormControl>
@@ -214,7 +216,7 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
           name="product_subcategory"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Product Subcategory</FormLabel>
+              <FormLabel>{t("subcategory.label")}</FormLabel>
               <FormControl>
                 <Select
                   options={subcategories}
@@ -224,7 +226,7 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
                   onChange={(selectedOption: OptionType | null) => {
                     field.onChange(selectedOption?.value || "");
                   }}
-                  placeholder="Select Subcategory"
+                  placeholder={t("subcategory.placeholder")}
                   className="w-full"
                   classNames={selectClassNames}
                   isDisabled={subcategories.length === 0}
@@ -240,7 +242,7 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
           name="model"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Model</FormLabel>
+              <FormLabel>{t("model.label")}</FormLabel>
               <FormControl>
                 <Select
                   options={
@@ -258,7 +260,7 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
                     const newValue = selectedOption?.value || "";
                     field.onChange(newValue);
                   }}
-                  placeholder="Select Model"
+                  placeholder={t("model.placeholder")}
                   classNames={selectClassNames}
                   isDisabled={
                     !form.watch("product_type") ||
@@ -280,10 +282,10 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
                 subcategories.length > 0 ? "md:col-span-1" : "col-span-2"
               }
             >
-              <FormLabel>Description</FormLabel>
+              <FormLabel>{t("description.label")}</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder="Enter product description"
+                  placeholder={t("description.placeholder")}
                   className="min-h-[100px]"
                   {...field}
                   value={field.value || ''}
@@ -300,14 +302,14 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
             name="key_features"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Key Features</FormLabel>
+                <FormLabel>{t("keyFeatures.title")}</FormLabel>
                 <FormControl>
                   <div className="space-y-4">
                     {((field.value || []) as KeyFeature[]).map(
                       (feature: KeyFeature, index: number) => (
                         <div key={index} className="flex gap-4">
                           <Input
-                            placeholder="Feature name"
+                            placeholder={t("keyFeatures.name")}
                             value={feature.name}
                             onChange={(e) => {
                               const newFeatures = [...(field.value || []) as KeyFeature[]];
@@ -319,7 +321,7 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
                             }}
                           />
                           <Input
-                            placeholder="Value"
+                            placeholder={t("keyFeatures.value")}
                             value={feature.value}
                             onChange={(e) => {
                               const newFeatures = [...(field.value || []) as KeyFeature[]];
@@ -331,7 +333,7 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
                             }}
                           />
                           <Input
-                            placeholder="Unit (optional)"
+                            placeholder={t("keyFeatures.unit")}
                             value={feature.unit || ""}
                             onChange={(e) => {
                               const newFeatures = [...(field.value || []) as KeyFeature[]];
