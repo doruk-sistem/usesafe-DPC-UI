@@ -2,10 +2,10 @@
 
 import clsx from "clsx";
 import { Plus, Upload, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import type { UseFormReturn } from "react-hook-form";
 import Select from "react-select";
-import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";

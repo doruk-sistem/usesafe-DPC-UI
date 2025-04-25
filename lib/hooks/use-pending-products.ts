@@ -1,7 +1,9 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { ProductService } from "@/lib/services/product";
-import { useAuth } from "./use-auth";
+
 import { toast } from "@/components/ui/use-toast";
+import { ProductService } from "@/lib/services/product";
+
+import { useAuth } from "./use-auth";
 
 export function usePendingProducts(pageIndex: number, pageSize: number) {
   const { user } = useAuth();

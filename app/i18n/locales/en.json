@@ -643,6 +643,10 @@
     "addProduct": {
       "title": "Add New Product",
       "description": "Fill in the form to add a new product",
+      "success": {
+        "title": "Product Added Successfully",
+        "description": "The product has been added successfully. You can now view it in the product list."
+      },
       "form": {
         "steps": {
           "manufacturer": "Manufacturer"
