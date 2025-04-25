@@ -258,11 +258,13 @@ export class ProductService {
 
     if (fetchError) throw fetchError;
 
-    // Yeni bir taslak ürün oluştur
+    // Üreticinin ürünlerine yeni bir taslak ürün oluştur
     const { error: createError } = await supabase.from("products").insert({
       ...product,
       id: undefined,
       status: "DRAFT",
+      company_id: product.manufacturer_id, // Üreticinin ID'sini company_id olarak ata
+      manufacturer_id: product.manufacturer_id, // Üretici ID'sini koru
       status_history: [
         {
           from: "PENDING",
@@ -277,7 +279,7 @@ export class ProductService {
 
     if (createError) throw createError;
 
-    // Orijinal ürünü sil
+    // Orijinal pending ürünü sil
     const { error: deleteError } = await supabase
       .from("products")
       .delete()
