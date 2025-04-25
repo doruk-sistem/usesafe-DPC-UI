@@ -583,7 +583,8 @@
         "title": "Key Features",
         "name": "Feature Name",
         "value": "Value",
-        "unit": "Unit (optional)"
+        "unit": "Unit (optional)",
+        "add": "Add Feature"
       }
     },
     "filters": {
@@ -650,7 +651,8 @@
           "manufacturer": {
             "label": "Manufacturer",
             "placeholder": "Select or enter manufacturer",
-            "description": "Select the product manufacturer or add a new one"
+            "description": "Select the product manufacturer or add a new one",
+            "searching": "Searching for manufacturer..."
           }
         },
         "navigation": {

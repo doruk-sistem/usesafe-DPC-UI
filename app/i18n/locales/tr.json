@@ -402,10 +402,10 @@
         },
         "ProductDocuments": {
           "uploadNewDocument": "Yeni Belge Yükle",
-          "documentType": "Belge Türü",
-          "select": "Seç",
-          "qualityCertificate": "Kalite Sertifikası",
-          "safetyCertificate": "Güvenlik Sertifikası",
+          "documentType": "Belge Tipi",
+          "select": "Seçin",
+          "qualityCertificate": "Kalite Sertifikaları",
+          "safetyCertificate": "Güvenlik Sertifikaları",
           "testReports": "Test Raporları",
           "technicalDocumentation": "Teknik Dokümantasyon",
           "complianceDocuments": "Uygunluk Belgeleri",
@@ -413,8 +413,8 @@
           "selectedFile": "Seçilen dosya:",
           "additionalInfo": "Ek Bilgiler",
           "version": "Versiyon",
-          "validUntilOptional": "İsteğe Bağlı",
-          "notesOptional": "İsteğe Bağlı",
+          "validUntilOptional": "Opsiyonel",
+          "notesOptional": "Opsiyonel",
           "documentNotesPlaceholder": "Belge notları...",
           "cancel": "İptal",
           "uploading": "Yükleniyor...",
@@ -422,7 +422,7 @@
           "noDocumentsFound": "Belge Bulunamadı",
           "noDocumentsDescription": "Bu ürüne ait belge bulunmamaktadır.",
           "documentName": "Belge Adı",
-          "type": "Tür",
+          "type": "Tip",
           "status": "Durum",
           "validUntil": "Geçerlilik Tarihi",
           "actions": "İşlemler",
@@ -503,7 +503,7 @@
         "manufacturer": "Üretici"
       },
       "keyFeatures": {
-        "title": "Önemli Özellikler",
+        "title": "Ana Özellikler",
         "description": "Ürünün önemli özelliklerini görüntüleyin"
       },
       "basicInfo": {
@@ -715,8 +715,11 @@
         "description": "Hızlı bilgi"
       },
       "keyFeatures": {
-        "title": "Önemli Özellikler",
-        "description": "Önemli özellikleri görüntüleyin"
+        "title": "Ana Özellikler",
+        "name": "Özellik adı",
+        "value": "Değer",
+        "unit": "Birim (opsiyonel)",
+        "add": "Özellik Ekle"
       },
       "basicInfo": {
         "title": "Temel Bilgiler",
@@ -797,10 +800,10 @@
     "backToProducts": "Ürünlere Dön",
     "ProductDocuments": {
       "uploadNewDocument": "Yeni Belge Yükle",
-      "documentType": "Belge Türü",
-      "select": "Seç",
-      "qualityCertificate": "Kalite Sertifikası",
-      "safetyCertificate": "Güvenlik Sertifikası",
+      "documentType": "Belge Tipi",
+      "select": "Seçin",
+      "qualityCertificate": "Kalite Sertifikaları",
+      "safetyCertificate": "Güvenlik Sertifikaları",
       "testReports": "Test Raporları",
       "technicalDocumentation": "Teknik Dokümantasyon",
       "complianceDocuments": "Uygunluk Belgeleri",
@@ -808,8 +811,8 @@
       "selectedFile": "Seçilen dosya:",
       "additionalInfo": "Ek Bilgiler",
       "version": "Versiyon",
-      "validUntilOptional": "İsteğe Bağlı",
-      "notesOptional": "İsteğe Bağlı",
+      "validUntilOptional": "Opsiyonel",
+      "notesOptional": "Opsiyonel",
       "documentNotesPlaceholder": "Belge notları...",
       "cancel": "İptal",
       "uploading": "Yükleniyor...",
@@ -871,8 +874,11 @@
         "description": "Hızlı bilgi"
       },
       "keyFeatures": {
-        "title": "Önemli Özellikler",
-        "description": "Ürünün önemli özelliklerini görüntüleyin"
+        "title": "Ana Özellikler",
+        "name": "Özellik adı",
+        "value": "Değer",
+        "unit": "Birim (opsiyonel)",
+        "add": "Özellik Ekle"
       },
       "basicInfo": {
         "title": "Temel Bilgiler",
@@ -1595,9 +1601,10 @@
       },
       "keyFeatures": {
         "title": "Ana Özellikler",
-        "name": "Özellik Adı",
+        "name": "Özellik adı",
         "value": "Değer",
-        "unit": "Birim (isteğe bağlı)"
+        "unit": "Birim (opsiyonel)",
+        "add": "Özellik Ekle"
       }
     },
     "filters": {
@@ -1673,7 +1680,8 @@
           "manufacturer": {
             "label": "Üretici",
             "placeholder": "Üretici seçin veya girin",
-            "description": "Ürünün üreticisini seçin veya yeni bir üretici ekleyin"
+            "description": "Ürünün üreticisini seçin veya yeni bir üretici ekleyin",
+            "searching": "Üretici aranıyor..."
           }
         },
         "navigation": {
@@ -1701,8 +1709,15 @@
         "draft": "Taslak",
         "active": "Aktif",
         "pending": "Beklemede"
+      },
+      "buttons": {
+        "previous": "Önceki",
+        "next": "Sonraki",
+        "submit": "Gönder",
+        "continue": "Devam Et",
+        "goToDashboard": "Panele Git"
       }
-   }
+    }
   },
   "productCategories": {
     "detergents": "Deterjanlar",
@@ -1735,212 +1750,12 @@
   "documentManagement": {
     "title": "Belge Yönetimi",
     "description": "Belge yüklemelerini inceleyin ve yönetin",
-    "repository": {
-      "title": "Belge Deposu",
-      "description": "Tüm belgeleri görüntüleyin ve yönetin",
-      "columns": {
-        "document": "Belge",
-        "type": "Tür",
-        "manufacturer": "Üretici",
-        "status": "Durum",
-        "validUntil": "Geçerlilik",
-        "version": "Versiyon",
-        "actions": "İşlemler",
-        "category": "Kategori",
-        "expiryDate": "Geçerlilik Tarihi",
-        "updatedBy": "Güncelleyen"
-      },
-      "filters": {
-        "type": "Türe göre filtrele",
-        "status": "Duruma göre filtrele",
-        "allDocuments": "Tüm Belgeler",
-        "allStatus": "Tüm Durumlar",
-        "pendingReview": "İnceleme Bekleyen",
-        "approved": "Onaylanan",
-        "rejected": "Reddedilen",
-        "expired": "Süresi Dolmuş"
-      },
-      "types": {
-        "certification": "Sertifikasyon",
-        "compliance": "Uygunluk",
-        "quality": "Kalite",
-        "legal": "Yasal"
-      },
-      "actions": {
-        "title": "İşlemler",
-        "viewDetails": "Detayları Görüntüle",
-        "download": "İndir",
-        "viewHistory": "Geçmişi Görüntüle",
-        "approve": "Onayla",
-        "reject": "Reddet",
-        "upload": "Yükle"
-      },
-      "status": {
-        "pending": "Beklemede",
-        "approved": "Onaylandı",
-        "rejected": "Reddedildi",
-        "expired": "Süresi Dolmuş"
-      },
-      "toast": {
-        "approved": {
-          "title": "Belge Onaylandı",
-          "description": "Belge başarıyla onaylandı."
-        },
-        "rejected": {
-          "title": "Belge Reddedildi",
-          "description": "Belge reddedildi."
-        },
-        "error": {
-          "title": "Hata",
-          "approveDescription": "Belge onaylanırken bir hata oluştu. Lütfen tekrar deneyin.",
-          "rejectDescription": "Belge reddedilirken bir hata oluştu. Lütfen tekrar deneyin."
-        }
-      },
-      "noData": {
-        "title": "Belge bulunamadı",
-        "description": "Doğrulama verisi bulunamadı"
-      },
-      "tabs": {
-        "validation": "Doğrulama",
-        "history": "Geçmiş"
-      },
-      "validation": {
-        "title": "Doğrulama Kontrolleri",
-        "noData": {
-          "title": "Doğrulama verisi bulunamadı",
-          "description": "Bu belge için doğrulama verisi mevcut değil"
-        },
-        "checks": {
-          "authenticity": {
-            "title": "Orijinallik Kontrolü",
-            "verified": "Belge orijinalliği doğrulandı",
-            "invalid": "Belge orijinalliği doğrulanamadı",
-            "pending": "Orijinallik kontrolü beklemede"
-          },
-          "completeness": {
-            "title": "Tamlık Kontrolü",
-            "verified": "Tüm gerekli alanlar mevcut",
-            "invalid": "Eksik alanlar mevcut",
-            "pending": "Tamlık kontrolü beklemede"
-          },
-          "format": {
-            "title": "Format Kontrolü",
-            "verified": "Belge formatı doğru",
-            "invalid": "Belge formatı hatalı",
-            "pending": "Format kontrolü beklemede"
-          },
-          "expiration": {
-            "title": "Geçerlilik Kontrolü",
-            "verified": "Belge geçerlilik süresi uygun",
-            "invalid": "Belge süresi dolmuş",
-            "pending": "Geçerlilik kontrolü beklemede"
-          },
-          "issuerVerification": {
-            "title": "Düzenleyen Kontrolü",
-            "verified": "Düzenleyen doğrulandı",
-            "invalid": "Düzenleyen doğrulanamadı",
-            "pending": "Düzenleyen kontrolü beklemede"
-          },
-          "verified": "Doğrulandı",
-          "valid": "Geçerli",
-          "failed": "Başarısız",
-          "warning": "Uyarı",
-          "pending": "Beklemede"
-        }
-      },
-      "history": {
-        "title": "Belge Geçmişi",
-        "noData": {
-          "title": "Geçmiş bulunamadı",
-          "description": "Bu belge için geçmiş verisi mevcut değil"
-        },
-        "events": {
-          "uploaded": "Belge yüklendi",
-          "approved": "Belge onaylandı",
-          "rejected": "Belge reddedildi",
-          "expired": "Belgenin süresi doldu"
-        }
-      },
-      "details": {
-        "title": "Belge Detayları",
-        "backToList": "Listeye Dön",
-        "documentInfo": {
-          "title": "Belge Bilgileri",
-          "id": "Belge ID",
-          "version": "Versiyon",
-          "type": "Tür",
-          "fileSize": "Dosya Boyutu",
-          "uploadDate": "Yüklenme Tarihi",
-          "validUntil": "Geçerlilik Tarihi",
-          "description": "Açıklama"
-        },
-        "verificationStatus": {
-          "title": "Doğrulama Durumu",
-          "authenticity": "Orijinallik",
-          "completeness": "Tamlık",
-          "signature": "İmza",
-          "expiration": "Geçerlilik",
-          "verified": "Doğrulandı",
-          "invalid": "Geçersiz",
-          "pending": "Beklemede"
-        },
-        "adminReview": {
-          "title": "Yönetici İncelemesi",
-          "comment": "Yorum",
-          "commentPlaceholder": "Yorumunuzu buraya ekleyin..."
-        }
-      }
-    },
-    "table": {
-      "title": "Belge Listesi",
-      "name": "Ad",
-      "model": "Model",
-      "status": "Durum",
-      "actions": "İşlemler"
-
-    },
-    "pagination": {
-      "previous": "Önceki",
-      "next": "Sonraki",
-      "showing": "{total} üründen {start} ile {end} arası gösteriliyor"
-    },
-    "filters": {
-      "allDocuments": "Tüm Belgeler",
-      "allStatuses": "Tüm Durumlar",
-      "type": "Türe Göre Filtrele",
-      "status": "Duruma Göre Filtrele"
-    },
-    "categories": {
-      "qualityManagement": "Kalite Yönetimi",
-      "safetyAndHealth": "Güvenlik ve Sağlık",
-      "batteryStandards": "Batarya Standartları",
-      "certification": "Sertifikasyon",
-      "compliance": "Uygunluk",
-      "quality": "Kalite",
-      "legal": "Yasal"
-    },
-    "status": {
-      "pending": "Beklemede",
-      "approved": "Onaylandı",
-      "rejected": "Reddedildi",
-      "expired": "Süresi Dolmuş",
-      "expiringSoon": "Süresi Yakında Dolacak"
-    },
-    "delete": {
-      "title": "Ürünü Sil",
-      "description": "Ürün başarıyla silindi",
-      "confirm": {
-        "title": "Ürünü Sil",
-        "description": "Bu ürünü silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.",
-        "cancel": "İptal",
-        "confirm": "Sil"
-      }
-    },
-    "productTypes": {
-      "agm": "AGM",
-      "efb": "EFB",
-      "standard": "Standart",
-      "marine": "Marin"
+    "documentTypes": {
+      "testReports": "Test Raporları",
+      "technicalDocumentation": "Teknik Dokümantasyon",
+      "complianceDocuments": "Uygunluk Belgeleri",
+      "qualityCertificates": "Kalite Sertifikaları",
+      "safetyCertificates": "Güvenlik Sertifikaları"
     }
   },
   "common": {
@@ -1962,7 +1777,12 @@
       "login": "Giriş Yap",
       "dashboard": "Panele Git",
       "addNew": "Yeni Ürün",
-      "viewDetails": "Detayları Görüntüle"
+      "viewDetails": "Detayları Görüntüle",
+      "previous": "Önceki",
+      "next": "Sonraki",
+      "submit": "Gönder",
+      "continue": "Devam Et",
+      "goToDashboard": "Panele Git"
     },
     "auth": {
       "required": "Kimlik Doğrulama Gerekli",
