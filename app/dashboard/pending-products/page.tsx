@@ -95,11 +95,11 @@ export default function PendingProductsPage() {
   const getStatusDisplay = (status: string) => {
     switch (status) {
       case "DRAFT":
-        return "draft";
+        return t("pages.pendingProducts.status.draft");
       case "PENDING":
-        return "pending";
+        return t("pages.pendingProducts.status.pending");
       case "REJECTED":
-        return "rejected";
+        return t("pages.pendingProducts.status.rejected");
       default:
         return status.toLowerCase();
     }
@@ -205,7 +205,7 @@ export default function PendingProductsPage() {
                               onClick={() => handleViewDocuments(product.id)}
                             >
                               <FileText className="h-4 w-4 mr-2" />
-                              {t("pages.pendingProducts.actions.viewDocuments")}
+                              {t("pages.pendingProducts.actions.icons.documents")}
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               onClick={() => {
@@ -213,7 +213,7 @@ export default function PendingProductsPage() {
                               }}
                             >
                               <Eye className="h-4 w-4 mr-2" />
-                              {t("pages.pendingProducts.actions.viewDetails")}
+                              {t("pages.pendingProducts.actions.icons.view")}
                             </DropdownMenuItem>
                             {product.status === "NEW" && (
                               <>
@@ -226,7 +226,7 @@ export default function PendingProductsPage() {
                                   className="text-green-600 hover:text-green-700 hover:bg-green-50"
                                 >
                                   <CheckCircle className="h-4 w-4 mr-2 text-green-600" />
-                                  {t("pages.pendingProducts.actions.approve")}
+                                  {t("pages.pendingProducts.actions.icons.approve")}
                                 </DropdownMenuItem>
                                 <DropdownMenuItem
                                   onClick={() =>
@@ -235,7 +235,7 @@ export default function PendingProductsPage() {
                                   className="text-red-600 hover:text-red-700 hover:bg-red-50"
                                 >
                                   <XCircle className="h-4 w-4 mr-2 text-red-600" />
-                                  {t("pages.pendingProducts.actions.reject")}
+                                  {t("pages.pendingProducts.actions.icons.reject")}
                                 </DropdownMenuItem>
                               </>
                             )}

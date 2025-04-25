@@ -18,7 +18,10 @@
       },
       "status": {
         "pendingDocuments": "Pending Documents",
-        "allDocumentsApproved": "All Documents Approved"
+        "allDocumentsApproved": "All Documents Approved",
+        "draft":"Draft",
+        "pending":"Pending",
+        "rejected":"Rejected"
       },
       "actions": {
         "title": "Actions",
@@ -26,7 +29,13 @@
         "viewDetails": "View Details",
         "control": "Control",
         "approve": "Approve",
-        "reject": "Reject"
+        "reject": "Reject",
+        "icons": {
+          "documents": "Documents",
+          "view": "View",
+          "approve": "Approve",
+          "reject": "Reject"
+        }
       },
       "documentsDialog": {
         "title": "Product Documents"

@@ -14,7 +14,10 @@
       },
       "status": {
         "pendingDocuments": "Bekleyen Belgeler",
-        "allDocumentsApproved": "Tüm Belgeler Onaylı"
+        "allDocumentsApproved": "Tüm Belgeler Onaylı",
+        "draft": "Taslak",
+        "pending": "Beklemede",
+        "rejected": "Reddedildi"
       },
       "actions": {
         "title": "İşlemler",
@@ -22,7 +25,13 @@
         "viewDetails": "Detayları Görüntüle",
         "control": "Kontrol",
         "approve": "Onayla",
-        "reject": "Reddet"
+        "reject": "Reddet",
+        "icons": {
+          "documents": "Belgeler",
+          "view": "Görüntüle",
+          "approve": "Onayla",
+          "reject": "Reddet"
+        }
       },
       "documentsDialog": {
         "title": "Ürün Belgeleri"
