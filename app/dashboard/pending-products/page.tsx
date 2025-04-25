@@ -1,7 +1,6 @@
 "use client";
 
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   Plus,
   MoreHorizontal,
@@ -9,11 +8,9 @@ import {
   Eye,
   CheckCircle,
   XCircle,
-  Info,
-  Edit,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 import { ProductDocuments } from "@/components/dashboard/products/product-documents";
 import { Badge } from "@/components/ui/badge";
@@ -41,7 +38,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Loading } from "@/components/ui/loading";
 import {
@@ -55,6 +51,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
 import { useAuth } from "@/lib/hooks/use-auth";
+import { usePendingProducts } from "@/lib/hooks/use-pending-products";
 import { ProductService } from "@/lib/services/product";
 import { Document } from "@/lib/types/document";
 import { BaseProduct } from "@/lib/types/product";
@@ -64,29 +61,13 @@ export default function PendingProductsPage() {
   const [pageIndex, setPageIndex] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const { user } = useAuth();
-  const [selectedProductId, setSelectedProductId] = useState<string | null>(
-    null
-  );
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const [showDocumentsDialog, setShowDocumentsDialog] = useState(false);
   const [showRejectDialog, setShowRejectDialog] = useState(false);
   const [rejectionReason, setRejectionReason] = useState("");
-  const [showSubManufacturerDialog, setShowSubManufacturerDialog] =
-    useState(false);
-  const [subManufacturer, setSubManufacturer] = useState<string>("");
   const queryClient = useQueryClient();
-  const supabase = createClientComponentClient();
 
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["pending-products", pageIndex, pageSize, user?.email],
-    queryFn: () => {
-      if (!user?.email) {
-        return Promise.reject(new Error("User email is not available"));
-      }
-
-      return ProductService.getPendingProducts(pageIndex, pageSize);
-    },
-    enabled: !!user?.email,
-  });
+  const { data, isLoading, error } = usePendingProducts(pageIndex, pageSize);
 
   const handleViewDocuments = (productId: string) => {
     setSelectedProductId(productId);
@@ -104,47 +85,11 @@ export default function PendingProductsPage() {
     }
 
     try {
-      const { data: product, error: fetchError } = await supabase
-        .from("products")
-        .select("*")
-        .eq("id", productId)
-        .single();
-
-      if (fetchError) {
-        throw new Error(`Failed to fetch product: ${fetchError.message}`);
-      }
-
-      if (!product) {
-        throw new Error(`Product not found: ${productId}`);
-      }
-
-      // Doğrudan geçiş: NEW -> ARCHIVED
-      const transition = {
-        from: product.status,
-        to: "ARCHIVED",
-        timestamp: new Date().toISOString(),
-        userId: user.id,
-      };
-
-      // Ürünü güncelle - belgelerin durumunu değiştirmeden
-      const { data: updateData, error: updateError } = await supabase
-        .from("products")
-        .update({
-          status: "ARCHIVED",
-          status_history: [...(product.status_history || []), transition],
-        })
-        .eq("id", productId)
-        .select();
-
-      if (updateError) {
-        throw new Error(`Failed to update product: ${updateError.message}`);
-      }
-
+      await ProductService.approveProduct(productId, user.id);
       toast({
         title: "Başarılı",
-        description: "Ürün başarıyla onaylandı ve admin paneline eklendi.",
+        description: "Ürün başarıyla onaylandı ve taslak olarak kopyalandı.",
       });
-      // Verileri yenile
       queryClient.invalidateQueries({ queryKey: ["pending-products"] });
     } catch (error) {
       toast({
@@ -174,78 +119,12 @@ export default function PendingProductsPage() {
     }
 
     try {
-      const { data: product, error: fetchError } = await supabase
-        .from("products")
-        .select("*")
-        .eq("id", selectedProductId)
-        .single();
-
-      if (fetchError) {
-        throw new Error(`Failed to fetch product: ${fetchError.message}`);
-      }
-
-      if (!product) {
-        throw new Error(`Product not found: ${selectedProductId}`);
-      }
-
-      // Tüm dökümanları reddet
-      let updatedDocuments = { ...product.documents };
-      let documentsUpdated = false;
-
-      // Dökümanları güncelle
-      if (updatedDocuments && typeof updatedDocuments === "object") {
-        for (const docType in updatedDocuments) {
-          if (Array.isArray(updatedDocuments[docType])) {
-            updatedDocuments[docType] = updatedDocuments[docType].map(
-              (doc: any) => {
-                if (doc.status === "pending") {
-                  documentsUpdated = true;
-                  return {
-                    ...doc,
-                    status: "rejected",
-                    updatedAt: new Date().toISOString(),
-                  };
-                }
-                return doc;
-              }
-            );
-          }
-        }
-      }
-
-      // Doğrudan geçiş: NEW -> DELETED
-      const transition = {
-        from: product.status,
-        to: "DELETED",
-        timestamp: new Date().toISOString(),
-        userId: user.id,
-        reason: rejectionReason,
-      };
-
-      // Ürünü güncelle
-      const { data: updateData, error: updateError } = await supabase
-        .from("products")
-        .update({
-          status: "DELETED",
-          status_history: [...(product.status_history || []), transition],
-          documents: updatedDocuments,
-        })
-        .eq("id", selectedProductId)
-        .select();
-
-      if (updateError) {
-        throw new Error(`Failed to update product: ${updateError.message}`);
-      }
-
+      await ProductService.rejectProduct(selectedProductId, user.id, rejectionReason);
       toast({
         title: "Başarılı",
-        description: documentsUpdated
-          ? "Ürün ve tüm dökümanları başarıyla reddedildi"
-          : "Ürün başarıyla reddedildi",
+        description: "Ürün başarıyla reddedildi",
       });
-      // Verileri yenile
       queryClient.invalidateQueries({ queryKey: ["pending-products"] });
-      // Dialog'u kapat ve formu sıfırla
       setShowRejectDialog(false);
       setRejectionReason("");
     } catch (error) {
@@ -269,9 +148,11 @@ export default function PendingProductsPage() {
 
   const getStatusDisplay = (status: string) => {
     switch (status) {
-      case "ARCHIVED":
-        return "approved";
-      case "DELETED":
+      case "DRAFT":
+        return "draft";
+      case "PENDING":
+        return "pending";
+      case "REJECTED":
         return "rejected";
       default:
         return status.toLowerCase();
@@ -280,43 +161,14 @@ export default function PendingProductsPage() {
 
   const getStatusVariant = (status: string) => {
     switch (status) {
-      case "ARCHIVED":
-        return "success";
-      case "DELETED":
+      case "DRAFT":
+        return "default";
+      case "PENDING":
+        return "warning";
+      case "REJECTED":
         return "destructive";
       default:
         return "default";
-    }
-  };
-
-  const fetchProducts = async () => {
-    await queryClient.invalidateQueries({ queryKey: ["pendingProducts"] });
-  };
-
-  const handleUpdateSubManufacturer = async () => {
-    if (!selectedProductId) return;
-
-    try {
-      const { error } = await supabase
-        .from("products")
-        .update({ sub_manufacturer: subManufacturer })
-        .eq("id", selectedProductId);
-
-      if (error) throw error;
-
-      toast({
-        title: "Başarılı",
-        description: "Alt üretici bilgisi güncellendi",
-      });
-
-      setShowSubManufacturerDialog(false);
-      fetchProducts();
-    } catch (error) {
-      toast({
-        title: "Hata",
-        description: "Alt üretici bilgisi güncellenirken bir hata oluştu",
-        variant: "destructive",
-      });
     }
   };
 
@@ -437,15 +289,6 @@ export default function PendingProductsPage() {
                                   <XCircle className="h-4 w-4 mr-2 text-red-600" />
                                   Ürünü Reddet
                                 </DropdownMenuItem>
-                                <DropdownMenuItem
-                                  onClick={() => {
-                                    setSelectedProductId(product.id);
-                                    setShowSubManufacturerDialog(true);
-                                  }}
-                                >
-                                  <Edit className="h-4 w-4 mr-2" />
-                                  Alt Üretici Ekle
-                                </DropdownMenuItem>
                               </>
                             )}
                           </DropdownMenuContent>
@@ -504,42 +347,6 @@ export default function PendingProductsPage() {
             <Button variant="destructive" onClick={handleRejectConfirm}>
               Reddet
             </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog
-        open={showSubManufacturerDialog}
-        onOpenChange={setShowSubManufacturerDialog}
-      >
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Alt Üretici Bilgisi</DialogTitle>
-            <DialogDescription>
-              Ürün için alt üretici bilgisini girin veya düzenleyin
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="grid gap-4 py-4">
-            <div className="space-y-2">
-              <Label htmlFor="subManufacturer">Alt Üretici</Label>
-              <Input
-                id="subManufacturer"
-                value={subManufacturer}
-                onChange={(e) => setSubManufacturer(e.target.value)}
-                placeholder="Alt üretici adı"
-              />
-            </div>
-          </div>
-
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setShowSubManufacturerDialog(false)}
-            >
-              İptal
-            </Button>
-            <Button onClick={handleUpdateSubManufacturer}>Kaydet</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

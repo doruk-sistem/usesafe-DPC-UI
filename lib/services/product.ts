@@ -248,6 +248,76 @@ export class ProductService {
       totalItems: count || 0,
     };
   }
+
+  static async approveProduct(productId: string, userId: string): Promise<void> {
+    const { data: product, error: fetchError } = await supabase
+      .from("products")
+      .select("*")
+      .eq("id", productId)
+      .single();
+
+    if (fetchError) throw fetchError;
+
+    // Yeni bir taslak ürün oluştur
+    const { error: createError } = await supabase.from("products").insert({
+      ...product,
+      id: undefined,
+      status: "DRAFT",
+      status_history: [
+        {
+          from: "PENDING",
+          to: "DRAFT",
+          timestamp: new Date().toISOString(),
+          userId,
+        },
+      ],
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    });
+
+    if (createError) throw createError;
+
+    // Orijinal ürünü sil
+    const { error: deleteError } = await supabase
+      .from("products")
+      .delete()
+      .eq("id", productId);
+
+    if (deleteError) throw deleteError;
+  }
+
+  static async rejectProduct(
+    productId: string,
+    userId: string,
+    reason: string
+  ): Promise<void> {
+    const { data: product, error: fetchError } = await supabase
+      .from("products")
+      .select("*")
+      .eq("id", productId)
+      .single();
+
+    if (fetchError) throw fetchError;
+
+    const { error: updateError } = await supabase
+      .from("products")
+      .update({
+        status: "REJECTED",
+        status_history: [
+          ...(product.status_history || []),
+          {
+            from: product.status,
+            to: "REJECTED",
+            timestamp: new Date().toISOString(),
+            userId,
+            reason,
+          },
+        ],
+      })
+      .eq("id", productId);
+
+    if (updateError) throw updateError;
+  }
 }
 
 export const productService = createService({
