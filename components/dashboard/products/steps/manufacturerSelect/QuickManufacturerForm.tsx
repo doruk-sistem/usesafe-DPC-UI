@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -45,7 +46,8 @@ interface QuickManufacturerFormProps {
 
 export function QuickManufacturerForm({ onSuccess, onCancel }: QuickManufacturerFormProps) {
   const { toast } = useToast();
-  const {company: mainCompany} = useAuth()
+  const {company: mainCompany} = useAuth();
+  const t = useTranslations("productManagement.addProduct.form.fields.manufacturer");
   
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -107,7 +109,7 @@ export function QuickManufacturerForm({ onSuccess, onCancel }: QuickManufacturer
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Company Name *</FormLabel>
+              <FormLabel>{t("companyName")}</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -121,7 +123,7 @@ export function QuickManufacturerForm({ onSuccess, onCancel }: QuickManufacturer
           name="taxNumber"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Tax ID *</FormLabel>
+              <FormLabel>{t("taxId")}</FormLabel>
               <FormControl>
                 <Input {...field} maxLength={10} />
               </FormControl>
@@ -135,7 +137,7 @@ export function QuickManufacturerForm({ onSuccess, onCancel }: QuickManufacturer
           name="contactName"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Contact Person Name *</FormLabel>
+              <FormLabel>{t("contactPerson")}</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -149,7 +151,7 @@ export function QuickManufacturerForm({ onSuccess, onCancel }: QuickManufacturer
           name="contactEmail"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Contact Email *</FormLabel>
+              <FormLabel>{t("contactEmail")}</FormLabel>
               <FormControl>
                 <Input {...field} type="email" />
               </FormControl>
@@ -160,10 +162,10 @@ export function QuickManufacturerForm({ onSuccess, onCancel }: QuickManufacturer
 
         <div className="flex justify-end gap-2">
           <Button type="button" variant="outline" onClick={onCancel}>
-            Cancel
+            {t("cancel")}
           </Button>
           <Button onClick={(e) => handleSubmit(e)}>
-            Create Manufacturer
+            {t("create")}
           </Button>
         </div>
       </Form>

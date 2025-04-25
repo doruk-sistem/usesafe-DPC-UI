@@ -652,7 +652,15 @@
             "label": "Manufacturer",
             "placeholder": "Select or enter manufacturer",
             "description": "Select the product manufacturer or add a new one",
-            "searching": "Searching for manufacturer..."
+            "searching": "Searching for manufacturer...",
+            "noResults": "No results found",
+            "addNew": "Add New Manufacturer",
+            "companyName": "Company Name *",
+            "taxId": "Tax ID *",
+            "contactPerson": "Contact Person *",
+            "contactEmail": "Contact Email *",
+            "cancel": "Cancel",
+            "create": "Create Manufacturer"
           }
         },
         "navigation": {
@@ -764,6 +772,13 @@
         "draft": "Draft",
         "active": "Active",
         "pending": "Pending"
+      },
+      "buttons": {
+        "previous": "Previous",
+        "next": "Next",
+        "saving": "Saving...",
+        "updateProduct": "Update Product",
+        "createProduct": "Create Product"
       }
     }
   },
@@ -780,7 +795,12 @@
       "login": "Login",
       "dashboard": "Go to Dashboard",
       "addNew": "Add New",
-      "viewDetails": "View Details"
+      "viewDetails": "View Details",
+      "previous": "Previous",
+      "next": "Next",
+      "saving": "Saving...",
+      "updateProduct": "Update Product",
+      "createProduct": "Create Product"
     },
     "delete": {
       "title": "Delete",

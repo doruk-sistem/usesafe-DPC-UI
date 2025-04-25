@@ -1681,7 +1681,15 @@
             "label": "Üretici",
             "placeholder": "Üretici seçin veya girin",
             "description": "Ürünün üreticisini seçin veya yeni bir üretici ekleyin",
-            "searching": "Üretici aranıyor..."
+            "searching": "Üretici aranıyor...",
+            "noResults": "Sonuç bulunamadı",
+            "addNew": "Yeni Üretici Ekle",
+            "companyName": "Firma Adı *",
+            "taxId": "Vergi Numarası *",
+            "contactPerson": "İletişim Kişisi *",
+            "contactEmail": "İletişim E-posta *",
+            "cancel": "İptal",
+            "create": "Üretici Oluştur"
           }
         },
         "navigation": {
@@ -1710,12 +1718,18 @@
         "active": "Aktif",
         "pending": "Beklemede"
       },
+      "loading": "Yükleniyor...",
       "buttons": {
+        "back": "Geri",
+        "login": "Giriş Yap",
+        "dashboard": "Panele Git",
+        "addNew": "Yeni Ekle",
+        "viewDetails": "Detayları Görüntüle",
         "previous": "Önceki",
         "next": "Sonraki",
-        "submit": "Gönder",
-        "continue": "Devam Et",
-        "goToDashboard": "Panele Git"
+        "saving": "Kaydediliyor...",
+        "updateProduct": "Ürünü Güncelle",
+        "createProduct": "Ürün Oluştur"
       }
     }
   },
@@ -1782,45 +1796,10 @@
       "next": "Sonraki",
       "submit": "Gönder",
       "continue": "Devam Et",
-      "goToDashboard": "Panele Git"
-    },
-    "auth": {
-      "required": "Kimlik Doğrulama Gerekli",
-      "loginRequired": "Bu sayfayı görüntülemek için giriş yapmanız gerekiyor.",
-      "companyRequired": "Lütfen bir firmaya bağlı olduğunuzdan emin olun."
-    },
-    "labels": {
-      "notAvailable": "Mevcut Değil"
-    },
-    "error": {
-      "title": "Hata",
-      "description": "Bir hata oluştu",
-      "tryAgain": "Lütfen tekrar deneyin",
-      "notFound": "Bulunamadı",
-      "unauthorized": "Yetkisiz Erişim",
-      "forbidden": "Erişim Reddedildi",
-      "serverError": "Sunucu Hatası"
-    },
-    "success": {
-      "title": "Başarılı",
-      "saved": "Kaydedildi",
-      "updated": "Güncellendi",
-      "deleted": "Silindi",
-      "created": "Oluşturuldu"
-    },
-    "validation": {
-      "required": "Bu alan zorunludur",
-      "email": "Lütfen geçerli bir e-posta adresi girin",
-      "minLength": "En az {length} karakter olmalıdır",
-      "maxLength": "En fazla {length} karakter olmalıdır",
-      "password": "Şifre en az 8 karakter olmalıdır",
-      "passwordMatch": "Şifreler eşleşmiyor"
-    },
-    "delete": {
-      "title": "Sil",
-      "cancel": "İptal",
-      "description": "Bu ürünü silmek istediğinizden emin misiniz?",
-      "confirm": "Sil"
+      "goToDashboard": "Panele Git",
+      "saving": "Kaydediliyor...",
+      "updateProduct": "Ürünü Güncelle",
+      "createProduct": "Ürün Oluştur"
     }
   },
   "adminDashboard": {
@@ -2211,5 +2190,19 @@
         "schedule": "Rapor Planla"
       }
     }
-  }
+  },
+  "addProduct": {
+    "form": {
+      "fields": {
+        "manufacturer": {
+          "companyName": "Firma Adı *",
+          "taxId": "Vergi Numarası *",
+          "contactPerson": "İletişim Kişisi *",
+          "contactEmail": "İletişim E-posta *",
+          "cancel": "İptal",
+          "create": "Üretici Oluştur"
+        }
+      }
+    }
+  } 
 } 
