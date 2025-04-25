@@ -379,6 +379,11 @@
       "documentUploadedSuccessfully": "Document uploaded successfully",
       "noNotes": "No notes"
     },
+    "empty": {
+      "title": "No Products Found",
+      "description": "You don't have any products yet. Use the 'New Product' button to add one.",
+      "addButton": "Add Product"
+    },
     "features": {
       "title": "Featured Products",
       "description": "Browse our curated selection of certified sustainable products",
@@ -600,7 +605,7 @@
         "description": "Are you sure you want to delete this product? This action cannot be undone.",
         "cancel": "Cancel",
         "confirm": "Delete"
-      }
+                 }
     },
     "addProduct": {
       "title": "Add New Product",
@@ -715,7 +720,9 @@
       "agm": "AGM",
       "efb": "EFB",
       "standard": "Standard",
-      "marine": "Marine"
+      "marine": "Marine",
+      "childcare_products": "Childcare Products"
+ 
     },
     "common": {
       "status": {
@@ -741,7 +748,12 @@
       "addNew": "Add New",
       "viewDetails": "View Details"
     },
-
+    "delete": {
+      "title": "Delete",
+      "description": "Are you sure you want to delete this item?",
+      "cancel": "Cancel",
+      "confirm": "Delete"
+    },
     "auth": {
       "required": "Authentication Required",
       "loginRequired": "You need to login to view this page.",
@@ -789,7 +801,26 @@
     "battery": "Battery",
     "automotive": "Automotive",
     "electronics": "Electronics",
-    "clothing": "Clothing"
+    "clothing": "Clothing",
+    "footwear": "Footwear",
+    "telecommunications_equipment": "Telecommunications Equipment",
+    "childcare_products": "Childcare Products",
+    "food_contact_materials": "Food Contact Materials",
+    "toothbrushes": "Toothbrushes" ,
+    "other_consumer_products": "Other Consumer Products",
+    "personal_protective_equipment": "Personal Protective Equipment",
+    "household_products": "Household Products",
+    "sports_equipment": "Sports Equipment",
+    "toys": "Toys",
+    "other_products": "Other Products",
+    "chemical_and_organic_fertilizers": "Chemical and Organic Fertilizers",
+    "pesticides": "Pesticides",
+    "biocides": "Biocides",
+    "other_agricultural_products": "Other Agricultural Products",
+    "other_industrial_products": "Other Industrial Products",
+    "paper_products": "Paper Products",
+    "batteries_and_accumulators": "Batteries and Accumulators",
+    "electrical_equipment": "Electrical Equipment"
   },
   "documentManagement": {
     "title": "Document Management",
@@ -992,7 +1023,7 @@
     }
   },
   "admin": {
-    "products": {
+    "product": {
       "steps": {
        "documentUpload": {
        "title": "Upload Product Documents",

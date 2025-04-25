@@ -48,6 +48,39 @@
     }
   },
   "admin": {
+    "product": {
+      "steps": {
+       "documentUpload": {
+       "title": "Ürün Belgelerini Yükle",
+       "description": "Ürününüz için gerekli belgeleri yükleyin",
+       "verifyDocuments": "Belgeleri Doğrula",
+       "verifyDocumentsDescription": "Tüm yüklenen belgelerin doğruluğunu doğrulayın",
+       "addDocument": "Belge Ekle",
+       "uploadDocuments": "Belgeleri Yükle",
+       "productDocuments": "Ürün Belgeleri",
+       "verificationRequired": "Belgeleri Doğrula",
+       "pleaseVerifyDocuments": "Lütfen önce belgeleri doğrulayın",
+       "invalidUploadParameters": "Geçersiz yükleme parametreleri",
+       "invalidFileType": "Geçersiz dosya türü",
+       "fileSizeExceedsLimit": "Dosya boyutu sınırını aştı",
+       "uploadIssues": "Yükleme Sorunları",
+       "documentTypes": {
+            "testReports": "Test Raporları",
+            "technicalDocumentation": "Teknik Belgeler",
+            "certifications": "Sertifikalar",
+            "qualityCertificates": "Kalite Sertifikaları",
+            "safetyCertificates": "Güvenlik Sertifikaları",
+            "environmentalCertificates": "Çevresel Sertifikalar",
+            "otherCertificates": "Diğer Sertifikalar",
+            "productionPermits": "Üretim İzinleri",
+            "exportDocuments": "İhracat Belgeleri",
+            "isoCertificates": "ISO Sertifikaları",
+            "otherDocuments": "Other Documents"
+            
+          }
+        }
+      }
+    },
     "sidebar": {
       "companies": "Firmalar",
       "dashboard": "Kontrol Paneli",
@@ -812,6 +845,11 @@
       "documentUploadedSuccessfully": "Belge başarıyla yüklendi",
       "noNotes": "Not yok"
     },
+    "empty": {
+      "title": "Henüz Ürün Yüklemediniz",
+      "description": "Henüz bir ürün yüklemediniz. Ürününüzü yüklemek için lütfen yukarıdaki butonu kullanın.",
+      "addButton": "Ürün Ekle"
+    },
     "error": {
       "title": "Hata",
       "description": "Ürünler yüklenirken bir hata oluştu"
@@ -1546,7 +1584,10 @@
         "all": "Tüm Durumlar",
         "active": "Aktif",
         "pending": "Beklemede",
-        "draft": "Taslak"
+        "draft": "Taslak",
+        "APPROVED": "Onaylandı",
+        "REJECTED": "Reddedildi",
+        "PENDING": "Pending"
       },
       "category": {
         "label": "Kategori",
@@ -1560,7 +1601,8 @@
       "viewDetails": "Detayları Görüntüle",
       "editProduct": "Ürünü Düzenle",
       "viewDocuments": "Belgeleri Görüntüle",
-      "deleteProduct": "Ürünü Sil"
+      "deleteProduct": "Ürünü Sil",
+      "openMenu": "Menüyü Aç"
     },
     "list": {
       "title": "Ürün Listesi",
@@ -1644,7 +1686,19 @@
     "battery": "Akü",
     "automotive": "Otomotiv",
     "electronics": "Elektronik",
-    "clothing": "Giyim"
+    "clothing": "Giyim",
+    "footwear": "Ayakkabı",
+    "telecommunications_equipment": "Telekomünikasyon Ekipmanı",
+    "childcare_products": "Çocuk Bakım Ürünleri",
+    "food_contact_materials": "Yemek İçecek Malzemeleri",
+    "toothbrushes": "Diş Fırçaları",
+    "other_consumer_products": "Diğer Tüketici Ürünleri",
+    "personal_protective_equipment": "Kişisel Koruyucu Ekipmanlar",
+    "toys": "Oyuncaklar",
+    "chemical_and_organic_fertilizers": "Kimyevi ve Organik Gübreler",
+    "paper_products": "Kağıt Ürünleri",
+    "batteries_and_accumulators": "Aküler ve Yüksek Voltaj",
+    "electrical_equipment": "Elektrikli Ekipmanlar"
   },
   "documentManagement": {
     "title": "Belge Yönetimi",
@@ -1909,6 +1963,12 @@
       "maxLength": "En fazla {length} karakter olmalıdır",
       "password": "Şifre en az 8 karakter olmalıdır",
       "passwordMatch": "Şifreler eşleşmiyor"
+    },
+    "delete": {
+      "title": "Sil",
+      "cancel": "İptal",
+      "description": "Bu ürünü silmek istediğinizden emin misiniz?",
+      "confirm": "Sil"
     }
   },
   "adminDashboard": {
