@@ -12,7 +12,43 @@
   "pages": {           
     "pendingProducts": {
       "title": "Pending Products",
-      "description": "List of products pending approval"
+      "description": "List of products pending approval",
+      "columns": {
+        "documents": "Documents"
+      },
+      "status": {
+        "pendingDocuments": "Pending Documents",
+        "allDocumentsApproved": "All Documents Approved",
+        "draft":"Draft",
+        "pending":"Pending",
+        "rejected":"Rejected",
+        "new":"New"
+      },
+      "actions": {
+        "title": "Actions",
+        "viewDocuments": "View Documents",
+        "viewDetails": "View Details",
+        "control": "Control",
+        "approve": "Approve",
+        "reject": "Reject",
+        "icons": {
+          "documents": "Documents",
+          "view": "View",
+          "approve": "Approve",
+          "reject": "Reject"
+        }
+      },
+      "documentsDialog": {
+        "title": "Product Documents"
+      },
+      "rejectDialog": {
+        "title": "Reject Product",
+        "description": "Please enter a reason for rejecting the product.",
+        "reasonLabel": "Rejection Reason",
+        "reasonPlaceholder": "Enter rejection reason...",
+        "cancel": "Cancel",
+        "reject": "Reject"
+      }
     }
   },
   "error": {
@@ -340,7 +376,8 @@
       "productNotFoundDescription": "The requested product could not be found.",
       "notAvailable": "Not Available",
       "success": "Success",
-      "documentUploadedSuccessfully": "Document uploaded successfully"
+      "documentUploadedSuccessfully": "Document uploaded successfully",
+      "noNotes": "No notes"
     },
     "features": {
       "title": "Featured Products",

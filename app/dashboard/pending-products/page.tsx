@@ -1,7 +1,5 @@
 "use client";
 
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Plus,
   MoreHorizontal,
@@ -9,11 +7,9 @@ import {
   Eye,
   CheckCircle,
   XCircle,
-  Info,
-  Edit,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 import { ProductDocuments } from "@/components/dashboard/products/product-documents";
 import { Badge } from "@/components/ui/badge";
@@ -41,7 +37,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Loading } from "@/components/ui/loading";
 import {
@@ -53,9 +48,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
-import { toast } from "@/components/ui/use-toast";
-import { useAuth } from "@/lib/hooks/use-auth";
-import { ProductService } from "@/lib/services/product";
+import { usePendingProducts } from "@/lib/hooks/use-pending-products";
 import { Document } from "@/lib/types/document";
 import { BaseProduct } from "@/lib/types/product";
 
@@ -63,99 +56,23 @@ export default function PendingProductsPage() {
   const t = useTranslations();
   const [pageIndex, setPageIndex] = useState(0);
   const [pageSize, setPageSize] = useState(10);
-  const { user } = useAuth();
   const [selectedProductId, setSelectedProductId] = useState<string | null>(
     null
   );
   const [showDocumentsDialog, setShowDocumentsDialog] = useState(false);
   const [showRejectDialog, setShowRejectDialog] = useState(false);
   const [rejectionReason, setRejectionReason] = useState("");
-  const [showSubManufacturerDialog, setShowSubManufacturerDialog] =
-    useState(false);
-  const [subManufacturer, setSubManufacturer] = useState<string>("");
-  const queryClient = useQueryClient();
-  const supabase = createClientComponentClient();
 
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["pending-products", pageIndex, pageSize, user?.email],
-    queryFn: () => {
-      if (!user?.email) {
-        return Promise.reject(new Error("User email is not available"));
-      }
-
-      return ProductService.getPendingProducts(pageIndex, pageSize);
-    },
-    enabled: !!user?.email,
-  });
+  const { data, isLoading, error, approveProduct, rejectProduct } =
+    usePendingProducts(pageIndex, pageSize);
 
   const handleViewDocuments = (productId: string) => {
     setSelectedProductId(productId);
     setShowDocumentsDialog(true);
   };
 
-  const handleApproveProduct = async (productId: string) => {
-    if (!user?.id) {
-      toast({
-        title: "Hata",
-        description: "Kullanıcı bilgisi bulunamadı",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    try {
-      const { data: product, error: fetchError } = await supabase
-        .from("products")
-        .select("*")
-        .eq("id", productId)
-        .single();
-
-      if (fetchError) {
-        throw new Error(`Failed to fetch product: ${fetchError.message}`);
-      }
-
-      if (!product) {
-        throw new Error(`Product not found: ${productId}`);
-      }
-
-      // Doğrudan geçiş: NEW -> ARCHIVED
-      const transition = {
-        from: product.status,
-        to: "ARCHIVED",
-        timestamp: new Date().toISOString(),
-        userId: user.id,
-      };
-
-      // Ürünü güncelle - belgelerin durumunu değiştirmeden
-      const { data: updateData, error: updateError } = await supabase
-        .from("products")
-        .update({
-          status: "ARCHIVED",
-          status_history: [...(product.status_history || []), transition],
-        })
-        .eq("id", productId)
-        .select();
-
-      if (updateError) {
-        throw new Error(`Failed to update product: ${updateError.message}`);
-      }
-
-      toast({
-        title: "Başarılı",
-        description: "Ürün başarıyla onaylandı ve admin paneline eklendi.",
-      });
-      // Verileri yenile
-      queryClient.invalidateQueries({ queryKey: ["pending-products"] });
-    } catch (error) {
-      toast({
-        title: "Hata",
-        description:
-          error instanceof Error
-            ? error.message
-            : "Ürün onaylanırken bir hata oluştu",
-        variant: "destructive",
-      });
-    }
+  const handleApproveProduct = (productId: string) => {
+    approveProduct(productId);
   };
 
   const handleRejectProduct = (productId: string) => {
@@ -163,101 +80,12 @@ export default function PendingProductsPage() {
     setShowRejectDialog(true);
   };
 
-  const handleRejectConfirm = async () => {
-    if (!selectedProductId || !user?.id) {
-      toast({
-        title: "Hata",
-        description: "Kullanıcı bilgisi veya ürün ID'si bulunamadı",
-        variant: "destructive",
-      });
-      return;
-    }
+  const handleRejectConfirm = () => {
+    if (!selectedProductId) return;
 
-    try {
-      const { data: product, error: fetchError } = await supabase
-        .from("products")
-        .select("*")
-        .eq("id", selectedProductId)
-        .single();
-
-      if (fetchError) {
-        throw new Error(`Failed to fetch product: ${fetchError.message}`);
-      }
-
-      if (!product) {
-        throw new Error(`Product not found: ${selectedProductId}`);
-      }
-
-      // Tüm dökümanları reddet
-      let updatedDocuments = { ...product.documents };
-      let documentsUpdated = false;
-
-      // Dökümanları güncelle
-      if (updatedDocuments && typeof updatedDocuments === "object") {
-        for (const docType in updatedDocuments) {
-          if (Array.isArray(updatedDocuments[docType])) {
-            updatedDocuments[docType] = updatedDocuments[docType].map(
-              (doc: any) => {
-                if (doc.status === "pending") {
-                  documentsUpdated = true;
-                  return {
-                    ...doc,
-                    status: "rejected",
-                    updatedAt: new Date().toISOString(),
-                  };
-                }
-                return doc;
-              }
-            );
-          }
-        }
-      }
-
-      // Doğrudan geçiş: NEW -> DELETED
-      const transition = {
-        from: product.status,
-        to: "DELETED",
-        timestamp: new Date().toISOString(),
-        userId: user.id,
-        reason: rejectionReason,
-      };
-
-      // Ürünü güncelle
-      const { data: updateData, error: updateError } = await supabase
-        .from("products")
-        .update({
-          status: "DELETED",
-          status_history: [...(product.status_history || []), transition],
-          documents: updatedDocuments,
-        })
-        .eq("id", selectedProductId)
-        .select();
-
-      if (updateError) {
-        throw new Error(`Failed to update product: ${updateError.message}`);
-      }
-
-      toast({
-        title: "Başarılı",
-        description: documentsUpdated
-          ? "Ürün ve tüm dökümanları başarıyla reddedildi"
-          : "Ürün başarıyla reddedildi",
-      });
-      // Verileri yenile
-      queryClient.invalidateQueries({ queryKey: ["pending-products"] });
-      // Dialog'u kapat ve formu sıfırla
-      setShowRejectDialog(false);
-      setRejectionReason("");
-    } catch (error) {
-      toast({
-        title: "Hata",
-        description:
-          error instanceof Error
-            ? error.message
-            : "Ürün reddedilirken bir hata oluştu",
-        variant: "destructive",
-      });
-    }
+    rejectProduct({ productId: selectedProductId, reason: rejectionReason });
+    setShowRejectDialog(false);
+    setRejectionReason("");
   };
 
   const hasPendingDocuments = (product: BaseProduct) => {
@@ -269,10 +97,14 @@ export default function PendingProductsPage() {
 
   const getStatusDisplay = (status: string) => {
     switch (status) {
-      case "ARCHIVED":
-        return "approved";
-      case "DELETED":
-        return "rejected";
+      case "NEW":
+        return t("pages.pendingProducts.status.new");
+      case "DRAFT":
+        return t("pages.pendingProducts.status.draft");
+      case "PENDING":
+        return t("pages.pendingProducts.status.pending");
+      case "REJECTED":
+        return t("pages.pendingProducts.status.rejected");
       default:
         return status.toLowerCase();
     }
@@ -280,43 +112,14 @@ export default function PendingProductsPage() {
 
   const getStatusVariant = (status: string) => {
     switch (status) {
-      case "ARCHIVED":
-        return "success";
-      case "DELETED":
+      case "DRAFT":
+        return "default";
+      case "PENDING":
+        return "warning";
+      case "REJECTED":
         return "destructive";
       default:
         return "default";
-    }
-  };
-
-  const fetchProducts = async () => {
-    await queryClient.invalidateQueries({ queryKey: ["pendingProducts"] });
-  };
-
-  const handleUpdateSubManufacturer = async () => {
-    if (!selectedProductId) return;
-
-    try {
-      const { error } = await supabase
-        .from("products")
-        .update({ sub_manufacturer: subManufacturer })
-        .eq("id", selectedProductId);
-
-      if (error) throw error;
-
-      toast({
-        title: "Başarılı",
-        description: "Alt üretici bilgisi güncellendi",
-      });
-
-      setShowSubManufacturerDialog(false);
-      fetchProducts();
-    } catch (error) {
-      toast({
-        title: "Hata",
-        description: "Alt üretici bilgisi güncellenirken bir hata oluştu",
-        variant: "destructive",
-      });
     }
   };
 
@@ -353,7 +156,9 @@ export default function PendingProductsPage() {
                 <TableHead>
                   {t("productManagement.list.columns.status")}
                 </TableHead>
-                <TableHead>Belgeler</TableHead>
+                <TableHead>
+                  {t("pages.pendingProducts.columns.documents")}
+                </TableHead>
                 <TableHead>
                   {t("productManagement.list.columns.createdAt")}
                 </TableHead>
@@ -382,9 +187,15 @@ export default function PendingProductsPage() {
                     </TableCell>
                     <TableCell>
                       {pendingDocs ? (
-                        <Badge variant="warning">Bekleyen Belgeler</Badge>
+                        <Badge variant="warning">
+                          {t("pages.pendingProducts.status.pendingDocuments")}
+                        </Badge>
                       ) : (
-                        <Badge variant="success">Tüm Belgeler Onaylı</Badge>
+                        <Badge variant="success">
+                          {t(
+                            "pages.pendingProducts.status.allDocumentsApproved"
+                          )}
+                        </Badge>
                       )}
                     </TableCell>
                     <TableCell>
@@ -399,13 +210,17 @@ export default function PendingProductsPage() {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>İşlemler</DropdownMenuLabel>
+                            <DropdownMenuLabel>
+                              {t("pages.pendingProducts.actions.title")}
+                            </DropdownMenuLabel>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem
                               onClick={() => handleViewDocuments(product.id)}
                             >
                               <FileText className="h-4 w-4 mr-2" />
-                              Belgeleri Görüntüle
+                              {t(
+                                "pages.pendingProducts.actions.icons.documents"
+                              )}
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               onClick={() => {
@@ -413,12 +228,14 @@ export default function PendingProductsPage() {
                               }}
                             >
                               <Eye className="h-4 w-4 mr-2" />
-                              Detayları Görüntüle
+                              {t("pages.pendingProducts.actions.icons.view")}
                             </DropdownMenuItem>
                             {product.status === "NEW" && (
                               <>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuLabel>Kontrol</DropdownMenuLabel>
+                                <DropdownMenuLabel>
+                                  {t("pages.pendingProducts.actions.control")}
+                                </DropdownMenuLabel>
                                 <DropdownMenuItem
                                   onClick={() =>
                                     handleApproveProduct(product.id)
@@ -426,7 +243,9 @@ export default function PendingProductsPage() {
                                   className="text-green-600 hover:text-green-700 hover:bg-green-50"
                                 >
                                   <CheckCircle className="h-4 w-4 mr-2 text-green-600" />
-                                  Ürünü Onayla
+                                  {t(
+                                    "pages.pendingProducts.actions.icons.approve"
+                                  )}
                                 </DropdownMenuItem>
                                 <DropdownMenuItem
                                   onClick={() =>
@@ -435,16 +254,9 @@ export default function PendingProductsPage() {
                                   className="text-red-600 hover:text-red-700 hover:bg-red-50"
                                 >
                                   <XCircle className="h-4 w-4 mr-2 text-red-600" />
-                                  Ürünü Reddet
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
-                                  onClick={() => {
-                                    setSelectedProductId(product.id);
-                                    setShowSubManufacturerDialog(true);
-                                  }}
-                                >
-                                  <Edit className="h-4 w-4 mr-2" />
-                                  Alt Üretici Ekle
+                                  {t(
+                                    "pages.pendingProducts.actions.icons.reject"
+                                  )}
                                 </DropdownMenuItem>
                               </>
                             )}
@@ -463,7 +275,9 @@ export default function PendingProductsPage() {
       <Dialog open={showDocumentsDialog} onOpenChange={setShowDocumentsDialog}>
         <DialogContent className="max-w-4xl">
           <DialogHeader>
-            <DialogTitle>Ürün Belgeleri</DialogTitle>
+            <DialogTitle>
+              {t("pages.pendingProducts.documentsDialog.title")}
+            </DialogTitle>
           </DialogHeader>
           {selectedProductId && (
             <div className="space-y-4">
@@ -476,18 +290,24 @@ export default function PendingProductsPage() {
       <Dialog open={showRejectDialog} onOpenChange={setShowRejectDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Ürünü Reddet</DialogTitle>
+            <DialogTitle>
+              {t("pages.pendingProducts.rejectDialog.title")}
+            </DialogTitle>
             <DialogDescription>
-              Lütfen reddetme sebebini belirtin.
+              {t("pages.pendingProducts.rejectDialog.description")}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
-            <Label htmlFor="rejection-reason">Reddetme Sebebi</Label>
+            <Label htmlFor="rejection-reason">
+              {t("pages.pendingProducts.rejectDialog.reasonLabel")}
+            </Label>
             <Textarea
               id="rejection-reason"
               value={rejectionReason}
               onChange={(e) => setRejectionReason(e.target.value)}
-              placeholder="Reddetme sebebini girin..."
+              placeholder={t(
+                "pages.pendingProducts.rejectDialog.reasonPlaceholder"
+              )}
             />
           </div>
           <DialogFooter>
@@ -499,47 +319,11 @@ export default function PendingProductsPage() {
                 setSelectedProductId(null);
               }}
             >
-              İptal
+              {t("pages.pendingProducts.rejectDialog.cancel")}
             </Button>
             <Button variant="destructive" onClick={handleRejectConfirm}>
-              Reddet
+              {t("pages.pendingProducts.rejectDialog.reject")}
             </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog
-        open={showSubManufacturerDialog}
-        onOpenChange={setShowSubManufacturerDialog}
-      >
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Alt Üretici Bilgisi</DialogTitle>
-            <DialogDescription>
-              Ürün için alt üretici bilgisini girin veya düzenleyin
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="grid gap-4 py-4">
-            <div className="space-y-2">
-              <Label htmlFor="subManufacturer">Alt Üretici</Label>
-              <Input
-                id="subManufacturer"
-                value={subManufacturer}
-                onChange={(e) => setSubManufacturer(e.target.value)}
-                placeholder="Alt üretici adı"
-              />
-            </div>
-          </div>
-
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setShowSubManufacturerDialog(false)}
-            >
-              İptal
-            </Button>
-            <Button onClick={handleUpdateSubManufacturer}>Kaydet</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
