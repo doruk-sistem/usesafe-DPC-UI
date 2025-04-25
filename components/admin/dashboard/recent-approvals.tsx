@@ -3,37 +3,21 @@
 import { motion } from "framer-motion";
 import { CheckCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
 
 import { Card } from "@/components/ui/card";
-import { Error } from "@/components/ui/error";
-import { getRecentApprovals, type RecentApproval } from "@/lib/hooks/useMetrics";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useMetrics } from "@/lib/hooks/use-metrics";
 
 export function RecentApprovals() {
   const t = useTranslations("adminDashboard");
-  const [approvals, setApprovals] = useState<RecentApproval[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchApprovals = async () => {
-      try {
-        const data = await getRecentApprovals();
-        setApprovals(data);
-      } catch (err: unknown) {
-        setError(typeof err === 'object' && err !== null && 'message' in err
-          ? (err as Error).message
-          : 'An error occurred');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchApprovals();
-  }, []);
+  const { approvals, isLoading, error } = useMetrics();
 
   if (error) {
-    return <Error error={error} />;
+    return (
+      <Alert variant="destructive">
+        <AlertDescription>{error.message}</AlertDescription>
+      </Alert>
+    );
   }
 
   return (
@@ -78,4 +62,4 @@ export function RecentApprovals() {
       </div>
     </Card>
   );
-} 
+}
