@@ -43,7 +43,7 @@ export function ManufacturerSelect({
             name="manufacturer_id"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Manufacturer</FormLabel>
+                <FormLabel>{t("form.fields.manufacturer.label")}</FormLabel>
                 <FormControl>
                   <ManufacturerSearch
                     value={field.value}

@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
+
 import {
   getDashboardMetrics,
   getRecentApprovals,
   getSystemAlerts,
 } from "@/lib/services/metric";
-
 import type { DashboardMetrics, RecentApproval, SystemAlert } from "@/lib/services/metric";
 
 export function useMetrics() {

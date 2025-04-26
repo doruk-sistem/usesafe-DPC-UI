@@ -4,8 +4,8 @@ import { motion } from "framer-motion";
 import { CheckCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-import { Card } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Card } from "@/components/ui/card";
 import { useMetrics } from "@/lib/hooks/use-metrics";
 
 export function RecentApprovals() {
