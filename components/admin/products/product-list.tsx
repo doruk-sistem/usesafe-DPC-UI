@@ -6,13 +6,12 @@ import {
   MoreHorizontal,
   FileText,
   Eye,
-  ImageOff,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
-
+import { useQuery } from "@tanstack/react-query";
 
 import Loading from "@/app/admin/loading";
 import { Badge } from "@/components/ui/badge";
@@ -40,10 +39,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { documentsApiHooks } from "@/lib/hooks/use-documents";
 import { useImageUrl } from "@/lib/hooks/use-image-url";
-import { BaseProduct, ProductStatus } from "@/lib/types/product";
-
+import { BaseProduct } from "@/lib/types/product";
+import { productService } from "@/lib/services/product";
 
 export function ProductList() {
   const t = useTranslations();
@@ -52,19 +50,27 @@ export function ProductList() {
   const [manufacturerFilter, setManufacturerFilter] = useState("all");
   const { getImageUrl } = useImageUrl();
 
-  const { data: products = [], isLoading } = documentsApiHooks.useGetProducts();
+  const { data: products = [], isLoading } = useQuery<BaseProduct[]>({
+    queryKey: ["products"],
+    queryFn: async () => {
+      // Şirket ID'si gereksinimi varsa buraya ekleyebilirsin, ör: "admin" veya başka bir ID
+      return await productService.getProducts({ companyId: "admin" });
+    },
+  });
 
   // Process products to include document counts and status
   const processedProducts: BaseProduct[] = products.map((product) => {
-    const documentCount = product.documents
-      ? Object.values(product.documents).flat().length
-      : 0;
+    const documentList = product.documents
+      ? Array.isArray(product.documents)
+        ? product.documents
+        : Object.values(product.documents).flat()
+      : [];
+
+    const documentCount = documentList.length;
 
     let documentStatus: BaseProduct["document_status"] = "No Documents";
     if (documentCount > 0) {
-      const allDocs = Object.values(product.documents).flat() as {
-        status: "approved" | "rejected" | "pending";
-      }[];
+      const allDocs = documentList as { status: "approved" | "rejected" | "pending" }[];
       const hasRejected = allDocs.some((doc) => doc.status === "rejected");
       const allApproved = allDocs.every((doc) => doc.status === "approved");
 
@@ -84,27 +90,15 @@ export function ProductList() {
   });
 
   const filteredProducts = processedProducts.filter((product) => {
-    // Filter by search query
-    if (
-      searchQuery &&
-      !product.name.toLowerCase().includes(searchQuery.toLowerCase())
-    ) {
+    if (searchQuery && !product.name.toLowerCase().includes(searchQuery.toLowerCase())) {
       return false;
     }
-
-    // Filter by status
     if (statusFilter !== "all" && product.document_status !== statusFilter) {
       return false;
     }
-
-    // Filter by manufacturer
-    if (
-      manufacturerFilter !== "all" &&
-      product.manufacturer_id !== manufacturerFilter
-    ) {
+    if (manufacturerFilter !== "all" && product.manufacturer_id !== manufacturerFilter) {
       return false;
     }
-
     return true;
   });
 
@@ -124,7 +118,7 @@ export function ProductList() {
   };
 
   if (isLoading) {
-    return <Loading />
+    return <Loading />;
   }
 
   return (
@@ -236,10 +230,7 @@ export function ProductList() {
                             product.images.find((img) => img.is_primary)?.url ||
                             product.images[0].url
                           )}
-                          alt={
-                            product.images.find((img) => img.is_primary)?.alt ||
-                            product.name
-                          }
+                          alt={product.images.find((img) => img.is_primary)?.alt || product.name}
                           width={300}
                           height={300}
                           className="max-w-full max-h-full w-auto h-auto object-contain group-hover:scale-105 transition-transform duration-300"
@@ -311,29 +302,14 @@ export function ProductList() {
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-muted-foreground">
-                        {t("admin.products.manufacturer")}
-                      </span>
-                      <span className="text-sm font-medium">
-                        {product.manufacturer_id}
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-muted-foreground">
-                        {t("admin.products.category")}
-                      </span>
-                      <Badge variant="outline" className="font-normal">
-                        {product.product_type ||
-                          t("admin.products.uncategorized")}
-                      </Badge>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-muted-foreground">
                         {t("admin.products.documents")}
                       </span>
                       <div className="flex items-center gap-1">
                         <FileText className="h-4 w-4 text-muted-foreground" />
                         <span className="text-sm font-medium">
-                          {t("admin.products.documentCount", { count: product.documents?.length || 0 })}
+                          {Array.isArray(product.documents)
+                            ? product.documents.length
+                            : Object.values(product.documents || {}).flat().length}
                         </span>
                       </div>
                     </div>

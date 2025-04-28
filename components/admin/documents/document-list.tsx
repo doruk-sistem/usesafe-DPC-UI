@@ -62,6 +62,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
 import { documentsApiHooks } from "@/lib/hooks/use-documents";
+import { approveDocument, rejectDocument } from "@/lib/services/documents";
 import type { Document } from "@/lib/types/document";
 
 import { getStatusIcon } from "../../../lib/utils/document-utils";
@@ -93,13 +94,6 @@ export function DocumentList({ initialDocuments = [] }: DocumentListProps) {
     isLoading,
     error,
   } = documentsApiHooks.useGetDocuments();
-  const { data: allProducts = [], isLoading: isLoadingProducts } =
-    documentsApiHooks.useGetProducts();
-  const { mutate: updateDocumentStatus } =
-    documentsApiHooks.useUpdateDocumentStatus();
-  const { mutate: updateDocumentStatusDirect } =
-    documentsApiHooks.useUpdateDocumentStatusDirect();
-  const { mutate: rejectProduct } = documentsApiHooks.useRejectProduct();
 
   // Update local documents when initialDocuments or documents changes
   useEffect(() => {
@@ -140,48 +134,25 @@ export function DocumentList({ initialDocuments = [] }: DocumentListProps) {
     return acc;
   }, {});
 
-  // Add products with no documents
-  allProducts.forEach((product) => {
-    if (product.id && !documentsByProduct[product.id]) {
-      documentsByProduct[product.id] = [];
-    }
-  });
-
-  // Create a mapping of product IDs to product names for display
-  const productNameMap = allProducts.reduce<Record<string, string>>(
-    (acc, product) => {
-      if (product.id) {
-        acc[product.id] = product.name;
-      }
-      return acc;
-    },
-    {}
-  );
-
+  // Approve document
   const handleApprove = async (documentId: string) => {
     try {
       const document = filteredDocuments.find((doc) => doc.id === documentId);
-
-      if (!document) {
-        console.error(
-          "Document not found in filtered documents. Document ID:",
-          documentId
-        );
+      if (!document || !document.productId || typeof document.productId !== 'string') {
+        console.error("Document or productId not found for approve.", documentId);
+        toast({
+          title: "Error",
+          description: "Document or product information missing.",
+          variant: "destructive",
+        });
         return;
       }
-
-      await updateDocumentStatusDirect({
-        document,
-        status: "approved",
-      });
-
-      // Update local document status
+      await approveDocument(document.productId, documentId);
       setLocalDocuments((prevDocs) =>
         prevDocs.map((doc) =>
           doc.id === documentId ? { ...doc, status: "approved" } : doc
         )
       );
-
       toast({
         title: "Success",
         description: "Document approved successfully",
@@ -196,6 +167,7 @@ export function DocumentList({ initialDocuments = [] }: DocumentListProps) {
     }
   };
 
+  // Reject document
   const handleReject = async (docId: string) => {
     setSelectedDocumentId(docId);
     setDocumentRejectDialogOpen(true);
@@ -203,40 +175,26 @@ export function DocumentList({ initialDocuments = [] }: DocumentListProps) {
 
   const handleRejectConfirm = async () => {
     try {
-      const document = filteredDocuments.find(
-        (doc) => doc.id === selectedDocumentId
-      );
-
-      if (!document) {
-        console.error(
-          "Document not found in filtered documents. Document ID:",
-          selectedDocumentId
-        );
+      const document = filteredDocuments.find((doc) => doc.id === selectedDocumentId);
+      if (!document || !document.productId || typeof document.productId !== 'string') {
+        console.error("Document or productId not found for reject.", selectedDocumentId);
+        toast({
+          title: "Error",
+          description: "Document or product information missing.",
+          variant: "destructive",
+        });
         return;
       }
-
-      await updateDocumentStatusDirect({
-        document,
-        status: "rejected",
-        reason: documentRejectReason,
-      });
-
-      // Update local document status
+      await rejectDocument(document.productId, selectedDocumentId, documentRejectReason);
       setLocalDocuments((prevDocs) =>
         prevDocs.map((doc) =>
           doc.id === selectedDocumentId
-            ? {
-                ...doc,
-                status: "rejected",
-                rejection_reason: documentRejectReason,
-              }
+            ? { ...doc, status: "rejected", rejection_reason: documentRejectReason }
             : doc
         )
       );
-
       setDocumentRejectDialogOpen(false);
       setDocumentRejectReason("");
-
       toast({
         title: "Success",
         description: "Document rejected successfully",
@@ -246,40 +204,6 @@ export function DocumentList({ initialDocuments = [] }: DocumentListProps) {
       toast({
         title: "Error",
         description: "Failed to reject document. Please try again.",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleRejectProduct = async (productId: string) => {
-    setSelectedProductId(productId);
-    setRejectDialogOpen(true);
-  };
-
-  const submitRejectProduct = async () => {
-    if (!selectedProductId || !rejectReason) {
-      console.error("Missing product ID or reject reason");
-      return;
-    }
-
-    try {
-      await rejectProduct({
-        productId: selectedProductId,
-        reason: rejectReason,
-      });
-
-      toast({
-        title: "Success",
-        description: "Product rejected successfully",
-      });
-      setRejectDialogOpen(false);
-      setRejectReason("");
-      setSelectedProductId("");
-    } catch (error) {
-      console.error("Error rejecting product:", error);
-      toast({
-        title: "Error",
-        description: "Failed to reject product. Please try again.",
         variant: "destructive",
       });
     }
@@ -318,7 +242,7 @@ export function DocumentList({ initialDocuments = [] }: DocumentListProps) {
   };
 
   // Show loading state only if we don't have initial documents
-  if ((isLoading || isLoadingProducts) && (!initialDocuments || initialDocuments.length === 0)) {
+  if ((isLoading) && (!initialDocuments || initialDocuments.length === 0)) {
     return <Loading />;
   }
 
@@ -367,8 +291,7 @@ export function DocumentList({ initialDocuments = [] }: DocumentListProps) {
             {Object.entries(documentsByProduct).map(
               ([productId, productDocs]) => {
                 const isExpanded = expandedProducts[productId] || false;
-                const productName =
-                  productNameMap[productId] || "Unknown Product";
+                const productName = "Product";
                 const documentCount = productDocs.length;
 
                 return (
@@ -582,39 +505,6 @@ export function DocumentList({ initialDocuments = [] }: DocumentListProps) {
           </div>
         )}
       </CardContent>
-
-      <Dialog open={rejectDialogOpen} onOpenChange={setRejectDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Reject Product</DialogTitle>
-            <DialogDescription>
-              Please provide a reason for rejecting this product.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="reason">Reason</Label>
-              <Textarea
-                id="reason"
-                value={rejectReason}
-                onChange={(e) => setRejectReason(e.target.value)}
-                placeholder="Enter the reason for rejection..."
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setRejectDialogOpen(false)}
-            >
-              Cancel
-            </Button>
-            <Button variant="destructive" onClick={submitRejectProduct}>
-              Reject
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
 
       <Dialog
         open={documentRejectDialogOpen}

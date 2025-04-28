@@ -16,7 +16,7 @@ export async function getDocuments(productId: string): Promise<{ documents: Docu
     if (error) throw error;
     if (!product) throw new Error("Product not found");
 
-    // Flatten all document arrays into a single array
+   
     const allDocuments: Document[] = [];
     if (product.documents) {
       Object.entries(product.documents).forEach(([type, docs]) => {
@@ -58,7 +58,6 @@ export async function getDocumentById(productId: string, documentId: string): Pr
     if (error) throw error;
     if (!product) throw new Error("Product not found");
 
-    // Find the document in the product's documents
     let foundDocument: Document | null = null;
 
     Object.entries(product.documents || {}).forEach(([type, docs]) => {
@@ -95,7 +94,7 @@ export async function getDocumentById(productId: string, documentId: string): Pr
 
 export async function approveDocument(productId: string, documentId: string): Promise<void> {
   try {
-    // 1. Get the product and its documents
+   
     const { data: product, error: productError } = await supabase
       .from("products")
       .select("documents")
@@ -105,7 +104,7 @@ export async function approveDocument(productId: string, documentId: string): Pr
     if (productError) throw productError;
     if (!product) throw new Error("Product not found");
 
-    // 2. Find and update the document in the product's documents
+
     const updatedDocuments = { ...product.documents };
     let documentFound = false;
 
@@ -130,7 +129,6 @@ export async function approveDocument(productId: string, documentId: string): Pr
       throw new Error("Document not found");
     }
 
-    // 3. Update the product with the modified documents
     const { error: updateError } = await supabase
       .from("products")
       .update({
@@ -147,7 +145,7 @@ export async function approveDocument(productId: string, documentId: string): Pr
 
 export async function rejectDocument(productId: string, documentId: string, reason: string): Promise<void> {
   try {
-    // 1. Get the product and its documents
+   
     const { data: product, error: productError } = await supabase
       .from("products")
       .select("documents")
@@ -157,7 +155,7 @@ export async function rejectDocument(productId: string, documentId: string, reas
     if (productError) throw productError;
     if (!product) throw new Error("Product not found");
 
-    // 2. Find and update the document in the product's documents
+
     const updatedDocuments = { ...product.documents };
     let documentFound = false;
 
@@ -183,7 +181,7 @@ export async function rejectDocument(productId: string, documentId: string, reas
       throw new Error("Document not found");
     }
 
-    // 3. Update the product with the modified documents
+
     const { error: updateError } = await supabase
       .from("products")
       .update({
@@ -209,7 +207,7 @@ export async function uploadDocument(
   }
 ): Promise<void> {
   try {
-    // 1. Get the product and its documents
+
     const { data: product, error: productError } = await supabase
       .from("products")
       .select("documents")
@@ -219,7 +217,6 @@ export async function uploadDocument(
     if (productError) throw productError;
     if (!product) throw new Error("Product not found");
 
-    // 2. Upload the file
     const fileExt = file.name.split('.').pop();
     const fileName = `${Math.random()}.${fileExt}`;
     const filePath = `${productId}/${fileName}`;
@@ -234,7 +231,6 @@ export async function uploadDocument(
       .from('product-documents')
       .getPublicUrl(filePath);
 
-    // 3. Create the new document object
     const newDocument = {
       id: fileName,
       name: file.name,
@@ -248,7 +244,7 @@ export async function uploadDocument(
       notes: metadata.notes,
     };
 
-    // 4. Update the product's documents
+
     const currentDocuments = product.documents || {};
     const currentTypeDocuments = currentDocuments[documentType] || [];
     
@@ -257,7 +253,7 @@ export async function uploadDocument(
       [documentType]: [...currentTypeDocuments, newDocument],
     };
 
-    // 5. Save the updated documents
+
     const { error: updateError } = await supabase
       .from('products')
       .update({
@@ -282,7 +278,7 @@ export async function updateDocument(
   }
 ): Promise<void> {
   try {
-    // 1. Önce mevcut ürünü ve dokümanları al
+
     const { data: product, error: productError } = await supabase
       .from("products")
       .select("documents")
@@ -292,7 +288,6 @@ export async function updateDocument(
     if (productError) throw productError;
     if (!product) throw new Error("Product not found");
 
-    // 2. Tüm doküman tiplerini kontrol et
     const updatedDocuments = { ...product.documents };
     let documentFound = false;
 
@@ -317,7 +312,7 @@ export async function updateDocument(
       throw new Error("Document not found");
     }
 
-    // 3. Güncellenmiş dokümanları kaydet
+
     const { error: updateError } = await supabase
       .from("products")
       .update({
