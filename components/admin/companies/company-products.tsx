@@ -1,20 +1,11 @@
 "use client";
 
-import { useState } from "react";
 import { Plus, Search, MoreHorizontal } from "lucide-react";
-import { useProducts } from "@/lib/hooks/use-products";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useTranslations } from "next-intl";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { useState } from "react";
+
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -30,6 +21,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -37,12 +29,25 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { useProducts } from "@/lib/hooks/use-products";
 
-export function CompanyProducts() {
+interface CompanyProductsProps {
+  companyId: string;
+}
+
+export function CompanyProducts({ companyId }: CompanyProductsProps) {
   const t = useTranslations("admin.products");
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
-  const { products, isLoading, error } = useProducts();
+  const { products, isLoading, error } = useProducts(companyId);
 
   if (error) {
     return (
@@ -80,123 +85,81 @@ export function CompanyProducts() {
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle>{t("title")}</CardTitle>
-            <CardDescription>
-              {t("list.total", { count: products.length })}
-            </CardDescription>
+            <CardTitle>{t("list.title")}</CardTitle>
+            <CardDescription>{t("list.description")}</CardDescription>
           </div>
-          <Button className="flex items-center gap-2">
-            <Plus className="h-4 w-4" />
-            {t("list.actions.add")}
-          </Button>
+          <div className="flex items-center gap-2">
+            <Input
+              placeholder={t("list.search.placeholder")}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-[200px]"
+            />
+            <Select value={filter} onValueChange={setFilter}>
+              <SelectTrigger className="w-[150px]">
+                <SelectValue placeholder={t("list.filter.placeholder")} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{t("list.filter.all")}</SelectItem>
+                <SelectItem value="active">{t("list.filter.active")}</SelectItem>
+                <SelectItem value="inactive">{t("list.filter.inactive")}</SelectItem>
+                <SelectItem value="pending">{t("list.filter.pending")}</SelectItem>
+              </SelectContent>
+            </Select>
+            <Button>
+              <Plus className="mr-2 h-4 w-4" />
+              {t("list.actions.add")}
+            </Button>
+          </div>
         </div>
       </CardHeader>
       <CardContent>
-        <div className="mb-4 flex items-center gap-4">
-          <div className="flex-1">
-            <div className="relative">
-              <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder={t("list.search")}
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="pl-8"
-              />
-            </div>
-          </div>
-          <Select value={filter} onValueChange={setFilter}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder={t("list.filters.all")} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{t("list.filters.all")}</SelectItem>
-              <SelectItem value="active">{t("list.filters.active")}</SelectItem>
-              <SelectItem value="pending">{t("list.filters.pending")}</SelectItem>
-              <SelectItem value="draft">{t("list.filters.draft")}</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        {filteredProducts.length === 0 ? (
-          <div className="flex h-[200px] items-center justify-center rounded-lg border border-dashed">
-            <div className="text-center">
-              <p className="text-sm text-muted-foreground">
-                {search || filter !== "all"
-                  ? t("list.empty.filtered")
-                  : t("empty.description")}
-              </p>
-              <Button variant="outline" className="mt-2">
-                <Plus className="mr-2 h-4 w-4" />
-                {t("empty.addFirst")}
-              </Button>
-            </div>
-          </div>
-        ) : (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>{t("list.columns.productCode")}</TableHead>
-                <TableHead>{t("list.columns.productName")}</TableHead>
-                <TableHead>{t("list.columns.sku")}</TableHead>
-                <TableHead>{t("list.columns.category")}</TableHead>
-                <TableHead>{t("list.columns.status")}</TableHead>
-                <TableHead>{t("list.columns.addedDate")}</TableHead>
-                <TableHead className="text-right">
-                  {t("list.columns.actions")}
-                </TableHead>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>{t("list.columns.name")}</TableHead>
+              <TableHead>{t("list.columns.sku")}</TableHead>
+              <TableHead>{t("list.columns.status")}</TableHead>
+              <TableHead>{t("list.columns.actions")}</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredProducts.map((product) => (
+              <TableRow key={product.id}>
+                <TableCell>{product.name}</TableCell>
+                <TableCell>{product.sku}</TableCell>
+                <TableCell>
+                  <Badge variant={product.status === "active" ? "default" : "secondary"}>
+                    {product.status}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon">
+                        <MoreHorizontal className="h-4 w-4" />
+                        <span className="sr-only">{t("list.actions.title")}</span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuLabel>{t("list.actions.title")}</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem>
+                        {t("list.actions.view")}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        {t("list.actions.edit")}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        {t("list.actions.delete")}
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredProducts.map((product) => (
-                <TableRow key={product.id}>
-                  <TableCell className="font-medium">{product.id}</TableCell>
-                  <TableCell>{product.name}</TableCell>
-                  <TableCell>{product.sku}</TableCell>
-                  <TableCell>{product.category}</TableCell>
-                  <TableCell>
-                    <Badge
-                      variant={
-                        product.status === "active"
-                          ? "success"
-                          : product.status === "pending"
-                          ? "warning"
-                          : "secondary"
-                      }
-                    >
-                      {t(`list.status.${product.status}`)}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    {new Date(product.created_at).toLocaleDateString()}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                          <MoreHorizontal className="h-4 w-4" />
-                          <span className="sr-only">
-                            {t("list.actions.title")}
-                          </span>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>
-                          {t("list.actions.title")}
-                        </DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>{t("list.actions.edit")}</DropdownMenuItem>
-                        <DropdownMenuItem>{t("list.actions.view")}</DropdownMenuItem>
-                        <DropdownMenuItem className="text-red-600">
-                          {t("list.actions.delete")}
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        )}
+            ))}
+          </TableBody>
+        </Table>
       </CardContent>
     </Card>
   );

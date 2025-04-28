@@ -149,9 +149,9 @@ export default function ProductsPage() {
           className="space-y-4 mb-8 flex items-center justify-between"
         >
           <div>
-            <h2 className="text-2xl font-semibold">{t("featured.title")}</h2>
+            <h2 className="text-2xl font-semibold">{t("features.title")}</h2>
             <p className="text-muted-foreground">
-              {t("featured.description")}
+              {t("features.description")}
             </p>
           </div>
           <Link href="/verify">

@@ -12,7 +12,43 @@
   "pages": {           
     "pendingProducts": {
       "title": "Pending Products",
-      "description": "List of products pending approval"
+      "description": "List of products pending approval",
+      "columns": {
+        "documents": "Documents"
+      },
+      "status": {
+        "pendingDocuments": "Pending Documents",
+        "allDocumentsApproved": "All Documents Approved",
+        "draft":"Draft",
+        "pending":"Pending",
+        "rejected":"Rejected",
+        "new":"New"
+      },
+      "actions": {
+        "title": "Actions",
+        "viewDocuments": "View Documents",
+        "viewDetails": "View Details",
+        "control": "Control",
+        "approve": "Approve",
+        "reject": "Reject",
+        "icons": {
+          "documents": "Documents",
+          "view": "View",
+          "approve": "Approve",
+          "reject": "Reject"
+        }
+      },
+      "documentsDialog": {
+        "title": "Product Documents"
+      },
+      "rejectDialog": {
+        "title": "Reject Product",
+        "description": "Please enter a reason for rejecting the product.",
+        "reasonLabel": "Rejection Reason",
+        "reasonPlaceholder": "Enter rejection reason...",
+        "cancel": "Cancel",
+        "reject": "Reject"
+      }
     }
   },
   "error": {
@@ -156,6 +192,7 @@
         "title": "Connected Data",
         "description": "Link product data, certifications, and sustainability metrics in one place.",
         "buttonText": "Learn More"
+
       }
     },
     "traceability": {
@@ -268,6 +305,9 @@
     "title": "Certified Products",
     "description": "Explore our collection of certified sustainable products with verified Digital Product Passports.",
     "loading": "Loading products...",
+    "verify": {
+      "button": "Verify Product"
+    },
     "list": {
       "categories": {
         "textile": "Textile",
@@ -277,7 +317,12 @@
         "clothing": "Clothing",
         "women's clothing": "Women's Clothing",
         "automotive batteries": "Automotive Batteries",
-        "marine batteries": "Marine Batteries"
+        "marine batteries": "Marine Batteries",
+        "industrial batteries": "Industrial Batteries",
+        "standard batteries": "Standard Batteries",
+        "agm batteries": "AGM Batteries",
+        "efb batteries": "EFB Batteries"
+        
       },
       "sustainability": {
         "score": "Sustainability Score",
@@ -331,9 +376,15 @@
       "productNotFoundDescription": "The requested product could not be found.",
       "notAvailable": "Not Available",
       "success": "Success",
-      "documentUploadedSuccessfully": "Document uploaded successfully"
+      "documentUploadedSuccessfully": "Document uploaded successfully",
+      "noNotes": "No notes"
     },
-    "featured": {
+    "empty": {
+      "title": "No Products Found",
+      "description": "You don't have any products yet. Use the 'New Product' button to add one.",
+      "addButton": "Add Product"
+    },
+    "features": {
       "title": "Featured Products",
       "description": "Browse our curated selection of certified sustainable products",
       "sections": {
@@ -416,11 +467,13 @@
         "careInstructions": {
           "title": "Care Instructions",
           "washing": "Washing",
-          "drying": "Drying",
+          "washingTemp": "Wash at 30 degrees",
           "ironing": "Ironing",
+          "ironingTemp": "Iron at medium temperature",
           "bleaching": "Bleaching",
-          "dryClean": "Dry Clean",
-          "specialCare": "Special Care Notes"
+          "bleachingInst": "Do not bleach",
+          "drying": "Drying",
+          "dryingInst": "Lay flat to dry"
         }
       },
       "layoutNotAvailable": "DPP layout not available for product type:",
@@ -432,6 +485,7 @@
       },
       "keyFeatures": {
         "title": "Key Features"
+          
       },
       "materials": {
         "title": "Materials",
@@ -439,7 +493,9 @@
           "material": "Material",
           "percentage": "Percentage",
           "recyclable": "Recyclable",
-          "description": "Description"
+          "description": "Description",
+          "yes": "Yes",
+          "no": "No"
         },
         "recyclable": {
           "yes": "Yes",
@@ -498,6 +554,39 @@
     "search": {
       "placeholder": "Search products..."
     },
+    "form": {
+      "images": {
+        "title": "Product Images",
+        "upload": "Upload Image"
+      },
+      "name": {
+        "label": "Product Name",
+        "placeholder": "Enter product name"
+      },
+      "type": {
+        "label": "Product Type",
+        "placeholder": "Select Product Type"
+      },
+      "subcategory": {
+        "label": "Product Subcategory",
+        "placeholder": "Select Subcategory"
+      },
+      "model": {
+        "label": "Model",
+        "placeholder": "Select Model"
+      },
+      "description": {
+        "label": "Description",
+        "placeholder": "Enter product description"
+      },
+      "keyFeatures": {
+        "title": "Key Features",
+        "name": "Feature Name",
+        "value": "Value",
+        "unit": "Unit (optional)",
+        "add": "Add Feature"
+      }
+    },
     "filters": {
       "type": {
         "label": "Product Type",
@@ -549,11 +638,15 @@
         "description": "Are you sure you want to delete this product? This action cannot be undone.",
         "cancel": "Cancel",
         "confirm": "Delete"
-      }
+                 }
     },
     "addProduct": {
       "title": "Add New Product",
       "description": "Fill in the form to add a new product",
+      "success": {
+        "title": "Product Added Successfully",
+        "description": "The product has been added successfully. You can now view it in the product list."
+      },
       "form": {
         "steps": {
           "manufacturer": "Manufacturer"
@@ -562,7 +655,16 @@
           "manufacturer": {
             "label": "Manufacturer",
             "placeholder": "Select or enter manufacturer",
-            "description": "Select the product manufacturer or add a new one"
+            "description": "Select the product manufacturer or add a new one",
+            "searching": "Searching for manufacturer...",
+            "noResults": "No results found",
+            "addNew": "Add New Manufacturer",
+            "companyName": "Company Name *",
+            "taxId": "Tax ID *",
+            "contactPerson": "Contact Person *",
+            "contactEmail": "Contact Email *",
+            "cancel": "Cancel",
+            "create": "Create Manufacturer"
           }
         },
         "navigation": {
@@ -664,7 +766,9 @@
       "agm": "AGM",
       "efb": "EFB",
       "standard": "Standard",
-      "marine": "Marine"
+      "marine": "Marine",
+      "childcare_products": "Childcare Products"
+ 
     },
     "common": {
       "status": {
@@ -672,6 +776,13 @@
         "draft": "Draft",
         "active": "Active",
         "pending": "Pending"
+      },
+      "buttons": {
+        "previous": "Previous",
+        "next": "Next",
+        "saving": "Saving...",
+        "updateProduct": "Update Product",
+        "createProduct": "Create Product"
       }
     }
   },
@@ -688,9 +799,19 @@
       "login": "Login",
       "dashboard": "Go to Dashboard",
       "addNew": "Add New",
-      "viewDetails": "View Details"
+      "viewDetails": "View Details",
+      "previous": "Previous",
+      "next": "Next",
+      "saving": "Saving...",
+      "updateProduct": "Update Product",
+      "createProduct": "Create Product"
     },
-
+    "delete": {
+      "title": "Delete",
+      "description": "Are you sure you want to delete this item?",
+      "cancel": "Cancel",
+      "confirm": "Delete"
+    },
     "auth": {
       "required": "Authentication Required",
       "loginRequired": "You need to login to view this page.",
@@ -738,7 +859,26 @@
     "battery": "Battery",
     "automotive": "Automotive",
     "electronics": "Electronics",
-    "clothing": "Clothing"
+    "clothing": "Clothing",
+    "footwear": "Footwear",
+    "telecommunications_equipment": "Telecommunications Equipment",
+    "childcare_products": "Childcare Products",
+    "food_contact_materials": "Food Contact Materials",
+    "toothbrushes": "Toothbrushes" ,
+    "other_consumer_products": "Other Consumer Products",
+    "personal_protective_equipment": "Personal Protective Equipment",
+    "household_products": "Household Products",
+    "sports_equipment": "Sports Equipment",
+    "toys": "Toys",
+    "other_products": "Other Products",
+    "chemical_and_organic_fertilizers": "Chemical and Organic Fertilizers",
+    "pesticides": "Pesticides",
+    "biocides": "Biocides",
+    "other_agricultural_products": "Other Agricultural Products",
+    "other_industrial_products": "Other Industrial Products",
+    "paper_products": "Paper Products",
+    "batteries_and_accumulators": "Batteries and Accumulators",
+    "electrical_equipment": "Electrical Equipment"
   },
   "documentManagement": {
     "title": "Document Management",
@@ -941,7 +1081,7 @@
     }
   },
   "admin": {
-    "products": {
+    "product": {
       "steps": {
        "documentUpload": {
        "title": "Upload Product Documents",
@@ -959,7 +1099,17 @@
        "uploadIssues": "Upload Issues",
        "documentTypes": {
             "testReports": "Test Reports",
-            "technicalDocumentation": "Technical Documentation"
+            "technicalDocumentation": "Technical Documentation",
+            "certifications": "Certifications",
+            "qualityCertificates": "Quality Certificates",
+            "safetyCertificates": "Safety Certificates",
+            "environmentalCertificates": "Environmental Certificates",
+            "otherCertificates": "Other Certificates",
+            "productionPermits": "Production Permits",
+            "exportDocuments": "Export Documents",
+            "isoCertificates": "ISO Certificates",
+            "otherDocuments": "Other Documents"
+            
           }
         }
       }
@@ -1069,5 +1219,89 @@
     }
   },
   "auth": {
+    "createAccount": {
+      "title": "Create Account",
+      "description": "Create a new account",
+      "name": "Name",
+      "email": "Email",
+      "form": {
+        "name": "Name",
+        "email": "Email",
+        "password": "Password",
+        "confirmPassword": "Confirm Password",
+        "submit": "Submit"
+      },
+      "success": {
+        "title": "Success",
+        "description": "Account created successfully"
+      },
+      "error": {
+        "title": "Error",
+        "description": "Failed to create account"
+      }
+    }
+  },
+  "verify": {
+    "title": "Product Verification",
+    "description": "Enter product ID or scan QR code to verify authenticity and view Digital Product Passport.",
+    "card": {
+      "title": "Product Verification",
+      "description": "Verify product authenticity using product code or QR code"
+    },
+    "input": {
+      "placeholder": "Enter product ID (e.g. PROD-2024-001)",
+      "button": "Verify",
+      "or": "or scan QR code"
+    },
+    "status": {
+      "validating": {
+        "title": "Verifying Product",
+        "description": "Please wait while we verify product authenticity..."
+      },
+      "valid": {
+        "title": "Product Verified",
+        "description": "Redirecting to product details..."
+      },
+      "invalid": {
+        "title": "Verification Failed",
+        "description": "Product code could not be verified. Please try again or contact support.",
+        "notFound": "Product not found in our database",
+        "error": "Product code could not be verified",
+        "button": "Try Again"
+      }
+    },
+    "toast": {
+      "error": {
+        "title": "Invalid Product Code",
+        "description": "Please enter a valid product code or scan a valid QR code."
+      }
+    },
+    "verification": {
+      "title": "Product Verification",
+      "description": "Enter product ID or scan QR code to verify product authenticity",
+      "manualInput": {
+        "placeholder": "Enter product ID or scan QR code",
+        "verify": "Verify"
+      },
+      "orScanQR": "or scan QR code",
+      "scanner": {
+        "title": "Scan QR Code",
+        "description": "Use your camera to scan the QR code on the product",
+        "permission": "Camera permission required",
+        "notSupported": "Your browser does not support camera access",
+        "start": "Start Scanning"
+      }
+    },
+    "scan": {
+      "title": "Scan QR Code",
+      "description": "Use your camera to scan the QR code on the product",
+      "permission": "Camera permission required",
+      "notSupported": "Your browser does not support camera access"
+    },
+    "result": {
+      "authentic": "Authentic Product",
+      "notFound": "Product Not Found",
+      "invalid": "Invalid Product ID"
+    }
   }
 }

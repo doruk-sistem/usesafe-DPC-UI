@@ -248,6 +248,80 @@ export class ProductService {
       totalItems: count || 0,
     };
   }
+
+  static async approveProduct(productId: string, userId: string): Promise<void> {
+    const { data: product, error: fetchError } = await supabase
+      .from("products")
+      .select("*")
+      .eq("id", productId)
+      .single();
+
+    if (fetchError) throw fetchError;
+
+    // Üreticinin ürünlerine yeni bir taslak ürün oluştur
+    const { error: createError } = await supabase.from("products").insert({
+      ...product,
+      id: undefined,
+      status: "DRAFT",
+      company_id: product.manufacturer_id, // Üreticinin ID'sini company_id olarak ata
+      manufacturer_id: product.manufacturer_id, // Üretici ID'sini koru
+      status_history: [
+        {
+          from: "PENDING",
+          to: "DRAFT",
+          timestamp: new Date().toISOString(),
+          userId,
+        },
+      ],
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    });
+
+    if (createError) throw createError;
+
+    // Orijinal pending ürünü silme işlemini yorum satırına alıyoruz
+    /*
+    const { error: deleteError } = await supabase
+      .from("products")
+      .delete()
+      .eq("id", productId);
+
+    if (deleteError) throw deleteError;
+    */
+  }
+
+  static async rejectProduct(
+    productId: string,
+    userId: string,
+    reason: string
+  ): Promise<void> {
+    const { data: product, error: fetchError } = await supabase
+      .from("products")
+      .select("*")
+      .eq("id", productId)
+      .single();
+
+    if (fetchError) throw fetchError;
+
+    const { error: updateError } = await supabase
+      .from("products")
+      .update({
+        status: "REJECTED",
+        status_history: [
+          ...(product.status_history || []),
+          {
+            from: product.status,
+            to: "REJECTED",
+            timestamp: new Date().toISOString(),
+            userId,
+            reason,
+          },
+        ],
+      })
+      .eq("id", productId);
+
+    if (updateError) throw updateError;
+  }
 }
 
 export const productService = createService({
@@ -271,7 +345,7 @@ export const productService = createService({
     companyId: string;
   }): Promise<ProductResponse> => {
     // Admin şirketi için özel durum - tüm ürünleri göster
-    if (companyId === ADMIN_COMPANY_ID) {
+    if (companyId === "admin") {
       const { data, error } = await supabase
         .from("products")
         .select(

@@ -3,27 +3,27 @@ export const ACCEPTED_DOCUMENT_FORMATS = ["pdf", "doc", "docx"] as const;
 export const DOCUMENT_TYPES = [
   {
     id: "test_reports",          
-    label: "Test Reports",
+    label: "Test Raporları",
     acceptedFormats: ACCEPTED_DOCUMENT_FORMATS,
   },
   {
     id: "technical_docs", 
-    label: "Technical Documentation",
+    label: "Teknik Dokümantasyon",
     acceptedFormats: ACCEPTED_DOCUMENT_FORMATS,
   },
   {
     id: "compliance_docs",  
-    label: "Compliance Documents",
+    label: "Uygunluk Belgeleri",
     acceptedFormats: ACCEPTED_DOCUMENT_FORMATS,
   },
   {
     id: "quality_cert",
-    label: "Quality Certificates",
+    label: "Kalite Sertifikaları",
     acceptedFormats: ACCEPTED_DOCUMENT_FORMATS,
   },
   {
     id: "safety_cert",
-    label: "Safety Certificates",
+    label: "Güvenlik Sertifikaları",
     acceptedFormats: ACCEPTED_DOCUMENT_FORMATS,
   },
 ] as const;

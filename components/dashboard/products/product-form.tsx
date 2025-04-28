@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRight, ArrowLeft } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -89,6 +90,7 @@ export function ProductForm({
 }: ProductFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [step, setStep] = useState(1);
+  const t = useTranslations();
 
   const form = useForm<FormData>({
     resolver: zodResolver(productSchema),
@@ -162,7 +164,7 @@ export function ProductForm({
               onClick={() => setStep(step - 1)}
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Previous
+              {t("common.buttons.previous")}
             </Button>
           )}
           {step < TOTAL_STEPS ? (
@@ -171,13 +173,13 @@ export function ProductForm({
               onClick={handleNextStep}
               disabled={isSubmitting}
             >
-              Next
+              {t("common.buttons.next")}
               <ArrowRight className="h-4 w-4 ml-2" />
             </Button>
           ) : (
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting && <span className="mr-2">Saving...</span>}
-              {defaultValues ? "Update Product" : "Create Product"}
+              {isSubmitting && <span className="mr-2">{t("common.buttons.saving")}</span>}
+              {defaultValues ? t("common.buttons.updateProduct") : t("common.buttons.createProduct")}
             </Button>
           )}
         </div>

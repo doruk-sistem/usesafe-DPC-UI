@@ -2,156 +2,128 @@
 
 import { motion } from "framer-motion";
 import {
-  Users,
-  FileCheck,
-  Shield,
-  AlertTriangle,
-  CheckCircle2,
-  Clock,
+  Box,
+  FileText,
+  ShieldCheck,
   TrendingUp,
   TrendingDown,
+  AlertTriangle,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
 
-import { Card } from "@/components/ui/card";
-import { Error } from "@/components/ui/error";
-import { getRecentApprovals, getSystemAlerts, type DashboardMetrics } from "@/lib/hooks/useMetrics";
+import { EnhancedCard } from "@/components/ui/enhanced-card";
+import { useMetrics } from "@/lib/hooks/use-metrics"; 
+import { useProducts } from "@/lib/hooks/use-products";
+import { cn } from "@/lib/utils";
+import { calculateProductGrowth } from "@/lib/utils/metrics";
 
 export function DashboardMetrics() {
-  const t = useTranslations("adminDashboard");
-  const [metrics, setMetrics] = useState<DashboardMetrics | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const t = useTranslations("dashboard.metrics");
+  const { products } = useProducts();
+  const productGrowth = calculateProductGrowth(products);
+  const { metrics, isLoading } = useMetrics(); 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
 
-  useEffect(() => {
-    const fetchMetrics = async () => {
-      try {
-        const recentApprovals = await getRecentApprovals();
-        const systemAlerts = await getSystemAlerts();
-        // Handle the data as needed
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchMetrics();
-  }, []);
-
-  const metricConfigs = [
+  const metricCards = [
     {
-      key: 'totalManufacturers',
-      title: t("metrics.totalManufacturers"),
-      icon: Users,
-      gradient: "from-blue-500 to-blue-600",
-      getValue: () => ({
-        value: metrics?.totalManufacturers.count.toLocaleString() ?? '0',
-        change: metrics?.totalManufacturers.change ?? 0
-      })
+      title: t("totalProducts"),
+      value: products?.length ? products.length.toString() : "0",
+      icon: Box,
+      gradient: "from-blue-500 to-blue-700",
+      trend: `${productGrowth > 0 ? "+" : ""}${productGrowth}%`,
     },
     {
-      key: 'pendingApprovals',
-      title: t("metrics.pendingApprovals"),
-      icon: Clock,
-      gradient: "from-amber-500 to-amber-600",
-      getValue: () => ({
-        value: metrics?.pendingApprovals.count.toLocaleString() ?? '0',
-        change: metrics?.pendingApprovals.change ?? 0
-      })
-    },
-    {
-      key: 'activeDPCs',
-      title: t("metrics.activeDPCs"),
-      icon: Shield,
-      gradient: "from-green-500 to-green-600",
-      getValue: () => ({
-        value: metrics?.activeDPCs.count.toLocaleString() ?? '0',
-        change: metrics?.activeDPCs.change ?? 0
-      })
-    },
-    {
-      key: 'documentVerifications',
-      title: t("metrics.documentVerifications"),
-      icon: FileCheck,
-      gradient: "from-purple-500 to-purple-600",
-      getValue: () => ({
-        value: metrics?.documentVerifications.count.toLocaleString() ?? '0',
-        change: metrics?.documentVerifications.change ?? 0
-      })
-    },
-    {
-      key: 'systemAlerts',
-      title: t("metrics.systemAlerts"),
+      title: t("pendingCertifications"),
+      value: isLoading
+        ? "..."
+        : metrics?.pendingApprovals?.count.toString() ?? "0",
       icon: AlertTriangle,
-      gradient: "from-red-500 to-red-600",
-      getValue: () => ({
-        value: metrics?.systemAlerts.count.toLocaleString() ?? '0',
-        change: metrics?.systemAlerts.change ?? 0
-      })
+      gradient: "from-yellow-500 to-yellow-700",
+      trend: isLoading
+        ? ""
+        : `${metrics?.pendingApprovals?.change ?? 0}%`,
     },
     {
-      key: 'verificationRate',
-      title: t("metrics.verificationRate"),
-      icon: CheckCircle2,
-      gradient: "from-indigo-500 to-indigo-600",
-      getValue: () => ({
-        value: `${metrics?.verificationRate.rate.toFixed(1) ?? '0'}%`,
-        change: metrics?.verificationRate.change ?? 0
-      })
+      title: t("approvedDocuments"),
+      value: isLoading
+        ? "..."
+        : metrics?.documentVerifications?.count.toString() ?? "0",
+      icon: FileText,
+      gradient: "from-green-500 to-green-700",
+      trend: isLoading
+        ? ""
+        : `${metrics?.documentVerifications?.change ?? 0}%`,
+    },
+    {
+      title: t("complianceRate"),
+      value: isLoading
+        ? "..."
+        : `${metrics?.verificationRate?.rate.toFixed(1) ?? 0}%`,
+      icon: ShieldCheck,
+      gradient: "from-purple-500 to-purple-700",
+      trend: isLoading
+        ? ""
+        : `${metrics?.verificationRate?.change ?? 0}%`,
     },
   ];
 
-  if (error) {
-    return <Error error={error} />;
-  }
-
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {metricConfigs.map((config, index) => {
-        const { value, change } = config.getValue();
-        const trend = change >= 0 ? "up" : "down";
-
-        return (
+    <motion.div
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      className="grid gap-4 md:grid-cols-2 lg:grid-cols-4"
+    >
+      {metricCards.map((card, index) => (
+        <EnhancedCard
+          key={card.title}
+          gradient={`bg-gradient-to-br ${card.gradient}`}
+        >
           <motion.div
-            key={config.key}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
+            transition={{
+              delay: index * 0.2,
+              type: "spring",
+              stiffness: 100,
+            }}
+            className="flex justify-between items-center"
           >
-            <Card className={`relative overflow-hidden group hover:shadow-lg transition-all duration-300 ${isLoading ? 'animate-pulse' : ''}`}>
-              <div className="absolute inset-0 bg-gradient-to-br opacity-10 group-hover:opacity-20 transition-opacity duration-300" />
-              <div className="p-6 relative z-10">
-                <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">
-                      {config.title}
-                    </p>
-                    <h3 className="text-2xl font-bold mt-1">{value}</h3>
-                  </div>
-                  <div className={`p-2 rounded-lg bg-gradient-to-br ${config.gradient} bg-opacity-10`}>
-                    <config.icon className="h-5 w-5" />
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  {trend === "up" ? (
-                    <TrendingUp className="h-4 w-4 text-green-500" />
-                  ) : (
-                    <TrendingDown className="h-4 w-4 text-red-500" />
+            <div>
+              <p className="text-sm text-white/80 mb-2">{card.title}</p>
+              <h3 className="text-3xl font-bold text-white">{card.value}</h3>
+              {card.trend && (
+                <div
+                  className={cn(
+                    "flex items-center mt-2 text-xs",
+                    card.trend.startsWith("+")
+                      ? "text-green-300"
+                      : card.trend.startsWith("-")
+                      ? "text-red-300"
+                      : "text-white/60"
                   )}
-                  <span className={`text-sm font-medium ${
-                    trend === "up" ? "text-green-500" : "text-red-500"
-                  }`}>
-                    {change >= 0 ? "+" : ""}{change.toFixed(1)}%
-                  </span>
-                  <span className="text-sm text-muted-foreground">{t("metrics.vsLastMonth")}</span>
+                >
+                  {card.trend.startsWith("+") ? (
+                    <TrendingUp className="w-4 h-4 mr-1" />
+                  ) : card.trend.startsWith("-") ? (
+                    <TrendingDown className="w-4 h-4 mr-1" />
+                  ) : null}
+                  <span>{card.trend}</span>
                 </div>
-              </div>
-            </Card>
+              )}
+            </div>
+            <card.icon className="w-8 h-8 text-white/80" />
           </motion.div>
-        );
-      })}
-    </div>
+        </EnhancedCard>
+      ))}
+    </motion.div>
   );
 }

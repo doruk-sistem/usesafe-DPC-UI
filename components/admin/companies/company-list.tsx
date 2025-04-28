@@ -2,18 +2,11 @@
 
 import { Building2, Package, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
-import { useCompanies } from "../../../lib/hooks/use-company";
-import { Company } from "../../../lib/types/company";
+import { useTranslations } from "next-intl";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,16 +15,27 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useTranslations } from "next-intl";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
-const getStatusBadgeVariant = (status: string) => {
+import { companyApiHooks } from "../../../lib/hooks/use-company";
+import { Company, CompanyStatus } from "../../../lib/types/company";
+
+
+
+const getStatusBadgeVariant = (status: CompanyStatus) => {
   switch (status) {
-    case "ACTIVE":
+    case CompanyStatus.ACTIVE:
       return "success";
-    case "INACTIVE":
+    case CompanyStatus.INACTIVE:
       return "secondary";
-    case "PENDING":
+    case CompanyStatus.PENDING:
       return "warning";
     default:
       return "secondary";
@@ -39,7 +43,9 @@ const getStatusBadgeVariant = (status: string) => {
 };
 
 export function CompanyList() {
-  const { data: companies = [], isLoading, error } = useCompanies({});
+  const { data: companies = [], isLoading, error } = companyApiHooks.useGetCompaniesQuery({}, {
+    retry: false
+  });
   const t = useTranslations("admin.companies");
 
   if (error) {
@@ -108,7 +114,7 @@ export function CompanyList() {
                 <TableCell>{company.taxInfo.taxNumber}</TableCell>
                 <TableCell>
                   <Badge variant={getStatusBadgeVariant(company.status)}>
-                    {t(`status.${company.status.toLowerCase()}`)}
+                    {t(`status.${company.status}`)}
                   </Badge>
                 </TableCell>
                 <TableCell>
