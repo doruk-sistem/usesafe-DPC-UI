@@ -333,18 +333,18 @@ export function ProductList({ products, isLoading }: ProductListProps) {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>{t("delete.title")}</AlertDialogTitle>
+            <AlertDialogTitle>{t("common.delete.title")}</AlertDialogTitle>
             <AlertDialogDescription>
-              {t("delete.description", { name: productToDelete?.name || "" })}
+              {t("common.delete.description", { name: productToDelete?.name || "" })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>{t("delete.cancel")}</AlertDialogCancel>
+            <AlertDialogCancel>{t("common.delete.cancel")}</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleConfirmDelete}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              {t("delete.confirm")}
+              {t("common.delete.confirm")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

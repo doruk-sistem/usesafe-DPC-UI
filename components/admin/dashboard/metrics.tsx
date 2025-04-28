@@ -12,10 +12,10 @@ import {
 import { useTranslations } from "next-intl";
 
 import { EnhancedCard } from "@/components/ui/enhanced-card";
+import { useMetrics } from "@/lib/hooks/use-metrics"; 
 import { useProducts } from "@/lib/hooks/use-products";
 import { cn } from "@/lib/utils";
 import { calculateProductGrowth } from "@/lib/utils/metrics";
-import { useMetrics } from "@/lib/hooks/use-metrics"; 
 
 export function DashboardMetrics() {
   const t = useTranslations("dashboard.metrics");

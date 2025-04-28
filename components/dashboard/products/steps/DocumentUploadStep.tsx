@@ -54,9 +54,9 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
     form.trigger = async (name?: string | string[]) => {
       if (!isVerified) {
         toast({
-          title: t("admin.products.steps.documentUpload.verificationRequired"),
+          title: t("admin.product.steps.documentUpload.verificationRequired"),
           description: t(
-            "admin.products.steps.documentUpload.pleaseVerifyDocuments"
+            "admin.product.steps.documentUpload.pleaseVerifyDocuments"
           ),
           variant: "destructive",
         });
@@ -188,10 +188,10 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
     <Card className="p-6 space-y-6">
       <div>
         <h3 className="text-lg font-semibold">
-          {t("admin.products.steps.documentUpload.productDocuments")}
+          {t("admin.product.steps.documentUpload.productDocuments")}
         </h3>
         <p className="text-sm text-muted-foreground">
-          {t("admin.products.steps.documentUpload.uploadDocuments")}
+          {t("admin.product.steps.documentUpload.uploadDocuments")}
         </p>
       </div>
 
@@ -256,7 +256,7 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
                       }}
                     >
                       <Plus className="h-4 w-4 mr-2" />
-                      {t("admin.products.steps.documentUpload.addDocument")}
+                      {t("admin.product.steps.documentUpload.addDocument")}
                     </Button>
                   </div>
                 </div>
@@ -279,11 +279,11 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
             htmlFor="documents-verification"
             className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
           >
-            {t("admin.products.steps.documentUpload.verifyDocuments")}
+            {t("admin.product.steps.documentUpload.verifyDocuments")}
           </label>
           <p className="text-sm text-muted-foreground">
             {t(
-              "admin.products.steps.documentUpload.verifyDocumentsDescription"
+              "admin.product.steps.documentUpload.verifyDocumentsDescription"
             )}
           </p>
         </div>
