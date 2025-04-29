@@ -250,8 +250,6 @@ export class ProductService {
   }
 
   static async approveProduct(productId: string, userId: string): Promise<void> {
-    console.log('approveProduct başladı:', { productId, userId });
-
     // Ürünü getir
     const { data: product, error: fetchError } = await supabase
       .from("products")
@@ -260,15 +258,10 @@ export class ProductService {
       .single();
 
     if (fetchError) {
-      console.error('Ürün getirme hatası:', fetchError);
       throw fetchError;
     }
 
-    console.log('Mevcut ürün:', product);
-
     // Yeni bir ürün oluştur (satıcının ürünü olarak)
-    console.log('Yeni ürün oluşturuluyor...');
-    
     const newProduct = {
       ...product,
       id: crypto.randomUUID(), // Yeni UUID oluştur
@@ -286,23 +279,18 @@ export class ProductService {
       updated_at: new Date().toISOString(),
     };
 
-    const { data: createdProduct, error: createError } = await supabase
+    const { error: createError } = await supabase
       .from("products")
       .insert([newProduct])
       .select()
       .single();
 
     if (createError) {
-      console.error('Yeni ürün oluşturma hatası:', createError);
       throw createError;
     }
 
-    console.log('Yeni ürün oluşturuldu:', createdProduct);
-
     // Eski ürünün manufacturer_id'sini null yap
-    console.log('Eski ürünün manufacturer_id\'si null yapılıyor...');
-    
-    const { data: updatedProduct, error: updateError } = await supabase
+    const { error: updateError } = await supabase
       .from("products")
       .update({
         manufacturer_id: null,
@@ -322,11 +310,8 @@ export class ProductService {
       .select();
 
     if (updateError) {
-      console.error('Eski ürün güncelleme hatası:', updateError);
       throw updateError;
     }
-
-    console.log('Eski ürün güncellendi:', updatedProduct);
   }
 
   static async rejectProduct(
