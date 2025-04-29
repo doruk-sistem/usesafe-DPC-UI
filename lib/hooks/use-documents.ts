@@ -6,29 +6,6 @@ import { supabase } from "@/lib/supabase/client";
 import { Document, DocumentStatus, DocumentType } from "@/lib/types/document";
 
 export const documentsApiHooks = {
-  useGetProducts: () => {
-    return useQuery({
-      queryKey: ["getProducts"],
-      queryFn: async () => {
-        try {
-          const { data: products, error } = await supabase
-            .from("products")
-            .select(`*`)
-            .order("created_at", { ascending: false });
-
-          if (error) {
-            throw error;
-          }
-
-          return products;
-        } catch (error) {
-          console.error("Error fetching products:", error);
-          throw error;
-        }
-      },
-    });
-  },
-
   useGetDocuments: () => {
     return useQuery({
       queryKey: ["documents"],
@@ -237,7 +214,6 @@ export const documentsApiHooks = {
       },
       onSuccess: (data) => {
         queryClient.invalidateQueries({ queryKey: ["getDocuments"] });
-        queryClient.invalidateQueries({ queryKey: ["getProducts"] });
       },
       onError: (error) => {
         console.error("Error in document status update:", error);
@@ -438,122 +414,9 @@ export const documentsApiHooks = {
       },
       onSuccess: (data) => {
         queryClient.invalidateQueries({ queryKey: ["getDocuments"] });
-        queryClient.invalidateQueries({ queryKey: ["getProducts"] });
       },
       onError: (error) => {
         console.error("Error in direct document status update:", error);
-      },
-    });
-  },
-
-  // Ürün reddetme işlevi
-  useRejectProduct: () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-      mutationFn: async ({
-        productId,
-        reason,
-      }: {
-        productId: string;
-        reason: string;
-      }) => {
-        try {
-          // Ürünü bul
-          const { data: products, error: fetchError } = await supabase
-            .from("products")
-            .select("*")
-            .eq("id", productId);
-
-          if (fetchError) {
-            throw new Error(`Failed to fetch product: ${fetchError.message}`);
-          }
-
-          if (!products || products.length === 0) {
-            throw new Error(`No product found with ID ${productId}`);
-          }
-
-          const product = products[0];
-
-          // Ürün durumunu değiştirmek yerine, ürünün belgelerini güncelle
-          // Bu, ürün durumunu değiştirmeden ürünü reddetmemizi sağlar
-
-          // Belgeleri güncelle
-          let updatedDocuments;
-
-          // Belgeleri nesne olarak işle
-          if (
-            product.documents &&
-            typeof product.documents === "object" &&
-            !Array.isArray(product.documents)
-          ) {
-            updatedDocuments = JSON.parse(JSON.stringify(product.documents));
-
-            // Tüm belge tiplerini kontrol et
-            for (const docType in updatedDocuments) {
-              if (Array.isArray(updatedDocuments[docType])) {
-                // Tüm belgeleri reddedilmiş olarak işaretle
-                updatedDocuments[docType] = updatedDocuments[docType].map(
-                  (doc: any) => ({
-                    ...doc,
-                    status: "rejected",
-                    rejection_reason: reason,
-                  })
-                );
-              }
-            }
-          }
-          // Belgeleri dizi olarak işle
-          else if (Array.isArray(product.documents)) {
-            updatedDocuments = JSON.parse(JSON.stringify(product.documents));
-
-            // Tüm belgeleri reddedilmiş olarak işaretle
-            updatedDocuments = updatedDocuments.map((doc: any) => ({
-              ...doc,
-              status: "rejected",
-              rejection_reason: reason,
-            }));
-          } else {
-            // Belgeler yok, yeni oluştur
-            // Burada documents değişkenini bir dizi olarak kullanmıyoruz
-            // Bunun yerine, doğrudan bir dizi oluşturuyoruz
-            updatedDocuments = [
-              {
-                id: `rejected-${product.id}-${Date.now()}`, // Benzersiz ID oluştur
-                name: "Product Rejection",
-                type: "rejection",
-                status: "rejected",
-                rejection_reason: reason,
-              },
-            ];
-          }
-
-          // Ürünü güncelle - sadece belgeleri güncelle, ürün durumunu değiştirme
-          const { data: updatedProduct, error: updateError } = await supabase
-            .from("products")
-            .update({
-              documents: updatedDocuments,
-            })
-            .eq("id", product.id)
-            .select();
-
-          if (updateError) {
-            throw new Error(
-              `Failed to update product documents: ${updateError.message}`
-            );
-          }
-
-          return updatedProduct;
-        } catch (error) {
-          console.error("Error in product rejection:", error);
-          throw error;
-        }
-      },
-      onSuccess: (data) => {
-        queryClient.invalidateQueries({ queryKey: ["getDocuments"] });
-        queryClient.invalidateQueries({ queryKey: ["getProducts"] });
-      },
-      onError: (error) => {
-        console.error("Error in product rejection:", error);
       },
     });
   },

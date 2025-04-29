@@ -62,7 +62,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
 import { documentsApiHooks } from "@/lib/hooks/use-documents";
+import { useProducts } from "@/lib/hooks/use-products";
 import type { Document } from "@/lib/types/document";
+import { ProductService } from "@/lib/services/product";
+import { useAuth } from "@/lib/hooks/use-auth";
 
 import { getStatusIcon } from "../../../lib/utils/document-utils";
 
@@ -73,6 +76,7 @@ interface DocumentListProps {
 export function DocumentList({ initialDocuments = [] }: DocumentListProps) {
   const t = useTranslations("documentManagement");
   const { toast } = useToast();
+  const { user } = useAuth();
   const searchParams = useSearchParams();
   const manufacturerId = searchParams.get("manufacturer");
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -93,13 +97,11 @@ export function DocumentList({ initialDocuments = [] }: DocumentListProps) {
     isLoading,
     error,
   } = documentsApiHooks.useGetDocuments();
-  const { data: allProducts = [], isLoading: isLoadingProducts } =
-    documentsApiHooks.useGetProducts();
+  const { products: allProducts = [], isLoading: isLoadingProducts } = useProducts();
   const { mutate: updateDocumentStatus } =
     documentsApiHooks.useUpdateDocumentStatus();
   const { mutate: updateDocumentStatusDirect } =
     documentsApiHooks.useUpdateDocumentStatusDirect();
-  const { mutate: rejectProduct } = documentsApiHooks.useRejectProduct();
 
   // Update local documents when initialDocuments or documents changes
   useEffect(() => {
@@ -263,10 +265,7 @@ export function DocumentList({ initialDocuments = [] }: DocumentListProps) {
     }
 
     try {
-      await rejectProduct({
-        productId: selectedProductId,
-        reason: rejectReason,
-      });
+      await ProductService.rejectProduct(selectedProductId, user?.id || "", rejectReason);
 
       toast({
         title: "Success",

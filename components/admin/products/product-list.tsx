@@ -43,6 +43,7 @@ import {
 import { documentsApiHooks } from "@/lib/hooks/use-documents";
 import { useImageUrl } from "@/lib/hooks/use-image-url";
 import { BaseProduct, ProductStatus } from "@/lib/types/product";
+import { useProducts } from "@/lib/hooks/use-products";
 
 
 export function ProductList() {
@@ -52,7 +53,7 @@ export function ProductList() {
   const [manufacturerFilter, setManufacturerFilter] = useState("all");
   const { getImageUrl } = useImageUrl();
 
-  const { data: products = [], isLoading } = documentsApiHooks.useGetProducts();
+  const { products = [], isLoading } = useProducts();
 
   // Process products to include document counts and status
   const processedProducts: BaseProduct[] = products.map((product) => {

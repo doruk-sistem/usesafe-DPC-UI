@@ -20,7 +20,10 @@ export function useAuth() {
   const router = useRouter();
   const t = useTranslations("auth");
 
-  const companyId = user?.user_metadata?.data?.company_id || user?.user_metadata?.company_id;
+  const companyId = user?.user_metadata?.data?.company_id || user?.user_metadata?.company_id || "admin";
+
+  console.log("useAuth - user:", user);
+  console.log("useAuth - companyId:", companyId);
 
   const {
     data: company,
@@ -28,8 +31,12 @@ export function useAuth() {
     isFetched: isCompanyFetched,
   } = companyApiHooks.useGetCompanyQuery(
     { id: companyId },
-    { enabled: !!companyId }
+    { enabled: !!companyId && companyId !== "admin" }
   );
+
+  console.log("useAuth - company:", company);
+  console.log("useAuth - isCompanyLoading:", isCompanyLoading);
+  console.log("useAuth - isCompanyFetched:", isCompanyFetched);
 
   useEffect(() => {
     const {

@@ -17,13 +17,17 @@ export class ProductService {
     const { data, error } = await supabase
       .from("products")
       .select("*")
-      .eq("company_id", companyId)
+      .eq(companyId === "admin" ? "1" : "company_id", companyId === "admin" ? "1" : companyId)
       .order("created_at", { ascending: false });
 
     if (error) {
+      console.error("Error fetching products:", error);
+      console.error("Error details:", error.details);
+      console.error("Error message:", error.message);
       throw new Error("Failed to fetch products");
     }
 
+    console.log("Fetched products:", data);
     return data || [];
   }
 
@@ -303,6 +307,7 @@ export class ProductService {
 
     if (fetchError) throw fetchError;
 
+    // Update product status and status history
     const { error: updateError } = await supabase
       .from("products")
       .update({
@@ -317,6 +322,17 @@ export class ProductService {
             reason,
           },
         ],
+        // Update all documents to rejected status
+        documents: product.documents ? Object.fromEntries(
+          Object.entries(product.documents).map(([type, docs]) => [
+            type,
+            Array.isArray(docs) ? docs.map(doc => ({
+              ...doc,
+              status: "rejected",
+              rejection_reason: reason
+            })) : docs
+          ])
+        ) : product.documents
       })
       .eq("id", productId);
 
@@ -329,7 +345,6 @@ export const productService = createService({
     const { data, error } = await supabase
       .from("products")
       .select("*")
-      .eq("company_id", companyId)
       .order("created_at", { ascending: false });
 
     if (error) {
