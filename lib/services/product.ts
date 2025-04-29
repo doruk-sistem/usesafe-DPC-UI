@@ -228,12 +228,12 @@ export class ProductService {
       };
     }
 
-    // Fetch products by manufacturer_id with status DRAFT or NEW
+    // Fetch products by manufacturer_id with status NEW only
     const { data, error, count } = await supabase
       .from("products")
       .select("*, manufacturer:manufacturer_id (name)", { count: "exact" })
       .eq("manufacturer_id", companyId)
-      .in("status", ["DRAFT", "NEW"])
+      .eq("status", "NEW")  // Sadece NEW status'ündeki ürünleri getir
       .range(page * pageSize, (page + 1) * pageSize - 1)
       .order("created_at", { ascending: false });
 
@@ -250,24 +250,33 @@ export class ProductService {
   }
 
   static async approveProduct(productId: string, userId: string): Promise<void> {
+    console.log('approveProduct başladı:', { productId, userId });
+
+    // Ürünü getir
     const { data: product, error: fetchError } = await supabase
       .from("products")
       .select("*")
       .eq("id", productId)
       .single();
 
-    if (fetchError) throw fetchError;
+    if (fetchError) {
+      console.error('Ürün getirme hatası:', fetchError);
+      throw fetchError;
+    }
 
-    // Üreticinin ürünlerine yeni bir taslak ürün oluştur
-    const { error: createError } = await supabase.from("products").insert({
+    console.log('Mevcut ürün:', product);
+
+    // Yeni bir ürün oluştur (satıcının ürünü olarak)
+    console.log('Yeni ürün oluşturuluyor...');
+    
+    const newProduct = {
       ...product,
-      id: undefined,
+      id: crypto.randomUUID(), // Yeni UUID oluştur
+      company_id: product.manufacturer_id, // Satıcının ID'si
       status: "DRAFT",
-      company_id: product.manufacturer_id, // Üreticinin ID'sini company_id olarak ata
-      manufacturer_id: product.manufacturer_id, // Üretici ID'sini koru
       status_history: [
         {
-          from: "PENDING",
+          from: null,
           to: "DRAFT",
           timestamp: new Date().toISOString(),
           userId,
@@ -275,19 +284,49 @@ export class ProductService {
       ],
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
-    });
+    };
 
-    if (createError) throw createError;
-
-    // Orijinal pending ürünü silme işlemini yorum satırına alıyoruz
-    /*
-    const { error: deleteError } = await supabase
+    const { data: createdProduct, error: createError } = await supabase
       .from("products")
-      .delete()
-      .eq("id", productId);
+      .insert([newProduct])
+      .select()
+      .single();
 
-    if (deleteError) throw deleteError;
-    */
+    if (createError) {
+      console.error('Yeni ürün oluşturma hatası:', createError);
+      throw createError;
+    }
+
+    console.log('Yeni ürün oluşturuldu:', createdProduct);
+
+    // Eski ürünün manufacturer_id'sini null yap
+    console.log('Eski ürünün manufacturer_id\'si null yapılıyor...');
+    
+    const { data: updatedProduct, error: updateError } = await supabase
+      .from("products")
+      .update({
+        manufacturer_id: null,
+        status_history: [
+          ...(product.status_history || []),
+          {
+            from: product.status,
+            to: product.status,
+            timestamp: new Date().toISOString(),
+            userId,
+            reason: "Approved - manufacturer_id removed"
+          },
+        ],
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", productId)
+      .select();
+
+    if (updateError) {
+      console.error('Eski ürün güncelleme hatası:', updateError);
+      throw updateError;
+    }
+
+    console.log('Eski ürün güncellendi:', updatedProduct);
   }
 
   static async rejectProduct(
