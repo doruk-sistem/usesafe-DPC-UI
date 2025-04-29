@@ -500,11 +500,15 @@
         "title": "Hızlı Bilgi",
         "description": "Ürün hakkında hızlı bilgiler",
         "model": "Model",
-        "manufacturer": "Üretici"
+        "manufacturer": "Üretici",
+        "unknown": "Bilinmiyor"
       },
       "keyFeatures": {
         "title": "Ana Özellikler",
-        "description": "Ürünün önemli özelliklerini görüntüleyin"
+        "name": "Özellik adı",
+        "value": "Değer",
+        "unit": "Birim (opsiyonel)",
+        "add": "Özellik Ekle"
       },
       "basicInfo": {
         "title": "Temel Bilgiler",
@@ -514,12 +518,31 @@
         "category": "Kategori",
         "status": "Durum",
         "addedDate": "Eklenme Tarihi",
-        "manufacturer": "Üretici",
-        "backToProducts": "Ürünlere Dön"
+        "manufacturer": "Üretici"
       },
       "materials": {
         "title": "Malzemeler",
-        "description": "Ürünün malzeme bileşimi"
+        "description": "Ürünün malzeme bileşimi",
+        "table": {
+          "material": "Malzeme",
+          "percentage": "Yüzde",
+          "recyclable": "Geri Dönüştürülebilir",
+          "description": "Açıklama",
+          "examples": {
+            "cotton": {
+              "name": "Pamuk",
+              "description": "BCI sertifikalı organik pamuk"
+            },
+            "elastane": {
+              "name": "Elastan",
+              "description": "Esneklik için elastan karışımı"
+            }
+          }
+        },
+        "recyclable": {
+          "yes": "Evet",
+          "no": "Hayır"
+        }
       },
       "textile": {
         "title": "Tekstil Ürün Detayları",
@@ -530,20 +553,89 @@
         "certifications": "Sertifikalar",
         "environmentalMetrics": "Çevresel Metrikler"
       },
+      "certifications": {
+        "title": "Sertifikalar",
+        "description": "Ürün sertifikalarını görüntüleyin",
+        "table": {
+          "name": "Sertifika Adı",
+          "issuedBy": "Düzenleyen",
+          "validUntil": "Geçerlilik Tarihi",
+          "status": "Durum",
+          "document": "Belge"
+        },
+        "status": {
+          "valid": "Geçerli",
+          "expired": "Süresi Dolmuş",
+          "pending": "Beklemede"
+        },
+        "actions": {
+          "download": "İndir"
+        }
+      },
       "sustainability": {
         "title": "Sürdürülebilirlik",
         "description": "Ürün sürdürülebilirlik metriklerini görüntüleyin",
+        "progress": "İlerleme",
+        "badge": "{value}% Sürdürülebilirlik",
         "metrics": {
           "waterUsage": "Su Kullanımı",
           "carbonFootprint": "Karbon Ayak İzi",
-          "energyConsumption": "Enerji Tüketimi"
+          "energyConsumption": "Enerji Tüketimi",
+          "recycledContent": "Geri Dönüştürülmüş İçerik",
+          "low": "Düşük",
+          "medium": "Orta",
+          "high": "Yüksek",
+          "carbon-footprint": "Karbon Ayak İzi",
+          "water-usage": "Su Kullanımı",
+          "energy-consumption": "Enerji Tüketimi",
+          "recycled-materials": "Geri Dönüştürülmüş Malzemeler",
+          "chemical-reduction": "Kimyasal Azaltma",
+          "biodegradability": "Biyolojik Bozunabilirlik",
+          "packaging": "Ambalaj",
+          "waste-reduction": "Atık Azaltımı",
+          "chemical-usage": "Kimyasal Kullanımı",
+          "renewable-energy": "Yenilenebilir Enerji",
+          "water-saving": "Su Tasarrufu"
         }
       },
-      "qrCode": {
+      "qr": {
         "title": "QR Kod",
-        "description": "Ürün doğrulama için QR kod"
+        "description": "Ürün doğrulama için QR kod",
+        "downloadButton": "QR Kodu İndir",
+        "imageAlt": "Ürün Doğrulama QR Kodu"
       },
-      "backToProducts": "Ürünlere Dön"
+      "backToProducts": "Ürünlere Dön",
+      "storage": {
+        "charge": {
+          "sale": "Satış öncesi akü şarj seviyesi 12.6V'un üzerinde olmalıdır",
+          "minimum": "Depolama sırasında minimum voltaj 12.4V olmalıdır",
+          "damage": "Voltaj düşükse, paketi açıp 16.1V ve 1/20Cn akımda şarj edin, aksi halde kalıcı hasar oluşabilir"
+        },
+        "installation": {
+          "title": "Montaj Adımları",
+          "verify": "Akü uyumluluğunu araç kılavuzundan kontrol edin",
+          "engine": "Motorun kapalı olduğundan emin olun",
+          "remove": "Eski aküyü çıkarın (önce negatif kutup)",
+          "control": "Kısa devre olup olmadığını kontrol edin",
+          "clean": "Akü bölmesini ve kutup başlarını temizleyin",
+          "install": "Yeni aküyü takın (önce pozitif kabloyu bağlayın)",
+          "check": "Şarj akımı uyumluluğunu kontrol edin"
+        }
+      },
+      "hazards": {
+        "title": "Tehlikeler",
+        "health": "Sağlık Tehlikesi",
+        "healthDesc": "Akü asidi cilt ve gözlerde ciddi tahrişe neden olabilir.",
+        "corrosive": "Aşındırıcı",
+        "corrosiveDesc": "Akü asidi metal ve dokuları aşındırabilir.",
+        "warning": "Uyarı",
+        "warningDesc": "Yanlış kullanımda ciddi yaralanmalara yol açabilir.",
+        "explosive": "Patlayıcı",
+        "explosiveDesc": "Akü gazı patlayıcıdır, kıvılcım ve ateşten uzak tutun.",
+        "environmental": "Çevresel Tehlike",
+        "environmentalDesc": "Akü kimyasalları çevreye zararlıdır, doğaya karışmasını önleyin."
+          
+      }
     }
   },
   "dashboard": {
@@ -552,6 +644,7 @@
     "overview": {
       "title": "Panel Genel Bakış",
       "description": "Ürünlerinizi, sertifikalarınızı ve belgelerinizi takip edin"
+      
     },
     "period": {
       "select": "Dönem seçin",
@@ -703,16 +796,9 @@
   },
   "product": {
     "details": {
-      "navigation": {
-        "backToProducts": "Ürünlere Dön"
-      },
-      "notAvailable": "Bu tür için ürün detayları mevcut değil",
+      "backToProducts": "Ürünlere Geri Dön",
       "quickInfo": {
-        "title": "Hızlı Bilgi",
-        "model": "Model",
-        "manufacturer": "Üretici",
-        "unknown": "Bilinmiyor",
-        "description": "Hızlı bilgi"
+        "title": "Hızlı Bilgi"
       },
       "keyFeatures": {
         "title": "Ana Özellikler",
@@ -722,74 +808,82 @@
         "add": "Özellik Ekle"
       },
       "basicInfo": {
-        "title": "Temel Bilgiler",
-        "manufacturer": "Üretici",
-        "category": "Kategori"
-        
-      },
-      "hazards": {
-        "title": "Tehlike Piktogramları",
-        "health": "Sağlık Tehlikesi",
-        "healthDesc": "Solunum yollarında tahrişe neden olabilir",
-        "corrosive": "Aşındırıcı",
-        "corrosiveDesc": "Aşındırıcı malzemeler içerir",
-        "warning": "Uyarı",
-        "warningDesc": "Genel güvenlik uyarısı",
-        "explosive": "Patlayıcı",
-        "explosiveDesc": "Belirli koşullar altında patlama riski",
-        "environmental": "Çevresel Tehlike",
-        "environmentalDesc": "Su kaynaklarını kirletebilir"
+        "title": "Temel Bilgiler"
       },
       "materials": {
-        "title": "Malzemeler"
-      },
-      "safety": {
-        "title": "Sağlık ve Güvenlik",
-        "measures": {
-          "careful": "Pilleri her zaman dikkatli taşıyın.",
-          "upright": "Her zaman dik konumda tutun.",
-          "ventilation": "İyi havalandırılan bir yerde şarj edin.",
-          "water": "Saf su eklemeyin. (Saf su seviyesi plakaların 1.5 cm üzerinde olmamalıdır.)",
-          "goggles": "Pil bakımı sırasında (su ekleme, temizlik, şarj) mutlaka çalışma koşullarına uygun koruyucu gözlük takın.",
-          "clothing": "Asit sıçrama riski durumunda koruyucu giysi giyin."
-        }
-      },
-      "emergency": {
-        "title": "Acil Durum Prosedürleri",
-        "procedures": {
-          "contact": "Göz veya cilt teması durumunda bol su ile yıkayın.",
-          "clothing": "Kirlenmiş giysileri hemen çıkarın.",
-          "ingestion": "Yutma: Bol su ve süt için. Doktora başvurun.",
-          "spill": "Döküntü: Küçük döküntüleri su ile yıkayın.",
-          "gases": "Çalışan piller yüksek derecede yanıcı hidrojen ve oksijen gazları yayar.",
-          "spark": "Şarj olan, araçta çalışan veya uzun süre çalıştıktan sonra duran pillerin yakınında sigara içmeyin veya kıvılcım çıkarabilecek kaynaklardan ve hareketlerden kaçının.",
-          "fire": "Ateşten uzak tutun.",
-          "devices": "Tüm cihazları büyük dikkatle kullanın."
-        }
-      },
-      "storage": {
-        "title": "Depolama Kılavuzu",
-        "general": {
-          "title": "Genel Depolama",
-          "dry": "Her zaman kuru ve serin bir yerde dik konumda saklayın. (10°C - 25°C)",
-          "pallet": "Beton zeminle doğrudan temas etmemesi için pilleri ahşap palet üzerine yerleştirin."
+        "title": "Malzemeler",
+        "description": "Ürünün malzeme bileşimi",
+        "table": {
+          "material": "Malzeme",
+          "percentage": "Yüzde",
+          "recyclable": "Geri Dönüştürülebilir",
+          "description": "Açıklama",
+          "examples": {
+            "cotton": {
+              "name": "Pamuk",
+              "description": "BCI sertifikalı organik pamuk"
+            },
+            "elastane": {
+              "name": "Elastan",
+              "description": "Esneklik için elastan karışımı"
+            }
+          }
         },
-        "charge": {
-          "title": "Şarj Seviyesi İzleme",
-          "sale": "Satış öncesi pil şarj seviyesi 12.6V'dan yüksek olmalıdır.",
-          "minimum": "Depolama sırasında minimum voltaj 12.4V olmalıdır.",
-          "damage": "Kalıcı hasarı önlemek için voltaj düşükse, paketi açın ve 16.1V ve 1/20Cn akımda şarj edin."
-        },
-        "installation": {
-          "title": "Kurulum Adımları",
-          "verify": "Pil uyumluluğunu araç kılavuzundan doğrulayın",
-          "engine": "Motorun kapalı olduğundan emin olun",
-          "remove": "Eski pili çıkarın (önce negatif terminal)",
-          "control": "Kısa devre kontrolü yapın",
-          "clean": "Pil bölmesini ve terminalleri temizleyin",
-          "install": "Yeni pili takın (önce pozitif kabloyu bağlayın)",
-          "check": "Şarj akımı uyumluluğunu kontrol edin"
+        "recyclable": {
+          "yes": "Evet",
+          "no": "Hayır"
         }
+      },
+      "textile": {
+        "careInstructions": "Bakım Talimatları"
+      },
+      "certifications": {
+        "title": "Sertifikalar",
+        "description": "Ürün sertifikalarını görüntüleyin",
+        "table": {
+          "name": "Sertifika Adı",
+          "issuedBy": "Düzenleyen",
+          "validUntil": "Geçerlilik Tarihi",
+          "status": "Durum",
+          "documentUrl": "Belge URL"
+        },
+        "status": {
+          "valid": "Geçerli",
+          "expired": "Süresi Dolmuş",
+          "pending": "Beklemede"
+        }
+      },
+      "sustainability": {
+        "title": "Sürdürülebilirlik",
+        "description": "Ürün sürdürülebilirlik metriklerini görüntüleyin",
+        "progress": "İlerleme",
+        "badge": "{value}% Sürdürülebilirlik",
+        "metrics": {
+          "waterUsage": "Su Kullanımı",
+          "carbonFootprint": "Karbon Ayak İzi",
+          "energyConsumption": "Enerji Tüketimi",
+          "recycledContent": "Geri Dönüştürülmüş İçerik",
+          "low": "Düşük",
+          "medium": "Orta",
+          "high": "Yüksek",
+          "carbon-footprint": "Karbon Ayak İzi",
+          "water-usage": "Su Kullanımı",
+          "energy-consumption": "Enerji Tüketimi",
+          "recycled-materials": "Geri Dönüştürülmüş Malzemeler",
+          "chemical-reduction": "Kimyasal Azaltma",
+          "biodegradability": "Biyolojik Bozunabilirlik",
+          "packaging": "Ambalaj",
+          "waste-reduction": "Atık Azaltımı",
+          "chemical-usage": "Kimyasal Kullanımı",
+          "renewable-energy": "Yenilenebilir Enerji",
+          "water-saving": "Su Tasarrufu"
+        }
+      },
+      "qr": {
+        "title": "Ürün QR Kodu",
+        "description": "Ürün detaylarını görüntülemek için bu QR kodu tarayın",
+        "downloadButton": "QR Kodu İndir",
+        "imageAlt": "Ürün Doğrulama QR Kodu"
       }
     }
   },
@@ -870,8 +964,7 @@
         "description": "Ürün hakkında hızlı bilgiler",
         "model": "Model",
         "manufacturer": "Üretici",
-        "unknown": "Bilinmiyor",
-        "description": "Hızlı bilgi"
+        "unknown": "Bilinmiyor"
       },
       "keyFeatures": {
         "title": "Ana Özellikler",
@@ -888,25 +981,91 @@
         "category": "Kategori",
         "status": "Durum",
         "addedDate": "Eklenme Tarihi",
-        "manufacturer": "Üretici",
-
-        "backToProducts": "Ürünlere Dön"
-
-
-
+        "manufacturer": "Üretici"
       },
-      "actions": {
-        "edit": "Düzenle",
-        "delete": "Sil",
-        "approve": "Onayla",
-        "reject": "Reddet"
-
+      "materials": {
+        "title": "Malzemeler",
+        "description": "Ürünün malzeme bileşimi",
+        "table": {
+          "material": "Malzeme",
+          "percentage": "Yüzde",
+          "recyclable": "Geri Dönüştürülebilir",
+          "description": "Açıklama",
+          "examples": {
+            "cotton": {
+              "name": "Pamuk",
+              "description": "BCI sertifikalı organik pamuk"
+            },
+            "elastane": {
+              "name": "Elastan",
+              "description": "Esneklik için elastan karışımı"
+            }
+          }
+        },
+        "recyclable": {
+          "yes": "Evet",
+          "no": "Hayır"
+        }
       },
-      "tabs": {
-        "overview": "Genel Bakış",
-        "documents": "Belgeler",
-        "history": "Geçmiş"
-
+      "textile": {
+        "title": "Tekstil Ürün Detayları",
+        "description": "Tekstil ürün detaylarını görüntüleyin",
+        "composition": "Kompozisyon",
+        "careInstructions": "Bakım Talimatları",
+        "sustainability": "Sürdürülebilirlik",
+        "certifications": "Sertifikalar",
+        "environmentalMetrics": "Çevresel Metrikler"
+      },
+      "certifications": {
+        "title": "Sertifikalar",
+        "description": "Ürün sertifikalarını görüntüleyin",
+        "table": {
+          "name": "Sertifika Adı",
+          "issuedBy": "Düzenleyen",
+          "validUntil": "Geçerlilik Tarihi",
+          "status": "Durum",
+          "document": "Belge"
+        },
+        "status": {
+          "valid": "Geçerli",
+          "expired": "Süresi Dolmuş",
+          "pending": "Beklemede"
+        },
+        "actions": {
+          "download": "İndir"
+        }
+      },
+      "sustainability": {
+        "title": "Sürdürülebilirlik",
+        "description": "Ürün sürdürülebilirlik metriklerini görüntüleyin",
+        "progress": "İlerleme",
+        "badge": "{value}% Sürdürülebilirlik",
+        "metrics": {
+          "waterUsage": "Su Kullanımı",
+          "carbonFootprint": "Karbon Ayak İzi",
+          "energyConsumption": "Enerji Tüketimi",
+          "recycledContent": "Geri Dönüştürülmüş İçerik",
+          "low": "Düşük",
+          "medium": "Orta",
+          "high": "Yüksek",
+          "carbon-footprint": "Karbon Ayak İzi",
+          "water-usage": "Su Kullanımı",
+          "energy-consumption": "Enerji Tüketimi",
+          "recycled-materials": "Geri Dönüştürülmüş Malzemeler",
+          "chemical-reduction": "Kimyasal Azaltma",
+          "biodegradability": "Biyolojik Bozunabilirlik",
+          "packaging": "Ambalaj",
+          "waste-reduction": "Atık Azaltımı",
+          "chemical-usage": "Kimyasal Kullanımı",
+          "renewable-energy": "Yenilenebilir Enerji",
+          "water-saving": "Su Tasarrufu"
+        }
+      },
+      "qr": {
+        "title": "QR Kod",
+        "description": "Ürün doğrulama için QR kod",
+        "downloadButton": "QR Kodu İndir",
+        "imageAlt": "Ürün Doğrulama QR Kodu"
       },
       "backToProducts": "Ürünlere Dön"
     },
@@ -2202,6 +2361,19 @@
       }
     }
   },
+  "emergency": {
+    "title": "Acil Durum Prosedürleri",
+    "procedures": {
+      "contact": "Göz veya cilt ile temas halinde bol su ile yıkayın.",
+      "clothing": "Kontamine giysileri hemen çıkarın.",
+      "ingestion": "Yutulursa: Bol su ve süt için, doktora başvurun.",
+      "spill": "Dökülme: Küçük döküntüleri su ile yıkayın.",
+      "gases": "Gaz çıkışı varsa ortamı havalandırın.",
+      "spark": "Kıvılcım ve ateşten uzak tutun.",
+      "fire": "Yangın durumunda uygun yangın söndürücü kullanın.",
+      "devices": "Elektrikli cihazları kapatın ve uzaklaştırın."
+    }
+  },
   "addProduct": {
     "form": {
       "fields": {
@@ -2217,3 +2389,5 @@
     }
   } 
 } 
+
+
