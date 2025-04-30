@@ -63,7 +63,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { useToast } from "@/components/ui/use-toast";
 import { documentsApiHooks } from "@/lib/hooks/use-documents";
 import { useProducts } from "@/lib/hooks/use-products";
-import type { Document } from "@/lib/types/document";
+import { Document, DocumentStatus } from "@/lib/types/document";
 import { ProductService } from "@/lib/services/product";
 import { useAuth } from "@/lib/hooks/use-auth";
 
@@ -100,8 +100,6 @@ export function DocumentList({ initialDocuments = [] }: DocumentListProps) {
   const { products: allProducts = [], isLoading: isLoadingProducts } = useProducts();
   const { mutate: updateDocumentStatus } =
     documentsApiHooks.useUpdateDocumentStatus();
-  const { mutate: updateDocumentStatusDirect } =
-    documentsApiHooks.useUpdateDocumentStatusDirect();
 
   // Update local documents when initialDocuments or documents changes
   useEffect(() => {
@@ -172,9 +170,20 @@ export function DocumentList({ initialDocuments = [] }: DocumentListProps) {
         return;
       }
 
-      await updateDocumentStatusDirect({
-        document,
-        status: "approved",
+      if (!document.productId) {
+        toast({
+          title: "Error",
+          description: "Document is missing productId. Cannot update status.",
+          variant: "destructive",
+        });
+        return;
+      }
+      const productId = document.productId;
+
+      await updateDocumentStatus({
+        productId,
+        documentId: document.id,
+        status: DocumentStatus.APPROVED,
       });
 
       // Update local document status
@@ -217,10 +226,20 @@ export function DocumentList({ initialDocuments = [] }: DocumentListProps) {
         return;
       }
 
-      await updateDocumentStatusDirect({
-        document,
-        status: "rejected",
-        reason: documentRejectReason,
+      if (!document.productId) {
+        toast({
+          title: "Error",
+          description: "Document is missing productId. Cannot update status.",
+          variant: "destructive",
+        });
+        return;
+      }
+      const productId = document.productId;
+
+      await updateDocumentStatus({
+        productId,
+        documentId: document.id,
+        status: DocumentStatus.REJECTED,
       });
 
       // Update local document status
