@@ -294,32 +294,8 @@ export class ProductService {
     if (createError) {
       throw createError;
     }
-
-    // Eski ürünün manufacturer_id'sini null yap
-    const { error: updateError } = await supabase
-      .from("products")
-      .update({
-        manufacturer_id: null,
-        status_history: [
-          ...(product.status_history || []),
-          {
-            from: product.status,
-            to: product.status,
-            timestamp: new Date().toISOString(),
-            userId,
-            reason: "Approved - manufacturer_id removed"
-          },
-        ],
-        updated_at: new Date().toISOString(),
-      })
-      .eq("id", productId)
-      .select();
-
-    if (updateError) {
-      throw updateError;
-    }
   }
-
+  
   static async rejectProduct(
     productId: string,
     userId: string,
