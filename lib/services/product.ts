@@ -131,9 +131,15 @@ export class ProductService {
     id: string,
     product: UpdateProduct
   ): Promise<ProductResponse> {
+    const { manufacturer_id, ...productData } = product;
+    
     const { data, error } = await supabase
       .from("products")
-      .update(product)
+      .update({
+        ...productData,
+        manufacturer_id: manufacturer_id || null, // Set to null if empty
+        updated_at: new Date().toISOString(),
+      })
       .eq("id", id)
       .select()
       .single();
@@ -470,9 +476,15 @@ export const productService = createService({
     id: string;
     product: UpdateProduct;
   }): Promise<ProductResponse> => {
+    const { manufacturer_id, ...productData } = product;
+    
     const { data, error } = await supabase
       .from("products")
-      .update(product)
+      .update({
+        ...productData,
+        manufacturer_id: manufacturer_id || null, // Set to null if empty
+        updated_at: new Date().toISOString(),
+      })
       .eq("id", id)
       .select()
       .single();
