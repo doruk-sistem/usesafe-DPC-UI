@@ -90,10 +90,12 @@
     "activities": {
       "title": "Recent Activities",
       "noActivities": "No recent activities found",
+      "submitted": "Submitted",
       "status": {
         "NEW": "New",
         "DRAFT": "Draft",
-        "DELETED": "Deleted"
+        "DELETED": "Deleted",
+        "draft": "Draft"
       }
     },
     "menu": {
@@ -1200,7 +1202,81 @@
       }
     }
   },
+  "documents": {
+    "title": "Document Management",
+    "description": "Manage your company documents and certificates",
+    "types": {
+      "qualityManagement": "Quality Management",
+      "safetyHealth": "Safety & Health",
+      "batteryStandards": "Battery Standards"
+    },
+    "repository": {
+      "title": "Document Repository",
+      "description": "View and manage all uploaded documents",
+      "status": {
+        "pending": "Pending",
+        "approved": "Approved",
+        "rejected": "Rejected",
+        "expired": "Expired"
+      },
+      "columns": {
+        "document": "Document",
+        "type": "Type",
+        "category": "Category",
+        "status": "Status",
+        "validUntil": "Valid Until",
+        "issuer": "Issuer"
+      },
+      "actions": {
+        "title": "Actions",
+        "view": "View",
+        "download": "Download",
+        "history": "History",
+        "delete": "Delete",
+        "upload": "Upload",
+        "reupload": "Reupload"
+      },
+      "filters":{
+        "allDocuments": "All Documents",
+        "allStatus": "All Status"
+      }
+    }
+  },
   "admin": {
+    "companies": {
+      "title": "Companies",
+      "description": "Manage and review all companies in the system",
+      "status":{
+        "false": "False"
+      },
+        "types":{
+          "manufacturer": "Manufacturer",
+          "brand_owner": "Brand Owner"
+        },
+        "list": {
+          "title": "Companies",
+         "total": "Total: {count} Company",
+         "loading":{
+          "title": "Loading"
+         },
+          "columns":{
+            "name": "Name",
+            "type": "Type",
+            "email": "Email",
+            "phone": "Phone",
+            "taxNumber": "Tax Number",
+            "status": "Status",
+            "products": "Products",
+            "actions": "Actions"
+          },
+          "actions":{
+            "title": "Actions",
+            "viewProducts": "View Products",
+            "viewDetails": "View Details",
+            "viewDocuments": "View Documents"
+          }
+      }
+    },
     "product": {
       "steps": {
        "documentUpload": {
@@ -1240,7 +1316,8 @@
       "documents": "Documents",
       "certifications": "Certifications",
       "dppTemplates": "DPP Templates",
-      "products": "Products"
+      "products": "Products",
+      "companies": "Companies"
     },
     "products": {
       "title": "Products",
@@ -1337,6 +1414,112 @@
         "back": "Back"
       }
     }
+  },
+  "suppliers": {
+      "title": "Suppliers",
+      "description": "Manage and review all suppliers in the system",
+      "list":{
+        "title": "Suppliers",
+        "description": "View and manage your suppliers",
+        "loading": "Loading suppliers...",
+        "columns":{
+          "company": "Company",
+          "type": "Type",
+          "taxId": "Tax ID",
+          "products": "Products",
+          "status": "Status"
+        },
+        "filters":{
+          "selectType": "Select Type",
+          "allTypes": "All Types"
+        },
+        "types":{
+          "manufacturer": "Manufacturer",
+          "distributor": "Distributor",
+          "retailer": "Retailer"
+        },
+        "status":{
+          "active": "Active"
+        },
+        "actions":{
+          "more": "Actions",
+          "viewProducts": "View Products",
+          "viewDocuments": "View Documents",
+          "viewCertifications": "View Certifications",
+          "download": "Download"
+        }
+      }
+    },
+    "dpc":{
+      "title": "DPC Applications",
+      "description": "View and manage DPC applications",
+      "applications":{
+        "title": "DPC Applications",
+        "description": "View and manage DPC applications",
+        "actions":{
+          "newDPC": "New DPC Application",
+          "title": "Actions",
+          "view": "View",
+          "download": "Download",
+          "verify": "Verify",
+          "delete": "Delete",
+          "resubmit": "Resubmit"
+        },
+        "types":{
+          "agm": "AGM",
+          "efb": "EFB",
+          "standard": "Standard",
+          "marine": "Marine"
+        },
+        "status":{
+          "pending": "Pending",
+          "approved": "Approved",
+          "rejected": "Rejected"
+        },
+        "filters":{
+          "allTypes": "All Products",
+          "allStatus": "All Status"
+        },
+        "documents":{
+          "reports": "Reports",
+          "documents": "Documents"
+        },
+        "columns": {
+          "product": "Product",
+         "status": "Status",
+         "submitted": "Submitted",
+         "validUntil": "Valid Until",
+         "documents": "Documents",
+         "certifications": "Certifications"
+        }
+      }
+    },
+  "dpp": {
+  "title": "Digital Product Passports",
+  "description": "Manage and review all DPP applications in the system",
+  "new":{
+  "title": "Create a Digital Product Passport"
+  },
+  "list": {
+  "title": "Digital Product Passports",
+  "description": "View and manage your Digital Product Passports",
+  "serialNumber": "Serial Number",
+  "product": "Product",
+  "manufacturingDate": "Manufacturing Date",
+  "facility": "Facility",
+  "noResults": "No results found",
+"actions": {
+"title": "Actions",
+"download": "Download"
+},
+"filters":{
+  "all": "All Products",
+  "agm": "AGM",
+  "efb": "EFB",
+  "standard": "Standard",
+  "marine": "Marine"
+}
+}
   },
   "auth": {
     "createAccount": {
