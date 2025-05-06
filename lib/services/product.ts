@@ -14,17 +14,38 @@ const ADMIN_COMPANY_ID = "admin";
 
 export class ProductService {
   static async getProducts(companyId: string): Promise<any[]> {
-    const { data, error } = await supabase
-      .from("products")
-      .select("*")
-      .eq("company_id", companyId)
-      .order("created_at", { ascending: false });
+    try {
+      const { data: userData } = await supabase.auth.getUser();
+      const isAdmin = userData?.user?.user_metadata?.role === "admin";
 
-    if (error) {
-      throw new Error("Failed to fetch products");
+      if (isAdmin) {
+        const { data, error } = await supabase
+          .from("products")
+          .select("*")
+          .order("created_at", { ascending: false });
+
+        if (error) {
+          throw new Error("Failed to fetch products");
+        }
+
+        return data || [];
+      } else {
+        const { data, error } = await supabase
+          .from("products")
+          .select("*")
+          .eq("company_id", companyId)
+          .order("created_at", { ascending: false });
+
+        if (error) {
+          throw new Error("Failed to fetch products");
+        }
+
+        return data || [];
+      }
+    } catch (error) {
+      console.error("Error in getProducts:", error);
+      throw error;
     }
-
-    return data || [];
   }
 
   static async getProduct(
@@ -301,47 +322,121 @@ export class ProductService {
     userId: string,
     reason: string
   ): Promise<void> {
-    const { data: product, error: fetchError } = await supabase
-      .from("products")
-      .select("*")
-      .eq("id", productId)
-      .single();
+    try {
+      const { data: product, error: fetchError } = await supabase
+        .from("products")
+        .select("*")
+        .eq("id", productId)
+        .single();
 
-    if (fetchError) throw fetchError;
+      if (fetchError) {
+        throw new Error(`Failed to fetch product: ${fetchError.message}`);
+      }
 
-    const { error: updateError } = await supabase
-      .from("products")
-      .update({
-        status: "REJECTED",
-        status_history: [
-          ...(product.status_history || []),
+      if (!product) {
+        throw new Error(`No product found with ID ${productId}`);
+      }
+
+      let updatedDocuments;
+
+      if (
+        product.documents &&
+        typeof product.documents === "object" &&
+        !Array.isArray(product.documents)
+      ) {
+        updatedDocuments = JSON.parse(JSON.stringify(product.documents));
+
+        for (const docType in updatedDocuments) {
+          if (Array.isArray(updatedDocuments[docType])) {
+            updatedDocuments[docType] = updatedDocuments[docType].map(
+              (doc: any) => ({
+                ...doc,
+                status: "rejected",
+                rejection_reason: reason,
+              })
+            );
+          }
+        }
+      } else if (Array.isArray(product.documents)) {
+        updatedDocuments = product.documents.map((doc: any) => ({
+          ...doc,
+          status: "rejected",
+          rejection_reason: reason,
+        }));
+      } else {
+        updatedDocuments = [
           {
-            from: product.status,
-            to: "REJECTED",
-            timestamp: new Date().toISOString(),
-            userId,
-            reason,
+            id: `rejected-${product.id}-${Date.now()}`,
+            name: "Product Rejection",
+            type: "rejection",
+            status: "rejected",
+            rejection_reason: reason,
           },
-        ],
-      })
-      .eq("id", productId);
+        ];
+      }
 
-    if (updateError) throw updateError;
+      const { error: updateError } = await supabase
+        .from("products")
+        .update({
+          documents: updatedDocuments,
+          status: "REJECTED",
+          status_history: [
+            ...(product.status_history || []),
+            {
+              from: product.status,
+              to: "REJECTED",
+              timestamp: new Date().toISOString(),
+              userId,
+              reason,
+            },
+          ],
+        })
+        .eq("id", productId);
+
+      if (updateError) {
+        throw new Error(
+          `Failed to update product documents: ${updateError.message}`
+        );
+      }
+    } catch (error) {
+      console.error("Error in product rejection:", error);
+      throw error;
+    }
   }
 }
 
 export const productService = createService({
   getProducts: async ({ companyId }: { companyId: string }) => {
-    const { data, error } = await supabase
-      .from("products")
-      .select("*")
-      .eq("company_id", companyId)
-      .order("created_at", { ascending: false });
+    try {
+      const { data: userData } = await supabase.auth.getUser();
+      const isAdmin = userData?.user?.user_metadata?.role === "admin";
 
-    if (error) {
-      throw new Error("Failed to fetch products");
+      if (isAdmin) {
+        const { data, error } = await supabase
+          .from("products")
+          .select("*")
+          .order("created_at", { ascending: false });
+
+        if (error) {
+          throw new Error("Failed to fetch products");
+        }
+        return data || [];
+      } else {
+        const { data, error } = await supabase
+          .from("products")
+          .select("*")
+          .eq("company_id", companyId)
+          .order("created_at", { ascending: false });
+
+        if (error) {
+          throw new Error("Failed to fetch products");
+        }
+        return data || [];
+      }
+    } catch (error) {
+      console.error("Error in getProducts:", error);
+      throw error;
     }
-    return data || [];
   },
   getProduct: async ({
     id,
@@ -484,5 +579,95 @@ export const productService = createService({
     }
 
     return true;
+  },
+  rejectProduct: async ({
+    productId,
+    reason,
+  }: {
+    productId: string;
+    reason: string;
+  }) => {
+    try {
+      const { data: product, error: fetchError } = await supabase
+        .from("products")
+        .select("*")
+        .eq("id", productId)
+        .single();
+
+      if (fetchError) {
+        throw new Error(`Failed to fetch product: ${fetchError.message}`);
+      }
+
+      if (!product) {
+        throw new Error(`No product found with ID ${productId}`);
+      }
+
+      let updatedDocuments;
+
+      if (
+        product.documents &&
+        typeof product.documents === "object" &&
+        !Array.isArray(product.documents)
+      ) {
+        updatedDocuments = JSON.parse(JSON.stringify(product.documents));
+
+        for (const docType in updatedDocuments) {
+          if (Array.isArray(updatedDocuments[docType])) {
+            updatedDocuments[docType] = updatedDocuments[docType].map(
+              (doc: any) => ({
+                ...doc,
+                status: "rejected",
+                rejection_reason: reason,
+              })
+            );
+          }
+        }
+      } else if (Array.isArray(product.documents)) {
+        updatedDocuments = product.documents.map((doc: any) => ({
+          ...doc,
+          status: "rejected",
+          rejection_reason: reason,
+        }));
+      } else {
+        updatedDocuments = [
+          {
+            id: `rejected-${product.id}-${Date.now()}`,
+            name: "Product Rejection",
+            type: "rejection",
+            status: "rejected",
+            rejection_reason: reason,
+          },
+        ];
+      }
+
+      const { error: updateError } = await supabase
+        .from("products")
+        .update({
+          documents: updatedDocuments,
+          status: "REJECTED",
+          status_history: [
+            ...(product.status_history || []),
+            {
+              from: product.status,
+              to: "REJECTED",
+              timestamp: new Date().toISOString(),
+              userId: (await supabase.auth.getUser()).data.user?.id,
+              reason,
+            },
+          ],
+        })
+        .eq("id", productId);
+
+      if (updateError) {
+        throw new Error(
+          `Failed to update product documents: ${updateError.message}`
+        );
+      }
+
+      return { success: true };
+    } catch (error) {
+      console.error("Error in product rejection:", error);
+      throw error;
+    }
   },
 });
