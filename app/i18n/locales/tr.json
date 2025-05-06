@@ -101,6 +101,10 @@
     "companies": {
       "title": "Firmalar",
       "description": "Kayıtlı firmaları görüntüle ve yönet",
+      "status":{
+        "false": "Yanlış"
+      },
+
       "list": {
         "title": "Firmalar",
         "description": "Tüm kayıtlı firmaların listesi",
@@ -383,8 +387,71 @@
       }
     },
     "products": {
-      "title": "Ürünler",
-      "description": "Ürünleri görüntüle ve yönet",
+    "title": "Products",
+      "description": "Manage and review all products in the system",
+      "loading": "Loading products...",
+      "searchPlaceholder": "Search products...",
+      "filterByManufacturer": "Filter by manufacturer",
+      "filterByStatus": "Filter by status",
+      "allManufacturers": "All Manufacturers",
+      "allStatus": "All Status",
+      "allApproved": "All Approved",
+      "pendingReview": "Pending Review",
+      "hasRejectedDocuments": "Has Rejected Documents",
+      "noDocuments": "No Documents",
+      "noProductsFound": "No Products Found",
+      "noProductsAdded": "No products have been added yet.",
+      "noProductsMatchFilter": "No products match the current filter criteria.",
+      "manufacturer": "Manufacturer",
+      "category": "Category",
+      "documents": "Documents",
+      "status": "Status",
+      "uncategorized": "Uncategorized",
+      "viewDetails": "View Details",
+      "viewDocuments": "View Documents",
+      "addNewProduct": "Add New Product",
+      "created": "Created",
+      "documentCount": "{count} document",
+      "documentCount_plural": "{count} documents",
+      "unknownManufacturer": "Unknown Manufacturer",
+      "details": {
+        "backButton": "Back to Products",
+        "viewDocuments": "View Documents",
+        "productInfo": {
+          "title": "Product Information",
+          "id": "Product ID",
+          "manufacturer": "Manufacturer",
+          "type": "Type",
+          "status": "Status",
+          "created": "Created",
+          "description": "Description"
+        },
+        "documents": {
+          "title": "Documents",
+          "totalDocuments": "Total Documents",
+          "documentStatus": "Document Status",
+          "description": "Document information and status",
+          "id": "Document ID",
+          "type": "Type",
+          "validUntil": "Valid Until",
+          "rejectionReason": "Rejection Reason",
+          "viewDocument": "View Document",
+          "documentStatuses": {
+            "noDocuments": "No Documents",
+            "hasRejected": "Has Rejected Documents",
+            "pending": "Pending Review",
+            "hasExpired": "Has Expired Documents",
+            "allApproved": "All Approved",
+            "unknown": "Unknown Status"
+          }
+        },
+        "errorLoadingProduct": "Error Loading Product",
+        "unexpectedError": "An unexpected error occurred"
+      },
+      "errors": {
+        "notFound": "Product Not Found",
+        "notFoundDescription": "The requested product could not be found. It may have been deleted or you may not have permission to view it."
+      },
       "list": {
         "title": "Ürünler",
         "description": "Tüm ürünlerin listesi",
@@ -671,11 +738,14 @@
     "activities": {
       "title": "Son Aktiviteler",
       "noActivities": "Son aktivite bulunamadı",
+      "submitted": "Gönderildi",
       "status": {
         "NEW": "Yeni",
         "DRAFT": "Taslak",
-        "DELETED": "Silindi"
+        "DELETED": "Silindi",
+        "draft": "Taslak"
       }
+    
     },
     "menu": {
       "dashboard": "Panel",
@@ -1419,6 +1489,38 @@
       "iso9001": "ISO 9001",
       "iso45001": "ISO 45001",
       "tsEn": "TS EN 50342-1"
+    },
+    "repository": {
+      "title": "Döküman Deposu",
+      "description": "Şirket dökümanlarınızı ve sertifikalarınızı görüntüleyin ve yönetin",
+      "columns": {
+        "document": "Döküman",
+        "type": "Tür",
+        "category": "Kategori",
+        "status": "Durum",
+        "validUntil": "Geçerlilik Tarihi",
+        "issuer": "Düzenleyen"
+      },
+      "actions": {
+        "title": "İşlemler",
+        "view": "Detayları Görüntüle",
+        "download": "İndir",
+        "history": "Geçmişi Görüntüle",
+        "delete": "Sil",
+        "upload": "Yükle",
+        "reupload": "Yeniden Yükle"
+      },
+      "filters": {
+        "allDocuments": "Tüm Dökümanlar",
+        "allStatus": "Tüm Durumlar"
+      },
+      "status": {
+        "allStatus": "Tüm Durumlar",
+        "pending": "Beklemede",
+        "approved": "Onaylandı",
+        "rejected": "Reddedildi",
+        "expired": "Süresi Doldu"
+      }
     }
   },
   "dpc": {
@@ -1933,6 +2035,29 @@
       "complianceDocuments": "Uygunluk Belgeleri",
       "qualityCertificates": "Kalite Sertifikaları",
       "safetyCertificates": "Güvenlik Sertifikaları"
+    },
+    "filters": {
+      "allDocuments": "Tüm Belgeler",
+      "allStatuses": "Tüm Durumlar"
+    },
+    "repository": {
+      "description": "Belge arşivini inceleyin ve yönetin"
+    },
+    "categories": {
+      "testReports": "Test Raporları",
+      "qualityManagement": "Kalite Yönetimi",
+      "safetyAndHealth": "Güvenlik ve Sağlık",
+      "batteryStandards": "Akü Standartları"
+      
+    },
+    "status":{
+      "pending": "Beklemede",
+      "approved": "Onaylandı",
+      "rejected": "Reddedildi",
+      "expiringSoon": "Süresi Yakında Doluyor"
+    },
+    "actions":{
+      "upload": "Yükle"
     }
   },
   "common": {
@@ -1975,6 +2100,14 @@
   "adminDashboard": {
     "title": "Yönetici Paneli",
     "description": "Sistem genelindeki işlemleri izleyin ve yönetin",
+    "labels": {
+      "manufacturer": "Üretici",
+      "document": "Belge",
+      "dpc": "DPC"
+    },
+    "actions": {
+      "review": "İncele"
+    },
     "period": {
       "select": "Dönem seçin",
       "today": "Bugün",
