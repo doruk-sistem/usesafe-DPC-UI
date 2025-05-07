@@ -62,7 +62,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
 import { documentsApiHooks } from "@/lib/hooks/use-documents";
-import type { Document } from "@/lib/types/document";
+import { productsApiHooks } from "@/lib/hooks/use-products";
+import { useAuth } from "@/lib/hooks/use-auth";
+import { Document, DocumentStatus } from "@/lib/types/document";
 
 import { getStatusIcon } from "../../../lib/utils/document-utils";
 
@@ -73,6 +75,7 @@ interface DocumentListProps {
 export function DocumentList({ initialDocuments = [] }: DocumentListProps) {
   const t = useTranslations("documentManagement");
   const { toast } = useToast();
+  const { user } = useAuth();
   const searchParams = useSearchParams();
   const manufacturerId = searchParams.get("manufacturer");
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -94,12 +97,15 @@ export function DocumentList({ initialDocuments = [] }: DocumentListProps) {
     error,
   } = documentsApiHooks.useGetDocuments();
   const { data: allProducts = [], isLoading: isLoadingProducts } =
-    documentsApiHooks.useGetProducts();
+    productsApiHooks.useGetProductsQuery(
+      { companyId: user?.user_metadata?.company_id },
+      { enabled: !!user?.user_metadata?.company_id }
+    );
   const { mutate: updateDocumentStatus } =
     documentsApiHooks.useUpdateDocumentStatus();
   const { mutate: updateDocumentStatusDirect } =
     documentsApiHooks.useUpdateDocumentStatusDirect();
-  const { mutate: rejectProduct } = documentsApiHooks.useRejectProduct();
+  const { mutate: rejectProduct } = productsApiHooks.useRejectProductMutation();
 
   // Update local documents when initialDocuments or documents changes
   useEffect(() => {
@@ -172,13 +178,13 @@ export function DocumentList({ initialDocuments = [] }: DocumentListProps) {
 
       await updateDocumentStatusDirect({
         document,
-        status: "approved",
+        status: DocumentStatus.APPROVED,
       });
 
       // Update local document status
       setLocalDocuments((prevDocs) =>
         prevDocs.map((doc) =>
-          doc.id === documentId ? { ...doc, status: "approved" } : doc
+          doc.id === documentId ? { ...doc, status: DocumentStatus.APPROVED } : doc
         )
       );
 
@@ -217,7 +223,7 @@ export function DocumentList({ initialDocuments = [] }: DocumentListProps) {
 
       await updateDocumentStatusDirect({
         document,
-        status: "rejected",
+        status: DocumentStatus.REJECTED,
         reason: documentRejectReason,
       });
 
@@ -227,7 +233,7 @@ export function DocumentList({ initialDocuments = [] }: DocumentListProps) {
           doc.id === selectedDocumentId
             ? {
                 ...doc,
-                status: "rejected",
+                status: DocumentStatus.REJECTED,
                 rejection_reason: documentRejectReason,
               }
             : doc
