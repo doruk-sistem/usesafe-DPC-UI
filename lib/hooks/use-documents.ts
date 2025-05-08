@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { supabase } from "@/lib/supabase/client";
 import { Document, DocumentStatus, DocumentType } from "@/lib/types/document";
+import { DocumentService } from "@/lib/services/document";
 
 export const documentsApiHooks = {
   useGetDocuments: () => {
@@ -330,6 +331,25 @@ export const documentsApiHooks = {
       },
       onError: (error) => {
         console.error("Error in direct document status update:", error);
+      },
+    });
+  },
+
+  useRejectDocument: () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+      mutationFn: async ({
+        document,
+        reason,
+      }: {
+        document: Document;
+        reason: string;
+      }) => {
+        await DocumentService.rejectDocument(document, reason);
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["documents"] });
+        queryClient.invalidateQueries({ queryKey: ["products"] });
       },
     });
   },

@@ -106,6 +106,7 @@ export function DocumentList({ initialDocuments = [] }: DocumentListProps) {
   const { mutate: updateDocumentStatusDirect } =
     documentsApiHooks.useUpdateDocumentStatusDirect();
   const { mutate: rejectProduct } = productsApiHooks.useRejectProductMutation();
+  const { mutate: rejectDocument } = documentsApiHooks.useRejectDocument();
 
   // Update local documents when initialDocuments or documents changes
   useEffect(() => {
@@ -215,19 +216,18 @@ export function DocumentList({ initialDocuments = [] }: DocumentListProps) {
 
       if (!document) {
         console.error(
-          "Document not found in filtered documents. Document ID:",
+          "Belge bulunamadı. Belge ID:",
           selectedDocumentId
         );
         return;
       }
 
-      await updateDocumentStatusDirect({
+      await rejectDocument({
         document,
-        status: DocumentStatus.REJECTED,
         reason: documentRejectReason,
       });
 
-      // Update local document status
+      // Yerel belge durumunu güncelle
       setLocalDocuments((prevDocs) =>
         prevDocs.map((doc) =>
           doc.id === selectedDocumentId
@@ -244,14 +244,14 @@ export function DocumentList({ initialDocuments = [] }: DocumentListProps) {
       setDocumentRejectReason("");
 
       toast({
-        title: "Success",
-        description: "Document rejected successfully",
+        title: "Başarılı",
+        description: "Belge başarıyla reddedildi",
       });
     } catch (error) {
-      console.error("Error rejecting document:", error);
+      console.error("Belge reddetme hatası:", error);
       toast({
-        title: "Error",
-        description: "Failed to reject document. Please try again.",
+        title: "Hata",
+        description: "Belge reddedilemedi. Lütfen tekrar deneyin.",
         variant: "destructive",
       });
     }
