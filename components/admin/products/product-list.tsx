@@ -325,7 +325,7 @@ export function ProductList() {
                         {t("admin.products.manufacturer")}
                       </span>
                       <span className="text-sm font-medium">
-                        {product.manufacturer_id}
+                        {product.manufacturer?.name || t("admin.products.unknownManufacturer")}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">

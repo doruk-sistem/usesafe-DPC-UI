@@ -21,7 +21,13 @@ export class ProductService {
       if (isAdmin) {
         const { data, error } = await supabase
           .from("products")
-          .select("*")
+          .select(`
+            *,
+            manufacturer:manufacturer_id (
+              id,
+              name
+            )
+          `)
           .order("created_at", { ascending: false });
 
         if (error) {
@@ -32,7 +38,13 @@ export class ProductService {
       } else {
         const { data, error } = await supabase
           .from("products")
-          .select("*")
+          .select(`
+            *,
+            manufacturer:manufacturer_id (
+              id,
+              name
+            )
+          `)
           .eq("company_id", companyId)
           .order("created_at", { ascending: false });
 
@@ -414,7 +426,13 @@ export const productService = createService({
       if (isAdmin) {
         const { data, error } = await supabase
           .from("products")
-          .select("*")
+          .select(`
+            *,
+            manufacturer:manufacturer_id (
+              id,
+              name
+            )
+          `)
           .order("created_at", { ascending: false });
 
         if (error) {
@@ -424,7 +442,13 @@ export const productService = createService({
       } else {
         const { data, error } = await supabase
           .from("products")
-          .select("*")
+          .select(`
+            *,
+            manufacturer:manufacturer_id (
+              id,
+              name
+            )
+          `)
           .eq("company_id", companyId)
           .order("created_at", { ascending: false });
 
@@ -518,7 +542,14 @@ export const productService = createService({
                 : null,
           },
         ])
-        .select()
+        .select(`*,
+          
+          manufacturer:manufacturer_id (
+          id,
+          name
+          )`
+          
+        )
         .single();
 
       if (error) {
