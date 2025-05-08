@@ -62,7 +62,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
 import { documentsApiHooks } from "@/lib/hooks/use-documents";
-import type { Document } from "@/lib/types/document";
+import { productsApiHooks } from "@/lib/hooks/use-products";
+import { useAuth } from "@/lib/hooks/use-auth";
+import { Document, DocumentStatus } from "@/lib/types/document";
 
 import { getStatusIcon } from "../../../lib/utils/document-utils";
 
@@ -73,6 +75,7 @@ interface DocumentListProps {
 export function DocumentList({ initialDocuments = [] }: DocumentListProps) {
   const t = useTranslations("documentManagement");
   const { toast } = useToast();
+  const { user } = useAuth();
   const searchParams = useSearchParams();
   const manufacturerId = searchParams.get("manufacturer");
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -94,12 +97,16 @@ export function DocumentList({ initialDocuments = [] }: DocumentListProps) {
     error,
   } = documentsApiHooks.useGetDocuments();
   const { data: allProducts = [], isLoading: isLoadingProducts } =
-    documentsApiHooks.useGetProducts();
+    productsApiHooks.useGetProductsQuery(
+      { companyId: user?.user_metadata?.company_id },
+      { enabled: !!user?.user_metadata?.company_id }
+    );
   const { mutate: updateDocumentStatus } =
     documentsApiHooks.useUpdateDocumentStatus();
   const { mutate: updateDocumentStatusDirect } =
     documentsApiHooks.useUpdateDocumentStatusDirect();
-  const { mutate: rejectProduct } = documentsApiHooks.useRejectProduct();
+  const { mutate: rejectProduct } = productsApiHooks.useRejectProductMutation();
+  const { mutate: rejectDocument } = documentsApiHooks.useRejectDocument();
 
   // Update local documents when initialDocuments or documents changes
   useEffect(() => {
@@ -172,13 +179,13 @@ export function DocumentList({ initialDocuments = [] }: DocumentListProps) {
 
       await updateDocumentStatusDirect({
         document,
-        status: "approved",
+        status: DocumentStatus.APPROVED,
       });
 
       // Update local document status
       setLocalDocuments((prevDocs) =>
         prevDocs.map((doc) =>
-          doc.id === documentId ? { ...doc, status: "approved" } : doc
+          doc.id === documentId ? { ...doc, status: DocumentStatus.APPROVED } : doc
         )
       );
 
@@ -209,25 +216,24 @@ export function DocumentList({ initialDocuments = [] }: DocumentListProps) {
 
       if (!document) {
         console.error(
-          "Document not found in filtered documents. Document ID:",
+          "Belge bulunamadı. Belge ID:",
           selectedDocumentId
         );
         return;
       }
 
-      await updateDocumentStatusDirect({
+      await rejectDocument({
         document,
-        status: "rejected",
         reason: documentRejectReason,
       });
 
-      // Update local document status
+      // Yerel belge durumunu güncelle
       setLocalDocuments((prevDocs) =>
         prevDocs.map((doc) =>
           doc.id === selectedDocumentId
             ? {
                 ...doc,
-                status: "rejected",
+                status: DocumentStatus.REJECTED,
                 rejection_reason: documentRejectReason,
               }
             : doc
@@ -238,14 +244,14 @@ export function DocumentList({ initialDocuments = [] }: DocumentListProps) {
       setDocumentRejectReason("");
 
       toast({
-        title: "Success",
-        description: "Document rejected successfully",
+        title: "Başarılı",
+        description: "Belge başarıyla reddedildi",
       });
     } catch (error) {
-      console.error("Error rejecting document:", error);
+      console.error("Belge reddetme hatası:", error);
       toast({
-        title: "Error",
-        description: "Failed to reject document. Please try again.",
+        title: "Hata",
+        description: "Belge reddedilemedi. Lütfen tekrar deneyin.",
         variant: "destructive",
       });
     }

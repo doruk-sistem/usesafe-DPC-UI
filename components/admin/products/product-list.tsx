@@ -43,6 +43,8 @@ import {
 import { documentsApiHooks } from "@/lib/hooks/use-documents";
 import { useImageUrl } from "@/lib/hooks/use-image-url";
 import { BaseProduct, ProductStatus } from "@/lib/types/product";
+import { productsApiHooks } from "@/lib/hooks/use-products";
+import { useAuth } from "@/lib/hooks/use-auth";
 
 
 export function ProductList() {
@@ -51,8 +53,17 @@ export function ProductList() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [manufacturerFilter, setManufacturerFilter] = useState("all");
   const { getImageUrl } = useImageUrl();
+  const { user } = useAuth();
 
-  const { data: products = [], isLoading } = documentsApiHooks.useGetProducts();
+  console.log("User:", user);
+
+  const { data: products = [], isLoading, error } = productsApiHooks.useGetProductsQuery(
+    { companyId: user?.user_metadata?.company_id },
+    { enabled: true }
+  );
+
+  console.log("Products:", products);
+  console.log("Error:", error);
 
   // Process products to include document counts and status
   const processedProducts: BaseProduct[] = products.map((product) => {
@@ -314,7 +325,7 @@ export function ProductList() {
                         {t("admin.products.manufacturer")}
                       </span>
                       <span className="text-sm font-medium">
-                        {product.manufacturer_id}
+                        {product.manufacturer?.name || t("admin.products.unknownManufacturer")}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
