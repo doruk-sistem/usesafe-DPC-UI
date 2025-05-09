@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Leaf, Factory, TreePine, Sparkles } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import {
@@ -15,9 +15,9 @@ import {
   CardContent,
 } from "@/components/ui/card";
 import { EnhancedCard } from "@/components/ui/enhanced-card";
+import { useAuth } from "@/lib/hooks/use-auth";
 import { ProductService } from "@/lib/services/product";
 import { BaseProduct } from "@/lib/types/product";
-import { useAuth } from "@/lib/hooks/use-auth";
 
 export function ProductList() {
   const t = useTranslations("products.list");

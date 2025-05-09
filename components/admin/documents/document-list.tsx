@@ -61,9 +61,9 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
+import { useAuth } from "@/lib/hooks/use-auth";
 import { documentsApiHooks } from "@/lib/hooks/use-documents";
 import { productsApiHooks } from "@/lib/hooks/use-products";
-import { useAuth } from "@/lib/hooks/use-auth";
 import { Document, DocumentStatus } from "@/lib/types/document";
 
 import { getStatusIcon } from "../../../lib/utils/document-utils";

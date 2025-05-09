@@ -1,6 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
+
 import { ProductContainer } from "@/components/products/product-container";
 import { useProduct } from "@/lib/hooks/use-product";
 

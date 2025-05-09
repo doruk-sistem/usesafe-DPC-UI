@@ -1,11 +1,9 @@
 import { Product } from "@/lib/types/product";
 import { textileProducts } from "./textile-products";
-import { detergentProducts } from "./detergent-products";
 
 // Tüm ürünleri birleştir
 export const allProducts: Product[] = [
   ...textileProducts,
-  ...detergentProducts,
   // Diğer ürün kategorileri buraya eklenecek
 ];
 
@@ -13,3 +11,6 @@ export const allProducts: Product[] = [
 export function findProductById(id: string): Product | undefined {
   return allProducts.find(product => product.id === id);
 }
+
+// products olarak da export et (geriye dönük uyumluluk için)
+export const products = allProducts;

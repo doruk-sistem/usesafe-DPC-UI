@@ -1,8 +1,9 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { BaseProduct } from "@/lib/types/product";
-import { useTranslations } from "next-intl";
 
 interface CategoryDetailsProps {
   product: BaseProduct;

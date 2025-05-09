@@ -1,9 +1,11 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+
 import { BaseProduct } from "@/lib/types/product";
-import { ProductDetails } from "./product-details";
+
 import { CategoryDetails } from "./category-details";
+import { ProductDetails } from "./product-details";
 
 interface ProductContainerProps {
   product: BaseProduct;

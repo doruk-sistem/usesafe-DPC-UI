@@ -5,16 +5,16 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 
-import { BaseProduct, KeyFeature, ProductImage } from "@/lib/types/product";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { BaseProduct, KeyFeature, ProductImage } from "@/lib/types/product";
 
-import { ProductHeader } from "./product-details/ProductHeader";
-import { ProductImageGallery } from "./product-details/ProductImageGallery";
-import { ProductQuickInfo } from "./product-details/ProductQuickInfo";
-import { ProductKeyFeatures } from "./product-details/ProductKeyFeatures";
 import { BasicInformationCard } from "./product-details/BasicInformationCard";
 import { CertificationsCard } from "./product-details/CertificationsCard";
+import { ProductHeader } from "./product-details/ProductHeader";
+import { ProductImageGallery } from "./product-details/ProductImageGallery";
+import { ProductKeyFeatures } from "./product-details/ProductKeyFeatures";
+import { ProductQuickInfo } from "./product-details/ProductQuickInfo";
 import { SustainabilityMetricsCard } from "./product-details/SustainabilityMetricsCard";
 import { ProductQR } from "./product-qr";
 
