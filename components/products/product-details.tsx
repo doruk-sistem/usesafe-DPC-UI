@@ -39,7 +39,7 @@ export function ProductDetails({ product, additionalComponents }: ProductDetails
   };
 
   // Temel bilgileri al
-  const manufacturer = getFieldValue("basic-info", "manufacturer") as string || "";
+  const manufacturer = product.manufacturer || getFieldValue("basic-info", "manufacturer") as string || "";
   const category = getFieldValue("basic-info", "category") as string || "";
 
   // Sertifikaları al
@@ -80,7 +80,7 @@ export function ProductDetails({ product, additionalComponents }: ProductDetails
       <div className="grid gap-12 lg:grid-cols-2 items-start max-w-[1400px] mx-auto">
         {/* Görsel Galerisi */}
         <ProductImageGallery 
-          images={product.images as ProductImage[]} 
+          images={product.images} 
           name={product.name}
         />
 
@@ -94,12 +94,12 @@ export function ProductDetails({ product, additionalComponents }: ProductDetails
           <ProductQuickInfo 
             title={t("quickInfo.title")}
             model={product.model || ""} 
-            manufacturer={manufacturer}
+            manufacturer={typeof manufacturer === 'string' ? manufacturer : manufacturer.name}
           />
 
           <ProductKeyFeatures 
             title={t("keyFeatures.title")}
-            features={product.key_features as KeyFeature[]}
+            features={product.key_features}
           />
         </div>
       </div>
@@ -108,7 +108,7 @@ export function ProductDetails({ product, additionalComponents }: ProductDetails
         {/* Temel Bilgiler */}
         <BasicInformationCard 
           title={t("basicInfo.title")}
-          manufacturer={manufacturer} 
+          manufacturer={typeof manufacturer === 'string' ? manufacturer : manufacturer.name} 
           category={category}
         />
 

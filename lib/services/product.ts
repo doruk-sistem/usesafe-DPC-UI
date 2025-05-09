@@ -68,43 +68,75 @@ export class ProductService {
       const { data: userData } = await supabase.auth.getUser();
       const isAdmin = userData?.user?.user_metadata?.role === "admin";
 
-      if (isAdmin) {
-        const { data, error } = await supabase
-          .from("products")
-          .select("*")
-          .eq("id", id)
-          .single();
-
-        if (error) {
-          return {
-            error: {
-              message: error.message || "Failed to fetch product",
-              field: error.details,
-            },
-          };
-        }
-
-        return { data };
-      } else {
-        const { data, error } = await supabase
-          .from("products")
-          .select("*")
-          .eq("id", id)
-          .eq("company_id", companyId)
-          .single();
-
-        if (error) {
-          return {
-            error: {
-              message: error.message || "Failed to fetch product",
-              field: error.details,
-            },
-          };
-        }
-
-        return { data };
+      if (!id) {
+        console.error('getProduct - No product ID provided');
+        return {
+          error: {
+            message: "Product ID is required",
+          },
+        };
       }
+
+      if (!companyId && !isAdmin) {
+        console.error('getProduct - No company ID provided and user is not admin');
+        return {
+          error: {
+            message: "Company ID is required for non-admin users",
+          },
+        };
+      }
+
+      // Önce ürünü getir
+      const { data: productData, error: productError } = await supabase
+        .from("products")
+        .select(`
+          *,
+          manufacturer:manufacturer_id (
+            id,
+            name,
+            taxInfo,
+            companyType,
+            status
+          )
+        `)
+        .eq("id", id)
+        .single();
+
+      if (productError) {
+        console.error('getProduct - Product Error:', productError);
+        return {
+          error: {
+            message: productError.message || "Failed to fetch product",
+            field: productError.details,
+          },
+        };
+      }
+
+      if (!productData) {
+        console.error('getProduct - No product found');
+        return {
+          error: {
+            message: "Product not found",
+          },
+        };
+      }
+
+      // Üretici bilgileri eksikse, ayrıca getir
+      if (!productData.manufacturer && productData.manufacturer_id) {
+        const { data: manufacturerData, error: manufacturerError } = await supabase
+          .from("manufacturer")
+          .select("*")
+          .eq("id", productData.manufacturer_id)
+          .single();
+
+        if (!manufacturerError && manufacturerData) {
+          productData.manufacturer = manufacturerData;
+        }
+      }
+
+      return { data: productData };
     } catch (error) {
+      console.error('getProduct - Error:', error);
       return {
         error: {
           message:
@@ -469,12 +501,31 @@ export const productService = createService({
     id: string;
     companyId: string;
   }): Promise<ProductResponse> => {
-    // Admin şirketi için özel durum - tüm ürünleri göster
-    if (companyId === "admin") {
-      const { data, error } = await supabase
+    try {
+      const { data: userData } = await supabase.auth.getUser();
+      const isAdmin = userData?.user?.user_metadata?.role === "admin";
+      if (!id) {
+        console.error('getProduct - No product ID provided');
+        return {
+          error: {
+            message: "Product ID is required",
+          },
+        };
+      }
+
+      if (!companyId && !isAdmin) {
+        console.error('getProduct - No company ID provided and user is not admin');
+        return {
+          error: {
+            message: "Company ID is required for non-admin users",
+          },
+        };
+      }
+
+      // Önce ürünü getir
+      const { data: productData, error: productError } = await supabase
         .from("products")
-        .select(
-          `
+        .select(`
           *,
           manufacturer:manufacturer_id (
             id,
@@ -483,41 +534,51 @@ export const productService = createService({
             companyType,
             status
           )
-        `
-        )
+        `)
         .eq("id", id)
         .single();
 
-      if (error) {
-        return { error: { message: "Product not found" } };
+      if (productError) {
+        console.error('getProduct - Product Error:', productError);
+        return {
+          error: {
+            message: productError.message || "Failed to fetch product",
+            field: productError.details,
+          },
+        };
       }
 
-      return { data };
+      if (!productData) {
+        console.error('getProduct - No product found');
+        return {
+          error: {
+            message: "Product not found",
+          },
+        };
+      }
+      // Üretici bilgileri eksikse, ayrıca getir
+      if (!productData.manufacturer && productData.manufacturer_id) {
+        const { data: manufacturerData, error: manufacturerError } = await supabase
+          .from("manufacturer")
+          .select("*")
+          .eq("id", productData.manufacturer_id)
+          .single();
+
+        if (!manufacturerError && manufacturerData) {
+          productData.manufacturer = manufacturerData;
+        }
+      }
+
+      return { data: productData };
+    } catch (error) {
+      console.error('getProduct - Error:', error);
+      return {
+        error: {
+          message:
+            error instanceof Error ? error.message : "Unknown error occurred",
+        },
+      };
     }
-
-    const { data, error } = await supabase
-      .from("products")
-      .select(
-        `
-        *,
-        manufacturer:manufacturer_id (
-          id,
-          name,
-          taxInfo,
-          companyType,
-          status
-        )
-      `
-      )
-      .eq("id", id)
-      .eq("company_id", companyId)
-      .single();
-
-    if (error) {
-      return { error: { message: "Product not found" } };
-    }
-
-    return { data };
   },
   createProduct: async (product: NewProduct) => {
     try {
