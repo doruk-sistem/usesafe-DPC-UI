@@ -9,15 +9,15 @@ export function useProducts(companyId?: string) {
   const { user, company } = useAuth();
   // Öncelikle company.id'yi kullan, yoksa userMetadata.company_id'yi kullan
   const defaultCompanyId = company?.id || user?.user_metadata?.company_id;
-  // Eğer company_id "default" ise veya geçersizse, undefined olarak ayarla
+  // Eğer company_id "default" ise veya geçersizse, admin olarak işlem yap
   const targetCompanyId = (!defaultCompanyId || defaultCompanyId === "default") 
-    ? undefined 
+    ? "admin" 
     : (companyId || defaultCompanyId);
   
   const { data: products = [], isLoading, error } = productsApiHooks.useGetProductsQuery(
     { companyId: targetCompanyId },
     { 
-      enabled: !!targetCompanyId,
+      enabled: true,  // Always enable the query
       retry: false
     }
   );

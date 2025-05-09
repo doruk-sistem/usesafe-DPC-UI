@@ -29,9 +29,11 @@ export function ProductList() {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        if (!user) return;
-
-        const companyId = user.user_metadata?.company_id;
+        
+        // Kullanıcı varsa company ID'yi al, yoksa "admin" kullan
+        const companyId = user?.user_metadata?.company_id || "admin";
+        
+        // Sadece ProductService üzerinden veri çekelim
         const data = await ProductService.getProducts(companyId);
         setProducts(data);
       } catch (error) {
