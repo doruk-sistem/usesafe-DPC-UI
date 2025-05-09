@@ -7,8 +7,12 @@ export const productsApiHooks = createApiHooks(productService);
 
 export function useProducts(companyId?: string) {
   const { user, company } = useAuth();
-  const defaultCompanyId = user?.user_metadata?.company_id || company?.id;
-  const targetCompanyId = companyId || defaultCompanyId;
+  // Öncelikle company.id'yi kullan, yoksa userMetadata.company_id'yi kullan
+  const defaultCompanyId = company?.id || user?.user_metadata?.company_id;
+  // Eğer company_id "default" ise veya geçersizse, undefined olarak ayarla
+  const targetCompanyId = (!defaultCompanyId || defaultCompanyId === "default") 
+    ? undefined 
+    : (companyId || defaultCompanyId);
   
   const { data: products = [], isLoading, error } = productsApiHooks.useGetProductsQuery(
     { companyId: targetCompanyId },
