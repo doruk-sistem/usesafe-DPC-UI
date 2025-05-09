@@ -1,28 +1,45 @@
-import { notFound } from "next/navigation";
+"use client";
 
+import { useParams } from "next/navigation";
 import { ProductContainer } from "@/components/products/product-container";
-import { products } from "@/lib/data/products";
-import { textileProducts } from "@/lib/data/textile-products";
+import { useProduct } from "@/lib/hooks/use-product";
 
-const allProducts = [...products, ...textileProducts];
+export default function ProductPage() {
+  const params = useParams();
+  const productId = params.id as string;
+  const { product, isLoading, error } = useProduct(productId);
 
-export async function generateStaticParams() {
-  return allProducts.map((product) => ({
-    id: product.id,
-  }));
-}
-
-export default async function ProductPage({ params }: { params: { id: string } }) {
-  const { id } = params;
-  const product = allProducts.find((p) => p.id === id);
-
-  if (!product) {
-    notFound();
+  if (isLoading) {
+    return (
+      <div className="container mx-auto px-4 py-12">
+        <div className="animate-pulse">
+          <div className="h-8 bg-gray-200 rounded w-1/4 mb-4"></div>
+          <div className="h-64 bg-gray-200 rounded mb-4"></div>
+          <div className="space-y-3">
+            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
-  return (
-    <div className="container py-10">
-      <ProductContainer product={product} />
-    </div>
-  );
+  if (error) {
+    return (
+      <div className="container mx-auto px-4 py-12">
+        <h1 className="text-2xl font-bold text-red-600">{error.message}</h1>
+      </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <div className="container mx-auto px-4 py-12">
+        <h1 className="text-2xl font-bold">Ürün bulunamadı</h1>
+        <p className="mt-2 text-gray-600">ID: {productId}</p>
+      </div>
+    );
+  }
+
+  return <ProductContainer product={product} />;
 }

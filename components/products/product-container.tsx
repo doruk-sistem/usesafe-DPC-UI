@@ -1,32 +1,19 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-
-import { Product } from "@/lib/types/product";
-
-import { BatteryProductDetails } from "./battery-product-details";
-import { TextileProductDetails } from "./textile-product-details";
+import { BaseProduct } from "@/lib/types/product";
+import { ProductDetails } from "./product-details";
+import { CategoryDetails } from "./category-details";
 
 interface ProductContainerProps {
-  product: Product;
+  product: BaseProduct;
 }
 
 export function ProductContainer({ product }: ProductContainerProps) {
-  const t = useTranslations("products.details");
-
-  if (product.product_type === "battery") {
-    return <BatteryProductDetails product={product} />;
-  }
-
-  if (product.product_type === "textile" || product.product_type === "jeans") {
-    return <TextileProductDetails product={product} />;
-  }
-
   return (
-    <div className="text-center p-8">
-      <p className="text-muted-foreground">
-        {t("layoutNotAvailable")} {product.product_type}
-      </p>
-    </div>
+    <ProductDetails 
+      product={product}
+      additionalComponents={<CategoryDetails product={product} />}
+    />
   );
 }
