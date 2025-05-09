@@ -288,47 +288,6 @@ export class ProductService {
     };
   }
 
-  static async approveProduct(productId: string, userId: string): Promise<void> {
-    // Ürünü getir
-    const { data: product, error: fetchError } = await supabase
-      .from("products")
-      .select("*")
-      .eq("id", productId)
-      .single();
-
-    if (fetchError) {
-      throw fetchError;
-    }
-
-    // Yeni bir ürün oluştur (satıcının ürünü olarak)
-    const newProduct = {
-      ...product,
-      id: crypto.randomUUID(), // Yeni UUID oluştur
-      company_id: product.manufacturer_id, // Satıcının ID'si
-      status: "DRAFT",
-      status_history: [
-        {
-          from: null,
-          to: "DRAFT",
-          timestamp: new Date().toISOString(),
-          userId,
-        },
-      ],
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    };
-
-    const { error: createError } = await supabase
-      .from("products")
-      .insert([newProduct])
-      .select()
-      .single();
-
-    if (createError) {
-      throw createError;
-    }
-  }
-  
   static async rejectProduct(
     productId: string,
     userId: string,
@@ -698,6 +657,88 @@ export const productService = createService({
       return { success: true };
     } catch (error) {
       console.error("Error in product rejection:", error);
+      throw error;
+    }
+  },
+  getPendingProducts: async ({ pageIndex, pageSize }: { pageIndex: number; pageSize: number }) => {
+    try {
+      const { data, error } = await supabase
+        .from("products")
+        .select(`
+          *,
+          manufacturer:manufacturer_id (
+            id,
+            name
+          )
+        `)
+        .eq("status", "NEW")
+        .order("created_at", { ascending: false })
+        .range(pageIndex * pageSize, (pageIndex + 1) * pageSize - 1);
+
+      if (error) {
+        throw new Error("Failed to fetch pending products");
+      }
+
+      return {
+        items: data || [],
+        total: data?.length || 0,
+        pageIndex,
+        pageSize,
+      };
+    } catch (error) {
+      console.error("Error in getPendingProducts:", error);
+      throw error;
+    }
+  },
+  approveProduct: async ({ productId }: { productId: string }) => {
+    try {
+      // 1. Get the product
+      const { data: product, error: fetchError } = await supabase
+        .from("products")
+        .select("*")
+        .eq("id", productId)
+        .single();
+
+      if (fetchError) {
+        throw new Error(`Failed to fetch product: ${fetchError.message}`);
+      }
+
+      if (!product) {
+        throw new Error(`No product found with ID ${productId}`);
+      }
+
+      // 2. Create a new product for the manufacturer
+      const newProduct = {
+        ...product,
+        id: crypto.randomUUID(),
+        company_id: product.manufacturer_id,
+        status: "DRAFT",
+        status_history: [
+          {
+            from: null,
+            to: "DRAFT",
+            timestamp: new Date().toISOString(),
+            userId: (await supabase.auth.getUser()).data.user?.id,
+          },
+        ],
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+
+      // 3. Insert the new product
+      const { error: createError } = await supabase
+        .from("products")
+        .insert([newProduct])
+        .select()
+        .single();
+
+      if (createError) {
+        throw new Error(`Failed to create new product: ${createError.message}`);
+      }
+
+      return { success: true };
+    } catch (error) {
+      console.error("Error in product approval:", error);
       throw error;
     }
   },
