@@ -40,11 +40,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useAuth } from "@/lib/hooks/use-auth";
 import { documentsApiHooks } from "@/lib/hooks/use-documents";
 import { useImageUrl } from "@/lib/hooks/use-image-url";
-import { BaseProduct, ProductStatus } from "@/lib/types/product";
 import { productsApiHooks } from "@/lib/hooks/use-products";
-import { useAuth } from "@/lib/hooks/use-auth";
+import { BaseProduct, ProductStatus } from "@/lib/types/product";
 
 
 export function ProductList() {

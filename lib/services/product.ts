@@ -17,6 +17,27 @@ export class ProductService {
     try {
       const { data: userData } = await supabase.auth.getUser();
       const isAdmin = userData?.user?.user_metadata?.role === "admin";
+      const userCompanyId = userData?.user?.user_metadata?.company_id;
+
+      // Kullanıcı oturumu yoksa veya company ID yoksa, tüm ürünleri göster
+      if (!userData?.user || !userCompanyId) {
+        const { data, error } = await supabase
+          .from("products")
+          .select(`
+            *,
+            manufacturer:manufacturer_id (
+              id,
+              name
+            )
+          `)
+          .order("created_at", { ascending: false });
+
+        if (error) {
+          throw new Error("Failed to fetch products");
+        }
+
+        return data || [];
+      }
 
       if (isAdmin) {
         const { data, error } = await supabase
@@ -36,6 +57,28 @@ export class ProductService {
 
         return data || [];
       } else {
+        const targetCompanyId = userCompanyId || companyId;
+        
+        if (!targetCompanyId || targetCompanyId === "default") {
+          // Company ID yoksa veya "default" ise, tüm ürünleri göster
+          const { data, error } = await supabase
+            .from("products")
+            .select(`
+              *,
+              manufacturer:manufacturer_id (
+                id,
+                name
+              )
+            `)
+            .order("created_at", { ascending: false });
+
+          if (error) {
+            throw new Error("Failed to fetch products");
+          }
+
+          return data || [];
+        }
+
         const { data, error } = await supabase
           .from("products")
           .select(`
@@ -45,7 +88,7 @@ export class ProductService {
               name
             )
           `)
-          .eq("company_id", companyId)
+          .eq("company_id", targetCompanyId)
           .order("created_at", { ascending: false });
 
         if (error) {
@@ -55,7 +98,6 @@ export class ProductService {
         return data || [];
       }
     } catch (error) {
-      console.error("Error in getProducts:", error);
       throw error;
     }
   }
@@ -68,42 +110,67 @@ export class ProductService {
       const { data: userData } = await supabase.auth.getUser();
       const isAdmin = userData?.user?.user_metadata?.role === "admin";
 
-      if (isAdmin) {
-        const { data, error } = await supabase
-          .from("products")
-          .select("*")
-          .eq("id", id)
-          .single();
-
-        if (error) {
-          return {
-            error: {
-              message: error.message || "Failed to fetch product",
-              field: error.details,
-            },
-          };
-        }
-
-        return { data };
-      } else {
-        const { data, error } = await supabase
-          .from("products")
-          .select("*")
-          .eq("id", id)
-          .eq("company_id", companyId)
-          .single();
-
-        if (error) {
-          return {
-            error: {
-              message: error.message || "Failed to fetch product",
-              field: error.details,
-            },
-          };
-        }
-
-        return { data };
+      if (!id) {
+        return {
+          error: {
+            message: "Product ID is required",
+          },
+        };
       }
+
+      if (!companyId && !isAdmin) {
+        return {
+          error: {
+            message: "Company ID is required for non-admin users",
+          },
+        };
+      }
+
+      const { data: productData, error: productError } = await supabase
+        .from("products")
+        .select(`
+          *,
+          manufacturer:manufacturer_id (
+            id,
+            name,
+            taxInfo,
+            companyType,
+            status
+          )
+        `)
+        .eq("id", id)
+        .single();
+
+      if (productError) {
+        return {
+          error: {
+            message: productError.message || "Failed to fetch product",
+            field: productError.details,
+          },
+        };
+      }
+
+      if (!productData) {
+        return {
+          error: {
+            message: "Product not found",
+          },
+        };
+      }
+
+      if (!productData.manufacturer && productData.manufacturer_id) {
+        const { data: manufacturerData, error: manufacturerError } = await supabase
+          .from("manufacturer")
+          .select("*")
+          .eq("id", productData.manufacturer_id)
+          .single();
+
+        if (!manufacturerError && manufacturerData) {
+          productData.manufacturer = manufacturerData;
+        }
+      }
+
+      return { data: productData };
     } catch (error) {
       return {
         error: {
@@ -411,54 +478,47 @@ export class ProductService {
         );
       }
     } catch (error) {
-      console.error("Error in product rejection:", error);
       throw error;
     }
   }
 }
 
 export const productService = createService({
-  getProducts: async ({ companyId }: { companyId: string }) => {
+  getProducts: async ({ companyId }: { companyId?: string }) => {
     try {
-      const { data: userData } = await supabase.auth.getUser();
-      const isAdmin = userData?.user?.user_metadata?.role === "admin";
+      const user = await supabase.auth.getUser();
+      const isAdmin = user.data.user?.user_metadata?.role === "admin";
+      const userCompanyId = user.data.user?.user_metadata?.company_id;
 
-      if (isAdmin) {
-        const { data, error } = await supabase
-          .from("products")
-          .select(`
-            *,
-            manufacturer:manufacturer_id (
-              id,
-              name
-            )
-          `)
-          .order("created_at", { ascending: false });
+      let query = supabase
+        .from("products")
+        .select(`
+          *,
+          manufacturer:manufacturer_id (
+            id,
+            name
+          )
+        `);
 
-        if (error) {
-          throw new Error("Failed to fetch products");
+      if (!isAdmin) {
+        const targetCompanyId = companyId || userCompanyId;
+        
+        if (!targetCompanyId || targetCompanyId === "default") {
+          return [];
         }
-        return data || [];
+        
+        query = query.eq("company_id", targetCompanyId);
       } else {
-        const { data, error } = await supabase
-          .from("products")
-          .select(`
-            *,
-            manufacturer:manufacturer_id (
-              id,
-              name
-            )
-          `)
-          .eq("company_id", companyId)
-          .order("created_at", { ascending: false });
-
-        if (error) {
-          throw new Error("Failed to fetch products");
+        if (companyId) {
+          query = query.eq("company_id", companyId);
         }
-        return data || [];
       }
+
+      const { data, error } = await query.order("created_at", { ascending: false });
+
+      if (error) throw error;
+      return data || [];
     } catch (error) {
-      console.error("Error in getProducts:", error);
       throw error;
     }
   },
@@ -469,12 +529,28 @@ export const productService = createService({
     id: string;
     companyId: string;
   }): Promise<ProductResponse> => {
-    // Admin şirketi için özel durum - tüm ürünleri göster
-    if (companyId === "admin") {
-      const { data, error } = await supabase
+    try {
+      const { data: userData } = await supabase.auth.getUser();
+      const isAdmin = userData?.user?.user_metadata?.role === "admin";
+      if (!id) {
+        return {
+          error: {
+            message: "Product ID is required",
+          },
+        };
+      }
+
+      if (!companyId && !isAdmin) {
+        return {
+          error: {
+            message: "Company ID is required for non-admin users",
+          },
+        };
+      }
+
+      const { data: productData, error: productError } = await supabase
         .from("products")
-        .select(
-          `
+        .select(`
           *,
           manufacturer:manufacturer_id (
             id,
@@ -483,41 +559,48 @@ export const productService = createService({
             companyType,
             status
           )
-        `
-        )
+        `)
         .eq("id", id)
         .single();
 
-      if (error) {
-        return { error: { message: "Product not found" } };
+      if (productError) {
+        return {
+          error: {
+            message: productError.message || "Failed to fetch product",
+            field: productError.details,
+          },
+        };
       }
 
-      return { data };
+      if (!productData) {
+        return {
+          error: {
+            message: "Product not found",
+          },
+        };
+      }
+
+      if (!productData.manufacturer && productData.manufacturer_id) {
+        const { data: manufacturerData, error: manufacturerError } = await supabase
+          .from("manufacturer")
+          .select("*")
+          .eq("id", productData.manufacturer_id)
+          .single();
+
+        if (!manufacturerError && manufacturerData) {
+          productData.manufacturer = manufacturerData;
+        }
+      }
+
+      return { data: productData };
+    } catch (error) {
+      return {
+        error: {
+          message:
+            error instanceof Error ? error.message : "Unknown error occurred",
+        },
+      };
     }
-
-    const { data, error } = await supabase
-      .from("products")
-      .select(
-        `
-        *,
-        manufacturer:manufacturer_id (
-          id,
-          name,
-          taxInfo,
-          companyType,
-          status
-        )
-      `
-      )
-      .eq("id", id)
-      .eq("company_id", companyId)
-      .single();
-
-    if (error) {
-      return { error: { message: "Product not found" } };
-    }
-
-    return { data };
   },
   createProduct: async (product: NewProduct) => {
     try {
@@ -697,7 +780,6 @@ export const productService = createService({
 
       return { success: true };
     } catch (error) {
-      console.error("Error in product rejection:", error);
       throw error;
     }
   },
