@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Leaf, Factory, TreePine, Sparkles } from "lucide-react";
 import Image from "next/image";
@@ -14,12 +15,34 @@ import {
   CardContent,
 } from "@/components/ui/card";
 import { EnhancedCard } from "@/components/ui/enhanced-card";
-import { products } from "@/lib/data/products";
-import { textileProducts } from "@/lib/data/textile-products";
-import { Product } from "@/lib/types/product";
+import { ProductService } from "@/lib/services/product";
+import { BaseProduct } from "@/lib/types/product";
+import { useAuth } from "@/lib/hooks/use-auth";
 
 export function ProductList() {
   const t = useTranslations("products.list");
+  const { user, isLoading: authLoading } = useAuth();
+  const [products, setProducts] = useState<BaseProduct[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        if (!user) return;
+
+        const companyId = user.user_metadata?.company_id;
+        const data = await ProductService.getProducts(companyId);
+        setProducts(data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, [user]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -44,62 +67,32 @@ export function ProductList() {
     },
   };
 
-  const allProducts = [...textileProducts, ...products];
-
-  const getSustainabilityScore = (product: Product) => {
-    if (!product?.dpp_config?.sections) return 0;
-
-    const environmentalSection = product.dpp_config.sections.find(
-      (s) => s.id === "environmental"
-    );
-    if (!environmentalSection?.fields) return 0;
-
-    const score = environmentalSection.fields.find(
-      (f) => f.id === "sustainability-score"
+  const getSustainabilityScore = (product: BaseProduct) => {
+    const score = product.key_features?.find(
+      (f) => f.name === "Sustainability Score"
     )?.value;
     return typeof score === "number" ? score : 0;
   };
 
-  const getCarbonFootprint = (product: Product) => {
-    if (!product?.dpp_config?.sections) return "0 kg CO2e";
-
-    const environmentalSection = product.dpp_config.sections.find(
-      (s) => s.id === "environmental"
-    );
-    if (!environmentalSection?.fields) return "0 kg CO2e";
-
-    const footprint = environmentalSection.fields.find(
-      (f) => f.id === "carbon-footprint"
+  const getCarbonFootprint = (product: BaseProduct) => {
+    const footprint = product.key_features?.find(
+      (f) => f.name === "Carbon Footprint"
     )?.value;
     return typeof footprint === "string" ? footprint : "0 kg CO2e";
   };
 
-  const getManufacturer = (product: Product) => {
-    if (!product?.dpp_config?.sections) return t("quickInfo.unknown");
-
-    const basicInfoSection = product.dpp_config.sections.find(
-      (s) => s.id === "basic-info"
-    );
-    if (!basicInfoSection?.fields) return t("quickInfo.unknown");
-
-    return (
-      (basicInfoSection.fields.find((f) => f.id === "manufacturer")
-        ?.value as string) || t("quickInfo.unknown")
-    );
+  const getManufacturer = (product: BaseProduct) => {
+    const manufacturer = product.key_features?.find(
+      (f) => f.name === "Manufacturer"
+    )?.value;
+    return typeof manufacturer === "string" ? manufacturer : t("quickInfo.unknown");
   };
 
-  const getCategory = (product: Product) => {
-    if (!product?.dpp_config?.sections) return product.product_type;
-
-    const basicInfoSection = product.dpp_config.sections.find(
-      (s) => s.id === "basic-info"
-    );
-    if (!basicInfoSection?.fields) return product.product_type;
-
-    return (
-      (basicInfoSection.fields.find((f) => f.id === "category")
-        ?.value as string) || product.product_type
-    );
+  const getCategory = (product: BaseProduct) => {
+    const category = product.key_features?.find(
+      (f) => f.name === "Category"
+    )?.value;
+    return typeof category === "string" ? category : product.product_type;
   };
 
   const getSustainabilityIcon = (score: number) => {
@@ -119,6 +112,41 @@ export function ProductList() {
     return parseFloat(footprint.replace(" kg CO2e", ""));
   };
 
+  if (loading) {
+    return (
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {[...Array(6)].map((_, i) => (
+          <div
+            key={i}
+            className="h-[400px] bg-muted animate-pulse rounded-lg"
+          />
+        ))}
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="text-center py-10 space-y-4">
+        <p className="text-lg font-medium">{t("loginRequired")}</p>
+        <Link 
+          href="/auth/login" 
+          className="inline-block px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
+        >
+          {t("loginButton")}
+        </Link>
+      </div>
+    );
+  }
+
+  if (products.length === 0) {
+    return (
+      <div className="text-center py-10">
+        <p className="text-muted-foreground">{t("noProducts")}</p>
+      </div>
+    );
+  }
+
   return (
     <motion.div
       initial="hidden"
@@ -126,13 +154,13 @@ export function ProductList() {
       variants={containerVariants}
       className="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
     >
-      {allProducts.map((product) => {
+      {products.map((product) => {
         const sustainabilityScore = getSustainabilityScore(product);
         const carbonFootprint = getCarbonFootprint(product);
         const manufacturer = getManufacturer(product);
         const category = getCategory(product);
         const primaryImage =
-          product.images.find((img) => img.is_primary) || product.images[0];
+          product.images?.find((img) => img.is_primary) || product.images?.[0];
 
         return (
           <motion.div
@@ -147,15 +175,16 @@ export function ProductList() {
                 className="overflow-hidden h-full"
               >
                 <div className="relative group h-[300px]">
-                  {" "}
-                  <Image
-                    src={primaryImage.url}
-                    alt={primaryImage.alt}
-                    fill
-                    className="object-contain bg-white"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    priority={true} 
-                  />
+                  {primaryImage && (
+                    <Image
+                      src={primaryImage.url}
+                      alt={primaryImage.alt || product.name}
+                      fill
+                      className="object-contain bg-white"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      priority={true}
+                    />
+                  )}
                   <div className="absolute top-2 right-2 bg-background/70 rounded-full p-1">
                     {getSustainabilityIcon(sustainabilityScore)}
                   </div>
