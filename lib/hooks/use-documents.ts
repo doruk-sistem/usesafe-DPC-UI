@@ -2,9 +2,9 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
+import { DocumentService } from "@/lib/services/document";
 import { supabase } from "@/lib/supabase/client";
 import { Document, DocumentStatus, DocumentType } from "@/lib/types/document";
-import { DocumentService } from "@/lib/services/document";
 
 export const documentsApiHooks = {
   useGetDocuments: () => {

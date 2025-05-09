@@ -16,11 +16,12 @@ export function useProduct(id: string) {
     isLoading,
   } = useQuery({
     queryKey: ["product", id],
-    queryFn: () =>
-      productService.getProduct({
+    queryFn: () => {
+      return productService.getProduct({
         id,
         companyId: isAdmin ? "admin" : company?.id || "",
-      }),
+      });
+    },
     enabled: !!id && (!!company?.id || isAdmin),
   });
 
