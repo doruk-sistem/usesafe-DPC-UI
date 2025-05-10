@@ -743,7 +743,8 @@
         "NEW": "Yeni",
         "DRAFT": "Taslak",
         "DELETED": "Silindi",
-        "draft": "Taslak"
+        "draft": "Taslak",
+        "new": "Yeni"
       }
     
     },
@@ -1165,6 +1166,9 @@
       }
     },
     "list": {
+      "quickInfo": {
+        "unknown": "Bilinmiyor"
+      },
       "categories": {
         "textile": "Tekstil",
         "battery": "Akü",
@@ -1178,7 +1182,23 @@
         "standard batteries": "Standart Aküler",
         "agm batteries": "AGM Aküler",
         "efb batteries": "EFB Aküler",
-        "detergents": "Deterjanlar"
+        "detergents": "Deterjanlar",
+        "toothbrushes": "Diş Fırçaları",
+        "telecommunications_equipment": "TELSİZ VE/VEYA TELEKOMÜNİKASYON TERMİNAL EKİPMANLARI",
+        "footwear": "Ayakkabılar",
+        "other_consumer_products": "Diğer Tüketici Ürünleri",
+        "childcare_products": "Çocuk Bakım Ürünleri",
+        "personal_protective_equipment": "Kişisel Koruyucu Ekipmanlar",
+        "toys": "Oyuncaklar",
+        "food_contact_materials": "GIDA İLE TEMAS EDEN MADDELER",
+        "chemical_and_organic_fertilizers": "KİMYEVİ VE ORGANİK GÜBRELER",
+        "paper_products": "Kağıt Ürünleri",
+        "batteries_and_accumulators": "Aküler ve Aküler",
+        "electrical_equipment": "Elektrikli Ekipmanlar",
+        "prepackaging": "Hazır Ambalajlama",
+        "food":"Gıda",
+        "stationery":"Kırtasiye",
+        "cosmetics":"Kozmetikler"
       },
       "sustainability": {
         "score": "Sürdürülebilirlik Puanı",
@@ -2024,7 +2044,9 @@
     "chemical_and_organic_fertilizers": "Kimyevi ve Organik Gübreler",
     "paper_products": "Kağıt Ürünleri",
     "batteries_and_accumulators": "Aküler ve Yüksek Voltaj",
-    "electrical_equipment": "Elektrikli Ekipmanlar"
+    "electrical_equipment": "Elektrikli Ekipmanlar",
+    "prepackaging": "Hazır Ambalajlama",
+    "food":"Gıda"
   },
   "documentManagement": {
     "title": "Belge Yönetimi",

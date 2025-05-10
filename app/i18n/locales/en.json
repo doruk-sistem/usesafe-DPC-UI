@@ -95,7 +95,8 @@
         "NEW": "New",
         "DRAFT": "Draft",
         "DELETED": "Deleted",
-        "draft": "Draft"
+        "draft": "Draft",
+        "new": "New"
       }
     },
     "menu": {
@@ -400,6 +401,9 @@
       }
     },
     "list": {
+      "quickInfo": {
+        "unknown": "Unknown"
+      },
       "categories": {
         "textile": "Textile",
         "battery": "Battery",
@@ -412,8 +416,24 @@
         "industrial batteries": "Industrial Batteries",
         "standard batteries": "Standard Batteries",
         "agm batteries": "AGM Batteries",
-        "efb batteries": "EFB Batteries"
-        
+        "efb batteries": "EFB Batteries",
+        "toothbrushes": "Toothbrushes",
+        "detergents": "Detergents",
+        "telecommunications_equipment": "Telecommunications Equipment",
+        "footwear": "Footwear",
+        "other_consumer_products": "Other Consumer Products",
+        "childcare_products": "Childcare Products",
+        "personal_protective_equipment": "Personal Protective Equipment",
+        "toys": "Toys",
+        "food_contact_materials": "Food Contact Materials",
+        "chemical_and_organic_fertilizers": "Chemical and Organic Fertilizers",
+        "paper_products": "Paper Products",
+        "batteries_and_accumulators": "Batteries and Accumulators",
+        "electrical_equipment": "Electrical Equipment",
+        "prepackaging": "Prepackaging",
+        "food":"Food",
+        "stationery":"Stationery",
+        "cosmetics":"Cosmetics"
       },
       "sustainability": {
         "score": "Sustainability Score",
@@ -1000,7 +1020,9 @@
     "other_industrial_products": "Other Industrial Products",
     "paper_products": "Paper Products",
     "batteries_and_accumulators": "Batteries and Accumulators",
-    "electrical_equipment": "Electrical Equipment"
+    "electrical_equipment": "Electrical Equipment",
+    "prepackaging": "Prepackaging",
+    "food":"Food"
   },
   "documentManagement": {
     "title": "Document Management",
