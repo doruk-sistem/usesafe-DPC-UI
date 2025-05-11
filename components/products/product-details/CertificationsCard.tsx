@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Download } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -16,31 +17,54 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
-interface Certification {
-  name: string;
-  issuedBy: string;
-  validUntil: string;
-  status: "active" | "valid" | "expired" | "pending" | "unknown";
-  documentUrl?: string;
-}
+import { getDocuments } from "@/lib/services/documents";
+import { Document } from "@/lib/types/document";
 
 interface CertificationsCardProps {
   title: string;
-  certifications: Certification[];
+  productId: string;
 }
 
 export function CertificationsCard({ 
   title,
-  certifications
+  productId
 }: CertificationsCardProps) {
   const t = useTranslations("products.details.certifications");
+  const [certifications, setCertifications] = useState<Document[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const getStatusVariant = (status: Certification["status"]) => {
+  useEffect(() => {
+    const fetchCertifications = async () => {
+      try {
+        if (!productId) {
+          setError('Product ID is required');
+          setLoading(false);
+          return;
+        }
+
+        const { documents } = await getDocuments(productId);
+
+        // Show all document types
+        const certificationDocs = documents;
+
+        setCertifications(certificationDocs);
+        setLoading(false);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to load certifications');
+        setLoading(false);
+      }
+    };
+
+    fetchCertifications();
+  }, [productId]);
+
+  const getStatusVariant = (status: Document["status"]) => {
     switch (status) {
-      case "active":
+      case "approved":
       case "valid":
         return "success";
+      case "rejected":
       case "expired":
         return "destructive";
       case "pending":
@@ -49,6 +73,50 @@ export function CertificationsCard({
         return "secondary";
     }
   };
+
+  if (loading) {
+    return (
+      <Card className="lg:col-span-2">
+        <CardHeader>
+          <CardTitle>{title}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-4">Loading certifications...</div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (error) {
+    return (
+      <Card className="lg:col-span-2">
+        <CardHeader>
+          <CardTitle>{title}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-4 text-destructive">
+            <p className="font-medium">Error Loading Certifications</p>
+            <p className="text-sm mt-2">{error}</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (certifications.length === 0) {
+    return (
+      <Card className="lg:col-span-2">
+        <CardHeader>
+          <CardTitle>{title}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-4 text-muted-foreground">
+            No certifications found for this product.
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="lg:col-span-2">
@@ -72,24 +140,32 @@ export function CertificationsCard({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {certifications.map((cert, index) => (
-                <TableRow key={index}>
+              {certifications.map((cert) => (
+                <TableRow key={cert.id}>
                   <TableCell>{cert.name}</TableCell>
-                  <TableCell>{cert.issuedBy}</TableCell>
-                  <TableCell>{new Date(cert.validUntil).toLocaleDateString()}</TableCell>
+                  <TableCell>{cert.notes || "N/A"}</TableCell>
+                  <TableCell>
+                    {cert.validUntil 
+                      ? new Date(cert.validUntil).toLocaleDateString()
+                      : "N/A"}
+                  </TableCell>
                   <TableCell>
                     <Badge variant={getStatusVariant(cert.status)}>
                       {t(`status.${cert.status}`)}
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    {cert.documentUrl && (
+                    {cert.url ? (
                       <Button variant="ghost" size="sm" asChild>
-                        <Link href={cert.documentUrl}>
+                        <Link href={cert.url} target="_blank" rel="noopener noreferrer">
                           <Download className="h-4 w-4 mr-2" />
                           {t("actions.download")}
                         </Link>
                       </Button>
+                    ) : (
+                      <span className="text-sm text-muted-foreground">
+                        {t("actions.noDocument")}
+                      </span>
                     )}
                   </TableCell>
                 </TableRow>

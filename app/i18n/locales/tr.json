@@ -1103,7 +1103,8 @@
           "pending": "Beklemede"
         },
         "actions": {
-          "download": "İndir"
+          "download": "İndir",
+          "noDocument": "Belge Yok"
         }
       },
       "sustainability": {

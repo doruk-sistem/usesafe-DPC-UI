@@ -40,8 +40,7 @@ export function ProductDetails({ product, additionalComponents }: ProductDetails
 
   // Temel bilgileri al
   const manufacturer = product.manufacturer || getFieldValue("basic-info", "manufacturer") as string || "";
-  const category = getFieldValue("basic-info", "category") as string || "";
-
+  const category = getFieldValue("basic-info", "category") as string || product.product_type || "";
   // Sertifikaları al
   const certifications = getFieldsByType("certifications", "certification").map(field => ({
     name: field.name,
@@ -115,7 +114,7 @@ export function ProductDetails({ product, additionalComponents }: ProductDetails
         {/* Sertifikalar */}
         <CertificationsCard 
           title={t("certifications.title")}
-          certifications={certifications}
+          productId={product.id}
         />
 
         {/* Sürdürülebilirlik Metrikleri */}

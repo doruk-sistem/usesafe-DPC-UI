@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl";
 
 import { ProductQR } from "@/components/products/product-qr";
 import { Button } from "@/components/ui/button";
-import { Product } from "@/lib/types/product";
+import { KeyFeature, Product, ProductImage } from "@/lib/types/product";
 
 import { Card, CardHeader, CardTitle, CardContent } from "../ui/card";
 
@@ -102,7 +102,7 @@ export function TextileProductDetails({ product }: TextileProductDetailsProps) {
       <div className="grid gap-12 lg:grid-cols-2 items-start max-w-[1400px] mx-auto">
         {/* Image Gallery */}
         <ProductImageGallery 
-          images={product.images} 
+          images={product.images as ProductImage[]} 
           name={product.name}
         />
 
@@ -124,7 +124,7 @@ export function TextileProductDetails({ product }: TextileProductDetailsProps) {
           {/* Key Features */}
           <ProductKeyFeatures 
             title={t("keyFeatures.title")}
-            features={product.key_features}
+            features={product.key_features as KeyFeature[]}
           />
         </div>
       </div>
@@ -163,7 +163,7 @@ export function TextileProductDetails({ product }: TextileProductDetailsProps) {
         {/* Certifications */}
         <CertificationsCard 
           title={t("certifications.title")}
-          certifications={certifications}
+          productId={product.id}
         />
 
         {/* Sustainability Metrics */}

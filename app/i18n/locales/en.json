@@ -253,7 +253,8 @@
           "unknown": "Unknown"
         },
         "actions": {
-          "download": "Download"
+          "download": "Download",
+          "noDocument": "No Document"
         }
       },
       "qr": {
