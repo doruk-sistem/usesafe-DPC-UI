@@ -921,7 +921,9 @@
         "status": {
           "valid": "Geçerli",
           "expired": "Süresi Dolmuş",
-          "pending": "Beklemede"
+          "pending": "Beklemede",
+          "approved": "Onaylandı",
+          "rejected": "Reddedildi"
         }
       },
       "sustainability": {

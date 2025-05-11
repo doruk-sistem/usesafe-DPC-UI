@@ -540,7 +540,9 @@
           "valid": "Valid",
           "expired": "Expired",
           "pending": "Pending",
-          "unknown": "Unknown"
+          "unknown": "Unknown",
+          "approved": "Approved",
+          "rejected": "Rejected"
         },
         "actions": {
           "download": "Download"
