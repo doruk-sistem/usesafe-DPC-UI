@@ -20,6 +20,7 @@ export interface ProductQuickInfoProps {
 
 export function ProductQuickInfo({ title, model, manufacturer }: ProductQuickInfoProps) {
   const t = useTranslations("products.details.quickInfo");
+  const tCategories = useTranslations("products.list.categories");
 
   // Get manufacturer name based on the type of manufacturer prop
   const manufacturerName = typeof manufacturer === 'string' 
@@ -35,7 +36,7 @@ export function ProductQuickInfo({ title, model, manufacturer }: ProductQuickInf
           <Barcode className="w-5 h-5 text-primary" />
           <div>
             <p className="text-sm text-muted-foreground">{t("model")}</p>
-            <p className="font-medium">{model}</p>
+            <p className="font-medium">{tCategories(model)}</p>
           </div>
         </Card>
       </motion.div>

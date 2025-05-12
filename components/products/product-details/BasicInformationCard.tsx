@@ -18,6 +18,7 @@ export function BasicInformationCard({
   category,
 }: BasicInformationCardProps) {
   const t = useTranslations("products.details.basicInfo");
+  const tCategories = useTranslations("products.list.categories");
 
   return (
     <motion.div whileHover={{ scale: 1.02 }}>
@@ -36,7 +37,7 @@ export function BasicInformationCard({
             </div>
             <div className="flex items-start gap-2">
               <span className="font-medium">{t("category")}:</span>
-              <span className="text-muted-foreground">{category}</span>
+              <span className="text-muted-foreground">{tCategories(category)}</span>
             </div>
           </div>
         </CardContent>
