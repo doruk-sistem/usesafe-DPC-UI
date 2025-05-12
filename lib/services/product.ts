@@ -19,82 +19,38 @@ export class ProductService {
       const isAdmin = userData?.user?.user_metadata?.role === "admin";
       const userCompanyId = userData?.user?.user_metadata?.company_id;
 
-      // Kullanıcı oturumu yoksa veya company ID yoksa, tüm ürünleri göster
       if (!userData?.user || !userCompanyId) {
         const { data, error } = await supabase
           .from("products")
-          .select(`
-            *,
-            manufacturer:manufacturer_id (
-              id,
-              name
-            )
-          `)
+          .select(`*, manufacturer:manufacturer_id (id, name)`) 
           .order("created_at", { ascending: false });
-
-        if (error) {
-          throw new Error("Failed to fetch products");
-        }
-
+        if (error) throw new Error("Failed to fetch products");
         return data || [];
       }
 
       if (isAdmin) {
         const { data, error } = await supabase
           .from("products")
-          .select(`
-            *,
-            manufacturer:manufacturer_id (
-              id,
-              name
-            )
-          `)
+          .select(`*, manufacturer:manufacturer_id (id, name)`) 
           .order("created_at", { ascending: false });
-
-        if (error) {
-          throw new Error("Failed to fetch products");
-        }
-
+        if (error) throw new Error("Failed to fetch products");
         return data || [];
       } else {
         const targetCompanyId = userCompanyId || companyId;
-        
         if (!targetCompanyId || targetCompanyId === "default") {
-          // Company ID yoksa veya "default" ise, tüm ürünleri göster
           const { data, error } = await supabase
             .from("products")
-            .select(`
-              *,
-              manufacturer:manufacturer_id (
-                id,
-                name
-              )
-            `)
+            .select(`*, manufacturer:manufacturer_id (id, name)`) 
             .order("created_at", { ascending: false });
-
-          if (error) {
-            throw new Error("Failed to fetch products");
-          }
-
+          if (error) throw new Error("Failed to fetch products");
           return data || [];
         }
-
         const { data, error } = await supabase
           .from("products")
-          .select(`
-            *,
-            manufacturer:manufacturer_id (
-              id,
-              name
-            )
-          `)
+          .select(`*, manufacturer:manufacturer_id (id, name)`) 
           .eq("company_id", targetCompanyId)
           .order("created_at", { ascending: false });
-
-        if (error) {
-          throw new Error("Failed to fetch products");
-        }
-
+        if (error) throw new Error("Failed to fetch products");
         return data || [];
       }
     } catch (error) {

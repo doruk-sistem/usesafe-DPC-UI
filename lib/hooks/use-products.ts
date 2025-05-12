@@ -8,13 +8,13 @@ export const productsApiHooks = createApiHooks(productService);
 export function useProducts(companyId?: string) {
   const { user, company } = useAuth();
   const isAdmin = user?.user_metadata?.role === "admin";
-  const defaultCompanyId = isAdmin ? "admin" : (user?.user_metadata?.company_id || company?.id);
+  const defaultCompanyId = isAdmin ? undefined : (user?.user_metadata?.company_id || company?.id);
   const targetCompanyId = companyId || defaultCompanyId;
   
   const { data: products = [], isLoading, error } = productsApiHooks.useGetProductsQuery(
     { companyId: targetCompanyId },
     { 
-      enabled: !!targetCompanyId,
+      enabled: isAdmin || !!targetCompanyId,
       retry: false
     }
   );
