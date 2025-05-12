@@ -20,7 +20,7 @@ export function useAuth() {
   const router = useRouter();
   const t = useTranslations("auth");
 
-  const companyId = user?.user_metadata?.data?.company_id || user?.user_metadata?.company_id;
+  const companyId = user?.user_metadata?.company_id;
 
   const {
     data: company,

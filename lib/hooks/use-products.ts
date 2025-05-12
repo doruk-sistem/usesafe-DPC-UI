@@ -7,7 +7,8 @@ export const productsApiHooks = createApiHooks(productService);
 
 export function useProducts(companyId?: string) {
   const { user, company } = useAuth();
-  const defaultCompanyId = user?.user_metadata?.company_id || company?.id;
+  const isAdmin = user?.user_metadata?.role === "admin";
+  const defaultCompanyId = isAdmin ? "admin" : (user?.user_metadata?.company_id || company?.id);
   const targetCompanyId = companyId || defaultCompanyId;
   
   const { data: products = [], isLoading, error } = productsApiHooks.useGetProductsQuery(
@@ -18,10 +19,13 @@ export function useProducts(companyId?: string) {
     }
   );
 
+  const { mutate: rejectProduct } = productsApiHooks.useRejectProductMutation();
+
   return { 
     products, 
     isLoading, 
     error,
-    companyId: targetCompanyId 
+    companyId: targetCompanyId,
+    rejectProduct
   };
 }

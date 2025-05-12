@@ -56,7 +56,7 @@ export function createApiHooks<T extends ApiObject>(api: T): Hooks<T> {
     // Create query hook
     const queryHookName = `use${capitalizedKey}Query`;
     hooks[queryHookName as keyof Hooks<T>] = ((params: any, options?: any) => {
-      const queryKey = [key, params] as const;
+      const queryKey = [key, ...Object.values(params || {})] as const;
       const query = useQuery({
         queryKey,
         queryFn: () => api[key](params),

@@ -13,7 +13,6 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
-
 import Loading from "@/app/admin/loading";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -40,12 +39,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useAuth } from "@/lib/hooks/use-auth";
 import { documentsApiHooks } from "@/lib/hooks/use-documents";
 import { useImageUrl } from "@/lib/hooks/use-image-url";
 import { BaseProduct, ProductStatus } from "@/lib/types/product";
-import { productsApiHooks } from "@/lib/hooks/use-products";
-import { useAuth } from "@/lib/hooks/use-auth";
-
+import { useProducts } from "@/lib/hooks/use-products";
 
 export function ProductList() {
   const t = useTranslations();
@@ -54,13 +52,9 @@ export function ProductList() {
   const [manufacturerFilter, setManufacturerFilter] = useState("all");
   const { getImageUrl } = useImageUrl();
   const { user } = useAuth();
+  const { products = [], isLoading, error } = useProducts(user?.user_metadata?.company_id);
 
   console.log("User:", user);
-
-  const { data: products = [], isLoading, error } = productsApiHooks.useGetProductsQuery(
-    { companyId: user?.user_metadata?.company_id },
-    { enabled: true }
-  );
 
   console.log("Products:", products);
   console.log("Error:", error);
@@ -136,6 +130,19 @@ export function ProductList() {
 
   if (isLoading) {
     return <Loading />
+  }
+
+  if (error) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-destructive">Error</CardTitle>
+          <CardDescription>
+            {error instanceof Error ? error.message : "Failed to load products"}
+          </CardDescription>
+        </CardHeader>
+      </Card>
+    );
   }
 
   return (

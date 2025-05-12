@@ -24,8 +24,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { companyApiHooks } from "../../../lib/hooks/use-company";
-import { Company, CompanyStatus } from "../../../lib/types/company";
+import { useCompanies } from "@/lib/hooks/use-company";
+import { Company, CompanyStatus } from "@/lib/types/company";
 
 
 
@@ -43,9 +43,7 @@ const getStatusBadgeVariant = (status: CompanyStatus) => {
 };
 
 export function CompanyList() {
-  const { data: companies = [], isLoading, error } = companyApiHooks.useGetCompaniesQuery({}, {
-    retry: false
-  });
+  const { companies, isLoading, error } = useCompanies();
   const t = useTranslations("admin.companies");
 
   if (error) {

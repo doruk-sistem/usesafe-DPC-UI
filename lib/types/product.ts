@@ -56,6 +56,18 @@ export type BaseProduct = Database["public"]["Tables"]["products"]["Row"] & {
     id: string;
     name: string;
   };
+  dpp_config?: {
+    sections: Array<{
+      id: string;
+      type: string;
+      fields: Array<{
+        id: string;
+        name: string;
+        type: string;
+        value: any;
+      }>;
+    }>;
+  };
 };
 
 export type NewProduct = Database["public"]["Tables"]["products"]["Insert"];
@@ -109,4 +121,33 @@ export interface ProductValidationResult {
 export interface ProductResponse {
   data?: BaseProduct;
   error?: ProductError;
+}
+
+export interface Product {
+  id: string;
+  name: string;
+  description: string;
+  model: string;
+  product_type: string;
+  images: Array<{
+    url: string;
+    alt?: string;
+    is_primary?: boolean;
+  }>;
+  key_features: Array<{
+    name: string;
+    value: string | number;
+  }>;
+  dpp_config?: {
+    sections: Array<{
+      id: string;
+      type: string;
+      fields: Array<{
+        id: string;
+        name: string;
+        type: string;
+        value: any;
+      }>;
+    }>;
+  };
 }
