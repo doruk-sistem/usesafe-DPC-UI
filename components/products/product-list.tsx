@@ -84,10 +84,18 @@ export function ProductList() {
   };
 
   const getManufacturer = (product: BaseProduct) => {
-    const manufacturer = product.key_features?.find(
-      (f) => f.name === "Manufacturer"
-    )?.value;
-    return typeof manufacturer === "string" ? manufacturer : t("quickInfo.unknown");
+    // Önce manufacturer objesinden name'i al
+    if (product.manufacturer?.name) {
+      return product.manufacturer.name;
+    }
+    
+    // Eğer manufacturer objesi yoksa ama manufacturer_id varsa
+    if (product.manufacturer_id) {
+      return t("quickInfo.loading");
+    }
+    
+    // Hiçbir üretici bilgisi yoksa
+    return t("quickInfo.unknown");
   };
 
   const getCategory = (product: BaseProduct) => {

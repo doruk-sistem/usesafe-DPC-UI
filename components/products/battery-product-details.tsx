@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl";
 
 import { ProductQR } from "@/components/products/product-qr";
 import { Button } from "@/components/ui/button";
-import { Product } from "@/lib/types/product";
+import { KeyFeature, Product, ProductImage } from "@/lib/types/product";
 
 import { Card, CardHeader, CardTitle, CardContent } from "../ui/card";
 
@@ -237,7 +237,7 @@ export function BatteryProductDetails({ product }: BatteryProductDetailsProps) {
       >
         {/* Image Gallery */}
         <ProductImageGallery
-          images={product.images}
+          images={product.images as ProductImage[]}
           name={product.name}
         />
 
@@ -259,7 +259,7 @@ export function BatteryProductDetails({ product }: BatteryProductDetailsProps) {
           {/* Key Features */}
           <ProductKeyFeatures 
             title={t('keyFeatures.title')}
-            features={features} 
+            features={features as KeyFeature[]} 
           />
         </motion.div>
       </motion.div>
@@ -338,7 +338,7 @@ export function BatteryProductDetails({ product }: BatteryProductDetailsProps) {
         {/* Certifications */}
         <CertificationsCard
           title={t('certifications.title')}
-          certifications={certifications}
+          productId={product.id}
         />
 
         {/* Sustainability Metrics */}
