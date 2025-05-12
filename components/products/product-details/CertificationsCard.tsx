@@ -81,7 +81,7 @@ export function CertificationsCard({
           <CardTitle>{title}</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-center py-4">Loading certifications...</div>
+          <div className="text-center py-4">{t("loadingCertifications")}</div>
         </CardContent>
       </Card>
     );
@@ -95,7 +95,7 @@ export function CertificationsCard({
         </CardHeader>
         <CardContent>
           <div className="text-center py-4 text-destructive">
-            <p className="font-medium">Error Loading Certifications</p>
+            <p className="font-medium">{t("errorLoadingCertifications")}</p>
             <p className="text-sm mt-2">{error}</p>
           </div>
         </CardContent>
@@ -111,7 +111,7 @@ export function CertificationsCard({
         </CardHeader>
         <CardContent>
           <div className="text-center py-4 text-muted-foreground">
-            No certifications found for this product.
+            {t("noCertifications")}
           </div>
         </CardContent>
       </Card>

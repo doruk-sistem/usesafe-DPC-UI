@@ -402,6 +402,8 @@
       }
     },
     "list": {
+      "loginRequired": "Login Required",
+      "loginButton": "Login",
       "quickInfo": {
         "unknown": "Unknown"
       },
@@ -1240,6 +1242,9 @@
       },
       "certifications": {
         "title": "Certifications",
+        "loadingCertifications": "Loading certifications...",
+        "errorLoadingCertifications": "Error loading certifications",
+        "noCertifications": "No certifications found for this product.",
         "table": {
           "name": "Certificate",
           "issuedBy": "Issued By",
