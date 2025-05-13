@@ -711,7 +711,10 @@
     "overview": {
       "title": "Panel Genel Bakış",
       "description": "Ürünlerinizi, sertifikalarınızı ve belgelerinizi takip edin"
-      
+    },
+    "documentNotFound": {
+      "title": "Belge Bulunamadı",
+      "description": "İstenen belge bulunamadı veya erişim izniniz yok."
     },
     "period": {
       "select": "Dönem seçin",
@@ -2041,7 +2044,13 @@
       "allStatuses": "Tüm Durumlar"
     },
     "repository": {
-      "description": "Belge arşivini inceleyin ve yönetin"
+      "description": "Belge arşivini inceleyin ve yönetin",
+      "validation": {
+        "title": "Belge Doğrulama",
+        "noData": {
+          "title": "Doğrulanacak belge bulunamadı"
+        }
+      }
     },
     "categories": {
       "testReports": "Test Raporları",
@@ -2058,6 +2067,44 @@
     },
     "actions":{
       "upload": "Yükle"
+    },
+    "repository": {
+      "tabs": {
+        "validation": "Doğrulama",
+        "history": "Geçmiş"
+      },
+      "validation": {
+        "title": "Belge Doğrulama",
+        "noData": {
+          "title": "Doğrulama verisi yok"
+        }
+      },
+      "history": {
+        "title": "Belge Geçmişi",
+        "noData": {
+          "title": "Geçmiş bulunamadı"
+        }
+      },
+      "details": {
+        "backToList": "Listeye Dön",
+        "documentInfo": "Belge Bilgileri",
+        "name": "Belge Adı",
+        "status": "Durum",
+        "type": "Tür",
+        "version": "Versiyon",
+        "validUntil": "Geçerlilik Tarihi",
+        "product": "Ürün"
+      },
+      "actions": {
+        "download": "İndir"
+      },
+      "errors": {
+        "fetchError": "Hata",
+        "fetchErrorDescription": "Belge detayları alınamadı"
+      },
+      "noData": {
+        "title": "Belge bulunamadı"
+      }
     }
   },
   "common": {

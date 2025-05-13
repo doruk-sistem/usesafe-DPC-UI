@@ -1016,6 +1016,30 @@
         "expiryDate": "Expiry Date",
         "updatedBy": "Updated By",
         "actions": "Actions"
+      },
+      "tabs": {
+        "validation": "Validation",
+        "history": "History"
+      },
+      "details": {
+        "backToList": "Back to List",
+        "documentInfo": "Document Information",
+        "name": "Name",
+        "status": "Status",
+        "type": "Type",
+        "version": "Version",
+        "validUntil": "Valid Until",
+        "product": "Product"
+      },
+      "actions": {
+        "download": "Download"
+      },
+      "errors": {
+        "fetchError": "Error",
+        "fetchErrorDescription": "Failed to fetch document details"
+      },
+      "noData": {
+        "title": "Document not found"
       }
     },
     "categories": {
