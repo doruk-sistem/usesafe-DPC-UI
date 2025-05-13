@@ -1238,7 +1238,9 @@
         "category": "Category",
         "status": "Status",
         "addedDate": "Added Date",
-        "manufacturer": "Manufacturer"
+        "manufacturer": "Manufacturer",
+        "seller": "Seller",
+        "taxNumber": "Tax Number"
       },
       "certifications": {
         "title": "Certifications",
