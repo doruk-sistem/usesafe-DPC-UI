@@ -103,7 +103,7 @@ export function SustainabilityMetricsCard({
               }
               className="text-lg px-4 py-1"
             >
-              {sustainabilityScore}% {t("badge")}
+              {t("badge", { value: sustainabilityScore })}
             </Badge>
           </div>
         </CardHeader>
