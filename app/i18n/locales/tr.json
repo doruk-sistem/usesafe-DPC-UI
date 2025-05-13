@@ -2225,7 +2225,11 @@
     "types": {
       "qualityManagement": "Kalite Yönetimi",
       "safetyHealth": "İş Sağlığı ve Güvenliği",
-      "batteryStandards": "Akü Standartları"
+      "batteryStandards": "Akü Standartları",
+      "signature_circular": "İmza Dairesi",
+      "trade_registry_gazette": "Ticaret Kayıt Gazetesi",
+      "tax_plate": "Vergi Plakası",
+      "activity_certificate": "Faaliyet Sertifikası"
     },
     "categories": {
       "iso9001": "ISO 9001",
@@ -2277,7 +2281,10 @@
         "submitted": "Başvuru Tarihi",
         "validUntil": "Geçerlilik Tarihi",
         "documents": "Dökümanlar",
-        "certifications": "Sertifikalar"
+        "certifications": "Sertifikalar",
+        "document": "Döküman",
+        "type": "Tip",
+        "updated": "Güncellenme Tarihi"
       },
       "status": {
         "approved": "Onaylandı",
