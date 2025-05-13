@@ -23,21 +23,10 @@ interface Document {
   // Add other document properties as needed
 }
 
-// Temporary mock data - replace with API call
-const documentsData: Record<string, Document> = {
-  "1": {
-    id: "1",
-    name: "Document 1",
-    status: "pending",
-  },
-  // Add more mock documents as needed
-};
-
 export function DocumentDetails({ documentId }: DocumentDetailsProps) {
   const t = useTranslations("documentManagement.repository");
   const { toast } = useToast();
   const [comment, setComment] = useState("");
-  const document = documentsData[documentId];
 
   const handleApprove = async () => {
     try {
@@ -80,7 +69,7 @@ export function DocumentDetails({ documentId }: DocumentDetailsProps) {
     }
   };
 
-  if (!document) {
+  if (!documentId) {
     return <div>{t("noData.title")}</div>;
   }
 
@@ -94,34 +83,14 @@ export function DocumentDetails({ documentId }: DocumentDetailsProps) {
               {t("details.backToList")}
             </Button>
           </Link>
-          <h1 className="text-2xl font-semibold">{document.name}</h1>
-          <Badge
-            variant={
-              document.status === "approved"
-                ? "success"
-                : document.status === "rejected"
-                ? "destructive"
-                : "warning"
-            }
-          >
-            {t(`status.${document.status}`)}
-          </Badge>
+          <h1 className="text-2xl font-semibold">{documentId}</h1>
         </div>
         <div className="flex gap-2">
           <Button variant="outline">
             <Download className="mr-2 h-4 w-4" />
             {t("actions.download")}
           </Button>
-          {document.status === "pending" && (
-            <>
-              <Button variant="outline" onClick={handleReject}>
-                {t("actions.reject")}
-              </Button>
-              <Button onClick={handleApprove}>
-                {t("actions.approve")}
-              </Button>
-            </>
-          )}
+          {/* Placeholder for document status-specific actions */}
         </div>
       </div>
 
@@ -134,25 +103,15 @@ export function DocumentDetails({ documentId }: DocumentDetailsProps) {
             <div className="space-y-4">
               <div>
                 <Label>{t("details.name")}</Label>
-                <p className="text-sm text-muted-foreground">{document.name}</p>
+                <p className="text-sm text-muted-foreground">{documentId}</p>
               </div>
               <div>
                 <Label>{t("details.status")}</Label>
                 <p className="text-sm text-muted-foreground">
-                  {t(`status.${document.status}`)}
+                  {/* Placeholder for document status */}
                 </p>
               </div>
-              {document.status === "pending" && (
-                <div>
-                  <Label htmlFor="comment">{t("details.comment")}</Label>
-                  <Textarea
-                    id="comment"
-                    value={comment}
-                    onChange={(e) => setComment(e.target.value)}
-                    placeholder={t("details.commentPlaceholder")}
-                  />
-                </div>
-              )}
+              {/* Placeholder for comment input */}
             </div>
           </CardContent>
         </Card>
