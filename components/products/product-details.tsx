@@ -8,6 +8,7 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { BaseProduct, KeyFeature, ProductImage } from "@/lib/types/product";
+import { companyApiHooks } from "@/lib/hooks/use-company";
 
 import { BasicInformationCard } from "./product-details/BasicInformationCard";
 import { CertificationsCard } from "./product-details/CertificationsCard";
@@ -26,6 +27,12 @@ interface ProductDetailsProps {
 export function ProductDetails({ product, additionalComponents }: ProductDetailsProps) {
   const t = useTranslations("products.details");
 
+  // Şirket bilgilerini al
+  const { data: company } = companyApiHooks.useGetCompanyQuery(
+    { id: product.company_id },
+    { enabled: !!product.company_id }
+  );
+
   // DPP config'den veri çıkarma fonksiyonları
   const getFieldValue = (sectionId: string, fieldId: string) => {
     const section = product.dpp_config?.sections.find(s => s.id === sectionId);
@@ -41,6 +48,11 @@ export function ProductDetails({ product, additionalComponents }: ProductDetails
   // Temel bilgileri al
   const manufacturer = product.manufacturer || getFieldValue("basic-info", "manufacturer") as string || "";
   const category = getFieldValue("basic-info", "category") as string || product.product_type || "";
+  const seller = company ? {
+    name: company.name,
+    taxNumber: company.taxInfo?.taxNumber
+  } : undefined;
+
   // Sertifikaları al
   const certifications = getFieldsByType("certifications", "certification").map(field => ({
     name: field.name,
@@ -109,6 +121,7 @@ export function ProductDetails({ product, additionalComponents }: ProductDetails
           title={t("basicInfo.title")}
           manufacturer={typeof manufacturer === 'string' ? manufacturer : manufacturer.name} 
           category={category}
+          seller={seller}
         />
 
         {/* Sertifikalar */}

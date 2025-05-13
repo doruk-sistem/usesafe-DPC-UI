@@ -1057,7 +1057,9 @@
         "category": "Kategori",
         "status": "Durum",
         "addedDate": "Eklenme Tarihi",
-        "manufacturer": "Üretici"
+        "manufacturer": "Üretici",
+        "seller": "Satıcı",
+        "taxNumber": "Vergi No"
       },
       "materials": {
         "title": "Malzemeler",
