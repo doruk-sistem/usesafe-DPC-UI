@@ -7,7 +7,7 @@ import { ProductForm } from "@/components/dashboard/products/product-form";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/lib/hooks/use-auth";
-import { ProductService } from "@/lib/services/product";
+import { productService } from "@/lib/services/product";
 import { productBlockchainService } from "@/lib/services/product-blockchain";
 import { ProductStatusService } from "@/lib/services/product-status";
 import { StorageService } from "@/lib/services/storage";
@@ -64,7 +64,7 @@ export default function NewProductPageClient() {
       }
 
       // Continue with product creation using validImages
-      const response = await ProductService.createProduct({
+      const response = await productService.createProduct({
         ...data,
         images: validImages,
         company_id: company.id,

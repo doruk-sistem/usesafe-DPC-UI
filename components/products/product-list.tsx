@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/card";
 import { EnhancedCard } from "@/components/ui/enhanced-card";
 import { useAuth } from "@/lib/hooks/use-auth";
-import { ProductService } from "@/lib/services/product";
+import { productService } from "@/lib/services/product";
 import { BaseProduct } from "@/lib/types/product";
 
 export function ProductList() {
@@ -30,11 +30,7 @@ export function ProductList() {
       try {
         setLoading(true);
         
-        // Kullanıcı varsa company ID'yi al, yoksa "admin" kullan
-        const companyId = user?.user_metadata?.company_id || "admin";
-        
-        // Sadece ProductService üzerinden veri çekelim
-        const data = await ProductService.getProducts(companyId);
+        const data = await productService.getProducts();
         setProducts(data);
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -152,7 +148,7 @@ export function ProductList() {
   if (products.length === 0) {
     return (
       <div className="text-center py-10">
-        <p className="text-muted-foreground">{t("noProducts")}</p>
+        <p className="text-muted-foreground">{t("empty.description")}</p>
       </div>
     );
   }

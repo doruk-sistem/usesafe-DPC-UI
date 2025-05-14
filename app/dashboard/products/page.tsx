@@ -1,12 +1,9 @@
 "use client";
 
-import { AlertCircle } from "lucide-react";
 import { useState, useMemo } from "react";
 
 import { ProductHeader } from "@/components/dashboard/products/product-header";
 import { ProductList } from "@/components/dashboard/products/product-list";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Error } from "@/components/ui/error";
 import { useProducts } from "@/lib/hooks/use-products";
 
@@ -27,7 +24,7 @@ export default function ProductsPage() {
       result = result.filter(
         product =>
           product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          product.model.toLowerCase().includes(searchTerm.toLowerCase())
+          product.model?.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
