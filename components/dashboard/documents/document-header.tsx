@@ -17,13 +17,7 @@ export function DocumentHeader() {
   const t = useTranslations();
   
   return (
-    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-      <div>
-        <h1 className="text-2xl font-semibold">{t("documents.title")}</h1>
-        <p className="text-sm text-muted-foreground">
-          {t("documents.description")}
-        </p>
-      </div>
+    <div className="w-full flex justify-end">
       <div className="flex items-center gap-2">
         <Select defaultValue="all">
           <SelectTrigger className="w-[160px]">
