@@ -101,10 +101,6 @@
     "companies": {
       "title": "Firmalar",
       "description": "Kayıtlı firmaları görüntüle ve yönet",
-      "status":{
-        "false": "Yanlış"
-      },
-
       "list": {
         "title": "Firmalar",
         "description": "Tüm kayıtlı firmaların listesi",
@@ -407,8 +403,6 @@
       "documents": "Documents",
       "status": "Status",
       "uncategorized": "Uncategorized",
-      "viewDetails": "View Details",
-      "viewDocuments": "View Documents",
       "addNewProduct": "Add New Product",
       "created": "Created",
       "documentCount": "{count} document",
@@ -558,7 +552,11 @@
         "description": "Ürün bulunamadı",
         "addFirst": "İlk Ürünü Ekle"
       },
-      "loading": "Ürünler yükleniyor..."
+      "actions": {
+        "title": "Actions",
+        "viewDetails": "View Details",
+        "viewDocuments": "View Documents"
+      }
     },
     "details": {
       "title": "Ürün Detayları",
@@ -1057,7 +1055,9 @@
         "category": "Kategori",
         "status": "Durum",
         "addedDate": "Eklenme Tarihi",
-        "manufacturer": "Üretici"
+        "manufacturer": "Üretici",
+        "seller": "Satıcı",
+        "taxNumber": "Vergi No"
       },
       "materials": {
         "title": "Malzemeler",
@@ -1923,6 +1923,9 @@
       "sustainability": {
         "score": "Sürdürülebilirlik Puanı",
         "carbonFootprint": "Karbon Ayak İzi"
+      },
+      "empty": {
+        "description": "Henüz ürün eklenmemiş."
       }
     }
   },
@@ -2223,7 +2226,11 @@
     "types": {
       "qualityManagement": "Kalite Yönetimi",
       "safetyHealth": "İş Sağlığı ve Güvenliği",
-      "batteryStandards": "Akü Standartları"
+      "batteryStandards": "Akü Standartları",
+      "signature_circular": "İmza Dairesi",
+      "trade_registry_gazette": "Ticaret Kayıt Gazetesi",
+      "tax_plate": "Vergi Plakası",
+      "activity_certificate": "Faaliyet Sertifikası"
     },
     "categories": {
       "iso9001": "ISO 9001",
@@ -2275,7 +2282,10 @@
         "submitted": "Başvuru Tarihi",
         "validUntil": "Geçerlilik Tarihi",
         "documents": "Dökümanlar",
-        "certifications": "Sertifikalar"
+        "certifications": "Sertifikalar",
+        "document": "Döküman",
+        "type": "Tip",
+        "updated": "Güncellenme Tarihi"
       },
       "status": {
         "approved": "Onaylandı",

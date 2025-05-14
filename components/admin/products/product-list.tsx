@@ -6,7 +6,6 @@ import {
   MoreHorizontal,
   FileText,
   Eye,
-  ImageOff,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -39,56 +38,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useAuth } from "@/lib/hooks/use-auth";
-import { documentsApiHooks } from "@/lib/hooks/use-documents";
 import { useImageUrl } from "@/lib/hooks/use-image-url";
 import { BaseProduct, ProductStatus } from "@/lib/types/product";
 import { useProducts } from "@/lib/hooks/use-products";
 
 export function ProductList() {
-  const t = useTranslations();
+  const t = useTranslations("admin.products");
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [manufacturerFilter, setManufacturerFilter] = useState("all");
   const { getImageUrl } = useImageUrl();
-  const { user } = useAuth();
-  const { products = [], isLoading, error } = useProducts(user?.user_metadata?.company_id);
 
-  console.log("User:", user);
+  const { products, isLoading } = useProducts();
 
-  console.log("Products:", products);
-  console.log("Error:", error);
-
-  // Process products to include document counts and status
-  const processedProducts: BaseProduct[] = products.map((product) => {
-    const documentCount = product.documents
-      ? Object.values(product.documents).flat().length
-      : 0;
-
-    let documentStatus: BaseProduct["document_status"] = "No Documents";
-    if (documentCount > 0) {
-      const allDocs = Object.values(product.documents).flat() as {
-        status: "approved" | "rejected" | "pending";
-      }[];
-      const hasRejected = allDocs.some((doc) => doc.status === "rejected");
-      const allApproved = allDocs.every((doc) => doc.status === "approved");
-
-      if (hasRejected) {
-        documentStatus = "Has Rejected Documents";
-      } else if (allApproved) {
-        documentStatus = "All Approved";
-      } else {
-        documentStatus = "Pending Review";
-      }
-    }
-
-    return {
-      ...product,
-      document_status: documentStatus,
-    };
-  });
-
-  const filteredProducts = processedProducts.filter((product) => {
+  const filteredProducts = products.filter((product) => {
     // Filter by search query
     if (
       searchQuery &&
@@ -116,15 +79,15 @@ export function ProductList() {
   const getDocumentStatusDisplay = (status: BaseProduct["document_status"]) => {
     switch (status) {
       case "No Documents":
-        return t("admin.products.details.documents.documentStatuses.noDocuments");
+        return t("details.documents.documentStatuses.noDocuments");
       case "Has Rejected Documents":
-        return t("admin.products.details.documents.documentStatuses.hasRejected");
+        return t("details.documents.documentStatuses.hasRejected");
       case "All Approved":
-        return t("admin.products.details.documents.documentStatuses.allApproved");
+        return t("details.documents.documentStatuses.allApproved");
       case "Pending Review":
-        return t("admin.products.details.documents.documentStatuses.pending");
+        return t("details.documents.documentStatuses.pending");
       default:
-        return t("admin.products.details.documents.documentStatuses.unknown");
+        return t("details.documents.documentStatuses.unknown");
     }
   };
 
@@ -151,16 +114,16 @@ export function ProductList() {
         <div className="flex items-center justify-between">
           <div>
             <CardTitle className="text-2xl font-bold">
-              {t("admin.products.title")}
+              {t("title")}
             </CardTitle>
             <CardDescription className="text-base mt-1">
-              {t("admin.products.description")}
+              {t("description")}
             </CardDescription>
           </div>
           <Button asChild className="bg-primary hover:bg-primary/90">
             <Link href="/admin/products/new">
               <Package className="mr-2 h-4 w-4" />
-              {t("admin.products.addNewProduct")}
+              {t("addNewProduct")}
             </Link>
           </Button>
         </div>
@@ -173,7 +136,7 @@ export function ProductList() {
               <div className="relative">
                 <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder={t("admin.products.searchPlaceholder")}
+                  placeholder={t("searchPlaceholder")}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-9 bg-background"
@@ -186,12 +149,12 @@ export function ProductList() {
             >
               <SelectTrigger className="w-[200px] bg-background">
                 <SelectValue
-                  placeholder={t("admin.products.filterByManufacturer")}
+                  placeholder={t("filterByManufacturer")}
                 />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">
-                  {t("admin.products.allManufacturers")}
+                  {t("allManufacturers")}
                 </SelectItem>
               </SelectContent>
             </Select>
@@ -200,23 +163,23 @@ export function ProductList() {
               onValueChange={setStatusFilter}
             >
               <SelectTrigger className="w-[200px] bg-background">
-                <SelectValue placeholder={t("admin.products.filterByStatus")} />
+                <SelectValue placeholder={t("filterByStatus")} />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">
-                  {t("admin.products.allStatus")}
+                  {t("allStatus")}
                 </SelectItem>
                 <SelectItem value="All Approved">
-                  {t("admin.products.allApproved")}
+                  {t("allApproved")}
                 </SelectItem>
                 <SelectItem value="Pending Review">
-                  {t("admin.products.pendingReview")}
+                  {t("pendingReview")}
                 </SelectItem>
                 <SelectItem value="Has Rejected Documents">
-                  {t("admin.products.hasRejectedDocuments")}
+                  {t("hasRejectedDocuments")}
                 </SelectItem>
                 <SelectItem value="No Documents">
-                  {t("admin.products.noDocuments")}
+                  {t("noDocuments")}
                 </SelectItem>
               </SelectContent>
             </Select>
@@ -229,12 +192,12 @@ export function ProductList() {
             <div className="flex flex-col items-center justify-center">
               <Package className="h-12 w-12 text-muted-foreground mb-4" />
               <h3 className="text-lg font-medium mb-2">
-                {t("admin.products.noProductsFound")}
+                {t("noProductsFound")}
               </h3>
               <p className="text-muted-foreground">
                 {products.length === 0
-                  ? t("admin.products.noProductsAdded")
-                  : t("admin.products.noProductsMatchFilter")}
+                  ? t("noProductsAdded")
+                  : t("noProductsMatchFilter")}
               </p>
             </div>
           </div>
@@ -288,7 +251,7 @@ export function ProductList() {
                         </Link>
                       </CardTitle>
                       <CardDescription className="text-xs mt-1">
-                        {t("admin.products.created")}: {new Date(product.created_at).toLocaleDateString()}
+                        {t("created")}: {new Date(product.created_at).toLocaleDateString()}
                       </CardDescription>
                     </div>
                     <DropdownMenu>
@@ -301,7 +264,7 @@ export function ProductList() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent>
-                        <DropdownMenuLabel>{t("productManagement.actions.menu")}</DropdownMenuLabel>
+                        <DropdownMenuLabel>{t("actions.title")}</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem asChild>
                           <Link
@@ -309,7 +272,7 @@ export function ProductList() {
                             className="flex items-center"
                           >
                             <Eye className="mr-2 h-4 w-4" />
-                            {t("admin.products.viewDetails")}
+                            {t("actions.viewDetails")}
                           </Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem asChild>
@@ -318,7 +281,7 @@ export function ProductList() {
                             className="flex items-center"
                           >
                             <FileText className="mr-2 h-4 w-4" />
-                            {t("admin.products.viewDocuments")}
+                            {t("actions.viewDocuments")}
                           </Link>
                         </DropdownMenuItem>
                       </DropdownMenuContent>
@@ -329,35 +292,35 @@ export function ProductList() {
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-muted-foreground">
-                        {t("admin.products.manufacturer")}
+                        {t("manufacturer")}
                       </span>
                       <span className="text-sm font-medium">
-                        {product.manufacturer?.name || t("admin.products.unknownManufacturer")}
+                        {product.manufacturer?.name || t("unknownManufacturer")}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-muted-foreground">
-                        {t("admin.products.category")}
+                        {t("category")}
                       </span>
                       <Badge variant="outline" className="font-normal">
                         {product.product_type ||
-                          t("admin.products.uncategorized")}
+                          t("uncategorized")}
                       </Badge>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-muted-foreground">
-                        {t("admin.products.documents")}
+                        {t("documents")}
                       </span>
                       <div className="flex items-center gap-1">
                         <FileText className="h-4 w-4 text-muted-foreground" />
                         <span className="text-sm font-medium">
-                          {t("admin.products.documentCount", { count: product.documents?.length || 0 })}
+                          {t("documentCount", { count: product.documents?.length || 0 })}
                         </span>
                       </div>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-muted-foreground">
-                        {t("admin.products.status")}
+                        {t("status")}
                       </span>
                       <Badge
                         variant={

@@ -9,6 +9,7 @@
     "verifyProducts": "Verify Products",
     "signIn": "Sign In"
   },
+  "loading": "Loading...",
   "pages": {           
     "pendingProducts": {
       "title": "Pending Products",
@@ -1153,6 +1154,9 @@
       "sustainability": {
         "score": "Sustainability Score",
         "carbonFootprint": "Carbon Footprint"
+      },
+      "empty": {
+        "description": "No products found"
       }
     },
     "ProductDocuments": {
@@ -1238,7 +1242,9 @@
         "category": "Category",
         "status": "Status",
         "addedDate": "Added Date",
-        "manufacturer": "Manufacturer"
+        "manufacturer": "Manufacturer",
+        "seller": "Seller",
+        "taxNumber": "Tax Number"
       },
       "certifications": {
         "title": "Certifications",
@@ -1950,7 +1956,11 @@
     "types": {
       "qualityManagement": "Quality Management",
       "safetyHealth": "Safety & Health",
-      "batteryStandards": "Battery Standards"
+      "batteryStandards": "Battery Standards",
+      "signature_circular": "Signature Circular",
+      "trade_registry_gazette": "Trade Registry Gazette",
+      "tax_plate": "Tax Plate",
+      "activity_certificate": "Activity Certificate"
     },
     "repository": {
       "title": "Document Repository",
@@ -2082,8 +2092,6 @@
       "documents": "Documents",
       "status": "Status",
       "uncategorized": "Uncategorized",
-      "viewDetails": "View Details",
-      "viewDocuments": "View Documents",
       "addNewProduct": "Add New Product",
       "created": "Created",
       "documentCount": "{count} document",
@@ -2126,6 +2134,11 @@
       "errors": {
         "notFound": "Product Not Found",
         "notFoundDescription": "The requested product could not be found. It may have been deleted or you may not have permission to view it."
+      },
+      "actions": {
+        "title": "Actions",
+        "viewDetails": "View Details",
+        "viewDocuments": "View Documents"
       }
     },
     "dpc": {
@@ -2232,7 +2245,10 @@
          "submitted": "Submitted",
          "validUntil": "Valid Until",
          "documents": "Documents",
-         "certifications": "Certifications"
+         "certifications": "Certifications",
+         "document":"Document",
+         "type":"Type",
+         "updated":"Updated"
         }
       }
     },

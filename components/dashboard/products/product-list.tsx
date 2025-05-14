@@ -53,11 +53,11 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import { useProduct } from "@/lib/hooks/use-product";
 import { productsApiHooks } from "@/lib/hooks/use-products";
-import { Product, ProductStatus } from "@/lib/types/product";
+import { BaseProduct } from "@/lib/types/product";
 import { StorageHelper } from "@/lib/utils/storage";
 
 interface ProductListProps {
-  products: Product[];
+  products: BaseProduct[];
   isLoading: boolean;
 }
 
@@ -65,7 +65,7 @@ export function ProductList({ products, isLoading }: ProductListProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const t = useTranslations();
-  const [productToDelete, setProductToDelete] = useState<Product | null>(null);
+  const [productToDelete, setProductToDelete] = useState<BaseProduct | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const { determineProductStatus } = useProduct("");
 
@@ -93,8 +93,8 @@ export function ProductList({ products, isLoading }: ProductListProps) {
     },
   });
 
-  const handleDeleteClick = (product: Product) => {
-    setProductToDelete(product);
+  const handleDeleteClick = (product: BaseProduct) => {
+    setProductToDelete(product);  
     setIsDeleteDialogOpen(true);
   };
 
@@ -174,10 +174,6 @@ export function ProductList({ products, isLoading }: ProductListProps) {
             </TableHeader>
             <TableBody>
               {products.map((product) => {
-                const documents = Array.isArray(product.documents)
-                  ? product.documents
-                  : Object.values(product.documents || {}).flat();
-
                 const status = determineProductStatus(product);
 
                 return (
@@ -210,7 +206,7 @@ export function ProductList({ products, isLoading }: ProductListProps) {
                     <TableCell>
                       <Badge variant="secondary">
                         {t(
-                          `productTypes.${product.product_type.toLowerCase()}`
+                          `products.list.categories.${product.product_type.toLowerCase()}`
                         )}
                       </Badge>
                     </TableCell>
