@@ -5,7 +5,6 @@ import { Leaf, Factory, TreePine, Sparkles } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import {
@@ -16,31 +15,14 @@ import {
 } from "@/components/ui/card";
 import { EnhancedCard } from "@/components/ui/enhanced-card";
 import { useAuth } from "@/lib/hooks/use-auth";
-import { productService } from "@/lib/services/product";
+import { useProducts } from "@/lib/hooks/use-products";
 import { BaseProduct } from "@/lib/types/product";
 
 export function ProductList() {
   const t = useTranslations("products.list");
   const { user, isLoading: authLoading } = useAuth();
-  const [products, setProducts] = useState<BaseProduct[]>([]);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        setLoading(true);
-        
-        const data = await productService.getProducts();
-        setProducts(data);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, [user]);
+  const { products, isLoading } = useProducts(undefined, true);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -118,7 +100,7 @@ export function ProductList() {
     return parseFloat(footprint.replace(" kg CO2e", ""));
   };
 
-  if (loading) {
+  if (authLoading || isLoading) {
     return (
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {[...Array(6)].map((_, i) => (

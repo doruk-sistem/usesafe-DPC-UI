@@ -73,8 +73,7 @@ export function CompanyProducts({ companyId }: CompanyProductsProps) {
 
   const filteredProducts = products.filter((product) => {
     const matchesSearch =
-      product.name?.toLowerCase().includes(search.toLowerCase()) ||
-      product.sku?.toLowerCase().includes(search.toLowerCase());
+      product.name?.toLowerCase().includes(search.toLowerCase())
 
     if (filter === "all") return matchesSearch;
     return matchesSearch && product.status === filter;
@@ -118,7 +117,6 @@ export function CompanyProducts({ companyId }: CompanyProductsProps) {
           <TableHeader>
             <TableRow>
               <TableHead>{t("list.columns.name")}</TableHead>
-              <TableHead>{t("list.columns.sku")}</TableHead>
               <TableHead>{t("list.columns.status")}</TableHead>
               <TableHead>{t("list.columns.actions")}</TableHead>
             </TableRow>
@@ -127,9 +125,8 @@ export function CompanyProducts({ companyId }: CompanyProductsProps) {
             {filteredProducts.map((product) => (
               <TableRow key={product.id}>
                 <TableCell>{product.name}</TableCell>
-                <TableCell>{product.sku}</TableCell>
                 <TableCell>
-                  <Badge variant={product.status === "active" ? "default" : "secondary"}>
+                  <Badge variant={product.status === "APPROVED" ? "default" : "secondary"}>
                     {product.status}
                   </Badge>
                 </TableCell>

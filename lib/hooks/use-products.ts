@@ -6,9 +6,9 @@ import { useAuth } from "./use-auth";
 
 export const productsApiHooks = createApiHooks(productService);
 
-export function useProducts(companyId?: string) {
-  const { isAdmin } = useAuth();
-  const targetCompanyId = isAdmin() ? undefined : companyId;
+export function useProducts(companyId?: string, fetchAll: boolean = false) {
+  const { company, isAdmin } = useAuth();
+  const targetCompanyId = isAdmin() || fetchAll ? undefined : companyId || company?.id;
 
   const { data: products = [], isLoading, error } = productsApiHooks.useGetProductsQuery(
     { companyId: targetCompanyId },

@@ -174,10 +174,6 @@ export function ProductList({ products, isLoading }: ProductListProps) {
             </TableHeader>
             <TableBody>
               {products.map((product) => {
-                const documents = Array.isArray(product.documents)
-                  ? product.documents
-                  : Object.values(product.documents || {}).flat();
-
                 const status = determineProductStatus(product);
 
                 return (
@@ -210,7 +206,7 @@ export function ProductList({ products, isLoading }: ProductListProps) {
                     <TableCell>
                       <Badge variant="secondary">
                         {t(
-                          `productTypes.${product.product_type.toLowerCase()}`
+                          `products.list.categories.${product.product_type.toLowerCase()}`
                         )}
                       </Badge>
                     </TableCell>
