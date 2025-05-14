@@ -1154,6 +1154,9 @@
       "sustainability": {
         "score": "Sustainability Score",
         "carbonFootprint": "Carbon Footprint"
+      },
+      "empty": {
+        "description": "No products found"
       }
     },
     "ProductDocuments": {
@@ -2089,8 +2092,6 @@
       "documents": "Documents",
       "status": "Status",
       "uncategorized": "Uncategorized",
-      "viewDetails": "View Details",
-      "viewDocuments": "View Documents",
       "addNewProduct": "Add New Product",
       "created": "Created",
       "documentCount": "{count} document",
@@ -2133,6 +2134,11 @@
       "errors": {
         "notFound": "Product Not Found",
         "notFoundDescription": "The requested product could not be found. It may have been deleted or you may not have permission to view it."
+      },
+      "actions": {
+        "title": "Actions",
+        "viewDetails": "View Details",
+        "viewDocuments": "View Documents"
       }
     },
     "dpc": {

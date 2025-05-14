@@ -3,13 +3,7 @@
 import { motion } from "framer-motion";
 import { 
   Box, 
-  QrCode, 
-  History, 
-  ShieldCheck, 
-  Leaf, 
-  Globe, 
-  Zap 
-} from "lucide-react";
+  ShieldCheck} from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 

@@ -1,29 +1,54 @@
 import { createApiHooks } from "../create-api-hooks";
 import { productService } from "../services/product";
+import { BaseProduct } from "../types/product";
 
 import { useAuth } from "./use-auth";
 
 export const productsApiHooks = createApiHooks(productService);
 
-export function useProducts(companyId?: string) {
-  const { user, company } = useAuth();
-  // Öncelikle company.id'yi kullan, yoksa userMetadata.company_id'yi kullan
-  const defaultCompanyId = company?.id || user?.user_metadata?.company_id;
-  // Eğer company_id "default" ise veya geçersizse, admin olarak işlem yap
-  const targetCompanyId = (!defaultCompanyId || defaultCompanyId === "default") 
-    ? "admin" 
-    : (companyId || defaultCompanyId);
-  
+export function useProducts(companyId?: string, fetchAll: boolean = false) {
+  const { company, isAdmin } = useAuth();
+  const targetCompanyId = isAdmin() || fetchAll ? undefined : companyId || company?.id;
+
   const { data: products = [], isLoading, error } = productsApiHooks.useGetProductsQuery(
     { companyId: targetCompanyId },
     { 
-      enabled: true,  // Always enable the query
+      enabled: true,
       retry: false
     }
   );
 
+  // Process products to include document counts and status
+  const processedProducts: BaseProduct[] = products.map((product) => {
+    const documentCount = product.documents
+      ? Object.values(product.documents).flat().length
+      : 0;
+
+    let documentStatus: BaseProduct["document_status"] = "No Documents";
+    if (documentCount > 0) {
+      const allDocs = Object.values(product.documents).flat() as {
+        status: "approved" | "rejected" | "pending";
+      }[];
+      const hasRejected = allDocs.some((doc) => doc.status === "rejected");
+      const allApproved = allDocs.every((doc) => doc.status === "approved");
+
+      if (hasRejected) {
+        documentStatus = "Has Rejected Documents";
+      } else if (allApproved) {
+        documentStatus = "All Approved";
+      } else {
+        documentStatus = "Pending Review";
+      }
+    }
+
+    return {
+      ...product,
+      document_status: documentStatus,
+    };
+  });
+
   return { 
-    products, 
+    products: processedProducts, 
     isLoading, 
     error,
     companyId: targetCompanyId 
