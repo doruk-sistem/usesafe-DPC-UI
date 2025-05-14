@@ -8,7 +8,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-
+import { CompanyDocumentService } from "@/lib/services/companyDocument";
 interface DocumentsStepProps {
   form: UseFormReturn<any>;
 }
@@ -52,19 +52,15 @@ const DocumentField = ({
             type="file"
             accept=".pdf,.jpg,.jpeg,.png"
             multiple={multiple}
-            onChange={async (files) => {
-              if (Array.isArray(files)) {
-                if (files.length > 0) {
-                  const fileUrl = URL.createObjectURL(files[0]);
-                  onChange(fileUrl);
-                  
-                  return () => URL.revokeObjectURL(fileUrl);
-                }
-              } else if (files instanceof File) {
-                const fileUrl = URL.createObjectURL(files);
-                onChange(fileUrl);
-                
-                return () => URL.revokeObjectURL(fileUrl);
+            onChange={async (e) => {
+              const file = e.target.files?.[0];
+              if (!file) return;
+              // Varsayalım companyId formdan veya context'ten geliyor
+              const companyId = form.getValues("companyId");
+              try {
+                const { filePath, publicUrl } = await CompanyDocumentService.uploadDocument(file, companyId, name);                onChange(filePath); // filePath'i form state'e kaydet
+              } catch (err) {
+                alert("Dosya yüklenemedi: " + err.message);
               }
             }}
             {...field}

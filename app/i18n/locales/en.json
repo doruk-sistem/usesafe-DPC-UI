@@ -9,6 +9,7 @@
     "verifyProducts": "Verify Products",
     "signIn": "Sign In"
   },
+  "loading": "Loading...",
   "pages": {           
     "pendingProducts": {
       "title": "Pending Products",
@@ -1952,7 +1953,11 @@
     "types": {
       "qualityManagement": "Quality Management",
       "safetyHealth": "Safety & Health",
-      "batteryStandards": "Battery Standards"
+      "batteryStandards": "Battery Standards",
+      "signature_circular": "Signature Circular",
+      "trade_registry_gazette": "Trade Registry Gazette",
+      "tax_plate": "Tax Plate",
+      "activity_certificate": "Activity Certificate"
     },
     "repository": {
       "title": "Document Repository",
@@ -2234,7 +2239,10 @@
          "submitted": "Submitted",
          "validUntil": "Valid Until",
          "documents": "Documents",
-         "certifications": "Certifications"
+         "certifications": "Certifications",
+         "document":"Document",
+         "type":"Type",
+         "updated":"Updated"
         }
       }
     },
