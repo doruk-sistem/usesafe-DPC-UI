@@ -120,8 +120,7 @@ export default function ProductDetailsPage({ params }: ProductDetailsProps) {
                     {t("admin.products.details.productInfo.manufacturer")}
                   </p>
                   <p className="font-medium">
-                    {productData.manufacturer_id ||
-                      t("common.labels.notAvailable")}
+                    {productData.manufacturer?.name || productData.manufacturer_id || t("common.labels.notAvailable")}
                   </p>
                 </div>
                 <div>

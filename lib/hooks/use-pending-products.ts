@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { toast } from "@/components/ui/use-toast";
-import { ProductService } from "@/lib/services/product";
+import { productService } from "@/lib/services/product";
 
 import { useAuth } from "./use-auth";
 
@@ -16,17 +16,14 @@ export function usePendingProducts(pageIndex: number, pageSize: number) {
         return Promise.reject(new Error("User email is not available"));
       }
 
-      return ProductService.getPendingProducts(pageIndex, pageSize);
+      return productService.getPendingProducts({ pageIndex, pageSize });
     },
     enabled: !!user?.email,
   });
 
   const approveMutation = useMutation({
     mutationFn: async (productId: string) => {
-      if (!user?.id) {
-        throw new Error("User ID is not available");
-      }
-      return ProductService.approveProduct(productId, user.id);
+      return productService.approveProduct({ productId });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pending-products"] });
@@ -46,10 +43,7 @@ export function usePendingProducts(pageIndex: number, pageSize: number) {
 
   const rejectMutation = useMutation({
     mutationFn: async ({ productId, reason }: { productId: string; reason: string }) => {
-      if (!user?.id) {
-        throw new Error("User ID is not available");
-      }
-      return ProductService.rejectProduct(productId, user.id, reason);
+      return productService.rejectProduct({ productId, reason });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pending-products"] });
