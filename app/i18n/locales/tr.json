@@ -101,10 +101,6 @@
     "companies": {
       "title": "Firmalar",
       "description": "Kayıtlı firmaları görüntüle ve yönet",
-      "status":{
-        "false": "Yanlış"
-      },
-
       "list": {
         "title": "Firmalar",
         "description": "Tüm kayıtlı firmaların listesi",
@@ -407,8 +403,6 @@
       "documents": "Documents",
       "status": "Status",
       "uncategorized": "Uncategorized",
-      "viewDetails": "View Details",
-      "viewDocuments": "View Documents",
       "addNewProduct": "Add New Product",
       "created": "Created",
       "documentCount": "{count} document",
@@ -558,7 +552,11 @@
         "description": "Ürün bulunamadı",
         "addFirst": "İlk Ürünü Ekle"
       },
-      "loading": "Ürünler yükleniyor..."
+      "actions": {
+        "title": "Actions",
+        "viewDetails": "View Details",
+        "viewDocuments": "View Documents"
+      }
     },
     "details": {
       "title": "Ürün Detayları",
@@ -1925,6 +1923,9 @@
       "sustainability": {
         "score": "Sürdürülebilirlik Puanı",
         "carbonFootprint": "Karbon Ayak İzi"
+      },
+      "empty": {
+        "description": "Henüz ürün eklenmemiş."
       }
     }
   },

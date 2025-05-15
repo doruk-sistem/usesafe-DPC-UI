@@ -1,7 +1,8 @@
-import { createApiHooks } from "../create-api-hooks";
-import { companyService } from "../services/company";
 import { supabase } from "@/lib/supabase/client";
 import { CompanyDocument } from "@/lib/types/company";
+
+import { createApiHooks } from "../create-api-hooks";
+import { companyService } from "../services/company";
 
 export const companyApiHooks = createApiHooks({
   ...companyService,
