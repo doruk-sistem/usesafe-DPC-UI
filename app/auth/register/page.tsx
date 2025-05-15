@@ -14,6 +14,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/lib/hooks/use-auth";
+import { companyService } from "@/lib/services/company";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -43,9 +44,8 @@ export default function RegisterPage() {
     setIsLoading(true);
     try {
       await signUp(values.email, values.password, {
-        role: "user",
-        full_name: values.name,
-        company_id: "default"
+        role: "manufacturer",
+        full_name: values.name
       });
       
       toast({
