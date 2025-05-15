@@ -47,9 +47,13 @@ interface CompanyDocument {
 
 export function CertificationList() {
   const t = useTranslations();
-  const { user } = useAuth();
-  const companyId = user?.user_metadata?.company_id;
-  const { data: documents, isLoading, error } = companyApiHooks.useGetCompanyDocumentsQuery({ companyId });
+  const { user, company } = useAuth();
+  const companyId = user?.user_metadata?.company_id || company?.id;
+
+  const { data: documents, isLoading, error } = companyApiHooks.useGetCompanyDocumentsQuery(
+    { companyId },
+    { enabled: !!companyId }
+  );
 
   const getStatusVariant = (status: string) => {
     switch (status) {
