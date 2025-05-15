@@ -190,12 +190,6 @@ export function CertificationList() {
                           {t("dpc.applications.actions.view")}
                         </Link>
                       </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link href={`/dashboard/certifications/${doc.id}/download`}>
-                          <ExternalLink className="h-4 w-4 mr-2" />
-                          {t("dpc.applications.actions.download")}
-                        </Link>
-                      </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>
