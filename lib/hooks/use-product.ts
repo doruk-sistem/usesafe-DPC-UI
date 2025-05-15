@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import { productService } from "@/lib/services/product";
 import { BaseProduct, ProductStatus } from "@/lib/types/product";
+import { Document } from "@/lib/types/document";
 
 import { useAuth } from "./use-auth";
 import { productsApiHooks } from "./use-products";
@@ -24,6 +25,34 @@ export function useProduct(id: string) {
     },
     enabled: !!id && (!!company?.id || isAdmin),
   });
+
+  // Process documents
+  const processDocuments = (productData: any) => {
+    let documentCount = 0;
+    const allDocuments: Document[] = [];
+
+    if (productData?.documents) {
+      if (Array.isArray(productData.documents)) {
+        allDocuments.push(...(productData.documents as Document[]));
+      } else if (typeof productData.documents === "object") {
+        Object.entries(productData.documents).forEach(([docType, docList]) => {
+          if (Array.isArray(docList)) {
+            const typedDocs = (docList as Document[]).map((doc) => ({
+              ...doc,
+              type: docType,
+            }));
+            allDocuments.push(...typedDocs);
+          }
+        });
+      }
+      documentCount = allDocuments.length;
+    }
+
+    return {
+      documentCount,
+      allDocuments
+    };
+  };
 
   const determineProductStatus = (
     product: BaseProduct | null
@@ -94,11 +123,16 @@ export function useProduct(id: string) {
     });
   };
 
+  const productData = product?.data || null;
+  const { documentCount, allDocuments } = processDocuments(productData);
+
   return {
-    product: product?.data || null,
+    product: productData,
     error: error || product?.error,
     isLoading,
     determineProductStatus,
     updateProduct,
+    documentCount,
+    allDocuments
   };
 }

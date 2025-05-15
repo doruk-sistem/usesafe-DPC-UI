@@ -12,7 +12,6 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
-
 import Loading from "@/app/admin/loading";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -40,9 +39,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useImageUrl } from "@/lib/hooks/use-image-url";
+import { BaseProduct, ProductStatus } from "@/lib/types/product";
 import { useProducts } from "@/lib/hooks/use-products";
-import { BaseProduct } from "@/lib/types/product";
-
 
 export function ProductList() {
   const t = useTranslations("admin.products");
@@ -95,6 +93,19 @@ export function ProductList() {
 
   if (isLoading) {
     return <Loading />
+  }
+
+  if (error) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-destructive">Error</CardTitle>
+          <CardDescription>
+            {error instanceof Error ? error.message : "Failed to load products"}
+          </CardDescription>
+        </CardHeader>
+      </Card>
+    );
   }
 
   return (

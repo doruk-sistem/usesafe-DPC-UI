@@ -51,6 +51,7 @@ export function useProducts(companyId?: string, fetchAll: boolean = false) {
     products: processedProducts, 
     isLoading, 
     error,
-    companyId: targetCompanyId 
+    companyId: targetCompanyId,
+    rejectProduct
   };
 }

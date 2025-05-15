@@ -63,10 +63,10 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { documentsApiHooks } from "@/lib/hooks/use-documents";
-import { productsApiHooks } from "@/lib/hooks/use-products";
+import { useProducts } from "@/lib/hooks/use-products";
 import { Document, DocumentStatus } from "@/lib/types/document";
 
-import { getStatusIcon } from "../../../lib/utils/document-utils";
+import { getStatusIcon } from "@/lib/utils/document-utils";
 
 interface DocumentListProps {
   initialDocuments?: Document[];
@@ -96,16 +96,11 @@ export function DocumentList({ initialDocuments = [] }: DocumentListProps) {
     isLoading,
     error,
   } = documentsApiHooks.useGetDocuments();
-  const { data: allProducts = [], isLoading: isLoadingProducts } =
-    productsApiHooks.useGetProductsQuery(
-      { companyId: user?.user_metadata?.company_id },
-      { enabled: !!user?.user_metadata?.company_id }
-    );
+  const { products: allProducts = [], isLoading: isLoadingProducts, rejectProduct } = useProducts();
   const { mutate: updateDocumentStatus } =
     documentsApiHooks.useUpdateDocumentStatus();
   const { mutate: updateDocumentStatusDirect } =
     documentsApiHooks.useUpdateDocumentStatusDirect();
-  const { mutate: rejectProduct } = productsApiHooks.useRejectProductMutation();
   const { mutate: rejectDocument } = documentsApiHooks.useRejectDocument();
 
   // Update local documents when initialDocuments or documents changes

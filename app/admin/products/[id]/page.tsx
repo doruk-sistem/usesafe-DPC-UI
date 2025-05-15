@@ -23,13 +23,36 @@ interface ProductDetailsProps {
   }>;
 }
 
-export default function ProductDetailsPage({ params }: ProductDetailsProps) {
+// Container Component
+function ProductDetailsContainer({ params }: ProductDetailsProps) {
   const { id } = use(params);
-  const t = useTranslations();
   const { isLoading: isAuthLoading } = useAuth();
-  const { product, isLoading: isProductLoading, error } = useProduct(id);
+  const { product, isLoading: isProductLoading, error, documentCount, allDocuments } = useProduct(id);
 
   const isLoading = isAuthLoading || isProductLoading;
+
+  return (
+    <ProductDetailsView
+      product={product}
+      isLoading={isLoading}
+      error={error}
+      documentCount={documentCount}
+      allDocuments={allDocuments}
+    />
+  );
+}
+
+// View Component
+interface ProductDetailsViewProps {
+  product: any;
+  isLoading: boolean;
+  error: any;
+  documentCount: number;
+  allDocuments: Document[];
+}
+
+function ProductDetailsView({ product, isLoading, error, documentCount, allDocuments }: ProductDetailsViewProps) {
+  const t = useTranslations();
 
   if (isLoading) {
     return <Loading />;
@@ -54,29 +77,6 @@ export default function ProductDetailsPage({ params }: ProductDetailsProps) {
   const productData = product;
 
   try {
-    // Döküman durumunu ve sayısını hesapla
-    let documentCount = 0;
-    const allDocuments: Document[] = [];
-
-    if (productData.documents) {
-      // Dökümanları düzleştir
-      if (Array.isArray(productData.documents)) {
-        allDocuments.push(...(productData.documents as Document[]));
-      } else if (typeof productData.documents === "object") {
-        Object.entries(productData.documents).forEach(([docType, docList]) => {
-          if (Array.isArray(docList)) {
-            const typedDocs = (docList as Document[]).map((doc) => ({
-              ...doc,
-              type: docType,
-            }));
-            allDocuments.push(...typedDocs);
-          }
-        });
-      }
-
-      documentCount = allDocuments.length;
-    }
-
     return (
       <div className="space-y-6">
         <div className="flex items-center justify-between">
@@ -235,4 +235,9 @@ export default function ProductDetailsPage({ params }: ProductDetailsProps) {
       </div>
     );
   }
+}
+
+// Default export
+export default function ProductDetailsPage({ params }: ProductDetailsProps) {
+  return <ProductDetailsContainer params={params} />;
 }
