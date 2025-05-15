@@ -96,7 +96,7 @@ export function DocumentList({ initialDocuments = [] }: DocumentListProps) {
     isLoading,
     error,
   } = documentsApiHooks.useGetDocuments();
-  const { products: allProducts = [], isLoading: isLoadingProducts, rejectProduct } = useProducts(user?.user_metadata?.company_id);
+  const { products: allProducts = [], isLoading: isLoadingProducts, rejectProduct } = useProducts();
   const { mutate: updateDocumentStatus } =
     documentsApiHooks.useUpdateDocumentStatus();
   const { mutate: updateDocumentStatusDirect } =
