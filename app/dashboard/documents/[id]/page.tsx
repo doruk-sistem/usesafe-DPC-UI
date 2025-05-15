@@ -1,8 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase/client";
+import { useState } from "react";
 import Link from "next/link";
 import { Download, ArrowLeft } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -14,123 +13,21 @@ import { useTranslations } from "next-intl";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DocumentHistory } from "@/components/dashboard/documents/document-history";
 import { useAuth } from "@/lib/hooks/use-auth";
-
-interface Document {
-  id: string;
-  name: string;
-  type: string;
-  category: string;
-  status: string;
-  validUntil: string | null;
-  uploadedAt: string;
-  fileSize: string;
-  issuer: string;
-  rejectionReason?: string;
-  product_id: string;
-  product_name: string;
-  url?: string;
-  version?: string;
-}
+import { documentsApiHooks } from "@/lib/hooks/use-documents";
 
 export default function DocumentDetailsPage() {
   const t = useTranslations("documentManagement.repository");
   const { user } = useAuth();
   const params = useParams();
   const id = params?.id as string;
-  const [document, setDocument] = useState<Document | null>(null);
-  const [loading, setLoading] = useState(true);
   const [comment, setComment] = useState("");
 
-  useEffect(() => {
-    async function fetchDocument() {
-      if (!user?.user_metadata?.company_id) {
-        console.log("No company ID found in user metadata");
-        setLoading(false);
-        return;
-      }
+  const { data: document, isLoading } = documentsApiHooks.useGetDocumentByCompanyId(
+    user?.user_metadata?.company_id,
+    id
+  );
 
-      try {
-        console.log("Fetching document with ID:", id);
-        
-        const { data: productsData, error: productsError } = await supabase
-          .from("products")
-          .select("*")
-          .eq("company_id", user.user_metadata.company_id);
-
-        if (productsError) {
-          console.error("Error fetching products:", productsError);
-          setLoading(false);
-          return;
-        }
-
-        console.log("Products data:", productsData);
-
-        let foundDocument: Document | null = null;
-
-        for (const product of productsData) {
-          if (!product.documents) continue;
-          
-          for (const [docType, docsArr] of Object.entries(product.documents)) {
-            if (!Array.isArray(docsArr)) continue;
-            
-            const found = docsArr.find((doc: any, index: number) => {
-              const docId = doc.id ? String(doc.id) : `doc-${product.id}-${doc.type || 'unknown'}-${index}`;
-              const searchId = String(id);
-              console.log("Comparing document IDs:", { 
-                docId, 
-                searchId,
-                docType,
-                productName: product.name,
-                rawDocId: doc.id
-              });
-              return docId === searchId;
-            });
-
-            if (found) {
-              foundDocument = {
-                id: found.id || `doc-${Date.now()}-${Math.random()}`,
-                name: found.name || 'Unnamed Document',
-                type: found.type || docType || 'unknown',
-                category: found.category || found.type || docType || 'unknown',
-                status: found.status || 'pending',
-                validUntil: found.validUntil || null,
-                uploadedAt: found.uploadedAt || found.updatedAt || new Date().toISOString(),
-                fileSize: found.fileSize || '0 KB',
-                issuer: found.issuer || '-',
-                rejectionReason: found.rejection_reason || found.rejectionReason,
-                product_id: product.id,
-                product_name: product.name || product.product_name || '-',
-                url: found.url || found.file_url || null,
-                version: found.version || '1.0'
-              };
-              break;
-            }
-          }
-          
-          if (foundDocument) break;
-        }
-
-        if (foundDocument) {
-          console.log("Found document:", foundDocument);
-          setDocument(foundDocument);
-        } else {
-          console.log("Document not found");
-        }
-        
-        setLoading(false);
-      } catch (error) {
-        console.error("Unexpected error in fetchDocument:", {
-          error,
-          message: error instanceof Error ? error.message : 'Unknown error',
-          stack: error instanceof Error ? error.stack : undefined
-        });
-        setLoading(false);
-      }
-    }
-    fetchDocument();
-  }, [id, user]);
-
-  if (loading) return <div>Loading...</div>;
+  if (isLoading) return <div>Loading...</div>;
   if (!document) return <div>{t("noData.title")}</div>;
 
   const getStatusVariant = (status: string) => {

@@ -5,100 +5,109 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { DocumentService } from "@/lib/services/document";
 import { supabase } from "@/lib/supabase/client";
 import { Document, DocumentStatus, DocumentType } from "@/lib/types/document";
+import { getDocuments, getDocumentById, approveDocument, rejectDocument, uploadDocument, updateDocument, getDocumentByCompanyId, deleteDocument } from "@/lib/services/documents";
 
 export const documentsApiHooks = {
-  useGetDocuments: () => {
+  useGetDocuments: (productId: string | undefined) => {
     return useQuery({
-      queryKey: ["documents"],
-      queryFn: async () => {
-        try {
-          // Basit sorgu ile başlayalım
-          const { data, error } = await supabase.from("products").select("*");
-
-          if (error) {
-            console.error("Supabase error:", error);
-            throw error;
-          }
-
-          if (!data) {
-            return [];
-          }
-
-          // Belgeleri düzleştir
-          const allDocuments = data.flatMap((product: any) => {
-            if (!product.documents) {
-              return [];
-            }
-
-            const docs = Array.isArray(product.documents)
-              ? product.documents
-              : Object.values(product.documents).flat();
-
-            return docs.map((doc: any) => ({
-              id: doc.id || `doc-${Date.now()}-${Math.random()}`,
-              name: doc.name || "Unnamed Document",
-              type: doc.type || "unknown",
-              url: doc.url || "",
-              status: (doc.status || "pending").toLowerCase() as DocumentStatus,
-              productId: product.id,
-              manufacturer: product.manufacturer || "",
-              manufacturerId: product.manufacturer_id || "",
-              fileSize: doc.fileSize || "",
-              version: doc.version || "1.0",
-              validUntil: doc.validUntil || null,
-              rejection_reason: doc.rejection_reason || null,
-              created_at: doc.created_at || new Date().toISOString(),
-              updated_at: doc.updated_at || new Date().toISOString(),
-              uploadedAt: doc.uploadedAt || new Date().toISOString(),
-              size: doc.size || 0
-            } as Document));
-          });
-
-          return allDocuments;
-        } catch (error) {
-          console.error("Error in useGetDocuments:", error);
-          throw error;
-        }
-      },
-      retry: 1, // Hata durumunda sadece bir kez yeniden dene
-      refetchOnWindowFocus: false, // Pencere odağı değiştiğinde yeniden sorgu yapma
+      queryKey: ["documents", productId],
+      queryFn: () => getDocuments(productId!),
+      enabled: !!productId
     });
   },
-  useDeleteDocument: () => {
+
+  useGetDocumentById: (productId: string | undefined, documentId: string | undefined) => {
+    return useQuery({
+      queryKey: ["document", productId, documentId],
+      queryFn: () => getDocumentById(productId!, documentId!),
+      enabled: !!productId && !!documentId
+    });
+  },
+
+  useGetDocumentByCompanyId: (companyId: string | undefined, documentId: string | undefined) => {
+    return useQuery({
+      queryKey: ["document", companyId, documentId],
+      queryFn: () => getDocumentByCompanyId(companyId!, documentId!),
+      enabled: !!companyId && !!documentId
+    });
+  },
+
+  useApproveDocument: () => {
     const queryClient = useQueryClient();
     return useMutation({
-      mutationFn: async ({
+      mutationFn: ({ productId, documentId }: { productId: string; documentId: string }) =>
+        approveDocument(productId, documentId),
+      onSuccess: (_, { productId }) => {
+        queryClient.invalidateQueries({ queryKey: ["documents", productId] });
+      }
+    });
+  },
+
+  useRejectDocument: () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+      mutationFn: ({ productId, documentId, reason }: { productId: string; documentId: string; reason: string }) =>
+        rejectDocument(productId, documentId, reason),
+      onSuccess: (_, { productId }) => {
+        queryClient.invalidateQueries({ queryKey: ["documents", productId] });
+      }
+    });
+  },
+
+  useUploadDocument: () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+      mutationFn: ({
+        productId,
+        file,
+        documentType,
+        metadata
+      }: {
+        productId: string;
+        file: File;
+        documentType: string;
+        metadata: {
+          version?: string;
+          validUntil?: string;
+          notes?: string;
+        };
+      }) => uploadDocument(productId, file, documentType, metadata),
+      onSuccess: (_, { productId }) => {
+        queryClient.invalidateQueries({ queryKey: ["documents", productId] });
+      }
+    });
+  },
+
+  useUpdateDocument: () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+      mutationFn: ({
         productId,
         documentId,
+        updates
       }: {
         productId: string;
         documentId: string;
-      }) => {
-        // First, get the product to find the document
-        const { data: product, error: fetchError } = await supabase
-          .from("products")
-          .select("documents")
-          .eq("id", productId)
-          .single();
+        updates: {
+          status?: string;
+          rejection_reason?: string;
+          notes?: string;
+        };
+      }) => updateDocument(productId, documentId, updates),
+      onSuccess: (_, { productId }) => {
+        queryClient.invalidateQueries({ queryKey: ["documents", productId] });
+      }
+    });
+  },
 
-        if (fetchError) throw fetchError;
-
-        // Filter out the document to delete
-        const updatedDocuments = (product.documents || []).filter(
-          (doc: any) => doc.id !== documentId
-        );
-
-        // Update the product with the filtered documents
-        const { error: updateError } = await supabase
-          .from("products")
-          .update({ documents: updatedDocuments })
-          .eq("id", productId);
-
-        if (updateError) throw updateError;
-      },
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["getDocuments"] });
-      },
+  useDeleteDocument: () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+      mutationFn: ({ productId, documentId }: { productId: string; documentId: string }) =>
+        deleteDocument(productId, documentId),
+      onSuccess: (_, { productId }) => {
+        queryClient.invalidateQueries({ queryKey: ["documents", productId] });
+      }
     });
   },
 
@@ -114,116 +123,15 @@ export const documentsApiHooks = {
         documentId: string;
         status: Document["status"];
       }) => {
-        try {
-          // First, get the product to find the document
-          const { data: products, error: fetchError } = await supabase
-            .from("products")
-            .select("*")
-            .eq("manufacturer_id", productId);
-
-          if (fetchError) {
-            throw new Error(`Failed to fetch product: ${fetchError.message}`);
-          }
-
-          if (!products || products.length === 0) {
-            throw new Error(
-              `No products found with manufacturer ID ${productId}`
-            );
-          }
-
-          // Use the first product that matches the manufacturer ID
-          const product = products[0];
-
-          // Create a deep copy of the documents to avoid reference issues
-          let updatedDocuments;
-          let documentUpdated = false;
-
-          // Handle documents as an object with arrays
-          if (
-            product.documents &&
-            typeof product.documents === "object" &&
-            !Array.isArray(product.documents)
-          ) {
-            updatedDocuments = JSON.parse(JSON.stringify(product.documents));
-
-            // Try to find the document in all document types
-            for (const docTypeKey in updatedDocuments) {
-              if (Array.isArray(updatedDocuments[docTypeKey])) {
-                const documentIndex = updatedDocuments[docTypeKey].findIndex(
-                  (doc: any) =>
-                    (doc.id && doc.id === documentId) ||
-                    (doc.name && documentId.includes(doc.name))
-                );
-
-                if (documentIndex !== -1) {
-                  updatedDocuments[docTypeKey][documentIndex] = {
-                    ...updatedDocuments[docTypeKey][documentIndex],
-                    status,
-                  };
-
-                  documentUpdated = true;
-                  break;
-                }
-              }
-            }
-          }
-          // Handle documents as an array
-          else if (Array.isArray(product.documents)) {
-            updatedDocuments = JSON.parse(JSON.stringify(product.documents));
-
-            // Find the document by ID - direct match without parsing
-            const documentIndex = updatedDocuments.findIndex(
-              (doc: any) =>
-                (doc.id && doc.id === documentId) ||
-                (doc.name && documentId.includes(doc.name))
-            );
-
-            if (documentIndex !== -1) {
-              updatedDocuments[documentIndex] = {
-                ...updatedDocuments[documentIndex],
-                status,
-              };
-
-              documentUpdated = true;
-            }
-          } else {
-            throw new Error("Invalid documents format");
-          }
-
-          if (!documentUpdated) {
-            throw new Error(
-              `Document with ID ${documentId} not found in product`
-            );
-          }
-
-          // Update the product with the updated documents
-          const { data: updatedProduct, error: updateError } = await supabase
-            .from("products")
-            .update({ documents: updatedDocuments })
-            .eq("id", product.id)
-            .select();
-
-          if (updateError) {
-            throw new Error(`Failed to update product: ${updateError.message}`);
-          }
-
-          return updatedProduct;
-        } catch (error) {
-          console.error("Error in document status update:", error);
-          throw error;
-        }
+        return updateDocument(productId, documentId, { status });
       },
-      onSuccess: (data) => {
-        queryClient.invalidateQueries({ queryKey: ["getDocuments"] });
-        queryClient.invalidateQueries({ queryKey: ["getProducts"] });
-      },
-      onError: (error) => {
-        console.error("Error in document status update:", error);
-      },
+      onSuccess: (_, { productId }) => {
+        queryClient.invalidateQueries({ queryKey: ["documents", productId] });
+        queryClient.invalidateQueries({ queryKey: ["products"] });
+      }
     });
   },
 
-  // Yeni fonksiyon: Belge durumunu doğrudan güncellemek için
   useUpdateDocumentStatusDirect: () => {
     const queryClient = useQueryClient();
     return useMutation({
@@ -236,123 +144,17 @@ export const documentsApiHooks = {
         status: DocumentStatus;
         reason?: string;
       }) => {
-        try {
-          const { data: product, error: fetchError } = await supabase
-            .from("products")
-            .select("*")
-            .eq("id", document.productId)
-            .single();
-
-          if (fetchError) {
-            throw new Error(`Failed to fetch product: ${fetchError.message}`);
-          }
-
-          if (!product) {
-            throw new Error(`No product found with ID ${document.productId}`);
-          }
-
-          let updatedDocuments;
-
-          if (
-            product.documents &&
-            typeof product.documents === "object" &&
-            !Array.isArray(product.documents)
-          ) {
-            updatedDocuments = JSON.parse(JSON.stringify(product.documents));
-
-            for (const docType in updatedDocuments) {
-              if (Array.isArray(updatedDocuments[docType])) {
-                updatedDocuments[docType] = updatedDocuments[docType].map(
-                  (doc: any) => {
-                    if (
-                      doc.id === document.id ||
-                      (doc.url && document.url && doc.url === document.url)
-                    ) {
-                      return {
-                        ...doc,
-                        status,
-                        rejection_reason: reason,
-                      };
-                    }
-                    return doc;
-                  }
-                );
-              }
-            }
-          } else if (Array.isArray(product.documents)) {
-            updatedDocuments = product.documents.map((doc: any) => {
-              if (
-                doc.id === document.id ||
-                (doc.url && document.url && doc.url === document.url)
-              ) {
-                return {
-                  ...doc,
-                  status,
-                  rejection_reason: reason,
-                };
-              }
-              return doc;
-            });
-          } else {
-            updatedDocuments = [
-              {
-                id: document.id,
-                name: document.name,
-                type: document.type,
-                status,
-                rejection_reason: reason,
-              },
-            ];
-          }
-
-          const { data: updatedProduct, error: updateError } = await supabase
-            .from("products")
-            .update({
-              documents: updatedDocuments,
-            })
-            .eq("id", document.productId)
-            .select();
-
-          if (updateError) {
-            throw new Error(
-              `Failed to update product documents: ${updateError.message}`
-            );
-          }
-
-          return updatedProduct;
-        } catch (error) {
-          console.error("Error in direct document status update:", error);
-          throw error;
-        }
+        return updateDocument(document.productId!, document.id!, { 
+          status, 
+          rejection_reason: reason 
+        });
       },
-      onSuccess: (data) => {
-        queryClient.invalidateQueries({ queryKey: ["getDocuments"] });
-        queryClient.invalidateQueries({ queryKey: ["getProducts"] });
-      },
-      onError: (error) => {
-        console.error("Error in direct document status update:", error);
-      },
-    });
-  },
-
-  useRejectDocument: () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-      mutationFn: async ({
-        document,
-        reason,
-      }: {
-        document: Document;
-        reason: string;
-      }) => {
-        await DocumentService.rejectDocument(document, reason);
-      },
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["documents"] });
+      onSuccess: (_, { document }) => {
+        queryClient.invalidateQueries({ queryKey: ["documents", document.productId] });
         queryClient.invalidateQueries({ queryKey: ["products"] });
-      },
+      }
     });
-  },
+  }
 };
 
 const updateDocumentStatus = async (
@@ -452,7 +254,6 @@ const updateDocumentStatus = async (
 
     return updatedProduct;
   } catch (error) {
-    console.error("Error updating document status:", error);
     throw error;
   }
 };

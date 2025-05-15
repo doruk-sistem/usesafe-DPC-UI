@@ -42,7 +42,6 @@ export async function getDocuments(productId: string): Promise<{ documents: Docu
 
     return { documents: allDocuments, product: product as BaseProduct };
   } catch (error) {
-    console.error("Error fetching documents:", error);
     throw error;
   }
 }
@@ -88,7 +87,6 @@ export async function getDocumentById(productId: string, documentId: string): Pr
 
     return foundDocument;
   } catch (error) {
-    console.error("Error fetching document:", error);
     throw error;
   }
 }
@@ -140,7 +138,6 @@ export async function approveDocument(productId: string, documentId: string): Pr
 
     if (updateError) throw updateError;
   } catch (error) {
-    console.error("Error approving document:", error);
     throw error;
   }
 }
@@ -193,7 +190,6 @@ export async function rejectDocument(productId: string, documentId: string, reas
 
     if (updateError) throw updateError;
   } catch (error) {
-    console.error("Error rejecting document:", error);
     throw error;
   }
 }
@@ -249,25 +245,21 @@ export async function uploadDocument(
     };
 
     // 4. Update the product's documents
-    const currentDocuments = product.documents || {};
-    const currentTypeDocuments = currentDocuments[documentType] || [];
-    
-    const updatedDocuments = {
-      ...currentDocuments,
-      [documentType]: [...currentTypeDocuments, newDocument],
-    };
+    const updatedDocuments = { ...product.documents };
+    if (!updatedDocuments[documentType]) {
+      updatedDocuments[documentType] = [];
+    }
+    updatedDocuments[documentType].push(newDocument);
 
-    // 5. Save the updated documents
     const { error: updateError } = await supabase
-      .from('products')
+      .from("products")
       .update({
-        documents: updatedDocuments,
+        documents: updatedDocuments
       })
-      .eq('id', productId);
+      .eq("id", productId);
 
     if (updateError) throw updateError;
   } catch (error) {
-    console.error("Error uploading document:", error);
     throw error;
   }
 }
@@ -282,7 +274,7 @@ export async function updateDocument(
   }
 ): Promise<void> {
   try {
-    // 1. Önce mevcut ürünü ve dokümanları al
+    // 1. Get the product and its documents
     const { data: product, error: productError } = await supabase
       .from("products")
       .select("documents")
@@ -292,7 +284,7 @@ export async function updateDocument(
     if (productError) throw productError;
     if (!product) throw new Error("Product not found");
 
-    // 2. Tüm doküman tiplerini kontrol et
+    // 2. Find and update the document in the product's documents
     const updatedDocuments = { ...product.documents };
     let documentFound = false;
 
@@ -304,7 +296,7 @@ export async function updateDocument(
             documentFound = true;
             return {
               ...doc,
-              ...updates,
+              ...updates
             };
           }
           return doc;
@@ -317,17 +309,100 @@ export async function updateDocument(
       throw new Error("Document not found");
     }
 
-    // 3. Güncellenmiş dokümanları kaydet
+    // 3. Update the product with the modified documents
     const { error: updateError } = await supabase
       .from("products")
       .update({
-        documents: updatedDocuments,
+        documents: updatedDocuments
       })
       .eq("id", productId);
 
     if (updateError) throw updateError;
   } catch (error) {
-    console.error("Error updating document:", error);
+    throw error;
+  }
+}
+
+export async function getDocumentByCompanyId(companyId: string, documentId: string): Promise<Document> {
+  try {
+    const { data: productsData, error: productsError } = await supabase
+      .from("products")
+      .select("*")
+      .eq("company_id", companyId);
+
+    if (productsError) throw productsError;
+    if (!productsData) throw new Error("No products found");
+
+    let foundDocument: Document | null = null;
+
+    for (const product of productsData) {
+      if (!product.documents) continue;
+      
+      for (const [docType, docsArr] of Object.entries(product.documents)) {
+        if (!Array.isArray(docsArr)) continue;
+        
+        const found = docsArr.find((doc: any, index: number) => {
+          const docId = doc.id ? String(doc.id) : `doc-${product.id}-${doc.type || 'unknown'}-${index}`;
+          return docId === documentId;
+        });
+
+        if (found) {
+          foundDocument = {
+            id: found.id || `doc-${Date.now()}-${Math.random()}`,
+            name: found.name || 'Unnamed Document',
+            type: found.type || docType || 'unknown',
+            status: found.status || 'pending',
+            validUntil: found.validUntil || null,
+            uploadedAt: found.uploadedAt || found.updatedAt || new Date().toISOString(),
+            fileSize: found.fileSize || '0 KB',
+            url: found.url || found.file_url || null,
+            version: found.version || '1.0',
+            rejection_reason: found.rejection_reason || found.rejectionReason,
+            metadata: {
+              issuer: found.issuer || '-',
+              product_id: product.id,
+              product_name: product.name || product.product_name || '-'
+            }
+          };
+          break;
+        }
+      }
+      
+      if (foundDocument) break;
+    }
+
+    if (!foundDocument) {
+      throw new Error("Document not found");
+    }
+
+    return foundDocument;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function deleteDocument(productId: string, documentId: string): Promise<void> {
+  try {
+    const { data: product, error: fetchError } = await supabase
+      .from("products")
+      .select("documents")
+      .eq("id", productId)
+      .single();
+
+    if (fetchError) throw fetchError;
+    if (!product) throw new Error("Product not found");
+
+    const updatedDocuments = (product.documents || []).filter(
+      (doc: any) => doc.id !== documentId
+    );
+
+    const { error: updateError } = await supabase
+      .from("products")
+      .update({ documents: updatedDocuments })
+      .eq("id", productId);
+
+    if (updateError) throw updateError;
+  } catch (error) {
     throw error;
   }
 } 
