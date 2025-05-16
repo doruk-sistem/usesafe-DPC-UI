@@ -81,7 +81,7 @@ export function useAuth() {
     metadata: {
       role: "admin" | "manufacturer";
       full_name: string;
-      company_id: string;
+      company_id?: string;
     }
   ) => {
     try {

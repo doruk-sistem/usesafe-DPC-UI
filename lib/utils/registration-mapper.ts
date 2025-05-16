@@ -39,35 +39,24 @@ export const prepareRegistrationData = (
       {
         type: "signature_circular",
         filePath: data.signatureCircular || "",
+        metadata: { isRegistrationDocument: true }
       },
       {
         type: "trade_registry_gazette",
         filePath: data.tradeRegistry || "",
+        metadata: { isRegistrationDocument: true }
       },
       {
         type: "tax_plate",
         filePath: data.taxPlate || "",
+        metadata: { isRegistrationDocument: true }
       },
       {
         type: "activity_certificate",
         filePath: data.activityCertificate || "",
+        metadata: { isRegistrationDocument: true }
       },
-      ...(data.isoCertificates || []).map((file) => ({
-        type: "iso_certificate",
-        filePath: file || "",
-      })),
-      ...(data.qualityCertificates || []).map((file) => ({
-        type: "quality_certificate",
-        filePath: file || "",
-      })),
-      ...(data.exportDocuments || []).map((file) => ({
-        type: "export_certificate",
-        filePath: file || "",
-      })),
-      ...(data.productionPermits || []).map((file) => ({
-        type: "production_permit",
-        filePath: file || "",
-      })),
+      // Opsiyonel belgeler kaldırıldı - Kullanıcılar bunları kayıt sonrası "Yeni DPC ekle" butonu ile ekleyecekler
     ],
   };
 };

@@ -52,10 +52,7 @@ export function RegisterForm() {
       city: "",
       district: "",
       postalCode: "",
-      isoCertificates: [],
-      qualityCertificates: [],
-      exportDocuments: [],
-      productionPermits: [],
+      // Opsiyonel belgeler kaldırıldı - Kullanıcılar bunları kayıt sonrası "Yeni DPC ekle" butonu ile ekleyecekler
       password: "",
       confirmPassword: "",
     },
@@ -84,13 +81,6 @@ export function RegisterForm() {
           if (!response.success) {
             throw new Error(response.message || "Registration failed");
           }
-
-          // Create Supabase user
-          // await signUp(formData.email, formData.password, {
-          //   full_name: formData.ownerName,
-          //   company_id: response.registrationId,
-          //   role: "manufacturer",
-          // });
 
           setIsSubmitted(true);
           toast({

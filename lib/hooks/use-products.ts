@@ -47,6 +47,8 @@ export function useProducts(companyId?: string, fetchAll: boolean = false) {
     };
   });
 
+  const { mutateAsync: rejectProduct } = productsApiHooks.useRejectProductMutation();
+
   return { 
     products: processedProducts, 
     isLoading, 

@@ -5,7 +5,7 @@
     "verifyProducts": "Ürün Doğrula",
     "signIn": "Giriş Yap"
   },
-"pages": {
+  "pages": {
     "pendingProducts": {
       "title": "Bekleyen Ürünler",
       "description": "Bekleyen ürünlerin listesi",
@@ -3145,13 +3145,75 @@
   },
   "certifications": {
     "title": "Sertifikalar",
-    "description": "Ürün sertifikalarınızı yönetin",
+    "description": "Ürün sertifikalarınızı görüntüleyin ve yönetin",
+    "form":{
+      "title":"Yeni Sertifika",
+      "validation":{
+        "file":{
+          "required":"Sertifika dosyası seçin"
+        },
+        "type":{
+          "required":"Sertifika tipi seçin"
+        }
+      },
+      "submit":{
+        "default":"Sertifika Oluştur",
+        "loading":"Sertifika oluşturuluyor..."
+      },
+      "fields":{
+        "file":{
+          "placeholder":"Sertifika dosyası seçin",
+          "label":"Sertifika Dosyası",
+          "selected":"Seçilen Dosya"
+        },
+        "type":{
+          "placeholder":"Sertifika tipi seçin",
+          "label":"Sertifika Tipi"
+        }
+      }
+    },
+    "status":{
+      "pending":"Beklemede"
+    },
+    "filters":{
+      "type":{
+        "all":"Tüm Tipler",
+        "quality":"Kalite Sertifikası",
+        "iso":"ISO Sertifikası",
+        "other":"Diğer",
+        "placeholder":"Sertifika Tipi"
+      },
+      "status":{
+        "all":"Tüm Durumlar",
+        "pending":"Beklemede",
+        "approved":"Onaylandı",
+        "rejected":"Reddedildi",
+        "placeholder":"Sertifika Durumu"
+      }
+    },
+    "actions":{
+      "new":"Yeni Sertifika"
+    },
     "list": {
       "title": "Sertifika Listesi",
       "description": "Ürün sertifikalarınızı görüntüleyin ve yönetin",
       "search": "Sertifika ara...",
       "filter": "Filtrele",
       "sort": "Sırala",
+      "loading":"Sertifikalar yükleniyor...",
+      "empty":{
+        "title":"Sertifika bulunamadı",
+        "description":"Sertifika bulunamadı"
+      },
+      "table":{
+        "document":"Belge",
+        "type":"Tip",
+        "status":"Durum",
+        "applicationDate":"Başvuru Tarihi",
+        "updateDate":"Güncelleme Tarihi",
+        "actions":"İşlemler",
+        "view":"Görüntüle"
+      },
       "columns": {
         "name": "Ad",
         "type": "Tip",
@@ -3164,9 +3226,7 @@
         "download": "İndir",
         "renew": "Yenile",
         "revoke": "İptal Et"
-      },
-      "empty": "Sertifika bulunamadı",
-      "loading": "Sertifikalar yükleniyor..."
+      }
     },
     "types": {
       "iso9001": "ISO 9001",
@@ -3174,11 +3234,21 @@
       "iso45001": "ISO 45001",
       "ce": "CE İşareti",
       "rohs": "RoHS",
-      "reach": "REACH"
+      "reach": "REACH",
+      "iso":"ISO Sertifikası",
+      "quality":"Kalite Sertifikası",
+      "other":"Diğer",
+      "export":"İhracat Sertifikası",
+      "production":"Üretim İzni",
+      "production_permit":"Üretim İzni"
     },
     "details": {
       "title": "Sertifika Detayları",
       "description": "Sertifika hakkında detaylı bilgileri görüntüleyin",
+      "actions":{
+        "view":"Görüntüle",
+        "download":"İndir"
+      },
       "basicInfo": {
         "title": "Temel Bilgiler",
         "name": "Ad",

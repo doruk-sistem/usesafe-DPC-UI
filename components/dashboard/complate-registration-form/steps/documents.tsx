@@ -27,13 +27,6 @@ const requiredDocuments: DocumentFieldProps[] = [
   { name: 'activityCertificate', label: 'Activity Certificate', required: true },
 ];
 
-const optionalDocuments: DocumentFieldProps[] = [
-  { name: 'isoCertificates', label: 'ISO Certificates', multiple: true },
-  { name: 'qualityCertificates', label: 'Quality Certificates', multiple: true },
-  { name: 'exportDocuments', label: 'Export Documents', multiple: true },
-  { name: 'productionPermits', label: 'Production Permits', multiple: true },
-];
-
 const DocumentField = ({ 
   form, 
   name, 
@@ -90,16 +83,7 @@ export function DocumentsStep({ form }: DocumentsStepProps) {
         ))}
       </div>
 
-      <div className="space-y-4">
-        <h3 className="font-medium">Optional Documents</h3>
-        {optionalDocuments.map(doc => (
-          <DocumentField 
-            key={doc.name} 
-            form={form} 
-            {...doc} 
-          />
-        ))}
-      </div>
+      {/* Opsiyonel belgeler kaldırıldı - Kullanıcılar bunları kayıt sonrası "Yeni DPC ekle" butonu ile ekleyecekler */}
     </div>
   );
 }

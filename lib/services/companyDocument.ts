@@ -1,7 +1,7 @@
 import { supabase } from "@/lib/supabase/client";
 
 export class CompanyDocumentService {
-  static readonly BUCKET = "company_documents";
+  static readonly BUCKET = "company-documents";
 
   static async uploadDocument(
     file: File,
@@ -14,6 +14,7 @@ export class CompanyDocumentService {
       .replace(/[\u0300-\u036f]/g, "") // Remove diacritics
       .replace(/[^a-zA-Z0-9.-]/g, "_"); // Replace special chars with underscore
     const filePath = `${companyId}/${docType}/${Date.now()}-${sanitizedName}`;
+
 
     const { error } = await supabase.storage
       .from(this.BUCKET)
