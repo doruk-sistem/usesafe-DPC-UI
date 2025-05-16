@@ -15,8 +15,6 @@ export const companyApiHooks = createApiHooks({
 
     if (error) throw error;
     
-    console.log("Veritabanından gelen tüm belgeler:", data);
-    
     // Kayıt belgeleri ve opsiyonel sertifikaları belge türüne göre ayırt ediyoruz
     const filteredData = data?.filter(doc => {
       // Kayıt belgeleri (bunları göstermeyeceğiz)
@@ -38,8 +36,6 @@ export const companyApiHooks = createApiHooks({
       // Belge türü opsiyonel sertifika ise göster
       return optionalCertTypes.includes(doc.type);
     });
-    
-    console.log("Filtrelenmiş belgeler (sadece opsiyonel sertifikalar):", filteredData);
     
     return filteredData as CompanyDocument[];
   }

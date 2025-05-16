@@ -34,15 +34,6 @@ export class CertificationService {
       .single();
 
     if (error) {
-      console.error("Error creating certification - Full error:", JSON.stringify(error, null, 2));
-      console.error("Attempted data:", JSON.stringify({
-        type: data.type,
-        companyId: data.companyId,
-        filePath: data.filePath,
-        status: "pending",
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      }, null, 2));
       throw error;
     }
 
