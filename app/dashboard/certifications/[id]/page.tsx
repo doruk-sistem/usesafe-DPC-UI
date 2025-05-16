@@ -1,29 +1,15 @@
 import { notFound } from "next/navigation";
-import { supabase } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Download, Eye } from "lucide-react";
 import Link from "next/link";
+import { certificationService } from "@/lib/services/certification";
 
 interface Props {
   params: {
     id: string;
   };
-}
-
-async function getCertification(id: string) {
-  const { data: certification, error } = await supabase
-    .from("company_documents")
-    .select("*")
-    .eq("id", id)
-    .single();
-
-  if (error || !certification) {
-    return null;
-  }
-
-  return certification;
 }
 
 const getStatusColor = (status: string) => {
@@ -40,15 +26,13 @@ const getStatusColor = (status: string) => {
 };
 
 export default async function CertificationDetailPage({ params }: Props) {
-  const certification = await getCertification(params.id);
+  const certification = await certificationService.getCertificationDetails(params.id);
 
   if (!certification) {
     notFound();
   }
 
-  const { data: { publicUrl } } = supabase.storage
-    .from("company-documents")
-    .getPublicUrl(certification.filePath);
+  const publicUrl = await certificationService.getCertificationPublicUrl(certification.filePath);
 
   return (
     <div className="container mx-auto py-10 space-y-6">

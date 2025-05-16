@@ -2,6 +2,7 @@
 
 import { Battery, MoreHorizontal, FileText, ExternalLink } from "lucide-react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -54,6 +55,7 @@ interface CertificationListProps {
 }
 
 export function CertificationList({ filters }: CertificationListProps) {
+  const t = useTranslations('certifications');
   const { user, company } = useAuth();
   const companyId = user?.user_metadata?.company_id || company?.id;
 
@@ -82,20 +84,20 @@ export function CertificationList({ filters }: CertificationListProps) {
   const getStatusText = (status: string) => {
     switch (status) {
       case "approved":
-        return "Onaylandı";
+        return t('status.approved');
       case "rejected":
-        return "Reddedildi";
+        return t('status.rejected');
       default:
-        return "Beklemede";
+        return t('status.pending');
     }
   };
 
   const getDocumentType = (type: string) => {
     switch (type) {
       case "quality_certificate":
-        return "Kalite Sertifikası";
+        return t('types.quality');
       case "iso_certificate":
-        return "ISO Sertifikası";
+        return t('types.iso');
       default:
         return type;
     }
@@ -105,13 +107,13 @@ export function CertificationList({ filters }: CertificationListProps) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Sertifika Listesi</CardTitle>
+          <CardTitle>{t('list.title')}</CardTitle>
           <CardDescription>
-            Tüm sertifikalarınızı buradan görüntüleyebilir ve yönetebilirsiniz
+            {t('list.description')}
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="text-center py-4">Yükleniyor...</div>
+          <div className="text-center py-4">{t('list.loading')}</div>
         </CardContent>
       </Card>
     );
@@ -121,14 +123,14 @@ export function CertificationList({ filters }: CertificationListProps) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Sertifika Listesi</CardTitle>
+          <CardTitle>{t('list.title')}</CardTitle>
           <CardDescription>
-            Tüm sertifikalarınızı buradan görüntüleyebilir ve yönetebilirsiniz
+            {t('list.description')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="text-center py-4 text-destructive">
-            <p className="font-medium">Hata</p>
+            <p className="font-medium">{t('list.error.title')}</p>
             <p className="text-sm mt-2">{error.message}</p>
           </div>
         </CardContent>
@@ -140,15 +142,15 @@ export function CertificationList({ filters }: CertificationListProps) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Sertifika Listesi</CardTitle>
+          <CardTitle>{t('list.title')}</CardTitle>
           <CardDescription>
-            Tüm sertifikalarınızı buradan görüntüleyebilir ve yönetebilirsiniz
+            {t('list.description')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="text-center py-4 text-muted-foreground">
-            <p>Henüz sertifika bulunmuyor</p>
-            <p className="mt-2">Kayıt belgeleri bu sayfada gösterilmez. Yeni sertifika eklemek için "Yeni Sertifika" butonunu kullanın.</p>
+            <p>{t('list.empty.title')}</p>
+            <p className="mt-2">{t('list.empty.description')}</p>
           </div>
         </CardContent>
       </Card>
@@ -158,20 +160,20 @@ export function CertificationList({ filters }: CertificationListProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Sertifika Listesi</CardTitle>
+        <CardTitle>{t('list.title')}</CardTitle>
         <CardDescription>
-          Tüm sertifikalarınızı buradan görüntüleyebilir ve yönetebilirsiniz
+          {t('list.description')}
         </CardDescription>
       </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Döküman</TableHead>
-              <TableHead>Tip</TableHead>
-              <TableHead>Durum</TableHead>
-              <TableHead>Başvuru Tarihi</TableHead>
-              <TableHead>Güncellenme Tarihi</TableHead>
+              <TableHead>{t('list.table.document')}</TableHead>
+              <TableHead>{t('list.table.type')}</TableHead>
+              <TableHead>{t('list.table.status')}</TableHead>
+              <TableHead>{t('list.table.applicationDate')}</TableHead>
+              <TableHead>{t('list.table.updateDate')}</TableHead>
               <TableHead></TableHead>
             </TableRow>
           </TableHeader>
@@ -214,16 +216,16 @@ export function CertificationList({ filters }: CertificationListProps) {
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" size="icon">
                         <MoreHorizontal className="h-4 w-4" />
-                        <span className="sr-only">İşlemler</span>
+                        <span className="sr-only">{t('list.table.actions')}</span>
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>İşlemler</DropdownMenuLabel>
+                      <DropdownMenuLabel>{t('list.table.actions')}</DropdownMenuLabel>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem asChild>
                         <Link href={`/dashboard/certifications/${doc.id}`}>
                           <FileText className="h-4 w-4 mr-2" />
-                          Görüntüle
+                          {t('list.table.view')}
                         </Link>
                       </DropdownMenuItem>
                     </DropdownMenuContent>

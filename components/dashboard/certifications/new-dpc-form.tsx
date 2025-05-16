@@ -7,6 +7,7 @@ import * as z from "zod";
 import { useState } from "react";
 import { ArrowLeft, Upload } from "lucide-react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -30,21 +31,22 @@ import { useAuth } from "@/lib/hooks/use-auth";
 import { certificationService } from "@/lib/services/certification";
 import { StorageHelper } from "@/lib/utils/storage";
 
-const formSchema = z.object({
-  type: z.string({
-    required_error: "Lütfen bir sertifika tipi seçin",
-  }),
-  file: z.instanceof(File, {
-    message: "Lütfen bir sertifika dosyası seçin",
-  }),
-});
-
 export function NewDPCForm() {
+  const t = useTranslations('certifications');
   const router = useRouter();
   const { toast } = useToast();
   const { user, company } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [selectedFileName, setSelectedFileName] = useState<string>("");
+
+  const formSchema = z.object({
+    type: z.string({
+      required_error: t('form.validation.type.required'),
+    }),
+    file: z.instanceof(File, {
+      message: t('form.validation.file.required'),
+    }),
+  });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -59,7 +61,7 @@ export function NewDPCForm() {
       const companyId = user?.user_metadata?.company_id || company?.id;
       
       if (!companyId) {
-        throw new Error("Şirket bilgisi bulunamadı");
+        throw new Error(t('form.errors.companyNotFound'));
       }
 
       // Dosyayı yükle
@@ -72,27 +74,27 @@ export function NewDPCForm() {
       }, fileName);
 
       if (!publicUrl) {
-        throw new Error('Sertifika dosyası yüklenemedi');
+        throw new Error(t('form.errors.uploadFailed'));
       }
 
       // Sertifika kaydı oluştur
       await certificationService.createCertification({
         type: values.type,
         companyId,
-        filePath: fileName // filePath yerine documentPath kullanıyoruz
+        filePath: fileName
       });
       
       toast({
-        title: "Başarılı!",
-        description: "Dijital Ürün Sertifikası başvurunuz alındı.",
+        title: t('form.success.title'),
+        description: t('form.success.description'),
       });
       
       router.push("/dashboard/certifications");
     } catch (error) {
       console.error("Error creating certification:", error);
       toast({
-        title: "Hata!",
-        description: error instanceof Error ? error.message : "Sertifika başvurusu oluşturulurken bir hata oluştu.",
+        title: t('form.errors.title'),
+        description: error instanceof Error ? error.message : t('form.errors.generic'),
         variant: "destructive",
       });
     } finally {
@@ -108,7 +110,7 @@ export function NewDPCForm() {
             <ArrowLeft className="h-5 w-5" />
           </Link>
         </Button>
-        <h1 className="text-2xl font-bold">Dijital Ürün Sertifikası Başvurusu</h1>
+        <h1 className="text-2xl font-bold">{t('form.title')}</h1>
       </div>
 
       <Form {...form}>
@@ -118,18 +120,18 @@ export function NewDPCForm() {
             name="type"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Sertifika Tipi</FormLabel>
+                <FormLabel>{t('form.fields.type.label')}</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Sertifika tipini seçin" />
+                      <SelectValue placeholder={t('form.fields.type.placeholder')} />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="iso_certificate">ISO Sertifikası</SelectItem>
-                    <SelectItem value="quality_certificate">Kalite Sertifikası</SelectItem>
-                    <SelectItem value="export_certificate">İhracat Belgesi</SelectItem>
-                    <SelectItem value="production_permit">Üretim İzni</SelectItem>
+                    <SelectItem value="iso_certificate">{t('types.iso')}</SelectItem>
+                    <SelectItem value="quality_certificate">{t('types.quality')}</SelectItem>
+                    <SelectItem value="export_certificate">{t('types.export')}</SelectItem>
+                    <SelectItem value="production_permit">{t('types.production')}</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -142,7 +144,7 @@ export function NewDPCForm() {
             name="file"
             render={({ field: { onChange, value, ...field } }) => (
               <FormItem>
-                <FormLabel>Sertifika Dosyası</FormLabel>
+                <FormLabel>{t('form.fields.file.label')}</FormLabel>
                 <FormControl>
                   <div className="flex flex-col gap-4">
                     <div className="flex items-center gap-4">
@@ -167,14 +169,14 @@ export function NewDPCForm() {
                         <div className="flex flex-col items-center gap-2">
                           <Upload className="h-8 w-8 text-gray-400" />
                           <span className="text-sm text-gray-600">
-                            {selectedFileName || "Sertifika dosyasını seçmek için tıklayın"}
+                            {selectedFileName || t('form.fields.file.placeholder')}
                           </span>
                         </div>
                       </label>
                     </div>
                     {selectedFileName && (
                       <p className="text-sm text-muted-foreground">
-                        Seçilen sertifika: {selectedFileName}
+                        {t('form.fields.file.selected', { name: selectedFileName })}
                       </p>
                     )}
                   </div>
@@ -185,7 +187,7 @@ export function NewDPCForm() {
           />
 
           <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "Başvuru Gönderiliyor..." : "Sertifika Başvurusunu Gönder"}
+            {isLoading ? t('form.submit.loading') : t('form.submit.default')}
           </Button>
         </form>
       </Form>
