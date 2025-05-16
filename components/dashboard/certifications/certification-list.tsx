@@ -44,7 +44,16 @@ interface CompanyDocument {
   updatedAt: string;
 }
 
-export function CertificationList() {
+interface FilterState {
+  type: string;
+  status: string;
+}
+
+interface CertificationListProps {
+  filters: FilterState;
+}
+
+export function CertificationList({ filters }: CertificationListProps) {
   const { user, company } = useAuth();
   const companyId = user?.user_metadata?.company_id || company?.id;
 
@@ -53,7 +62,11 @@ export function CertificationList() {
     { enabled: !!companyId }
   );
   
-  const documents = allDocuments;
+  const filteredDocuments = allDocuments?.filter(doc => {
+    const typeMatch = filters.type === "all" || doc.type === filters.type;
+    const statusMatch = filters.status === "all-status" || doc.status === filters.status;
+    return typeMatch && statusMatch;
+  });
 
   const getStatusVariant = (status: string) => {
     switch (status) {
@@ -123,7 +136,7 @@ export function CertificationList() {
     );
   }
 
-  if (!documents || documents.length === 0) {
+  if (!filteredDocuments || filteredDocuments.length === 0) {
     return (
       <Card>
         <CardHeader>
@@ -135,7 +148,7 @@ export function CertificationList() {
         <CardContent>
           <div className="text-center py-4 text-muted-foreground">
             <p>Henüz sertifika bulunmuyor</p>
-            <p className="mt-2">Kayıt belgeleri bu sayfada gösterilmez. Yeni sertifika eklemek için "Yeni DPC" butonunu kullanın.</p>
+            <p className="mt-2">Kayıt belgeleri bu sayfada gösterilmez. Yeni sertifika eklemek için "Yeni Sertifika" butonunu kullanın.</p>
           </div>
         </CardContent>
       </Card>
@@ -163,7 +176,7 @@ export function CertificationList() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {documents.map((doc) => (
+            {filteredDocuments.map((doc) => (
               <TableRow key={doc.id}>
                 <TableCell>
                   <div className="flex items-center gap-2">

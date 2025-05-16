@@ -29,6 +29,7 @@ export class CertificationService {
       console.error("Attempted data:", JSON.stringify({
         type: data.type,
         companyId: data.companyId,
+        filePath: data.filePath,
         status: "pending",
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
@@ -40,11 +41,12 @@ export class CertificationService {
   }
 }
 
-export const certificationService = createService({
-  createCertification: async (data: {
-    type: string;
-    companyId: string;
-  }) => {
+type CertificationServiceType = {
+  createCertification: (data: CreateCertificationInput) => Promise<any>;
+};
+
+export const certificationService = createService<CertificationServiceType>({
+  createCertification: async (data: CreateCertificationInput) => {
     return CertificationService.createCertification(data);
   }
 });

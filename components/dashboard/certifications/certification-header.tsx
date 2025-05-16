@@ -10,7 +10,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-export function CertificationHeader() {
+interface CertificationHeaderProps {
+  onFilterChange: (key: 'type' | 'status', value: string) => void;
+}
+
+export function CertificationHeader({ onFilterChange }: CertificationHeaderProps) {
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
@@ -20,18 +24,24 @@ export function CertificationHeader() {
         </p>
       </div>
       <div className="flex items-center gap-2">
-        <Select defaultValue="all">
+        <Select 
+          defaultValue="all"
+          onValueChange={(value) => onFilterChange('type', value)}
+        >
           <SelectTrigger className="w-[160px]">
             <SelectValue placeholder="Sertifika Tipi" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Tüm Tipler</SelectItem>
-            <SelectItem value="quality">Kalite Sertifikası</SelectItem>
-            <SelectItem value="iso">ISO Sertifikası</SelectItem>
+            <SelectItem value="quality_certificate">Kalite Sertifikası</SelectItem>
+            <SelectItem value="iso_certificate">ISO Sertifikası</SelectItem>
             <SelectItem value="other">Diğer</SelectItem>
           </SelectContent>
         </Select>
-        <Select defaultValue="all-status">
+        <Select 
+          defaultValue="all-status"
+          onValueChange={(value) => onFilterChange('status', value)}
+        >
           <SelectTrigger className="w-[160px]">
             <SelectValue placeholder="Onay Durumu" />
           </SelectTrigger>

@@ -5,18 +5,12 @@ import { NewDPCForm } from "../../../../components/dashboard/certifications/new-
 
 export default function NewDPCPage() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold">Yeni DPC Başvurusu</h1>
-        <p className="text-sm text-muted-foreground">
-          Yeni bir Dijital Ürün Sertifikası başvurusu oluşturun
-        </p>
-      </div>
+    <div className="container mx-auto py-10">
       <Card>
         <CardHeader>
-          <CardTitle>DPC Başvuru Formu</CardTitle>
+          <CardTitle>Dijital Ürün Sertifikası Başvuru Formu</CardTitle>
           <CardDescription>
-            Lütfen başvuru için gerekli bilgileri doldurun
+            Lütfen sertifika başvurusu için gerekli bilgileri doldurun
           </CardDescription>
         </CardHeader>
         <CardContent>
