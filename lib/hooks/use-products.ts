@@ -47,10 +47,13 @@ export function useProducts(companyId?: string, fetchAll: boolean = false) {
     };
   });
 
+  const { mutateAsync: rejectProduct } = productsApiHooks.useRejectProductMutation();
+
   return { 
     products: processedProducts, 
     isLoading, 
     error,
-    companyId: targetCompanyId 
+    companyId: targetCompanyId,
+    rejectProduct
   };
 }

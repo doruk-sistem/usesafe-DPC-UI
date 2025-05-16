@@ -315,20 +315,6 @@ export const companyService = createService({
 
       if (companyError) throw companyError;
 
-      const { data: auth, error: authError } = await supabase.auth.signUp({
-        email: data.contact.email,
-        password: Math.random().toString(36).slice(-8),
-        options: {
-          data: {
-            full_name: data.contact.name,
-            company_id: company.id,
-            role: "manufacturer",
-          },
-        },
-      });
-
-      if (authError) throw authError;
-
       return {
         success: true,
         companyId: company.id,

@@ -14,6 +14,29 @@ export const companyApiHooks = createApiHooks({
       .order("createdAt", { ascending: false });
 
     if (error) throw error;
-    return data as CompanyDocument[];
+    
+    // Kayıt belgeleri ve opsiyonel sertifikaları belge türüne göre ayırt ediyoruz
+    const filteredData = data?.filter(doc => {
+      // Kayıt belgeleri (bunları göstermeyeceğiz)
+      const registrationDocTypes = [
+        "signature_circular",
+        "trade_registry_gazette",
+        "tax_plate",
+        "activity_certificate"
+      ];
+      
+      // Opsiyonel sertifikalar (bunları göstereceğiz)
+      const optionalCertTypes = [
+        "iso_certificate",
+        "quality_certificate",
+        "export_certificate",
+        "production_permit"
+      ];
+      
+      // Belge türü opsiyonel sertifika ise göster
+      return optionalCertTypes.includes(doc.type);
+    });
+    
+    return filteredData as CompanyDocument[];
   }
 });

@@ -10,6 +10,92 @@
     "signIn": "Sign In"
   },
   "loading": "Loading...",
+  "certifications": {
+    "title": "Certifications",
+    "description": "View and manage your product certifications",
+    "details":{
+      "actions":{
+        "view":"View",
+        "download":"Download"
+      }
+    },
+    "form":{
+      "title":"New Certificate",
+      "validation":{
+        "file":{
+          "required":"Select Certificate File"
+        },
+        "type":{
+          "required":"Select Certificate Type"
+        }
+      },
+      "submit":{
+        "default":"Create Certificate"
+      },
+      "fields":{
+        "file":{
+          "label":"Certificate File",
+          "placeholder":"Select Certificate File",
+          "selected":"Selected File"
+        },
+        "type":{
+          "label":"Certificate Type",
+          "placeholder":"Select Certificate Type"
+        }
+       
+      }
+    },
+    "status":{
+      "pending":"Pending",
+      "approved":"Approved",
+      "rejected":"Rejected"
+    },
+    "types":{
+      "production_permit":"Production Permit",
+      "quality":"Quality Certificate",
+      "iso":"ISO Certificate",
+      "other":"Other",
+      "export":"Export Certificate",
+      "production":"Production Permit"
+    },
+    "list":{
+      "title":"Certification List",
+      "description":"View and manage your product certifications",
+      "loading":"Loading certifications...",
+      "empty":{
+        "title":"No certifications found",
+        "description":"No certifications found for your company"
+      },
+      "table":{
+        "document":"Document",
+        "type":"Type",
+        "status":"Status",
+        "applicationDate":"Application Date",
+        "updateDate":"Update Date",
+        "actions":"Actions",
+        "view":"View"
+      }
+    },
+    "filters":{
+      "type":{
+        "all":"All Types",
+        "quality":"Quality Certificate",
+        "iso":"ISO Certificate",
+        "other":"Other",
+        "placeholder":"Certificate Type"
+      },
+      "status":{
+        "all":"All Statuses",
+        "pending":"Pending",
+        "approved":"Approved",
+        "rejected":"Rejected",
+        "placeholder":"Certificate Status"
+      }
+    },
+    "actions":{
+      "new":"New Certificate"
+    }
+  },
   "pages": {           
     "pendingProducts": {
       "title": "Pending Products",

@@ -45,11 +45,30 @@ interface CompanyDocument {
   updatedAt: string;
 }
 
-export function CertificationList() {
-  const t = useTranslations();
-  const { user } = useAuth();
-  const companyId = user?.user_metadata?.company_id;
-  const { data: documents, isLoading, error } = companyApiHooks.useGetCompanyDocumentsQuery({ companyId });
+interface FilterState {
+  type: string;
+  status: string;
+}
+
+interface CertificationListProps {
+  filters: FilterState;
+}
+
+export function CertificationList({ filters }: CertificationListProps) {
+  const t = useTranslations('certifications');
+  const { user, company } = useAuth();
+  const companyId = user?.user_metadata?.company_id || company?.id;
+
+  const { data: allDocuments, isLoading, error } = companyApiHooks.useGetCompanyDocumentsQuery(
+    { companyId },
+    { enabled: !!companyId }
+  );
+  
+  const filteredDocuments = allDocuments?.filter(doc => {
+    const typeMatch = filters.type === "all" || doc.type === filters.type;
+    const statusMatch = filters.status === "all-status" || doc.status === filters.status;
+    return typeMatch && statusMatch;
+  });
 
   const getStatusVariant = (status: string) => {
     switch (status) {
@@ -62,17 +81,39 @@ export function CertificationList() {
     }
   };
 
+  const getStatusText = (status: string) => {
+    switch (status) {
+      case "approved":
+        return t('status.approved');
+      case "rejected":
+        return t('status.rejected');
+      default:
+        return t('status.pending');
+    }
+  };
+
+  const getDocumentType = (type: string) => {
+    switch (type) {
+      case "quality_certificate":
+        return t('types.quality');
+      case "iso_certificate":
+        return t('types.iso');
+      default:
+        return type;
+    }
+  };
+
   if (isLoading) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>{t("dpc.applications.title")}</CardTitle>
+          <CardTitle>{t('list.title')}</CardTitle>
           <CardDescription>
-            {t("dpc.applications.description")}
+            {t('list.description')}
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="text-center py-4">{t("loading")}</div>
+          <div className="text-center py-4">{t('list.loading')}</div>
         </CardContent>
       </Card>
     );
@@ -82,14 +123,14 @@ export function CertificationList() {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>{t("dpc.applications.title")}</CardTitle>
+          <CardTitle>{t('list.title')}</CardTitle>
           <CardDescription>
-            {t("dpc.applications.description")}
+            {t('list.description')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="text-center py-4 text-destructive">
-            <p className="font-medium">{t("error")}</p>
+            <p className="font-medium">{t('list.error.title')}</p>
             <p className="text-sm mt-2">{error.message}</p>
           </div>
         </CardContent>
@@ -97,18 +138,19 @@ export function CertificationList() {
     );
   }
 
-  if (!documents || documents.length === 0) {
+  if (!filteredDocuments || filteredDocuments.length === 0) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>{t("dpc.applications.title")}</CardTitle>
+          <CardTitle>{t('list.title')}</CardTitle>
           <CardDescription>
-            {t("dpc.applications.description")}
+            {t('list.description')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="text-center py-4 text-muted-foreground">
-            {t("noCertifications")}
+            <p>{t('list.empty.title')}</p>
+            <p className="mt-2">{t('list.empty.description')}</p>
           </div>
         </CardContent>
       </Card>
@@ -118,41 +160,41 @@ export function CertificationList() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{t("dpc.applications.title")}</CardTitle>
+        <CardTitle>{t('list.title')}</CardTitle>
         <CardDescription>
-          {t("dpc.applications.description")}
+          {t('list.description')}
         </CardDescription>
       </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>{t("dpc.applications.columns.document")}</TableHead>
-              <TableHead>{t("dpc.applications.columns.type")}</TableHead>
-              <TableHead>{t("dpc.applications.columns.status")}</TableHead>
-              <TableHead>{t("dpc.applications.columns.submitted")}</TableHead>
-              <TableHead>{t("dpc.applications.columns.updated")}</TableHead>
+              <TableHead>{t('list.table.document')}</TableHead>
+              <TableHead>{t('list.table.type')}</TableHead>
+              <TableHead>{t('list.table.status')}</TableHead>
+              <TableHead>{t('list.table.applicationDate')}</TableHead>
+              <TableHead>{t('list.table.updateDate')}</TableHead>
               <TableHead></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {documents.map((doc) => (
+            {filteredDocuments.map((doc) => (
               <TableRow key={doc.id}>
                 <TableCell>
                   <div className="flex items-center gap-2">
                     <FileText className="h-4 w-4 text-muted-foreground" />
                     <div>
                       <p className="font-medium">
-                        {doc.filePath ? doc.filePath.split("/").pop() : t(`documents.types.${doc.type}`)}
+                        {doc.filePath ? doc.filePath.split("/").pop() : getDocumentType(doc.type)}
                       </p>
                       <p className="text-sm text-muted-foreground">
-                        {t(`documents.types.${doc.type}`)}
+                        {getDocumentType(doc.type)}
                       </p>
                     </div>
                   </div>
                 </TableCell>
                 <TableCell>
-                  {t(`documents.types.${doc.type}`)}
+                  {getDocumentType(doc.type)}
                 </TableCell>
                 <TableCell>
                   <Badge
@@ -160,7 +202,7 @@ export function CertificationList() {
                     className="flex w-fit items-center gap-1"
                   >
                     {getStatusIcon(doc.status)}
-                    {t(`dpc.applications.status.${doc.status}`)}
+                    {getStatusText(doc.status)}
                   </Badge>
                 </TableCell>
                 <TableCell>
@@ -174,22 +216,16 @@ export function CertificationList() {
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" size="icon">
                         <MoreHorizontal className="h-4 w-4" />
-                        <span className="sr-only">{t("dpc.applications.actions.title")}</span>
+                        <span className="sr-only">{t('list.table.actions')}</span>
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>{t("dpc.applications.actions.title")}</DropdownMenuLabel>
+                      <DropdownMenuLabel>{t('list.table.actions')}</DropdownMenuLabel>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem asChild>
                         <Link href={`/dashboard/certifications/${doc.id}`}>
                           <FileText className="h-4 w-4 mr-2" />
-                          {t("dpc.applications.actions.view")}
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link href={`/dashboard/certifications/${doc.id}/download`}>
-                          <ExternalLink className="h-4 w-4 mr-2" />
-                          {t("dpc.applications.actions.download")}
+                          {t('list.table.view')}
                         </Link>
                       </DropdownMenuItem>
                     </DropdownMenuContent>
