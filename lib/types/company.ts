@@ -71,6 +71,10 @@ export interface CompanyDocument {
   filePath: string;
   status: DocumentStatus;
   rejectionReason?: string;
+  metadata?: {
+    isRegistrationDocument?: boolean;
+    [key: string]: any;
+  };
   createdAt: Date | string;
   updatedAt: Date | string;
 }

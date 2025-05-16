@@ -80,17 +80,11 @@ export const registerSchema = z.object({
   district: z.string().min(2, "District is required"),
   postalCode: z.string().optional(),
 
-  // Required Documents
+  // Required Documents - Sadece zorunlu belgeler
   signatureCircular: z.any(),
   tradeRegistry: z.any(),
   taxPlate: z.any(),
   activityCertificate: z.any(),
-
-  // Optional Documents
-  isoCertificates: z.array(z.any()).optional(),
-  qualityCertificates: z.array(z.any()).optional(),
-  exportDocuments: z.array(z.any()).optional(),
-  productionPermits: z.array(z.any()).optional(),
 
   // Password
   password: z.string()

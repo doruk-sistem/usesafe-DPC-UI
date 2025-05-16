@@ -26,6 +26,10 @@ export interface RegistrationRequest {
   documents: {
     type: string;
     filePath: string;
+    metadata?: {
+      isRegistrationDocument?: boolean;
+      [key: string]: any;
+    };
   }[];
 }
 

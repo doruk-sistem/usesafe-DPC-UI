@@ -110,17 +110,17 @@ export function NewDPCForm() {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="signature_circle">
-                    İmza Dairesi
+                  <SelectItem value="iso_certificate">
+                    ISO Sertifikası
                   </SelectItem>
-                  <SelectItem value="trade_registry_gazette">
-                    Ticaret Kayıt Gazetesi
+                  <SelectItem value="quality_certificate">
+                    Kalite Sertifikası
                   </SelectItem>
-                  <SelectItem value="tax_plate">
-                    Vergi Plakası
+                  <SelectItem value="export_certificate">
+                    İhracat Belgesi
                   </SelectItem>
-                  <SelectItem value="activity_certificate">
-                    Faaliyet Sertifikası
+                  <SelectItem value="production_permit">
+                    Üretim İzni
                   </SelectItem>
                 </SelectContent>
               </Select>
