@@ -110,6 +110,7 @@ export class CompanyDocumentService {
         type: doc.type,
         category: doc.type,
         url: doc.filePath || "",
+        filePath: doc.filePath || "",
         status: (doc.status || "pending").toLowerCase(),
         fileSize: "",
         version: "1.0",
