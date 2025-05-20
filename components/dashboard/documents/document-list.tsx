@@ -3,6 +3,7 @@
 import { FileText, MoreHorizontal, Download, History, ExternalLink, AlertTriangle, CheckCircle, XCircle, Clock } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import React from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -43,30 +44,24 @@ import { Loading } from "@/components/ui/loading";
 import { useCompanyDocuments } from "@/lib/hooks/use-company-documents";
 import { useAuth } from "@/lib/hooks/use-auth";
 
-interface FilterState {
-  type: string;
-  status: string;
-}
-
-interface DocumentListProps {
-  filters: FilterState;
-}
-
-export function DocumentList({ filters }: DocumentListProps) {
+export function DocumentList({ filters }: { filters: { type: string; status: string } }) {
   const t = useTranslations('documents');
   const { useGetCompanyDocuments } = useCompanyDocuments();
   const { data: allDocuments, isLoading, error } = useGetCompanyDocuments();
   const { user } = useAuth();
 
-  const filteredDocuments = allDocuments?.filter(doc => {
-    // Exclude certificates
-    if (doc.type.includes('certificate')) {
-      return false;
+  // Filtreleme işlemi
+  const filteredDocuments = React.useMemo(() => {
+    if (!allDocuments) return [];
+    let result = [...allDocuments];
+    if (filters.type && filters.type !== 'all') {
+      result = result.filter(doc => doc.type === filters.type);
     }
-    const typeMatch = filters.type === "all" || doc.type === filters.type;
-    const statusMatch = filters.status === "all-status" || doc.status === filters.status;
-    return typeMatch && statusMatch;
-  });
+    if (filters.status && filters.status !== 'all-status') {
+      result = result.filter(doc => doc.status === filters.status);
+    }
+    return result;
+  }, [allDocuments, filters]);
 
   console.log("DocumentList - Documents:", filteredDocuments);
   console.log("DocumentList - Loading:", isLoading);
@@ -165,21 +160,14 @@ export function DocumentList({ filters }: DocumentListProps) {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>{t('list.title')}</CardTitle>
-        <CardDescription>
-          {t('list.description')}
-        </CardDescription>
-      </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>{t('list.table.document')}</TableHead>
-              <TableHead>{t('list.table.type')}</TableHead>
-              <TableHead>{t('list.table.status')}</TableHead>
-              <TableHead>{t('list.table.applicationDate')}</TableHead>
-              <TableHead>{t('list.table.updateDate')}</TableHead>
+              <TableHead>Belge</TableHead>
+              <TableHead>Tip</TableHead>
+              <TableHead>Başvuru Tarihi</TableHead>
+              <TableHead>Güncelleme Tarihi</TableHead>
               <TableHead></TableHead>
             </TableRow>
           </TableHeader>
@@ -214,15 +202,6 @@ export function DocumentList({ filters }: DocumentListProps) {
                   {getDocumentType(doc.type)}
                 </TableCell>
                 <TableCell>
-                  <Badge
-                    variant={getStatusVariant(doc.status)}
-                    className="flex w-fit items-center gap-1"
-                  >
-                    {getStatusIcon(doc.status)}
-                    {t(`status.${doc.status}`)}
-                  </Badge>
-                </TableCell>
-                <TableCell>
                   {doc.created_at ? new Date(doc.created_at).toLocaleDateString() : "N/A"}
                 </TableCell>
                 <TableCell>
@@ -233,31 +212,23 @@ export function DocumentList({ filters }: DocumentListProps) {
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" size="icon">
                         <MoreHorizontal className="h-4 w-4" />
-                        <span className="sr-only">{t('list.table.actions')}</span>
+                        <span className="sr-only">İşlemler</span>
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>{t('list.table.actions')}</DropdownMenuLabel>
+                      <DropdownMenuLabel>İşlemler</DropdownMenuLabel>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem asChild>
                         <Link href={`/dashboard/documents/${doc.id}`}>
                           <FileText className="h-4 w-4 mr-2" />
-                          {t('list.table.view')}
+                          Görüntüle
                         </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <Download className="h-4 w-4 mr-2" />
-                        {t('list.table.download')}
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <History className="h-4 w-4 mr-2" />
-                        {t('list.table.history')}
                       </DropdownMenuItem>
                       {doc.status === "rejected" && (
                         <DropdownMenuItem asChild>
                           <Link href={`/dashboard/documents/${doc.id}/reupload`}>
                             <ExternalLink className="h-4 w-4 mr-2" />
-                            {t('list.table.reupload')}
+                            Yeniden Yükle
                           </Link>
                         </DropdownMenuItem>
                       )}

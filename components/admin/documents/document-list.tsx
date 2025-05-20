@@ -70,9 +70,13 @@ import { getStatusIcon } from "@/lib/utils/document-utils";
 
 interface DocumentListProps {
   initialDocuments?: Document[];
+  filters?: {
+    type: string;
+    status: string;
+  };
 }
 
-export function DocumentList({ initialDocuments = [] }: DocumentListProps) {
+export function DocumentList({ initialDocuments = [], filters }: DocumentListProps) {
   const t = useTranslations("documentManagement");
   const { toast } = useToast();
   const { user } = useAuth();
@@ -118,7 +122,10 @@ export function DocumentList({ initialDocuments = [] }: DocumentListProps) {
       manufacturerId ? doc.manufacturerId === manufacturerId : true
     )
     .filter((doc) =>
-      statusFilter === "all" ? true : doc.status === statusFilter
+      filters?.type === "all" ? true : doc.type === filters?.type
+    )
+    .filter((doc) =>
+      filters?.status === "all-status" ? true : doc.status === filters?.status
     );
 
   // Group documents by product

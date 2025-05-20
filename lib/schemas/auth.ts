@@ -78,10 +78,10 @@ export const registerSchema = z.object({
   postalCode: z.string().optional(),
 
   // Required Documents
-  signatureCircular: z.any(),
-  tradeRegistry: z.any(),
-  taxPlate: z.any(),
-  activityCertificate: z.any(),
+  signatureCircular: z.custom((val) => !!val && typeof val === 'object' && !!val.file, { message: "İmza Sirküleri zorunludur" }),
+  tradeRegistry: z.custom((val) => !!val && typeof val === 'object' && !!val.file, { message: "Ticaret Sicil Gazetesi zorunludur" }),
+  taxPlate: z.custom((val) => !!val && typeof val === 'object' && !!val.file, { message: "Vergi Levhası zorunludur" }),
+  activityCertificate: z.custom((val) => !!val && typeof val === 'object' && !!val.file, { message: "Faaliyet Belgesi zorunludur" }),
 
   // Password
   password: z.string()

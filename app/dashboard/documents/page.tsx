@@ -23,13 +23,7 @@ export default function DocumentsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <DocumentHeader onFilterChange={handleFilterChange} />
-        <Button onClick={() => router.push("/dashboard/documents/upload")}>
-          <Plus className="w-4 h-4 mr-2" />
-          Yükle
-        </Button>
-      </div>
+      <DocumentHeader onFilterChange={handleFilterChange} />
       <DocumentList filters={filters} />
     </div>
   );

@@ -80,17 +80,6 @@ export default function DocumentDetailsPage() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Badge
-            variant={document.status === 'approved' ? 'success' : document.status === 'rejected' ? 'destructive' : 'warning'}
-            className="flex w-fit items-center gap-1"
-          >
-            {getStatusIcon(document.status)}
-            {t(`status.${document.status}`)}
-          </Badge>
-          <Button onClick={handleViewFile} variant="outline">
-            <Eye className="h-4 w-4 mr-2" />
-            {t('details.viewFile')}
-          </Button>
           <Button onClick={handleDownloadFile} variant="outline">
             <Download className="h-4 w-4 mr-2" />
             {t('details.downloadFile')}

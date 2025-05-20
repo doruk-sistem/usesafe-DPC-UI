@@ -10,6 +10,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { CompanyDocumentService } from "@/lib/services/companyDocument";
 import { DocumentType } from "@/lib/types/company";
+import { useEffect } from "react";
 
 interface DocumentsStepProps {
   form: UseFormReturn<any>;
@@ -85,6 +86,13 @@ const DocumentField = ({
 };
 
 export function DocumentsStep({ form }: DocumentsStepProps) {
+  useEffect(() => {
+    form.register("signatureCircular", { required: "İmza Sirküleri zorunludur" });
+    form.register("tradeRegistry", { required: "Ticaret Sicil Gazetesi zorunludur" });
+    form.register("taxPlate", { required: "Vergi Levhası zorunludur" });
+    form.register("activityCertificate", { required: "Faaliyet Belgesi zorunludur" });
+  }, [form]);
+
   return (
     <div className="space-y-6">
       <div className="space-y-4">
