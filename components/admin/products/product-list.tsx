@@ -39,8 +39,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useImageUrl } from "@/lib/hooks/use-image-url";
-import { BaseProduct, ProductStatus } from "@/lib/types/product";
 import { useProducts } from "@/lib/hooks/use-products";
+import { BaseProduct, ProductStatus } from "@/lib/types/product";
 
 export function ProductList() {
   const t = useTranslations("admin.products");

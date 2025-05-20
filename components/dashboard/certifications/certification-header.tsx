@@ -38,7 +38,8 @@ export function CertificationHeader({ onFilterChange }: CertificationHeaderProps
             <SelectItem value="all">{t('filters.type.all')}</SelectItem>
             <SelectItem value="quality_certificate">{t('filters.type.quality')}</SelectItem>
             <SelectItem value="iso_certificate">{t('filters.type.iso')}</SelectItem>
-            <SelectItem value="other">{t('filters.type.other')}</SelectItem>
+            <SelectItem value="production_permit">{t('filters.type.production')}</SelectItem>
+            <SelectItem value="export_certificate">{t('filters.type.export')}</SelectItem>
           </SelectContent>
         </Select>
         <Select 

@@ -29,11 +29,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
-import { getStatusIcon } from "../../../lib/utils/document-utils";
+import { useAuth } from "@/lib/hooks/use-auth";
 import { companyApiHooks } from "@/lib/hooks/use-company";
 import { DocumentType } from "@/lib/types/company";
-import { useAuth } from "@/lib/hooks/use-auth";
+
+import { getStatusIcon } from "../../../lib/utils/document-utils";
 
 interface CompanyDocument {
   id: string;
@@ -98,8 +98,10 @@ export function CertificationList({ filters }: CertificationListProps) {
         return t('types.quality');
       case "iso_certificate":
         return t('types.iso');
-      default:
-        return type;
+      case "production_permit":
+        return t('types.production');
+      case "export_certificate":
+        return t('types.export');
     }
   };
 
