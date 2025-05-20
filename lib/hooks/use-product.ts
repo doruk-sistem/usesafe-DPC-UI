@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { productService } from "@/lib/services/product";
-import { BaseProduct, ProductStatus } from "@/lib/types/product";
 import { Document } from "@/lib/types/document";
+import { BaseProduct, ProductStatus } from "@/lib/types/product";
 
 import { useAuth } from "./use-auth";
 import { productsApiHooks } from "./use-products";

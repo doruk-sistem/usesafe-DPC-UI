@@ -1,4 +1,5 @@
 import { Product } from "@/lib/types/product";
+
 import { textileProducts } from "./textile-products";
 
 // Tüm ürünleri birleştir
