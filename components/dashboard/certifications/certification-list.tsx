@@ -60,6 +60,7 @@ export function CertificationList({ filters }: CertificationListProps) {
   const { user, company } = useAuth();
   const searchParams = useSearchParams();
   const manufacturerId = searchParams.get('manufacturer');
+  const isViewingManufacturer = !!manufacturerId;
   const companyId = manufacturerId || user?.user_metadata?.company_id || company?.id;
 
   const { data: allDocuments, isLoading, error } = companyApiHooks.useGetCompanyDocumentsQuery(
@@ -154,8 +155,19 @@ export function CertificationList({ filters }: CertificationListProps) {
         </CardHeader>
         <CardContent>
           <div className="text-center py-4 text-muted-foreground">
-            <p>{t('list.empty.title')}</p>
-            <p className="mt-2">{t('list.empty.description')}</p>
+            {isViewingManufacturer ? (
+              <p>{t('list.empty.manufacturer')}</p>
+            ) : (
+              <>
+                <p>{t('list.empty.title')}</p>
+                <p className="mt-2">{t('list.empty.description')}</p>
+                <Button asChild className="mt-4">
+                  <Link href="/dashboard/certifications/new">
+                    {t('list.empty.addButton')}
+                  </Link>
+                </Button>
+              </>
+            )}
           </div>
         </CardContent>
       </Card>
