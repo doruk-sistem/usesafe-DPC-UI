@@ -9,7 +9,7 @@ import { validateAndMapDocuments } from "@/lib/utils/document-mapper";
 import { createService } from "../api-client";
 
 export const productService = createService({
-  getProducts: async ({ companyId }: { companyId?: string }) => {
+  getProducts: async ({ companyId, manufacturerId }: { companyId?: string; manufacturerId?: string }) => {
     try {
       let query = supabase
         .from("products")
@@ -23,6 +23,10 @@ export const productService = createService({
 
       if (companyId) {
         query = query.eq("company_id", companyId);
+      }
+
+      if (manufacturerId) {
+        query = query.eq("manufacturer_id", manufacturerId);
       }
 
       const { data, error } = await query.order("created_at", { ascending: false });

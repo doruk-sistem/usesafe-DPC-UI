@@ -2,6 +2,7 @@
 
 import { Battery, MoreHorizontal, FileText, ExternalLink } from "lucide-react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
@@ -57,7 +58,9 @@ interface CertificationListProps {
 export function CertificationList({ filters }: CertificationListProps) {
   const t = useTranslations('certifications');
   const { user, company } = useAuth();
-  const companyId = user?.user_metadata?.company_id || company?.id;
+  const searchParams = useSearchParams();
+  const manufacturerId = searchParams.get('manufacturer');
+  const companyId = manufacturerId || user?.user_metadata?.company_id || company?.id;
 
   const { data: allDocuments, isLoading, error } = companyApiHooks.useGetCompanyDocumentsQuery(
     { companyId },
@@ -218,18 +221,15 @@ export function CertificationList({ filters }: CertificationListProps) {
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" size="icon">
                         <MoreHorizontal className="h-4 w-4" />
-                        <span className="sr-only">{t('list.table.actions')}</span>
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>{t('list.table.actions')}</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem asChild>
-                        <Link href={`/dashboard/certifications/${doc.id}`}>
-                          <FileText className="h-4 w-4 mr-2" />
-                          {t('list.table.view')}
-                        </Link>
-                      </DropdownMenuItem>
+                      <Link href={`/dashboard/certifications/${doc.id}`}>
+                        <DropdownMenuItem>
+                          <ExternalLink className="mr-2 h-4 w-4" />
+                          {t('list.actions.view')}
+                        </DropdownMenuItem>
+                      </Link>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>
