@@ -3148,6 +3148,11 @@
     "description": "Ürün sertifikalarınızı görüntüleyin ve yönetin",
     "form":{
       "title":"Yeni Sertifika",
+      "description":"Yeni bir sertifika oluşturun",
+      "success":{
+        "title":"Sertifika Oluşturuldu",
+        "description":"Sertifika başarıyla oluşturuldu"
+      },
       "validation":{
         "file":{
           "required":"Sertifika dosyası seçin"
@@ -3181,7 +3186,9 @@
         "quality":"Kalite Sertifikası",
         "iso":"ISO Sertifikası",
         "other":"Diğer",
-        "placeholder":"Sertifika Tipi"
+        "placeholder":"Sertifika Tipi",
+        "production":"Üretim İzni",
+        "export":"İhracat Sertifikası"
       },
       "status":{
         "all":"Tüm Durumlar",

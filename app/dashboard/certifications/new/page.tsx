@@ -2,15 +2,18 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { NewDPCForm } from "../../../../components/dashboard/certifications/new-dpc-form";
+import { useTranslations } from "next-intl";
 
 export default function NewDPCPage() {
+  const t = useTranslations("certifications.form");
+
   return (
     <div className="container mx-auto py-10">
       <Card>
         <CardHeader>
-          <CardTitle>Dijital Ürün Sertifikası Başvuru Formu</CardTitle>
+          <CardTitle>{t("title")}</CardTitle>
           <CardDescription>
-            Lütfen sertifika başvurusu için gerekli bilgileri doldurun
+            {t("description")}
           </CardDescription>
         </CardHeader>
         <CardContent>

@@ -98,8 +98,10 @@ export function CertificationList({ filters }: CertificationListProps) {
         return t('types.quality');
       case "iso_certificate":
         return t('types.iso');
-      default:
-        return type;
+      case "production_permit":
+        return t('types.production');
+      case "export_certificate":
+        return t('types.export');
     }
   };
 

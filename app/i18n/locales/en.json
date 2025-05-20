@@ -21,6 +21,11 @@
     },
     "form":{
       "title":"New Certificate",
+      "description":"Create a new certificate",
+      "success":{
+        "title":"Certificate Created Successfully",
+        "description":"Your certificate has been created successfully"
+      },
       "validation":{
         "file":{
           "required":"Select Certificate File"
@@ -30,7 +35,8 @@
         }
       },
       "submit":{
-        "default":"Create Certificate"
+        "default":"Create Certificate",
+        "loading":"Creating certificate..."
       },
       "fields":{
         "file":{
@@ -56,7 +62,7 @@
       "iso":"ISO Certificate",
       "other":"Other",
       "export":"Export Certificate",
-      "production":"Production Permit"
+      "production":"Production Certificate"
     },
     "list":{
       "title":"Certification List",
@@ -82,7 +88,9 @@
         "quality":"Quality Certificate",
         "iso":"ISO Certificate",
         "other":"Other",
-        "placeholder":"Certificate Type"
+        "placeholder":"Certificate Type",
+        "production":"Production Certificate",
+        "export":"Export Certificate"
       },
       "status":{
         "all":"All Statuses",
