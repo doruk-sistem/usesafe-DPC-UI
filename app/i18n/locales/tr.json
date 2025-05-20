@@ -3146,6 +3146,15 @@
   "certifications": {
     "title": "Sertifikalar",
     "description": "Ürün sertifikalarınızı görüntüleyin ve yönetin",
+    "detail":{
+      "title": "Sertifika Detayı",
+      "type": "Sertifika Tipi",
+      "status": "Sertifika Durumu",
+      "createdAt": "Oluşturulma Tarihi",
+      "updatedAt": "Son Güncelleme Tarihi",
+      "view": "Görüntüle",
+      "download": "İndir"
+    },
     "form":{
       "title":"Yeni Sertifika",
       "description":"Yeni bir sertifika oluşturun",
@@ -3247,7 +3256,12 @@
       "other":"Diğer",
       "export":"İhracat Sertifikası",
       "production":"Üretim İzni",
-      "production_permit":"Üretim İzni"
+      "production_permit":"Üretim İzni",
+      "export_certificate": "İhracat Sertifikası",
+      "quality_certificate": "Kalite Sertifikası",
+      "safety_certificate": "Güvenlik Sertifikası",
+      "environmental_certificate": "Çevresel Sertifikası",
+      "iso_certificate": "ISO Sertifikası"
     },
     "details": {
       "title": "Sertifika Detayları",

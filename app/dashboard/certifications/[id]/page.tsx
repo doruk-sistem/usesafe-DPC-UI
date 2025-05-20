@@ -1,15 +1,21 @@
-import { notFound } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+'use client';
+
 import { ArrowLeft, Download, Eye } from "lucide-react";
 import Link from "next/link";
+import { notFound } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useEffect, useState , use } from "react";
+
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { certificationService } from "@/lib/services/certification";
 
+
 interface Props {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 const getStatusColor = (status: string) => {
@@ -25,14 +31,40 @@ const getStatusColor = (status: string) => {
   }
 };
 
-export default async function CertificationDetailPage({ params }: Props) {
-  const certification = await certificationService.getCertificationDetails(params.id);
+export default function CertificationDetailPage({ params }: Props) {
+  const resolvedParams = use(params);
+  const t = useTranslations("certifications");
+  const [certification, setCertification] = useState<any>(null);
+  const [publicUrl, setPublicUrl] = useState<string>("");
+  const [loading, setLoading] = useState(true);
 
-  if (!certification) {
-    notFound();
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const cert = await certificationService.getCertificationDetails(resolvedParams.id);
+        if (!cert) {
+          notFound();
+        }
+        setCertification(cert);
+        const url = await certificationService.getCertificationPublicUrl(cert.filePath);
+        setPublicUrl(url);
+      } catch (error) {
+        console.error("Error fetching certification:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [resolvedParams.id]);
+
+  if (loading) {
+    return <div>Loading...</div>;
   }
 
-  const publicUrl = await certificationService.getCertificationPublicUrl(certification.filePath);
+  if (!certification) {
+    return notFound();
+  }
 
   return (
     <div className="container mx-auto py-10 space-y-6">
@@ -42,36 +74,36 @@ export default async function CertificationDetailPage({ params }: Props) {
             <ArrowLeft className="h-5 w-5" />
           </Link>
         </Button>
-        <h1 className="text-2xl font-bold">Sertifika Detayı</h1>
+        <h1 className="text-2xl font-bold">{t("detail.title")}</h1>
       </div>
 
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
-            <span>{certification.type}</span>
+            <span>{t(`types.${certification.type.toLowerCase()}`)}</span>
             <Badge className={`${getStatusColor(certification.status)} text-white`}>
-              {certification.status}
+              {t(`status.${certification.status.toLowerCase()}`)}
             </Badge>
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1">
-              <p className="text-sm text-muted-foreground">Sertifika Tipi</p>
-              <p className="font-medium">{certification.type}</p>
+              <p className="text-sm text-muted-foreground">{t("detail.type")}</p>
+              <p className="font-medium">{t(`types.${certification.type.toLowerCase()}`)}</p>
             </div>
             <div className="space-y-1">
-              <p className="text-sm text-muted-foreground">Durum</p>
-              <p className="font-medium">{certification.status}</p>
+              <p className="text-sm text-muted-foreground">{t("detail.status")}</p>
+              <p className="font-medium">{t(`status.${certification.status.toLowerCase()}`)}</p>
             </div>
             <div className="space-y-1">
-              <p className="text-sm text-muted-foreground">Oluşturulma Tarihi</p>
+              <p className="text-sm text-muted-foreground">{t("detail.createdAt")}</p>
               <p className="font-medium">
                 {new Date(certification.createdAt).toLocaleDateString("tr-TR")}
               </p>
             </div>
             <div className="space-y-1">
-              <p className="text-sm text-muted-foreground">Son Güncelleme</p>
+              <p className="text-sm text-muted-foreground">{t("detail.updatedAt")}</p>
               <p className="font-medium">
                 {new Date(certification.updatedAt).toLocaleDateString("tr-TR")}
               </p>
@@ -82,13 +114,13 @@ export default async function CertificationDetailPage({ params }: Props) {
             <Button asChild className="flex-1">
               <a href={publicUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
                 <Eye className="h-4 w-4" />
-                Görüntüle
+                {t("detail.view")}
               </a>
             </Button>
             <Button asChild variant="outline" className="flex-1">
               <a href={publicUrl} download className="flex items-center gap-2">
                 <Download className="h-4 w-4" />
-                İndir
+                {t("detail.download")}
               </a>
             </Button>
           </div>

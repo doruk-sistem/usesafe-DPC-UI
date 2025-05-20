@@ -65,7 +65,6 @@ import { useAuth } from "@/lib/hooks/use-auth";
 import { documentsApiHooks } from "@/lib/hooks/use-documents";
 import { useProducts } from "@/lib/hooks/use-products";
 import { Document, DocumentStatus } from "@/lib/types/document";
-
 import { getStatusIcon } from "@/lib/utils/document-utils";
 
 interface DocumentListProps {

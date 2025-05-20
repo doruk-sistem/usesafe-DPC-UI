@@ -13,6 +13,15 @@
   "certifications": {
     "title": "Certifications",
     "description": "View and manage your product certifications",
+    "detail":{
+      "title": "Certification Details",
+      "type": "Certification Type",
+      "status": "Certification Status",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At",
+      "view": "View",
+      "download": "Download"
+    },
     "details":{
       "actions":{
         "view":"View",
@@ -62,7 +71,12 @@
       "iso":"ISO Certificate",
       "other":"Other",
       "export":"Export Certificate",
-      "production":"Production Certificate"
+      "production":"Production Certificate",
+      "export_certificate":"Export Certificate",
+      "quality_certificate": "Quality Certificate",
+      "safety_certificate": "Safety Certificate",
+      "environmental_certificate": "Environmental Certificate",
+      "iso_certificate": "ISO Certificate"
     },
     "list":{
       "title":"Certification List",

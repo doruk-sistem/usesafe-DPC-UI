@@ -1,8 +1,10 @@
 "use client";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { NewDPCForm } from "../../../../components/dashboard/certifications/new-dpc-form";
 import { useTranslations } from "next-intl";
+
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+
+import { NewDPCForm } from "../../../../components/dashboard/certifications/new-dpc-form";
 
 export default function NewDPCPage() {
   const t = useTranslations("certifications.form");
