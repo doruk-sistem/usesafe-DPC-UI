@@ -1,89 +1,106 @@
-import type { UseFormReturn } from "react-hook-form";
-
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { UseFormReturn } from "react-hook-form";
+import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { DocumentType } from "@/lib/types/company";
 
 interface DocumentsStepProps {
   form: UseFormReturn<any>;
 }
 
-interface DocumentFieldProps {
-  name: string;
-  label: string;
-  multiple?: boolean;
-  required?: boolean;
-}
-
-const requiredDocuments: DocumentFieldProps[] = [
-  { name: 'signatureCircular', label: 'Signature Circular', required: true },
-  { name: 'tradeRegistry', label: 'Trade Registry Gazette', required: true },
-  { name: 'taxPlate', label: 'Tax Plate', required: true },
-  { name: 'activityCertificate', label: 'Activity Certificate', required: true },
-];
-
-const DocumentField = ({ 
-  form, 
-  name, 
-  label, 
-  multiple = false, 
-  required = false 
-}: DocumentFieldProps & { form: UseFormReturn<any> }) => (
-  <FormField
-    control={form.control}
-    name={name}
-    render={({ field: { onChange, value, ...field } }) => (
-      <FormItem>
-        <FormLabel>{label} {required && '*'}</FormLabel>
-        <FormControl>
-          <Input
-            type="file"
-            accept=".pdf,.jpg,.jpeg,.png"
-            multiple={multiple}
-            onChange={async (files) => {
-              if (Array.isArray(files)) {
-                if (files.length > 0) {
-                  const fileUrl = URL.createObjectURL(files[0]);
-                  onChange(fileUrl);
-                  
-                  return () => URL.revokeObjectURL(fileUrl);
-                }
-              } else if (files instanceof File) {
-                const fileUrl = URL.createObjectURL(files);
-                onChange(fileUrl);
-                
-                return () => URL.revokeObjectURL(fileUrl);
-              }
-            }}
-            {...field}
-          />
-        </FormControl>
-        <FormMessage />
-      </FormItem>
-    )}
-  />
-);
-
 export function DocumentsStep({ form }: DocumentsStepProps) {
+  const handleFileChange = (field: string, file: File | null) => {
+    if (file) {
+      form.setValue(field, { file, type: field as DocumentType });
+    } else {
+      form.setValue(field, null);
+    }
+  };
+
   return (
     <div className="space-y-6">
-      <div className="space-y-4">
-        <h3 className="font-medium">Required Documents</h3>
-        {requiredDocuments.map(doc => (
-          <DocumentField 
-            key={doc.name} 
-            form={form} 
-            {...doc} 
-          />
-        ))}
-      </div>
+      <FormField
+        control={form.control}
+        name="signatureCircular"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>İmza Sirküleri</FormLabel>
+            <FormControl>
+              <Input
+                type="file"
+                accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                onChange={(e) => {
+                  const file = e.target.files?.[0] || null;
+                  handleFileChange("signatureCircular", file);
+                }}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
 
-      {/* Opsiyonel belgeler kaldırıldı - Kullanıcılar bunları kayıt sonrası "Yeni DPC ekle" butonu ile ekleyecekler */}
+      <FormField
+        control={form.control}
+        name="tradeRegistry"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Ticaret Sicil Gazetesi</FormLabel>
+            <FormControl>
+              <Input
+                type="file"
+                accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                onChange={(e) => {
+                  const file = e.target.files?.[0] || null;
+                  handleFileChange("tradeRegistry", file);
+                }}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="taxPlate"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Vergi Levhası</FormLabel>
+            <FormControl>
+              <Input
+                type="file"
+                accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                onChange={(e) => {
+                  const file = e.target.files?.[0] || null;
+                  handleFileChange("taxPlate", file);
+                }}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="activityCertificate"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Faaliyet Belgesi</FormLabel>
+            <FormControl>
+              <Input
+                type="file"
+                accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                onChange={(e) => {
+                  const file = e.target.files?.[0] || null;
+                  handleFileChange("activityCertificate", file);
+                }}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
     </div>
   );
 }

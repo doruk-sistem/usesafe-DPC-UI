@@ -1,7 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
+import React from "react";
 
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
@@ -11,6 +12,7 @@ import { useRegistrationSteps } from "@/lib/hooks/use-registration-steps";
 import { useToast } from "@/lib/hooks/use-toast";
 import { registerSchema } from "@/lib/schemas/auth";
 import { ManufacturerService } from "@/lib/services/manufacturer";
+import { CompanyDocumentService } from "@/lib/services/companyDocument";
 import { prepareRegistrationData } from "@/lib/utils/registration-mapper";
 
 import { AddressStep } from "./steps/address";
@@ -41,45 +43,76 @@ export function ComplateRegistrationForm() {
       taxId: "",
       tradeRegisterNumber: "",
       mersisNumber: "",
+      ownerName: "",
       nationalId: "",
+      email: "",
       countryCode: "+90",
       phone: "",
       address: "",
       city: "",
       district: "",
       postalCode: "",
-      isoCertificates: [],
-      qualityCertificates: [],
-      exportDocuments: [],
-      productionPermits: [],
+      password: "",
+      confirmPassword: "",
+      signatureCircular: null,
+      tradeRegistry: null,
+      taxPlate: null,
+      activityCertificate: null,
     },
-    mode: "onChange", // Enable real-time validation
+    mode: "onChange",
   });
 
   const { currentStep, totalSteps, nextStep, prevStep, isLastStep, progress } =
     useRegistrationSteps(form);
 
-  const onNextStep = async () => {
-    try {
-      // Always try to progress to the next step
-      const stepValidated = await nextStep();
+  const onSubmit = async (data: FormData) => {
+    console.log('onSubmit function called');
+    console.log('Form data:', data);
+    console.log('Form errors:', form.formState.errors);
+    console.log('Current step:', currentStep);
+    console.log('Is last step:', isLastStep);
 
-      // If this is the last step and validation passes, submit the full registration
-      if (isLastStep && stepValidated) {
-        setIsSubmitting(true);
+    if (isLastStep) {
+      setIsSubmitting(true);
+      try {
+        // Önce şirket kaydını yap
+        const registrationData = prepareRegistrationData(data);
+        console.log('Prepared registration data:', registrationData);
+        const response = await ManufacturerService.register(registrationData);
+        console.log('Registration response:', response);
 
-        try {
-          const formData = form.getValues();
+        if (response.success) {
+          // Şirket kaydı başarılı olduktan sonra dökümanları yükle
+          const documents = [
+            { file: data.signatureCircular, type: 'signature_circular' },
+            { file: data.tradeRegistry, type: 'trade_registry_gazette' },
+            { file: data.taxPlate, type: 'tax_plate' },
+            { file: data.activityCertificate, type: 'activity_certificate' }
+          ].filter(doc => doc.file && doc.file.file);
 
-          // Prepare and submit manufacturer data
-          const registrationData = prepareRegistrationData(formData);
-          const response = await ManufacturerService.register(registrationData);
+          console.log('Documents to upload:', documents);
 
-          if (!response.success) {
-            throw new Error(response.message || "Registration failed");
+          for (const doc of documents) {
+            if (doc.file && doc.file.file) {
+              try {
+                await CompanyDocumentService.uploadDocument(
+                  doc.file.file,
+                  response.registrationId,
+                  doc.type
+                );
+              } catch (error) {
+                console.error(`Error uploading document ${doc.type}:`, error);
+                // Döküman yükleme hatası olsa bile devam et
+                toast({
+                  title: "Uyarı",
+                  description: `${doc.type} dökümanı yüklenirken hata oluştu. Daha sonra tekrar yükleyebilirsiniz.`,
+                  variant: "destructive",
+                });
+              }
+            }
           }
 
-          // Associate Supabase user with company
+          // Kullanıcı bilgilerini güncelle
           await updateUser({
             data: {
               company_id: response.registrationId,
@@ -88,37 +121,45 @@ export function ComplateRegistrationForm() {
 
           setIsSubmitted(true);
           toast({
-            title: "Registration Submitted Successfully",
-            description: "Please check your email to verify your account.",
+            title: "Başarılı",
+            description: "Kayıt işlemi tamamlandı.",
           });
-
-          // Redirect after showing success message
-          // setTimeout(() => {
-          //   router.push("/auth/pending-approval");
-          // }, 5000);
-        } catch (error) {
+        }
+      } catch (error) {
+        console.error("Registration error:", error);
+        toast({
+          title: "Hata",
+          description: error instanceof Error ? error.message : "Kayıt sırasında bir hata oluştu",
+          variant: "destructive",
+        });
+      } finally {
+        setIsSubmitting(false);
+      }
+    } else {
+      console.log('Attempting to move to next step...');
+      const isValid = await nextStep();
+      console.log('Step validation result:', isValid);
+      if (!isValid) {
+        console.log('Form validation failed');
+        const errors = form.formState.errors;
+        console.log('Validation errors:', errors);
+        
+        // İlk hatayı göster
+        const firstError = Object.values(errors)[0];
+        if (firstError) {
           toast({
-            title: "Registration Failed",
-            description:
-              error instanceof Error
-                ? error.message
-                : "There was an error submitting your registration. Please try again.",
+            title: "Hata",
+            description: firstError.message || "Lütfen tüm zorunlu alanları doldurun",
             variant: "destructive",
           });
-          throw error;
+        } else {
+          toast({
+            title: "Hata",
+            description: "Lütfen tüm zorunlu alanları doldurun",
+            variant: "destructive",
+          });
         }
       }
-    } catch (error) {
-      toast({
-        title: "Registration Failed",
-        description:
-          error instanceof Error
-            ? error.message
-            : "There was an error submitting your registration. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -128,54 +169,76 @@ export function ComplateRegistrationForm() {
 
   const CurrentStepComponent = steps[currentStep].component;
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      handleSubmit(e);
-    }
-  };
-
   return (
-    <div className="space-y-8">
-      <div className="space-y-2">
-        <Progress value={progress} className="h-2" />
-        <div className="flex justify-between text-sm text-muted-foreground">
-          <span>
-            Step {currentStep + 1} of {totalSteps}
-          </span>
-          <span>{steps[currentStep].title}</span>
-        </div>
-      </div>
-
+    <div className="space-y-6">
+      <Progress value={progress} className="h-2" />
       <Form {...form}>
-        <form
-          className="space-y-8" // Add these for debugging
-          onKeyDown={handleKeyPress}
+        <form 
+          onSubmit={async (e) => {
+            e.preventDefault();
+            console.log('Form submit event triggered');
+            console.log('Form state before submit:', {
+              values: form.getValues(),
+              errors: form.formState.errors,
+              isDirty: form.formState.isDirty,
+              isValid: form.formState.isValid
+            });
+
+            // Form değerlerini al
+            const values = form.getValues();
+            console.log('Current form values:', values);
+
+            // Sadece mevcut adımın validasyonunu yap
+            const currentStepFields = steps[currentStep].fields || [];
+            const isValid = await form.trigger(currentStepFields);
+            console.log('Form validation result:', isValid);
+
+            if (isValid) {
+              onSubmit(values);
+            } else {
+              console.log('Form validation failed');
+              const errors = form.formState.errors;
+              console.log('Validation errors:', errors);
+              
+              // İlk hatayı göster
+              const firstError = Object.values(errors)[0];
+              if (firstError) {
+                toast({
+                  title: "Hata",
+                  description: firstError.message || "Lütfen tüm zorunlu alanları doldurun",
+                  variant: "destructive",
+                });
+              } else {
+                toast({
+                  title: "Hata",
+                  description: "Lütfen tüm zorunlu alanları doldurun",
+                  variant: "destructive",
+                });
+              }
+            }
+          }} 
+          className="space-y-8"
         >
           <CurrentStepComponent form={form} />
-
-          <div className="flex justify-between pt-4">
+          <div className="flex justify-between">
             {currentStep > 0 && (
-              <Button
-                type="button"
-                variant="outline"
-                onClick={prevStep}
-                disabled={isSubmitting}
-              >
-                Previous
+              <Button type="button" variant="outline" onClick={prevStep}>
+                Geri
               </Button>
             )}
-            <Button
-              type="button"
-              className="ml-auto"
+            <Button 
+              type="submit" 
               disabled={isSubmitting}
-              onClick={() => onNextStep()}
+              onClick={() => {
+                console.log('Submit button clicked');
+                console.log('Current form values:', form.getValues());
+              }}
             >
               {isSubmitting
-                ? "Submitting..."
+                ? "Kaydediliyor..."
                 : isLastStep
-                ? "Submit Registration"
-                : "Next"}
+                ? "Kaydet"
+                : "İleri"}
             </Button>
           </div>
         </form>

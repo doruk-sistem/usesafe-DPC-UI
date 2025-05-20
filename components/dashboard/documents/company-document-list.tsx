@@ -1,6 +1,6 @@
 "use client";
 
-import { FileText, MoreHorizontal, Download, History, ExternalLink, AlertTriangle, CheckCircle, XCircle, Clock } from "lucide-react";
+import { FileText, MoreHorizontal, Download, History, ExternalLink, AlertTriangle } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 
@@ -35,23 +35,16 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-
-import { getStatusIcon } from "../../../lib/utils/document-utils";
-import { documentsApiHooks } from "@/lib/hooks/use-documents";
-import { Document } from "@/lib/types/document";
 import { Loading } from "@/components/ui/loading";
-import { useCompanyDocuments } from "@/lib/hooks/use-company-documents";
-import { useAuth } from "@/lib/hooks/use-auth";
 
-export function DocumentList() {
+import { getStatusIcon } from "@/lib/utils/document-utils";
+import { useCompanyDocuments } from "@/lib/hooks/use-company-documents";
+import { Document } from "@/lib/types/document";
+
+export function CompanyDocumentList() {
   const t = useTranslations();
   const { useGetCompanyDocuments } = useCompanyDocuments();
   const { data: documents, isLoading, error } = useGetCompanyDocuments();
-  const { user } = useAuth();
-
-  console.log("DocumentList - Documents:", documents);
-  console.log("DocumentList - Loading:", isLoading);
-  console.log("DocumentList - Error:", error);
 
   const getStatusVariant = (status: string) => {
     switch (status) {
@@ -70,9 +63,9 @@ export function DocumentList() {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>{t("documents.repository.title")}</CardTitle>
+          <CardTitle>{t("companyDocuments.title")}</CardTitle>
           <CardDescription>
-            {t("documents.repository.description")}
+            {t("companyDocuments.description")}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -86,32 +79,18 @@ export function DocumentList() {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>{t("documents.repository.title")}</CardTitle>
+          <CardTitle>{t("companyDocuments.title")}</CardTitle>
           <CardDescription>
-            {t("documents.repository.description")}
+            {t("companyDocuments.description")}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="text-center py-8">
             <AlertTriangle className="h-12 w-12 text-destructive mx-auto mb-4" />
-            <h3 className="text-lg font-medium mb-2">Bir Hata Oluştu</h3>
+            <h3 className="text-lg font-medium mb-2">{t("error.title")}</h3>
             <p className="text-muted-foreground">
-              Dökümanlar yüklenirken bir hata oluştu. Lütfen daha sonra tekrar deneyin.
+              {t("error.description")}
             </p>
-            <div className="mt-4 p-4 bg-muted rounded-lg text-left">
-              <p className="text-sm font-medium mb-2">Hata Detayı:</p>
-              <pre className="text-xs overflow-auto">
-                {JSON.stringify({
-                  error: error instanceof Error ? error.message : "Bilinmeyen hata",
-                  user: {
-                    id: user?.id,
-                    email: user?.email,
-                    metadata: user?.user_metadata,
-                    isAuthenticated: !!user
-                  }
-                }, null, 2)}
-              </pre>
-            </div>
           </div>
         </CardContent>
       </Card>
@@ -119,39 +98,21 @@ export function DocumentList() {
   }
 
   if (!documents || documents.length === 0) {
-    console.log("No documents found. Current documents:", documents);
     return (
       <Card>
         <CardHeader>
-          <CardTitle>{t("documents.repository.title")}</CardTitle>
+          <CardTitle>{t("companyDocuments.title")}</CardTitle>
           <CardDescription>
-            {t("documents.repository.description")}
+            {t("companyDocuments.description")}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="text-center py-8">
             <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-medium mb-2">Döküman Bulunamadı</h3>
+            <h3 className="text-lg font-medium mb-2">{t("noDocumentsFound")}</h3>
             <p className="text-muted-foreground">
-              Henüz hiç döküman yüklenmemiş. Yeni bir döküman yüklemek için yukarıdaki "Yükle" butonunu kullanabilirsiniz.
+              {t("noDocumentsDescription")}
             </p>
-            <div className="mt-4 p-4 bg-muted rounded-lg text-left">
-              <p className="text-sm font-medium mb-2">Debug Bilgisi:</p>
-              <pre className="text-xs overflow-auto">
-                {JSON.stringify({
-                  user: {
-                    id: user?.id,
-                    email: user?.email,
-                    metadata: user?.user_metadata,
-                    isAuthenticated: !!user
-                  },
-                  documents,
-                  isLoading,
-                  error,
-                  queryKey: ["companyDocuments", user?.user_metadata?.company_id]
-                }, null, 2)}
-              </pre>
-            </div>
           </div>
         </CardContent>
       </Card>
@@ -161,9 +122,9 @@ export function DocumentList() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{t("documents.repository.title")}</CardTitle>
+        <CardTitle>{t("companyDocuments.title")}</CardTitle>
         <CardDescription>
-          {t("documents.repository.description")}
+          {t("companyDocuments.description")}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -233,7 +194,7 @@ export function DocumentList() {
                       <DropdownMenuLabel>{t("documents.repository.actions.title")}</DropdownMenuLabel>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem asChild>
-                        <Link href={`/dashboard/documents/${doc.id}`}>
+                        <Link href={`/dashboard/company/documents/${doc.id}`}>
                           <FileText className="h-4 w-4 mr-2" />
                           {t("documents.repository.actions.view")}
                         </Link>
@@ -248,7 +209,7 @@ export function DocumentList() {
                       </DropdownMenuItem>
                       {doc.status === "rejected" && (
                         <DropdownMenuItem asChild>
-                          <Link href={`/dashboard/documents/${doc.id}/reupload`}>
+                          <Link href={`/dashboard/company/documents/${doc.id}/reupload`}>
                             <ExternalLink className="h-4 w-4 mr-2" />
                             {t("documents.repository.actions.reupload")}
                           </Link>
@@ -268,4 +229,4 @@ export function DocumentList() {
       </CardContent>
     </Card>
   );
-}
+} 

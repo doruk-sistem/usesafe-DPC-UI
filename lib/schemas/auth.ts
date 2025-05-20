@@ -41,9 +41,6 @@ function validatePhoneNumber(phone: string) {
 export const registerSchema = z.object({
   // Company Information
   companyName: z.string().min(2, "Company name must be at least 2 characters"),
-  companyType: z.enum(['manufacturer', 'brand_owner', 'material_supplier', 'factory'], {
-    required_error: "Please select company type"
-  }),
   taxId: z.string()
     .length(10, "Tax ID must be exactly 10 digits")
     .regex(/^\d+$/, "Tax ID must contain only numbers"),
@@ -80,7 +77,7 @@ export const registerSchema = z.object({
   district: z.string().min(2, "District is required"),
   postalCode: z.string().optional(),
 
-  // Required Documents - Sadece zorunlu belgeler
+  // Required Documents
   signatureCircular: z.any(),
   tradeRegistry: z.any(),
   taxPlate: z.any(),
