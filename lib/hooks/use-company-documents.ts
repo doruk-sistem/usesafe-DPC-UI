@@ -11,14 +11,6 @@ export const useCompanyDocuments = () => {
   const companyId = user?.user_metadata?.data?.company_id;
 
   const useGetCompanyDocuments = () => {
-    // Kullanıcı ve şirket bilgilerini kontrol et
-    console.log("=== AUTH DEBUG ===");
-    console.log("User:", user);
-    console.log("User Metadata:", user?.user_metadata);
-    console.log("Company ID:", companyId);
-    console.log("Is Authenticated:", !!user);
-    console.log("=================");
-
     return useQuery({
       queryKey: ["companyDocuments", companyId],
       queryFn: async () => {
@@ -31,12 +23,9 @@ export const useCompanyDocuments = () => {
         }
 
         try {
-          console.log("Fetching documents for company ID:", companyId);
           const documents = await CompanyDocumentService.getCompanyDocuments(companyId);
-          console.log("Documents fetched:", documents);
           return documents;
         } catch (error) {
-          console.error("Error in useGetCompanyDocuments:", error);
           if (error instanceof Error) {
             throw new Error(`Dökümanlar getirilirken hata oluştu: ${error.message}`);
           }

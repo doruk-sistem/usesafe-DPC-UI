@@ -24,24 +24,16 @@ export default function DocumentDetailsPage() {
   const document = documents?.find(doc => doc.id === documentId);
 
   const handleViewFile = () => {
-    console.log("handleViewFile called", { filePath: document?.filePath, SUPABASE_URL });
     if (document?.filePath && SUPABASE_URL) {
       const url = `${SUPABASE_URL}/storage/v1/object/public/company-documents/${document.filePath}`;
-      console.log("Opening URL:", url);
       window.open(url, '_blank');
-    } else {
-      console.log("Eksik bilgi: filePath veya SUPABASE_URL yok");
     }
   };
 
   const handleDownloadFile = () => {
-    console.log("handleDownloadFile called", { filePath: document?.filePath, SUPABASE_URL });
     if (document?.filePath && SUPABASE_URL) {
       const url = `${SUPABASE_URL}/storage/v1/object/public/company-documents/${document.filePath}`;
-      console.log("Opening URL:", url);
       window.open(url, '_blank');
-    } else {
-      console.log("Eksik bilgi: filePath veya SUPABASE_URL yok");
     }
   };
 
@@ -80,6 +72,10 @@ export default function DocumentDetailsPage() {
           </p>
         </div>
         <div className="flex items-center gap-2">
+          <Button onClick={handleViewFile} variant="outline">
+            <Eye className="h-4 w-4 mr-2" />
+            {t('details.viewFile')}
+          </Button>
           <Button onClick={handleDownloadFile} variant="outline">
             <Download className="h-4 w-4 mr-2" />
             {t('details.downloadFile')}

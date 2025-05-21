@@ -29,7 +29,7 @@ export default function UploadDocumentPage() {
   const router = useRouter();
   const { user } = useAuth();
   const [file, setFile] = useState<File | null>(null);
-  const [docType, setDocType] = useState<string>("");
+  const [docType, setDocType] = useState<DocumentType | "">("");
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -81,7 +81,7 @@ export default function UploadDocumentPage() {
             <Select
               value={docType}
               onValueChange={(value) => {
-                setDocType(value);
+                setDocType(value as DocumentType);
                 setError(null);
               }}
             >

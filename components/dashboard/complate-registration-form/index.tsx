@@ -66,22 +66,14 @@ export function ComplateRegistrationForm() {
     useRegistrationSteps(form);
 
   const onSubmit = async (data: FormData) => {
-    console.log('onSubmit function called');
-    console.log('Form data:', data);
-    console.log('Form errors:', form.formState.errors);
-    console.log('Current step:', currentStep);
-    console.log('Is last step:', isLastStep);
-
     if (isLastStep) {
       setIsSubmitting(true);
       try {
         // Önce şirket kaydını yap
         const registrationData = prepareRegistrationData(data);
-        console.log('Prepared registration data:', registrationData);
         const response = await ManufacturerService.register(registrationData);
-        console.log('Registration response:', response);
 
-        if (response.success) {
+        if (response.success && typeof response.registrationId === 'string') {
           // Şirket kaydı başarılı olduktan sonra dökümanları yükle
           const documents = [
             { file: data.signatureCircular, type: 'signature_circular' },
@@ -90,19 +82,15 @@ export function ComplateRegistrationForm() {
             { file: data.activityCertificate, type: 'activity_certificate' }
           ].filter(doc => doc.file && doc.file.file);
 
-          console.log('Documents to upload:', documents);
-
           for (const doc of documents) {
             if (doc.file && doc.file.file) {
               try {
                 await CompanyDocumentService.uploadDocument(
                   doc.file.file,
                   response.registrationId,
-                  doc.type
+                  doc.type as import("@/lib/types/company").DocumentType
                 );
               } catch (error) {
-                console.error(`Error uploading document ${doc.type}:`, error);
-                // Döküman yükleme hatası olsa bile devam et
                 toast({
                   title: "Uyarı",
                   description: `${doc.type} dökümanı yüklenirken hata oluştu. Daha sonra tekrar yükleyebilirsiniz.`,
@@ -126,7 +114,6 @@ export function ComplateRegistrationForm() {
           });
         }
       } catch (error) {
-        console.error("Registration error:", error);
         toast({
           title: "Hata",
           description: error instanceof Error ? error.message : "Kayıt sırasında bir hata oluştu",
@@ -136,29 +123,20 @@ export function ComplateRegistrationForm() {
         setIsSubmitting(false);
       }
     } else {
-      console.log('Attempting to move to next step...');
       const isValid = await nextStep();
-      console.log('Step validation result:', isValid);
       if (!isValid) {
-        console.log('Form validation failed');
         const errors = form.formState.errors;
-        console.log('Validation errors:', errors);
         
         // İlk hatayı göster
-        const firstError = Object.values(errors)[0];
-        if (firstError) {
-          toast({
-            title: "Hata",
-            description: firstError.message || "Lütfen tüm zorunlu alanları doldurun",
-            variant: "destructive",
-          });
-        } else {
-          toast({
-            title: "Hata",
-            description: "Lütfen tüm zorunlu alanları doldurun",
-            variant: "destructive",
-          });
+        let errorMessage = "Lütfen tüm zorunlu alanları doldurun";
+        if (errors[Object.keys(errors)[0]] && typeof errors[Object.keys(errors)[0]] === 'object' && 'message' in errors[Object.keys(errors)[0]] && typeof errors[Object.keys(errors)[0]].message === 'string') {
+          errorMessage = errors[Object.keys(errors)[0]].message;
         }
+        toast({
+          title: "Hata",
+          description: errorMessage,
+          variant: "destructive",
+        });
       }
     }
   };
@@ -176,45 +154,28 @@ export function ComplateRegistrationForm() {
         <form 
           onSubmit={async (e) => {
             e.preventDefault();
-            console.log('Form submit event triggered');
-            console.log('Form state before submit:', {
-              values: form.getValues(),
-              errors: form.formState.errors,
-              isDirty: form.formState.isDirty,
-              isValid: form.formState.isValid
-            });
 
             // Form değerlerini al
             const values = form.getValues();
-            console.log('Current form values:', values);
 
             // Sadece mevcut adımın validasyonunu yap
-            const currentStepFields = steps[currentStep].fields || [];
-            const isValid = await form.trigger(currentStepFields);
-            console.log('Form validation result:', isValid);
+            const isValid = await form.trigger();
 
             if (isValid) {
               onSubmit(values);
             } else {
-              console.log('Form validation failed');
               const errors = form.formState.errors;
-              console.log('Validation errors:', errors);
               
               // İlk hatayı göster
-              const firstError = Object.values(errors)[0];
-              if (firstError) {
-                toast({
-                  title: "Hata",
-                  description: firstError.message || "Lütfen tüm zorunlu alanları doldurun",
-                  variant: "destructive",
-                });
-              } else {
-                toast({
-                  title: "Hata",
-                  description: "Lütfen tüm zorunlu alanları doldurun",
-                  variant: "destructive",
-                });
+              let errorMessage2 = "Lütfen tüm zorunlu alanları doldurun";
+              if (errors[Object.keys(errors)[0]] && typeof errors[Object.keys(errors)[0]] === 'object' && 'message' in errors[Object.keys(errors)[0]] && typeof errors[Object.keys(errors)[0]].message === 'string') {
+                errorMessage2 = errors[Object.keys(errors)[0]].message;
               }
+              toast({
+                title: "Hata",
+                description: errorMessage2,
+                variant: "destructive",
+              });
             }
           }} 
           className="space-y-8"
@@ -229,10 +190,6 @@ export function ComplateRegistrationForm() {
             <Button 
               type="submit" 
               disabled={isSubmitting}
-              onClick={() => {
-                console.log('Submit button clicked');
-                console.log('Current form values:', form.getValues());
-              }}
             >
               {isSubmitting
                 ? "Kaydediliyor..."
