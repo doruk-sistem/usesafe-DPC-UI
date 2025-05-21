@@ -77,9 +77,7 @@ export function ForgotPasswordForm() {
             {t("forgot-password.success.description")}
           </p>
           <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground">
-            <li>{t("forgot-password.success.checkInbox")}</li>
-            <li>{t("forgot-password.success.checkSpam")}</li>
-            <li>{t("forgot-password.success.validityPeriod")}</li>
+      
           </ul>
         </div>
         <Button asChild className="mt-4">

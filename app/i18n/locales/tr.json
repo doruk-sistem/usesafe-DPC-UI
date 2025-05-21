@@ -2995,6 +2995,12 @@
   "loading": "Yükleniyor...",
   "errorFetching": "Hata: Bilgiler alınamadı.",
   "auth": {
+    "success":{
+      "updatePassword":{
+        "title": "Şifre Güncellendi",
+        "description": "Şifreniz başarıyla güncellendi."
+      }
+    },
     "forgot-password":{
       "title": "Şifre Kurtarma",
       "pageTitle": "Şifremi Unuttum",

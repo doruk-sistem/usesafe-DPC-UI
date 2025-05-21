@@ -143,6 +143,28 @@ export function useAuth() {
     }
   };
 
+  const updatePassword = async (password: string) => {
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: password,
+      });
+      if (error) throw error;
+
+      toast({
+        title: t("success.updatePassword.title"),
+        description: t("success.updatePassword.description"),
+      });
+      return { success: true };
+    } catch (error) {
+      if (error instanceof Error) {
+        if (error.message.includes("password")) {
+          throw new Error("Your new password cannot be the same as the password you last used. Please choose a different password.");
+        }
+      }
+      throw error;
+    }
+  };
+
   const isAdmin = () => {
     return user?.user_metadata?.role === "admin";
   };
@@ -193,6 +215,7 @@ export function useAuth() {
     signOut,
     isAdmin,
     updateUser,
+    updatePassword,
     verifyOtp,
     resetPassword,
   };

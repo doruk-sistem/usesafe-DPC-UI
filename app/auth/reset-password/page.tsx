@@ -27,10 +27,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { supabase } from "@/lib/supabase/client";
+import { useAuth } from "@/lib/hooks/use-auth";
 
 export default function ResetPasswordPage() {
   const { toast } = useToast();
+  const { updatePassword } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -78,11 +79,7 @@ export default function ResetPasswordPage() {
     try {
       setIsSubmitting(true);
       
-      const { error } = await supabase.auth.updateUser({
-        password: data.password,
-      });
-
-      if (error) throw error;
+      await updatePassword(data.password);
 
       toast({
         title: t("success.title"),
