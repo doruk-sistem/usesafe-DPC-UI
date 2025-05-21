@@ -49,7 +49,7 @@ export function ProductList() {
   const [manufacturerFilter, setManufacturerFilter] = useState("all");
   const { getImageUrl } = useImageUrl();
 
-  const { products, isLoading } = useProducts();
+  const { products, isLoading, error } = useProducts();
 
   const filteredProducts = products.filter((product) => {
     // Filter by search query
