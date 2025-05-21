@@ -5,6 +5,13 @@
     "verifyProducts": "Ürün Doğrula",
     "signIn": "Giriş Yap"
   },
+  "list":{
+    "title": "Liste",
+    "description": "Ürün listesi",
+    "empty":{
+      "manufacturer": "Bu şirket için ürün bulunamadı"
+    }
+  },
   "pages": {
     "pendingProducts": {
       "title": "Bekleyen Ürünler",
@@ -3208,7 +3215,8 @@
       }
     },
     "actions":{
-      "new":"Yeni Sertifika"
+      "new":"Yeni Sertifika",
+      "download":"İndir"
     },
     "list": {
       "title": "Sertifika Listesi",
@@ -3219,7 +3227,9 @@
       "loading":"Sertifikalar yükleniyor...",
       "empty":{
         "title":"Sertifika bulunamadı",
-        "description":"Sertifika bulunamadı"
+        "description":"Sertifika bulunamadı",
+        "manufacturer":"Bu şirket için sertifika bulunamadı",
+        "addButton":"Ürün Ekle"
       },
       "table":{
         "document":"Belge",
