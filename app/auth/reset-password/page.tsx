@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { useTranslations } from "next-intl";
 
 import {
   Card,
@@ -28,26 +29,14 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/lib/supabase/client";
 
-const resetPasswordSchema = z
-  .object({
-    password: z
-      .string()
-      .min(6, "Şifre en az 6 karakter olmalıdır"),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Şifreler eşleşmiyor",
-    path: ["confirmPassword"],
-  });
-
-type FormData = z.infer<typeof resetPasswordSchema>;
-
 export default function ResetPasswordPage() {
   const { toast } = useToast();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  
+  const t = useTranslations("auth.reset-password");
   
   // URL'den hata parametrelerini kontrol et
   useEffect(() => {
@@ -56,11 +45,26 @@ export default function ResetPasswordPage() {
     const errorDescription = searchParams.get('error_description');
     
     if (error && errorCode === 'otp_expired') {
-      setErrorMessage('Şifre sıfırlama bağlantısının süresi dolmuş. Lütfen yeni bir şifre sıfırlama bağlantısı talep edin.');
+      setErrorMessage(t("error.expiredLink"));
     } else if (error) {
-      setErrorMessage(errorDescription || 'Şifre sıfırlama işlemi sırasında bir hata oluştu.');
+      setErrorMessage(errorDescription || t("error.generic"));
     }
-  }, [searchParams]);
+  }, [searchParams, t]);
+
+  // Zod şemasını component içinde tanımlıyoruz
+  const resetPasswordSchema = z
+    .object({
+      password: z
+        .string()
+        .min(6, t("validation.minLength")),
+      confirmPassword: z.string(),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+      message: t("validation.passwordMismatch"),
+      path: ["confirmPassword"],
+    });
+
+  type FormData = z.infer<typeof resetPasswordSchema>;
 
   const form = useForm<FormData>({
     resolver: zodResolver(resetPasswordSchema),
@@ -81,22 +85,22 @@ export default function ResetPasswordPage() {
       if (error) throw error;
 
       toast({
-        title: "Şifre Başarıyla Sıfırlandı",
-        description: "Yeni şifrenizle giriş yapabilirsiniz.",
+        title: t("success.title"),
+        description: t("success.description"),
       });
 
       router.push("/auth/login");
     } catch (error) {
       if (error instanceof Error) {
         toast({
-          title: "Şifre Sıfırlama Başarısız",
+          title: t("error.title"),
           description: error.message,
           variant: "destructive",
         });
       } else {
         toast({
-          title: "Şifre Sıfırlama Başarısız",
-          description: "Beklenmeyen bir hata oluştu",
+          title: t("error.title"),
+          description: t("error.generic"),
           variant: "destructive",
         });
       }
@@ -109,16 +113,16 @@ export default function ResetPasswordPage() {
     <div className="container max-w-md mx-auto py-10 px-4">
       <div className="flex flex-col items-center text-center mb-10">
         <KeyRound className="h-12 w-12 text-primary mb-4" />
-        <h1 className="text-3xl font-bold mb-2">Yeni Şifre Oluştur</h1>
+        <h1 className="text-3xl font-bold mb-2">{t("pageTitle")}</h1>
         <p className="text-muted-foreground">
-          Hesabınız için güçlü bir şifre belirleyin
+          {t("pageDescription")}
         </p>
       </div>
 
       {errorMessage ? (
         <Card>
           <CardHeader>
-            <CardTitle>Hata</CardTitle>
+            <CardTitle>{t("error.title")}</CardTitle>
             <CardDescription>
               {errorMessage}
             </CardDescription>
@@ -126,16 +130,16 @@ export default function ResetPasswordPage() {
           <CardContent>
             <div className="flex flex-col gap-4">
               <p className="text-sm text-muted-foreground">
-                Şifre sıfırlama bağlantınızın süresi dolmuş olabilir. Yeni bir şifre sıfırlama bağlantısı talep etmek için aşağıdaki butona tıklayın.
+                {t("error.description")}
               </p>
               <Button asChild>
                 <Link href="/auth/forgot-password">
-                  Yeni Şifre Sıfırlama Bağlantısı Talep Et
+                  {t("error.requestNew")}
                 </Link>
               </Button>
               <Button variant="outline" asChild>
                 <Link href="/auth/login">
-                  Giriş Sayfasına Dön
+                  {t("error.backToLogin")}
                 </Link>
               </Button>
             </div>
@@ -144,9 +148,9 @@ export default function ResetPasswordPage() {
       ) : (
         <Card>
           <CardHeader>
-            <CardTitle>Şifre Sıfırlama</CardTitle>
+            <CardTitle>{t("title")}</CardTitle>
             <CardDescription>
-              Lütfen yeni şifrenizi girin
+              {t("description")}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -157,7 +161,7 @@ export default function ResetPasswordPage() {
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Yeni Şifre</FormLabel>
+                      <FormLabel>{t("newPassword")}</FormLabel>
                       <FormControl>
                         <Input type="password" {...field} />
                       </FormControl>
@@ -171,7 +175,7 @@ export default function ResetPasswordPage() {
                   name="confirmPassword"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Şifreyi Tekrar Girin</FormLabel>
+                      <FormLabel>{t("confirmPassword")}</FormLabel>
                       <FormControl>
                         <Input type="password" {...field} />
                       </FormControl>
@@ -181,7 +185,7 @@ export default function ResetPasswordPage() {
                 />
 
                 <Button type="submit" className="w-full" disabled={isSubmitting}>
-                  {isSubmitting ? "İşleniyor..." : "Şifreyi Sıfırla"}
+                  {isSubmitting ? t("submitting") : t("submit")}
                 </Button>
               </form>
             </Form>

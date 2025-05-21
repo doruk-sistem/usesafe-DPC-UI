@@ -11,14 +11,17 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
+import { useTranslations } from "next-intl";
 
 function ForgotPasswordContent() {
+  const t = useTranslations("auth.forgot-password");
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Şifremi Unuttum</CardTitle>
+        <CardTitle>{t("title")}</CardTitle>
         <CardDescription>
-          Şifrenizi sıfırlamak için e-posta adresinizi girin
+          {t("description")}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -29,13 +32,15 @@ function ForgotPasswordContent() {
 }
 
 export default function ForgotPasswordPage() {
+  const t = useTranslations("auth.forgot-password");
+
   return (
     <div className="container max-w-md mx-auto py-10 px-4">
       <div className="flex flex-col items-center text-center mb-10">
         <KeyRound className="h-12 w-12 text-primary mb-4" />
-        <h1 className="text-3xl font-bold mb-2">Şifre Sıfırlama</h1>
+        <h1 className="text-3xl font-bold mb-2">{t("pageTitle")}</h1>
         <p className="text-muted-foreground">
-          Hesabınıza erişiminizi yeniden kazanın
+          {t("pageDescription")}
         </p>
       </div>
 
@@ -43,7 +48,7 @@ export default function ForgotPasswordPage() {
         fallback={
           <Card>
             <CardHeader>
-              <CardTitle>Yükleniyor...</CardTitle>
+              <CardTitle> {t("title")}</CardTitle>
             </CardHeader>
           </Card>
         }

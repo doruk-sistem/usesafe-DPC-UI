@@ -18,6 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/lib/hooks/use-auth";
+import { useTranslations } from "next-intl";
 
 const forgotPasswordSchema = z.object({
   email: z.string().email("Geçerli bir e-posta adresi girin"),
@@ -30,6 +31,7 @@ export function ForgotPasswordForm() {
   const { resetPassword } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const t = useTranslations("auth");
 
   const form = useForm<FormData>({
     resolver: zodResolver(forgotPasswordSchema),
@@ -44,20 +46,20 @@ export function ForgotPasswordForm() {
       await resetPassword(data.email);
       setIsSuccess(true);
       toast({
-        title: "Şifre Sıfırlama Bağlantısı Gönderildi",
-        description: "E-posta adresinize şifre sıfırlama bağlantısı gönderdik.",
+        title: t("forgot-password.success.title"),
+        description: t("forgot-password.success.description"),
       });
     } catch (error) {
       if (error instanceof Error) {
         toast({
-          title: "Şifre Sıfırlama Başarısız",
+          title: t("forgot-password.error.title"),
           description: error.message,
           variant: "destructive",
         });
       } else {
         toast({
-          title: "Şifre Sıfırlama Başarısız",
-          description: "Beklenmeyen bir hata oluştu",
+          title: t("forgot-password.error.title"),
+          description: t("forgot-password.error.description"),
           variant: "destructive",
         });
       }
@@ -69,12 +71,19 @@ export function ForgotPasswordForm() {
   if (isSuccess) {
     return (
       <div className="text-center space-y-4">
-        <h3 className="text-lg font-medium">Şifre Sıfırlama Bağlantısı Gönderildi</h3>
-        <p className="text-muted-foreground">
-          E-posta adresinize şifre sıfırlama bağlantısı gönderdik. Lütfen gelen kutunuzu kontrol edin.
-        </p>
+        <h3 className="text-lg font-medium">{t("forgot-password.success.title")}</h3>
+        <div className="bg-muted p-4 rounded-lg text-left mb-4">
+          <p className="text-muted-foreground mb-2">
+            {t("forgot-password.success.description")}
+          </p>
+          <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground">
+            <li>{t("forgot-password.success.checkInbox")}</li>
+            <li>{t("forgot-password.success.checkSpam")}</li>
+            <li>{t("forgot-password.success.validityPeriod")}</li>
+          </ul>
+        </div>
         <Button asChild className="mt-4">
-          <Link href="/auth/login">Giriş Sayfasına Dön</Link>
+          <Link href="/auth/login">{t("forgot-password.success.button")}</Link>   
         </Button>
       </div>
     );
@@ -88,9 +97,9 @@ export function ForgotPasswordForm() {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>E-posta</FormLabel>
+              <FormLabel>{t("forgot-password.email.label")}</FormLabel>
               <FormControl>
-                <Input type="email" placeholder="ornek@sirket.com" {...field} />
+                <Input type="email" placeholder={t("forgot-password.email.placeholder")} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -99,14 +108,14 @@ export function ForgotPasswordForm() {
 
         <div className="flex flex-col gap-4">
           <Button type="submit" className="w-full" disabled={isSubmitting}>
-            {isSubmitting ? "Gönderiliyor..." : "Şifre Sıfırlama Bağlantısı Gönder"}
+            {isSubmitting ? t("forgot-password.submitting") : t("forgot-password.submit")}
           </Button>
 
           <div className="text-center space-y-2">
             <div className="text-sm text-muted-foreground">
-              Şifrenizi hatırladınız mı?{" "}
+              {t("forgot-password.reminder")}{" "}
               <Link href="/auth/login" className="text-primary hover:underline">
-                Giriş yap
+                {t("forgot-password.login")}
               </Link>
             </div>
           </div>
