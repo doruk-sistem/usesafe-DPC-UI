@@ -314,7 +314,11 @@ export function ProductList() {
                       <div className="flex items-center gap-1">
                         <FileText className="h-4 w-4 text-muted-foreground" />
                         <span className="text-sm font-medium">
-                          {t("documentCount", { count: product.documents?.length || 0 })}
+                          {t("documentCount", { 
+                            count: product.documents 
+                              ? Object.values(product.documents).flat().length 
+                              : 0 
+                          })}
                         </span>
                       </div>
                     </div>
