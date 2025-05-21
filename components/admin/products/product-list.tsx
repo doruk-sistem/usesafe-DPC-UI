@@ -41,12 +41,23 @@ import {
 import { useImageUrl } from "@/lib/hooks/use-image-url";
 import { useProducts } from "@/lib/hooks/use-products";
 import { BaseProduct, ProductStatus } from "@/lib/types/product";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 export function ProductList() {
   const t = useTranslations("admin.products");
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [manufacturerFilter, setManufacturerFilter] = useState("all");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 12;
   const { getImageUrl } = useImageUrl();
 
   const { products, isLoading, error } = useProducts();
@@ -75,6 +86,11 @@ export function ProductList() {
 
     return true;
   });
+
+  // Pagination logic
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedProducts = filteredProducts.slice(startIndex, startIndex + itemsPerPage);
 
   const getDocumentStatusDisplay = (status: BaseProduct["document_status"]) => {
     switch (status) {
@@ -202,149 +218,185 @@ export function ProductList() {
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {filteredProducts.map((product) => (
-              <Card
-                key={product.id}
-                className="overflow-hidden hover:shadow-md transition-shadow group"
-              >
-                <div className="aspect-square relative bg-muted overflow-hidden">
-                  {product.images && product.images.length > 0 ? (
-                    <div className="relative w-full h-full">
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <Image
-                          src={getImageUrl(
-                            product.images.find((img) => img.is_primary)?.url ||
-                            product.images[0].url
-                          )}
-                          alt={
-                            product.images.find((img) => img.is_primary)?.alt ||
-                            product.name
-                          }
-                          width={300}
-                          height={300}
-                          className="max-w-full max-h-full w-auto h-auto object-contain group-hover:scale-105 transition-transform duration-300"
-                          loading="lazy"
-                          onError={(e) => {
-                            const target = e.target as HTMLImageElement;
-                            target.src = "/images/placeholder-product.png";
-                          }}
-                        />
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {paginatedProducts.map((product) => (
+                <Card
+                  key={product.id}
+                  className="overflow-hidden hover:shadow-md transition-shadow group"
+                >
+                  <div className="aspect-square relative bg-muted overflow-hidden">
+                    {product.images && product.images.length > 0 ? (
+                      <div className="relative w-full h-full">
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <Image
+                            src={getImageUrl(
+                              product.images.find((img) => img.is_primary)?.url ||
+                              product.images[0].url
+                            )}
+                            alt={
+                              product.images.find((img) => img.is_primary)?.alt ||
+                              product.name
+                            }
+                            width={300}
+                            height={300}
+                            className="max-w-full max-h-full w-auto h-auto object-contain group-hover:scale-105 transition-transform duration-300"
+                            loading="lazy"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              target.src = "/images/placeholder-product.png";
+                            }}
+                          />
+                        </div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                       </div>
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                    </div>
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-muted to-muted/50">
-                      <Package className="h-12 w-12 text-muted-foreground/50" />
-                    </div>
-                  )}
-                </div>
-                <CardHeader className="p-4">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <CardTitle className="text-lg font-medium line-clamp-1">
-                        <Link
-                          href={`/admin/products/${product.id}`}
-                          className="hover:text-primary transition-colors"
-                        >
-                          {product.name}
-                        </Link>
-                      </CardTitle>
-                      <CardDescription className="text-xs mt-1">
-                        {t("created")}: {new Date(product.created_at).toLocaleDateString()}
-                      </CardDescription>
-                    </div>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          className="h-8 w-8 p-0 hover:bg-muted"
-                        >
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent>
-                        <DropdownMenuLabel>{t("actions.title")}</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem asChild>
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-muted to-muted/50">
+                        <Package className="h-12 w-12 text-muted-foreground/50" />
+                      </div>
+                    )}
+                  </div>
+                  <CardHeader className="p-4">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <CardTitle className="text-lg font-medium line-clamp-1">
                           <Link
                             href={`/admin/products/${product.id}`}
-                            className="flex items-center"
+                            className="hover:text-primary transition-colors"
                           >
-                            <Eye className="mr-2 h-4 w-4" />
-                            {t("actions.viewDetails")}
+                            {product.name}
                           </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem asChild>
-                          <Link
-                            href={`/admin/documents?product=${product.id}`}
-                            className="flex items-center"
+                        </CardTitle>
+                        <CardDescription className="text-xs mt-1">
+                          {t("created")}: {new Date(product.created_at).toLocaleDateString()}
+                        </CardDescription>
+                      </div>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            className="h-8 w-8 p-0 hover:bg-muted"
                           >
-                            <FileText className="mr-2 h-4 w-4" />
-                            {t("actions.viewDocuments")}
-                          </Link>
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
-                </CardHeader>
-                <CardContent className="p-4 pt-0">
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-muted-foreground">
-                        {t("manufacturer")}
-                      </span>
-                      <span className="text-sm font-medium">
-                        {product.manufacturer?.name || t("unknownManufacturer")}
-                      </span>
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                          <DropdownMenuLabel>{t("actions.title")}</DropdownMenuLabel>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem asChild>
+                            <Link
+                              href={`/admin/products/${product.id}`}
+                              className="flex items-center"
+                            >
+                              <Eye className="mr-2 h-4 w-4" />
+                              {t("actions.viewDetails")}
+                            </Link>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem asChild>
+                            <Link
+                              href={`/admin/documents?product=${product.id}`}
+                              className="flex items-center"
+                            >
+                              <FileText className="mr-2 h-4 w-4" />
+                              {t("actions.viewDocuments")}
+                            </Link>
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-muted-foreground">
-                        {t("category")}
-                      </span>
-                      <Badge variant="outline" className="font-normal">
-                        {product.product_type ||
-                          t("uncategorized")}
-                      </Badge>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-muted-foreground">
-                        {t("documents")}
-                      </span>
-                      <div className="flex items-center gap-1">
-                        <FileText className="h-4 w-4 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent className="p-4 pt-0">
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-muted-foreground">
+                          {t("manufacturer")}
+                        </span>
                         <span className="text-sm font-medium">
-                          {t("documentCount", { 
-                            count: product.documents 
-                              ? Object.values(product.documents).flat().length 
-                              : 0 
-                          })}
+                          {product.manufacturer?.name || t("unknownManufacturer")}
                         </span>
                       </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-muted-foreground">
+                          {t("category")}
+                        </span>
+                        <Badge variant="outline" className="font-normal">
+                          {product.product_type ||
+                            t("uncategorized")}
+                        </Badge>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-muted-foreground">
+                          {t("documents")}
+                        </span>
+                        <div className="flex items-center gap-1">
+                          <FileText className="h-4 w-4 text-muted-foreground" />
+                          <span className="text-sm font-medium">
+                            {t("documentCount", { 
+                              count: product.documents 
+                                ? Object.values(product.documents).flat().length 
+                                : 0 
+                            })}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-muted-foreground">
+                          {t("status")}
+                        </span>
+                        <Badge
+                          variant={
+                            product.document_status === "All Approved"
+                              ? "success"
+                              : product.document_status === "Pending Review"
+                              ? "warning"
+                              : product.document_status === "Has Rejected Documents"
+                              ? "destructive"
+                              : "secondary"
+                          }
+                        >
+                          {getDocumentStatusDisplay(product.document_status)}
+                        </Badge>
+                      </div>
                     </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-muted-foreground">
-                        {t("status")}
-                      </span>
-                      <Badge
-                        variant={
-                          product.document_status === "All Approved"
-                            ? "success"
-                            : product.document_status === "Pending Review"
-                            ? "warning"
-                            : product.document_status === "Has Rejected Documents"
-                            ? "destructive"
-                            : "secondary"
-                        }
-                      >
-                        {getDocumentStatusDisplay(product.document_status)}
-                      </Badge>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+            
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="mt-6">
+                <Pagination>
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious 
+                        onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                        className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                      />
+                    </PaginationItem>
+                    
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                      <PaginationItem key={page}>
+                        <PaginationLink
+                          onClick={() => setCurrentPage(page)}
+                          isActive={currentPage === page}
+                        >
+                          {page}
+                        </PaginationLink>
+                      </PaginationItem>
+                    ))}
+
+                    <PaginationItem>
+                      <PaginationNext 
+                        onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                        className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                      />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              </div>
+            )}
+          </>
         )}
       </CardContent>
     </Card>
