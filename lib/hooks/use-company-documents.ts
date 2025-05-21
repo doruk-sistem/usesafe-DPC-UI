@@ -55,14 +55,13 @@ export const useCompanyDocuments = () => {
         reason,
       }: {
         documentId: string;
-        status: string;
+        status: 'approved' | 'rejected';
         reason?: string;
       }) => {
         if (!companyId) {
           throw new Error("Şirket bilgisi bulunamadı");
         }
         await CompanyDocumentService.updateDocumentStatus(
-          companyId,
           documentId,
           status,
           reason

@@ -39,7 +39,7 @@ export function DocumentHeader({ onFilterChange, filters }: DocumentHeaderProps)
             <SelectValue placeholder="Tümü" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Tümü</SelectItem>
+            <SelectItem value="all">{t("filters.allDocuments")}</SelectItem>
             <SelectItem value="signature_circular">İmza Dairesi</SelectItem>
             <SelectItem value="trade_registry_gazette">Ticaret Kayıt Gazetesi</SelectItem>
             <SelectItem value="tax_plate">Vergi Plakası</SelectItem>

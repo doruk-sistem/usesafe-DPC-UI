@@ -10,16 +10,12 @@ interface StepValidation {
 
 const stepValidations: StepValidation[] = [
   {
-    fields: ["companyName", "taxId"],
+    fields: ["companyName", "taxId", "tradeRegisterNumber", "mersisNumber"],
     isValid: async (form) => {
       try {
-        console.log('Validating company info step');
-        console.log('Form values:', form.getValues());
-        const result = await form.trigger(["companyName", "taxId"]);
-        console.log('Company info validation result:', result);
+        const result = await form.trigger(["companyName", "taxId", "tradeRegisterNumber", "mersisNumber"]);
         return result;
       } catch (error) {
-        console.error("Company info validation error:", error);
         return false;
       }
     },
@@ -28,27 +24,22 @@ const stepValidations: StepValidation[] = [
     fields: ["ownerName", "nationalId", "email", "phone"],
     isValid: async (form) => {
       try {
-        console.log('Validating owner info step');
-        console.log('Form values:', form.getValues());
         const values = form.getValues();
         
         // Sadece dolu alanları kontrol et
-        const fieldsToValidate = [];
+        const fieldsToValidate: any[] = [];
         if (values.ownerName) fieldsToValidate.push("ownerName");
         if (values.nationalId) fieldsToValidate.push("nationalId");
         if (values.email) fieldsToValidate.push("email");
         if (values.phone) fieldsToValidate.push("phone");
         
         if (fieldsToValidate.length === 0) {
-          console.log('No fields to validate');
           return false;
         }
         
-        const result = await form.trigger(fieldsToValidate);
-        console.log('Owner info validation result:', result);
+        const result = await form.trigger(fieldsToValidate as any);
         return result;
       } catch (error) {
-        console.error("Owner info validation error:", error);
         return false;
       }
     },
@@ -57,13 +48,9 @@ const stepValidations: StepValidation[] = [
     fields: ["address", "city", "district"],
     isValid: async (form) => {
       try {
-        console.log('Validating address step');
-        console.log('Form values:', form.getValues());
         const result = await form.trigger(["address", "city", "district"]);
-        console.log('Address validation result:', result);
         return result;
       } catch (error) {
-        console.error("Address validation error:", error);
         return false;
       }
     },
@@ -77,18 +64,14 @@ const stepValidations: StepValidation[] = [
     ],
     isValid: async (form) => {
       try {
-        console.log('Validating documents step');
-        console.log('Form values:', form.getValues());
         const result = await form.trigger([
           "signatureCircular",
           "tradeRegistry",
           "taxPlate",
           "activityCertificate",
         ]);
-        console.log('Documents validation result:', result);
         return result;
       } catch (error) {
-        console.error("Documents validation error:", error);
         return false;
       }
     },
@@ -101,27 +84,19 @@ export const useRegistrationSteps = (form: UseFormReturn<any>) => {
 
   const nextStep = async () => {
     try {
-      console.log('Starting nextStep validation');
-      console.log('Current step:', currentStep);
       const currentValidation = stepValidations[currentStep];
-      console.log('Validation fields:', currentValidation.fields);
       
       const isValid = await currentValidation.isValid(form);
-      console.log('Step validation result:', isValid);
 
       if (isValid) {
-        console.log('Validation successful, moving to next step');
         setCurrentStep((prev) => {
           const next = Math.min(prev + 1, totalSteps - 1);
-          console.log('New step will be:', next);
           return next;
         });
         return true;
       }
-      console.log('Validation failed, staying on current step');
       return false;
     } catch (error) {
-      console.error("Step validation error:", error);
       return false;
     }
   };
