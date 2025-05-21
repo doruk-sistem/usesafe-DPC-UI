@@ -163,6 +163,25 @@ export function useAuth() {
     return { session };
   };
 
+  const resetPassword = async (email: string) => {
+    try {
+      // Canlı ortam URL'sini kullan
+      // window.location.origin yerine sabit URL kullanıyoruz
+      const baseUrl = "https://app.usesafe.net";
+      
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${baseUrl}/auth/reset-password`,
+      });
+      
+      if (error) throw error;
+      
+      return { success: true };
+    } catch (error) {
+      console.error("Password reset error:", error);
+      throw error;
+    }
+  };
+
   return {
     user,
     company,
@@ -175,5 +194,6 @@ export function useAuth() {
     isAdmin,
     updateUser,
     verifyOtp,
+    resetPassword,
   };
 }
