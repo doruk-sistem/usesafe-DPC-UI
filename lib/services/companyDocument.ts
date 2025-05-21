@@ -11,6 +11,17 @@ export class CompanyDocumentService {
     type: DocumentType
   ): Promise<{ filePath: string; publicUrl: string | null }> {
     try {
+      // Dosya tipini kontrol et
+      if (!file.type.includes('pdf') && !file.type.includes('image')) {
+        throw new Error('Sadece PDF ve resim dosyaları yüklenebilir');
+      }
+
+      // Dosya boyutunu kontrol et (10MB limit)
+      const maxSize = 10 * 1024 * 1024; // 10MB
+      if (file.size > maxSize) {
+        throw new Error('Dosya boyutu 10MB\'dan büyük olamaz');
+      }
+
       // Dosya adını güvenli hale getir
       const safeFileName = file.name
         .normalize('NFD')
@@ -23,7 +34,11 @@ export class CompanyDocumentService {
       // Dosyayı Supabase Storage'a yükle
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('company-documents')
-        .upload(filePath, file);
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false,
+          contentType: file.type
+        });
 
       if (uploadError) {
         throw new Error(`Dosya yüklenirken hata oluştu: ${uploadError.message}`);
@@ -41,7 +56,9 @@ export class CompanyDocumentService {
           companyId: companyId,
           type: type,
           filePath: filePath,
-          status: 'pending'
+          status: 'pending',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
         })
         .select()
         .single();
@@ -124,5 +141,13 @@ export class CompanyDocumentService {
     } catch (error) {
       throw error;
     }
+  }
+
+  static async getPublicUrl(filePath: string): Promise<string> {
+    const { data: { publicUrl } } = supabase.storage
+      .from("company-documents")
+      .getPublicUrl(filePath);
+
+    return publicUrl;
   }
 }

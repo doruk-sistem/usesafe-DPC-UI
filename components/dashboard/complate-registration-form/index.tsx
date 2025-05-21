@@ -154,26 +154,36 @@ export function ComplateRegistrationForm() {
         <form 
           onSubmit={async (e) => {
             e.preventDefault();
-
-            // Form değerlerini al
-            const values = form.getValues();
-
-            // Sadece mevcut adımın validasyonunu yap
-            const isValid = await form.trigger();
-
-            if (isValid) {
-              onSubmit(values);
-            } else {
-              const errors = form.formState.errors;
-              
-              // İlk hatayı göster
-              let errorMessage2 = "Lütfen tüm zorunlu alanları doldurun";
-              if (errors[Object.keys(errors)[0]] && typeof errors[Object.keys(errors)[0]] === 'object' && 'message' in errors[Object.keys(errors)[0]] && typeof errors[Object.keys(errors)[0]].message === 'string') {
-                errorMessage2 = errors[Object.keys(errors)[0]].message;
+           
+            
+            try {
+              if (isLastStep) {
+                setIsSubmitting(true);
+                const values = form.getValues();
+                await onSubmit(values);
+              } else {
+                const isValid = await nextStep();
+                if (!isValid) {
+                  const errors = form.formState.errors;
+                 
+                  
+                  // İlk hatayı göster
+                  let errorMessage = "Lütfen tüm zorunlu alanları doldurun";
+                  if (errors[Object.keys(errors)[0]] && typeof errors[Object.keys(errors)[0]] === 'object' && 'message' in errors[Object.keys(errors)[0]] && typeof errors[Object.keys(errors)[0]].message === 'string') {
+                    errorMessage = errors[Object.keys(errors)[0]].message;
+                  }
+                  toast({
+                    title: "Hata",
+                    description: errorMessage,
+                    variant: "destructive",
+                  });
+                }
               }
+            } catch (error) {
+              
               toast({
                 title: "Hata",
-                description: errorMessage2,
+                description: error instanceof Error ? error.message : "Bir hata oluştu",
                 variant: "destructive",
               });
             }

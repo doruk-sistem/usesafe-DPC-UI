@@ -2,99 +2,62 @@
 
 import { useState } from "react";
 import { UseFormReturn } from "react-hook-form";
+import { z } from "zod";
+import { registerSchema } from "@/lib/schemas/auth";
 
-interface StepValidation {
-  fields: string[];
-  isValid: (form: UseFormReturn<any>) => Promise<boolean>;
-}
+type FormData = z.infer<typeof registerSchema>;
 
-const stepValidations: StepValidation[] = [
+const STEPS = [
   {
+    title: "Company Information",
     fields: ["companyName", "taxId", "tradeRegisterNumber", "mersisNumber"],
-    isValid: async (form) => {
-      try {
-        const result = await form.trigger(["companyName", "taxId", "tradeRegisterNumber", "mersisNumber"]);
-        return result;
-      } catch (error) {
-        return false;
-      }
-    },
   },
   {
-    fields: ["ownerName", "nationalId", "email", "phone"],
-    isValid: async (form) => {
-      try {
-        const values = form.getValues();
-        
-        // Sadece dolu alanları kontrol et
-        const fieldsToValidate: any[] = [];
-        if (values.ownerName) fieldsToValidate.push("ownerName");
-        if (values.nationalId) fieldsToValidate.push("nationalId");
-        if (values.email) fieldsToValidate.push("email");
-        if (values.phone) fieldsToValidate.push("phone");
-        
-        if (fieldsToValidate.length === 0) {
-          return false;
-        }
-        
-        const result = await form.trigger(fieldsToValidate as any);
-        return result;
-      } catch (error) {
-        return false;
-      }
-    },
+    title: "Owner Information",
+    fields: ["nationalId", "countryCode", "phone"],
   },
   {
-    fields: ["address", "city", "district"],
-    isValid: async (form) => {
-      try {
-        const result = await form.trigger(["address", "city", "district"]);
-        return result;
-      } catch (error) {
-        return false;
-      }
-    },
+    title: "Address",
+    fields: ["address", "city", "district", "postalCode"],
   },
   {
-    fields: [
-      "signatureCircular",
-      "tradeRegistry",
-      "taxPlate",
-      "activityCertificate",
-    ],
-    isValid: async (form) => {
-      try {
-        const result = await form.trigger([
-          "signatureCircular",
-          "tradeRegistry",
-          "taxPlate",
-          "activityCertificate",
-        ]);
-        return result;
-      } catch (error) {
-        return false;
-      }
-    },
+    title: "Documents",
+    fields: ["password", "confirmPassword"],
   },
 ];
 
-export const useRegistrationSteps = (form: UseFormReturn<any>) => {
+export function useRegistrationSteps(form: UseFormReturn<FormData>) {
   const [currentStep, setCurrentStep] = useState(0);
-  const totalSteps = stepValidations.length;
+  const totalSteps = STEPS.length;
+
+  const validateStep = async (step: number) => {
+    try {
+      const currentStepValues = form.getValues();
+      const currentStepErrors: Record<string, any> = {};
+      
+      for (const field of STEPS[step].fields) {
+        const value = currentStepValues[field];
+        const fieldError = await form.trigger(field as any);
+        if (!fieldError) {
+          currentStepErrors[field] = form.formState.errors[field];
+        }
+      }
+
+      return Object.keys(currentStepErrors).length === 0;
+    } catch (error) {
+      return false;
+    }
+  };
 
   const nextStep = async () => {
     try {
-      const currentValidation = stepValidations[currentStep];
-      
-      const isValid = await currentValidation.isValid(form);
+      const isValid = await validateStep(currentStep);
 
       if (isValid) {
-        setCurrentStep((prev) => {
-          const next = Math.min(prev + 1, totalSteps - 1);
-          return next;
-        });
+        setCurrentStep((prev) => Math.min(prev + 1, totalSteps - 1));
         return true;
       }
+      
       return false;
     } catch (error) {
       return false;
@@ -116,4 +79,4 @@ export const useRegistrationSteps = (form: UseFormReturn<any>) => {
     isLastStep,
     progress,
   };
-};
+}

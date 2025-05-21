@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { ArrowLeft, Eye, Download } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,8 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { getStatusIcon } from "@/lib/utils/document-utils";
 import { useCompanyDocuments } from "@/lib/hooks/use-company-documents";
 import { Loading } from "@/components/ui/loading";
-
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+import { CompanyDocumentService } from "@/lib/services/companyDocument";
 
 export default function DocumentDetailsPage() {
   const t = useTranslations('documents');
@@ -20,22 +20,19 @@ export default function DocumentDetailsPage() {
   const documentId = params.id as string;
   const { useGetCompanyDocuments } = useCompanyDocuments();
   const { data: documents, isLoading } = useGetCompanyDocuments();
+  const [publicUrl, setPublicUrl] = useState<string | null>(null);
 
   const document = documents?.find(doc => doc.id === documentId);
 
-  const handleViewFile = () => {
-    if (document?.filePath && SUPABASE_URL) {
-      const url = `${SUPABASE_URL}/storage/v1/object/public/company-documents/${document.filePath}`;
-      window.open(url, '_blank');
-    }
-  };
-
-  const handleDownloadFile = () => {
-    if (document?.filePath && SUPABASE_URL) {
-      const url = `${SUPABASE_URL}/storage/v1/object/public/company-documents/${document.filePath}`;
-      window.open(url, '_blank');
-    }
-  };
+  useEffect(() => {
+    const getUrl = async () => {
+      if (document?.filePath) {
+        const url = await CompanyDocumentService.getPublicUrl(document.filePath);
+        setPublicUrl(url);
+      }
+    };
+    getUrl();
+  }, [document?.filePath]);
 
   if (isLoading) {
     return <Loading />;
@@ -72,14 +69,22 @@ export default function DocumentDetailsPage() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button onClick={handleViewFile} variant="outline">
-            <Eye className="h-4 w-4 mr-2" />
-            {t('details.viewFile')}
-          </Button>
-          <Button onClick={handleDownloadFile} variant="outline">
-            <Download className="h-4 w-4 mr-2" />
-            {t('details.downloadFile')}
-          </Button>
+          {publicUrl && (
+            <>
+              <Button asChild variant="outline">
+                <a href={publicUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
+                  <Eye className="h-4 w-4" />
+                  {t('details.viewFile')}
+                </a>
+              </Button>
+              <Button asChild variant="outline">
+                <a href={publicUrl} download className="flex items-center gap-2">
+                  <Download className="h-4 w-4" />
+                  {t('details.downloadFile')}
+                </a>
+              </Button>
+            </>
+          )}
         </div>
       </div>
 
