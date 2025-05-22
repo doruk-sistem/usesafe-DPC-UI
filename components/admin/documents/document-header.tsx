@@ -11,7 +11,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-export function DocumentHeader() {
+interface DocumentHeaderProps {
+  onFilterChange: (key: 'type' | 'status', value: string) => void;
+  filters: {
+    type: string;
+    status: string;
+  };
+}
+
+export function DocumentHeader({ onFilterChange, filters }: DocumentHeaderProps) {
   const t = useTranslations("documentManagement");
   
   return (
@@ -23,18 +31,27 @@ export function DocumentHeader() {
         </p>
       </div>
       <div className="flex items-center gap-2">
-        <Select defaultValue="all">
+        <Select 
+          value={filters.type} 
+          onValueChange={(value) => onFilterChange('type', value)}
+        >
           <SelectTrigger className="w-[160px]">
-            <SelectValue placeholder={t("filters.allDocuments")} />
+            <SelectValue placeholder="Tümü" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">{t("filters.allDocuments")}</SelectItem>
-            <SelectItem value="certification">{t("categories.qualityManagement")}</SelectItem>
-            <SelectItem value="compliance">{t("categories.safetyAndHealth")}</SelectItem>
-            <SelectItem value="legal">{t("categories.batteryStandards")}</SelectItem>
+            <SelectItem value="signature_circular">İmza Dairesi</SelectItem>
+            <SelectItem value="trade_registry_gazette">Ticaret Kayıt Gazetesi</SelectItem>
+            <SelectItem value="tax_plate">Vergi Plakası</SelectItem>
+            <SelectItem value="activity_certificate">Faaliyet Sertifikası</SelectItem>
+            <SelectItem value="export_certificate">İhracat Sertifikası</SelectItem>
           </SelectContent>
         </Select>
-        <Select defaultValue="all-status">
+        
+        <Select 
+          value={filters.status}
+          onValueChange={(value) => onFilterChange('status', value)}
+        >
           <SelectTrigger className="w-[160px]">
             <SelectValue placeholder={t("filters.allStatuses")} />
           </SelectTrigger>

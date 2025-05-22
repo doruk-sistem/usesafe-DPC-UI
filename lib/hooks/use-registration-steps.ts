@@ -2,66 +2,66 @@
 
 import { useState } from "react";
 import { UseFormReturn } from "react-hook-form";
+import { z } from "zod";
+import { registerSchema } from "@/lib/schemas/auth";
 
-interface StepValidation {
-  fields: string[];
-  isValid: (form: UseFormReturn<any>) => Promise<boolean>;
-}
+type FormData = z.infer<typeof registerSchema>;
 
-const stepValidations: StepValidation[] = [
+const STEPS = [
   {
+    title: "Company Information",
     fields: ["companyName", "taxId", "tradeRegisterNumber", "mersisNumber"],
-    isValid: async (form) => {
-      const result = await form.trigger(["companyName", "taxId"]);
-      return result;
-    },
   },
   {
+    title: "Owner Information",
     fields: ["nationalId", "countryCode", "phone"],
-    isValid: async (form) => {
-      const result = await form.trigger(["nationalId", "phone"]);
-      return result;
-    },
   },
   {
-    fields: ["address", "city", "district"],
-    isValid: async (form) => {
-      const result = await form.trigger(["address", "city", "district"]);
-      return result;
-    },
+    title: "Address",
+    fields: ["address", "city", "district", "postalCode"],
   },
   {
-    fields: [
-      "signatureCircular",
-      "tradeRegistry",
-      "taxPlate",
-      "activityCertificate",
-    ],
-    isValid: async (form) => {
-      const result = await form.trigger([
-        "signatureCircular",
-        "tradeRegistry",
-        "taxPlate",
-        "activityCertificate",
-      ]);
-      return result;
-    },
+    title: "Documents",
+    fields: ["password", "confirmPassword"],
   },
 ];
 
-export const useRegistrationSteps = (form: UseFormReturn<any>) => {
+export function useRegistrationSteps(form: UseFormReturn<FormData>) {
   const [currentStep, setCurrentStep] = useState(0);
-  const totalSteps = stepValidations.length;
+  const totalSteps = STEPS.length;
+
+  const validateStep = async (step: number) => {
+    try {
+      const currentStepValues = form.getValues();
+      const currentStepErrors: Record<string, any> = {};
+      
+      for (const field of STEPS[step].fields) {
+        const value = currentStepValues[field];
+        const fieldError = await form.trigger(field as any);
+        if (!fieldError) {
+          currentStepErrors[field] = form.formState.errors[field];
+        }
+      }
+
+      return Object.keys(currentStepErrors).length === 0;
+    } catch (error) {
+      return false;
+    }
+  };
 
   const nextStep = async () => {
-    const currentValidation = stepValidations[currentStep];
-    const isValid = await currentValidation.isValid(form);
+    try {
+      const isValid = await validateStep(currentStep);
 
-    if (isValid) {
-      setCurrentStep((prev) => Math.min(prev + 1, totalSteps - 1));
-      return true;
+      if (isValid) {
+        setCurrentStep((prev) => Math.min(prev + 1, totalSteps - 1));
+        return true;
+      }
+      
+      return false;
+    } catch (error) {
+      return false;
     }
-    return false;
   };
 
   const prevStep = () => {
@@ -79,4 +79,4 @@ export const useRegistrationSteps = (form: UseFormReturn<any>) => {
     isLastStep,
     progress,
   };
-};
+}

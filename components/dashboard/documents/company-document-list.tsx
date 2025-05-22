@@ -1,9 +1,8 @@
 "use client";
 
-import { FileText, MoreHorizontal, Download, History, ExternalLink, AlertTriangle, CheckCircle, XCircle, Clock } from "lucide-react";
+import { FileText, MoreHorizontal, Download, History, ExternalLink, AlertTriangle } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import React from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -36,48 +35,16 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-
-import { getStatusIcon } from "../../../lib/utils/document-utils";
-import { documentsApiHooks } from "@/lib/hooks/use-documents";
-import { Document, DocumentType } from "@/lib/types/document";
 import { Loading } from "@/components/ui/loading";
+
+import { getStatusIcon } from "@/lib/utils/document-utils";
 import { useCompanyDocuments } from "@/lib/hooks/use-company-documents";
-import { useAuth } from "@/lib/hooks/use-auth";
+import { Document } from "@/lib/types/document";
 
-// Döküman tipleri
-const DOCUMENT_TYPES = [
-  'signature_circular',
-  'trade_registry_gazette',
-  'tax_plate',
-  'activity_certificate'  // Faaliyet Belgesi (döküman)
-] as const;
-
-export function DocumentList({ filters }: { filters: { type: string; status: string } }) {
-  const t = useTranslations('documents');
+export function CompanyDocumentList() {
+  const t = useTranslations();
   const { useGetCompanyDocuments } = useCompanyDocuments();
-  const { data: allDocuments, isLoading, error } = useGetCompanyDocuments();
-  const { user } = useAuth();
-
-  // Filtreleme işlemi
-  const filteredDocuments = React.useMemo(() => {
-    if (!allDocuments) return [];
-    let result = [...allDocuments];
-    
-    // Sadece döküman tiplerini filtrele
-    result = result.filter(doc => DOCUMENT_TYPES.includes(doc.type as DocumentType));
-    
-    if (filters.type && filters.type !== 'all') {
-      result = result.filter(doc => doc.type === filters.type);
-    }
-    if (filters.status && filters.status !== 'all-status') {
-      result = result.filter(doc => doc.status === filters.status);
-    }
-    return result;
-  }, [allDocuments, filters]);
-
-  console.log("DocumentList - Documents:", filteredDocuments);
-  console.log("DocumentList - Loading:", isLoading);
-  console.log("DocumentList - Error:", error);
+  const { data: documents, isLoading, error } = useGetCompanyDocuments();
 
   const getStatusVariant = (status: string) => {
     switch (status) {
@@ -92,28 +59,13 @@ export function DocumentList({ filters }: { filters: { type: string; status: str
     }
   };
 
-  const getDocumentType = (type: string) => {
-    switch (type) {
-      case 'signature_circular':
-        return 'İmza Sirküleri';
-      case 'trade_registry_gazette':
-        return 'Ticaret Sicil Gazetesi';
-      case 'tax_plate':
-        return 'Vergi Levhası';
-      case 'activity_certificate':
-        return 'Faaliyet Belgesi';
-      default:
-        return type;
-    }
-  };
-
   if (isLoading) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>{t('list.title')}</CardTitle>
+          <CardTitle>{t("companyDocuments.title")}</CardTitle>
           <CardDescription>
-            {t('list.description')}
+            {t("companyDocuments.description")}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -127,17 +79,17 @@ export function DocumentList({ filters }: { filters: { type: string; status: str
     return (
       <Card>
         <CardHeader>
-          <CardTitle>{t('list.title')}</CardTitle>
+          <CardTitle>{t("companyDocuments.title")}</CardTitle>
           <CardDescription>
-            {t('list.description')}
+            {t("companyDocuments.description")}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="text-center py-8">
             <AlertTriangle className="h-12 w-12 text-destructive mx-auto mb-4" />
-            <h3 className="text-lg font-medium mb-2">{t('list.error.title')}</h3>
+            <h3 className="text-lg font-medium mb-2">{t("error.title")}</h3>
             <p className="text-muted-foreground">
-              {t('list.error.description')}
+              {t("error.description")}
             </p>
           </div>
         </CardContent>
@@ -145,22 +97,21 @@ export function DocumentList({ filters }: { filters: { type: string; status: str
     );
   }
 
-  if (!filteredDocuments || filteredDocuments.length === 0) {
-    console.log("No documents found. Current documents:", filteredDocuments);
+  if (!documents || documents.length === 0) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>{t('list.title')}</CardTitle>
+          <CardTitle>{t("companyDocuments.title")}</CardTitle>
           <CardDescription>
-            {t('list.description')}
+            {t("companyDocuments.description")}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="text-center py-8">
             <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-medium mb-2">{t('list.empty.title')}</h3>
+            <h3 className="text-lg font-medium mb-2">{t("noDocumentsFound")}</h3>
             <p className="text-muted-foreground">
-              {t('list.empty.description')}
+              {t("noDocumentsDescription")}
             </p>
           </div>
         </CardContent>
@@ -170,19 +121,27 @@ export function DocumentList({ filters }: { filters: { type: string; status: str
 
   return (
     <Card>
+      <CardHeader>
+        <CardTitle>{t("companyDocuments.title")}</CardTitle>
+        <CardDescription>
+          {t("companyDocuments.description")}
+        </CardDescription>
+      </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Belge</TableHead>
-              <TableHead>Tip</TableHead>
-              <TableHead>Başvuru Tarihi</TableHead>
-              <TableHead>Güncelleme Tarihi</TableHead>
+              <TableHead>{t("documents.repository.columns.document")}</TableHead>
+              <TableHead>{t("documents.repository.columns.type")}</TableHead>
+              <TableHead>{t("documents.repository.columns.category")}</TableHead>
+              <TableHead>{t("documents.repository.columns.status")}</TableHead>
+              <TableHead>{t("documents.repository.columns.validUntil")}</TableHead>
+              <TableHead>{t("documents.repository.columns.issuer")}</TableHead>
               <TableHead></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredDocuments.map((doc) => (
+            {documents.map((doc: Document) => (
               <TableRow key={doc.id}>
                 <TableCell>
                   <div className="flex items-center gap-2">
@@ -208,40 +167,58 @@ export function DocumentList({ filters }: { filters: { type: string; status: str
                     </div>
                   </div>
                 </TableCell>
+                <TableCell>{doc.type}</TableCell>
+                <TableCell>{doc.category}</TableCell>
                 <TableCell>
-                  {getDocumentType(doc.type)}
+                  <Badge
+                    variant={getStatusVariant(doc.status)}
+                    className="flex w-fit items-center gap-1"
+                  >
+                    {getStatusIcon(doc.status)}
+                    {t(`documentManagement.status.${doc.status}`)}
+                  </Badge>
                 </TableCell>
                 <TableCell>
-                  {doc.created_at ? new Date(doc.created_at).toLocaleDateString() : "N/A"}
+                  {doc.validUntil ? new Date(doc.validUntil).toLocaleDateString() : "N/A"}
                 </TableCell>
-                <TableCell>
-                  {doc.updated_at ? new Date(doc.updated_at).toLocaleDateString() : "N/A"}
-                </TableCell>
+                <TableCell>{doc.manufacturer || "N/A"}</TableCell>
                 <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" size="icon">
                         <MoreHorizontal className="h-4 w-4" />
-                        <span className="sr-only">İşlemler</span>
+                        <span className="sr-only">Open menu</span>
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>İşlemler</DropdownMenuLabel>
+                      <DropdownMenuLabel>{t("documents.repository.actions.title")}</DropdownMenuLabel>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem asChild>
-                        <Link href={`/dashboard/documents/${doc.id}`}>
+                        <Link href={`/dashboard/company/documents/${doc.id}`}>
                           <FileText className="h-4 w-4 mr-2" />
-                          Görüntüle
+                          {t("documents.repository.actions.view")}
                         </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <Download className="h-4 w-4 mr-2" />
+                        {t("documents.repository.actions.download")}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <History className="h-4 w-4 mr-2" />
+                        {t("documents.repository.actions.history")}
                       </DropdownMenuItem>
                       {doc.status === "rejected" && (
                         <DropdownMenuItem asChild>
-                          <Link href={`/dashboard/documents/${doc.id}/reupload`}>
+                          <Link href={`/dashboard/company/documents/${doc.id}/reupload`}>
                             <ExternalLink className="h-4 w-4 mr-2" />
-                            Yeniden Yükle
+                            {t("documents.repository.actions.reupload")}
                           </Link>
                         </DropdownMenuItem>
                       )}
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem className="text-red-600">
+                        {t("documents.repository.actions.delete")}
+                      </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>
@@ -252,4 +229,4 @@ export function DocumentList({ filters }: { filters: { type: string; status: str
       </CardContent>
     </Card>
   );
-}
+} 
