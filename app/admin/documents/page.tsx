@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 
@@ -15,6 +16,10 @@ export default function DocumentsPage() {
   const t = useTranslations();
   const searchParams = useSearchParams();
   const productId = searchParams.get("product");
+  const [filters, setFilters] = useState({
+    type: "all",
+    status: "all-status"
+  });
 
   const {
     data: documents,
@@ -25,6 +30,13 @@ export default function DocumentsPage() {
   const filteredDocuments = productId
     ? documents?.filter((doc) => doc.productId === productId)
     : documents;
+
+  const handleFilterChange = (key: 'type' | 'status', value: string) => {
+    setFilters(prev => ({
+      ...prev,
+      [key]: value
+    }));
+  };
 
   if (isLoading) {
     return <Loading />;
@@ -53,8 +65,8 @@ export default function DocumentsPage() {
           </p>
         </div>
       </div>
-      <DocumentHeader />
-      <DocumentList initialDocuments={filteredDocuments || []} />
+      <DocumentHeader onFilterChange={handleFilterChange} filters={filters} />
+      <DocumentList initialDocuments={filteredDocuments || []} filters={filters} />
     </div>
   );
 }
