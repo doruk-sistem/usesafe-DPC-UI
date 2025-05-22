@@ -36,11 +36,10 @@ export function DocumentHeader({ onFilterChange }: DocumentHeaderProps) {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Tümü</SelectItem>
-            <SelectItem value="signature_circular">İmza Dairesi</SelectItem>
-            <SelectItem value="trade_registry_gazette">Ticaret Kayıt Gazetesi</SelectItem>
-            <SelectItem value="tax_plate">Vergi Plakası</SelectItem>
-            <SelectItem value="activity_certificate">Faaliyet Sertifikası</SelectItem>
-            <SelectItem value="export_certificate">İhracat Sertifikası</SelectItem>
+            <SelectItem value="signature_circular">İmza Sirküleri</SelectItem>
+            <SelectItem value="trade_registry_gazette">Ticaret Sicil Gazetesi</SelectItem>
+            <SelectItem value="tax_plate">Vergi Levhası</SelectItem>
+            <SelectItem value="activity_certificate">Faaliyet Belgesi</SelectItem>
           </SelectContent>
         </Select>
         <Button asChild>
