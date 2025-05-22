@@ -2995,6 +2995,61 @@
   "loading": "Yükleniyor...",
   "errorFetching": "Hata: Bilgiler alınamadı.",
   "auth": {
+    "success":{
+      "updatePassword":{
+        "title": "Şifre Güncellendi",
+        "description": "Şifreniz başarıyla güncellendi."
+      }
+    },
+    "forgot-password":{
+      "title": "Şifre Kurtarma",
+      "pageTitle": "Şifremi Unuttum",
+      "description": "E-posta adresinizi girerek şifrenizi sıfırlayın",
+      "pageDescription": "Hesabınıza yeniden erişim sağlayın",
+      "submit": "Şifre Sıfırlama Bağlantısı Gönder",
+      "reminder": "Şifrenizi hatırladınız mı?",
+      "login":"Giriş Yap",
+      "submitting":"Gönderiliyor...",
+      "success":{
+        "title":"Başarıyla Gönderildi",
+        "description":"Şifre sıfırlama bağlantısı başarıyla gönderildi.",
+        "button":"Giriş Yap"
+      },
+      "email": {
+        "label": "E-posta",
+        "placeholder": "ornek@sirket.com"
+      },
+      "error":{
+        "title":"Hata",
+        "description":"Beklenmeyen bir hata oluştu"
+      }
+    },
+    "reset-password": {
+      "title": "Şifre Sıfırlama",
+      "pageTitle": "Yeni Şifre Oluştur",
+      "pageDescription": "Hesabınız için güçlü bir şifre belirleyin",
+      "description": "Lütfen yeni şifrenizi girin",
+      "newPassword": "Yeni Şifre",
+      "confirmPassword": "Şifreyi Tekrar Girin",
+      "submit": "Şifreyi Sıfırla",
+      "submitting": "İşleniyor...",
+      "error": {
+        "title": "Hata",
+        "expiredLink": "Şifre sıfırlama bağlantısının süresi dolmuş. Lütfen yeni bir şifre sıfırlama bağlantısı talep edin.",
+        "generic": "Şifre sıfırlama işlemi sırasında bir hata oluştu.",
+        "description": "Şifre sıfırlama bağlantınızın süresi dolmuş olabilir. Yeni bir şifre sıfırlama bağlantısı talep etmek için aşağıdaki butona tıklayın.",
+        "requestNew": "Yeni Şifre Sıfırlama Bağlantısı Talep Et",
+        "backToLogin": "Giriş Sayfasına Dön"
+      },
+      "success": {
+        "title": "Şifre Başarıyla Sıfırlandı",
+        "description": "Yeni şifrenizle giriş yapabilirsiniz."
+      },
+      "validation": {
+        "minLength": "Şifre en az 6 karakter olmalıdır",
+        "passwordMismatch": "Şifreler eşleşmiyor"
+      }
+    },
     "companyInfo": {
       "companyType": {
         "label": "Firma Türü *",

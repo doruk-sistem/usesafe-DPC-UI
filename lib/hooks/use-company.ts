@@ -1,5 +1,5 @@
 import { supabase } from "@/lib/supabase/client";
-import { CompanyDocument } from "@/lib/types/company";
+import { Company, CompanyDocument } from "@/lib/types/company";
 
 import { createApiHooks } from "../create-api-hooks";
 import { companyService } from "../services/company";
@@ -40,3 +40,24 @@ export const companyApiHooks = createApiHooks({
     return filteredData as CompanyDocument[];
   }
 });
+
+// Export the hooks that are used in components
+export const useCompany = (companyId: string) => {
+  const { data: company, isLoading, error } = companyApiHooks.useGetCompanyQuery({ id: companyId });
+  
+  return {
+    company,
+    isLoading,
+    error
+  };
+};
+
+export const useCompanies = () => {
+  const { data: companies = [], isLoading, error } = companyApiHooks.useGetCompaniesQuery({});
+  
+  return {
+    companies,
+    isLoading,
+    error
+  };
+};
