@@ -87,6 +87,8 @@ export function SettingsForm() {
   const t = useTranslations("settings");
   const { users, invitations, loading, inviting, deleting, fetchUsers, inviteUser, deleteUser, updateInvitationStatus, deleteInvitation } = useUsers();
   const [inviteFormData, setInviteFormData] = useState({ full_name: "", email: "", role: "user" });
+  const [userToDelete, setUserToDelete] = useState<string | null>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   // Sayfa yüklendiğinde kullanıcıları getir
   useEffect(() => {
@@ -130,15 +132,38 @@ export function SettingsForm() {
   };
   
   // Kullanıcı silme işlemi
-  const handleDeleteUser = async (userId: string) => {
-    if (confirm("Bu kullanıcıyı silmek istediğinizden emin misiniz?")) {
-      await deleteUser(userId);
+  const handleDeleteUser = (userId: string) => {
+    setUserToDelete(userId);
+    setDeleteDialogOpen(true);
+  };
+  
+  // Kullanıcı silme onayı
+  const confirmDeleteUser = async () => {
+    if (userToDelete) {
+      await deleteUser(userToDelete);
+      setDeleteDialogOpen(false);
     }
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+    <>
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Kullanıcıyı Sil</DialogTitle>
+            <DialogDescription>
+              Bu kullanıcıyı silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>İptal</Button>
+            <Button variant="destructive" onClick={confirmDeleteUser}>Sil</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
         <Tabs defaultValue="company" className="space-y-4">
           <TabsList>
             <TabsTrigger value="company">{t("tabs.company")}</TabsTrigger>
@@ -563,6 +588,7 @@ export function SettingsForm() {
                               <Button 
                                 variant="ghost" 
                                 size="icon"
+                                type="button"
                                 onClick={() => handleDeleteUser(user.id)}
                                 disabled={deleting}
                               >
@@ -705,5 +731,6 @@ export function SettingsForm() {
         </Tabs>
       </form>
     </Form>
+    </>
   );
 }
