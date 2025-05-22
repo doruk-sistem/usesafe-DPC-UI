@@ -39,10 +39,18 @@ import {
 
 import { getStatusIcon } from "../../../lib/utils/document-utils";
 import { documentsApiHooks } from "@/lib/hooks/use-documents";
-import { Document } from "@/lib/types/document";
+import { Document, DocumentType } from "@/lib/types/document";
 import { Loading } from "@/components/ui/loading";
 import { useCompanyDocuments } from "@/lib/hooks/use-company-documents";
 import { useAuth } from "@/lib/hooks/use-auth";
+
+// Döküman tipleri
+const DOCUMENT_TYPES = [
+  'signature_circular',
+  'trade_registry_gazette',
+  'tax_plate',
+  'activity_certificate'  // Faaliyet Belgesi (döküman)
+] as const;
 
 export function DocumentList({ filters }: { filters: { type: string; status: string } }) {
   const t = useTranslations('documents');
@@ -54,6 +62,10 @@ export function DocumentList({ filters }: { filters: { type: string; status: str
   const filteredDocuments = React.useMemo(() => {
     if (!allDocuments) return [];
     let result = [...allDocuments];
+    
+    // Sadece döküman tiplerini filtrele
+    result = result.filter(doc => DOCUMENT_TYPES.includes(doc.type as DocumentType));
+    
     if (filters.type && filters.type !== 'all') {
       result = result.filter(doc => doc.type === filters.type);
     }
@@ -82,16 +94,14 @@ export function DocumentList({ filters }: { filters: { type: string; status: str
 
   const getDocumentType = (type: string) => {
     switch (type) {
-      case "signature_circular":
-        return t('types.signature_circular');
-      case "trade_registry_gazette":
-        return t('types.trade_registry_gazette');
-      case "tax_plate":
-        return t('types.tax_plate');
-      case "activity_certificate":
-        return t('types.activity_certificate');
-      case "export_certificate":
-        return t('types.export_certificate');
+      case 'signature_circular':
+        return 'İmza Sirküleri';
+      case 'trade_registry_gazette':
+        return 'Ticaret Sicil Gazetesi';
+      case 'tax_plate':
+        return 'Vergi Levhası';
+      case 'activity_certificate':
+        return 'Faaliyet Belgesi';
       default:
         return type;
     }
