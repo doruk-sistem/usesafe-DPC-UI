@@ -1,5 +1,6 @@
 import { Download, Plus, Filter } from "lucide-react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
@@ -17,6 +18,9 @@ interface CertificationHeaderProps {
 
 export function CertificationHeader({ onFilterChange }: CertificationHeaderProps) {
   const t = useTranslations('certifications');
+  const searchParams = useSearchParams();
+  const manufacturerId = searchParams.get('manufacturer');
+  const isViewingManufacturer = !!manufacturerId;
 
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -38,7 +42,8 @@ export function CertificationHeader({ onFilterChange }: CertificationHeaderProps
             <SelectItem value="all">{t('filters.type.all')}</SelectItem>
             <SelectItem value="quality_certificate">{t('filters.type.quality')}</SelectItem>
             <SelectItem value="iso_certificate">{t('filters.type.iso')}</SelectItem>
-            <SelectItem value="other">{t('filters.type.other')}</SelectItem>
+            <SelectItem value="production_permit">{t('filters.type.production')}</SelectItem>
+            <SelectItem value="export_certificate">{t('filters.type.export')}</SelectItem>
           </SelectContent>
         </Select>
         <Select 
@@ -55,15 +60,17 @@ export function CertificationHeader({ onFilterChange }: CertificationHeaderProps
             <SelectItem value="rejected">{t('filters.status.rejected')}</SelectItem>
           </SelectContent>
         </Select>
-        <Button variant="outline" size="icon">
+        <Button variant="outline" size="icon" title={t('actions.download')}>
           <Download className="h-4 w-4" />
         </Button>
-        <Button asChild>
-          <Link href="/dashboard/certifications/new">
-            <Plus className="h-4 w-4 mr-2" />
-            {t('actions.new')}
-          </Link>
-        </Button>
+        {!isViewingManufacturer && (
+          <Button asChild>
+            <Link href="/dashboard/certifications/new">
+              <Plus className="h-4 w-4 mr-2" />
+              {t('actions.new')}
+            </Link>
+          </Button>
+        )}
       </div>
     </div>
   );

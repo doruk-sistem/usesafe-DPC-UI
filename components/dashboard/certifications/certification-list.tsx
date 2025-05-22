@@ -2,6 +2,7 @@
 
 import { Battery, MoreHorizontal, FileText, ExternalLink } from "lucide-react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
@@ -29,11 +30,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
-import { getStatusIcon } from "../../../lib/utils/document-utils";
+import { useAuth } from "@/lib/hooks/use-auth";
 import { companyApiHooks } from "@/lib/hooks/use-company";
 import { DocumentType } from "@/lib/types/company";
-import { useAuth } from "@/lib/hooks/use-auth";
+
+import { getStatusIcon } from "../../../lib/utils/document-utils";
 
 interface CompanyDocument {
   id: string;
@@ -57,7 +58,10 @@ interface CertificationListProps {
 export function CertificationList({ filters }: CertificationListProps) {
   const t = useTranslations('certifications');
   const { user, company } = useAuth();
-  const companyId = user?.user_metadata?.company_id || company?.id;
+  const searchParams = useSearchParams();
+  const manufacturerId = searchParams.get('manufacturer');
+  const isViewingManufacturer = !!manufacturerId;
+  const companyId = manufacturerId || user?.user_metadata?.company_id || company?.id;
 
   const { data: allDocuments, isLoading, error } = companyApiHooks.useGetCompanyDocumentsQuery(
     { companyId },
@@ -98,8 +102,10 @@ export function CertificationList({ filters }: CertificationListProps) {
         return t('types.quality');
       case "iso_certificate":
         return t('types.iso');
-      default:
-        return type;
+      case "production_permit":
+        return t('types.production');
+      case "export_certificate":
+        return t('types.export');
     }
   };
 
@@ -149,8 +155,19 @@ export function CertificationList({ filters }: CertificationListProps) {
         </CardHeader>
         <CardContent>
           <div className="text-center py-4 text-muted-foreground">
-            <p>{t('list.empty.title')}</p>
-            <p className="mt-2">{t('list.empty.description')}</p>
+            {isViewingManufacturer ? (
+              <p>{t('list.empty.manufacturer')}</p>
+            ) : (
+              <>
+                <p>{t('list.empty.title')}</p>
+                <p className="mt-2">{t('list.empty.description')}</p>
+                <Button asChild className="mt-4">
+                  <Link href="/dashboard/certifications/new">
+                    {t('list.empty.addButton')}
+                  </Link>
+                </Button>
+              </>
+            )}
           </div>
         </CardContent>
       </Card>
@@ -216,18 +233,15 @@ export function CertificationList({ filters }: CertificationListProps) {
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" size="icon">
                         <MoreHorizontal className="h-4 w-4" />
-                        <span className="sr-only">{t('list.table.actions')}</span>
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>{t('list.table.actions')}</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem asChild>
-                        <Link href={`/dashboard/certifications/${doc.id}`}>
-                          <FileText className="h-4 w-4 mr-2" />
-                          {t('list.table.view')}
-                        </Link>
-                      </DropdownMenuItem>
+                      <Link href={`/dashboard/certifications/${doc.id}`}>
+                        <DropdownMenuItem>
+                          <ExternalLink className="mr-2 h-4 w-4" />
+                          {t('list.actions.view')}
+                        </DropdownMenuItem>
+                      </Link>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>

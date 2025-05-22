@@ -7,8 +7,8 @@ import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { BaseProduct, KeyFeature, ProductImage } from "@/lib/types/product";
 import { companyApiHooks } from "@/lib/hooks/use-company";
+import { BaseProduct, KeyFeature, ProductImage } from "@/lib/types/product";
 
 import { BasicInformationCard } from "./product-details/BasicInformationCard";
 import { CertificationsCard } from "./product-details/CertificationsCard";

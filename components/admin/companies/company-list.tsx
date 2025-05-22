@@ -23,7 +23,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
 import { useCompanies } from "@/lib/hooks/use-company";
 import { Company, CompanyStatus } from "@/lib/types/company";
 
