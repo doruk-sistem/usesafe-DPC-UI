@@ -1,7 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
+import React from "react";
 
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
@@ -11,6 +12,7 @@ import { useRegistrationSteps } from "@/lib/hooks/use-registration-steps";
 import { useToast } from "@/lib/hooks/use-toast";
 import { registerSchema } from "@/lib/schemas/auth";
 import { ManufacturerService } from "@/lib/services/manufacturer";
+import { CompanyDocumentService } from "@/lib/services/companyDocument";
 import { prepareRegistrationData } from "@/lib/utils/registration-mapper";
 
 import { AddressStep } from "./steps/address";
@@ -41,45 +43,64 @@ export function ComplateRegistrationForm() {
       taxId: "",
       tradeRegisterNumber: "",
       mersisNumber: "",
+      ownerName: "",
       nationalId: "",
+      email: "",
       countryCode: "+90",
       phone: "",
       address: "",
       city: "",
       district: "",
       postalCode: "",
-      isoCertificates: [],
-      qualityCertificates: [],
-      exportDocuments: [],
-      productionPermits: [],
+      password: "",
+      confirmPassword: "",
+      signatureCircular: null,
+      tradeRegistry: null,
+      taxPlate: null,
+      activityCertificate: null,
     },
-    mode: "onChange", // Enable real-time validation
+    mode: "onChange",
   });
 
   const { currentStep, totalSteps, nextStep, prevStep, isLastStep, progress } =
     useRegistrationSteps(form);
 
-  const onNextStep = async () => {
-    try {
-      // Always try to progress to the next step
-      const stepValidated = await nextStep();
+  const onSubmit = async (data: FormData) => {
+    if (isLastStep) {
+      setIsSubmitting(true);
+      try {
+        // Önce şirket kaydını yap
+        const registrationData = prepareRegistrationData(data);
+        const response = await ManufacturerService.register(registrationData);
 
-      // If this is the last step and validation passes, submit the full registration
-      if (isLastStep && stepValidated) {
-        setIsSubmitting(true);
+        if (response.success && typeof response.registrationId === 'string') {
+          // Şirket kaydı başarılı olduktan sonra dökümanları yükle
+          const documents = [
+            { file: data.signatureCircular, type: 'signature_circular' },
+            { file: data.tradeRegistry, type: 'trade_registry_gazette' },
+            { file: data.taxPlate, type: 'tax_plate' },
+            { file: data.activityCertificate, type: 'activity_certificate' }
+          ].filter(doc => doc.file && doc.file.file);
 
-        try {
-          const formData = form.getValues();
-
-          // Prepare and submit manufacturer data
-          const registrationData = prepareRegistrationData(formData);
-          const response = await ManufacturerService.register(registrationData);
-
-          if (!response.success) {
-            throw new Error(response.message || "Registration failed");
+          for (const doc of documents) {
+            if (doc.file && doc.file.file) {
+              try {
+                await CompanyDocumentService.uploadDocument(
+                  doc.file.file,
+                  response.registrationId,
+                  doc.type as import("@/lib/types/company").DocumentType
+                );
+              } catch (error) {
+                toast({
+                  title: "Uyarı",
+                  description: `${doc.type} dökümanı yüklenirken hata oluştu. Daha sonra tekrar yükleyebilirsiniz.`,
+                  variant: "destructive",
+                });
+              }
+            }
           }
 
-          // Associate Supabase user with company
+          // Kullanıcı bilgilerini güncelle
           await updateUser({
             data: {
               company_id: response.registrationId,
@@ -88,37 +109,35 @@ export function ComplateRegistrationForm() {
 
           setIsSubmitted(true);
           toast({
-            title: "Registration Submitted Successfully",
-            description: "Please check your email to verify your account.",
+            title: "Başarılı",
+            description: "Kayıt işlemi tamamlandı.",
           });
-
-          // Redirect after showing success message
-          // setTimeout(() => {
-          //   router.push("/auth/pending-approval");
-          // }, 5000);
-        } catch (error) {
-          toast({
-            title: "Registration Failed",
-            description:
-              error instanceof Error
-                ? error.message
-                : "There was an error submitting your registration. Please try again.",
-            variant: "destructive",
-          });
-          throw error;
         }
+      } catch (error) {
+        toast({
+          title: "Hata",
+          description: error instanceof Error ? error.message : "Kayıt sırasında bir hata oluştu",
+          variant: "destructive",
+        });
+      } finally {
+        setIsSubmitting(false);
       }
-    } catch (error) {
-      toast({
-        title: "Registration Failed",
-        description:
-          error instanceof Error
-            ? error.message
-            : "There was an error submitting your registration. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSubmitting(false);
+    } else {
+      const isValid = await nextStep();
+      if (!isValid) {
+        const errors = form.formState.errors;
+        
+        // İlk hatayı göster
+        let errorMessage = "Lütfen tüm zorunlu alanları doldurun";
+        if (errors[Object.keys(errors)[0]] && typeof errors[Object.keys(errors)[0]] === 'object' && 'message' in errors[Object.keys(errors)[0]] && typeof errors[Object.keys(errors)[0]].message === 'string') {
+          errorMessage = errors[Object.keys(errors)[0]].message;
+        }
+        toast({
+          title: "Hata",
+          description: errorMessage,
+          variant: "destructive",
+        });
+      }
     }
   };
 
@@ -128,54 +147,65 @@ export function ComplateRegistrationForm() {
 
   const CurrentStepComponent = steps[currentStep].component;
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      handleSubmit(e);
-    }
-  };
-
   return (
-    <div className="space-y-8">
-      <div className="space-y-2">
-        <Progress value={progress} className="h-2" />
-        <div className="flex justify-between text-sm text-muted-foreground">
-          <span>
-            Step {currentStep + 1} of {totalSteps}
-          </span>
-          <span>{steps[currentStep].title}</span>
-        </div>
-      </div>
-
+    <div className="space-y-6">
+      <Progress value={progress} className="h-2" />
       <Form {...form}>
-        <form
-          className="space-y-8" // Add these for debugging
-          onKeyDown={handleKeyPress}
+        <form 
+          onSubmit={async (e) => {
+            e.preventDefault();
+           
+            
+            try {
+              if (isLastStep) {
+                setIsSubmitting(true);
+                const values = form.getValues();
+                await onSubmit(values);
+              } else {
+                const isValid = await nextStep();
+                if (!isValid) {
+                  const errors = form.formState.errors;
+                 
+                  
+                  // İlk hatayı göster
+                  let errorMessage = "Lütfen tüm zorunlu alanları doldurun";
+                  if (errors[Object.keys(errors)[0]] && typeof errors[Object.keys(errors)[0]] === 'object' && 'message' in errors[Object.keys(errors)[0]] && typeof errors[Object.keys(errors)[0]].message === 'string') {
+                    errorMessage = errors[Object.keys(errors)[0]].message;
+                  }
+                  toast({
+                    title: "Hata",
+                    description: errorMessage,
+                    variant: "destructive",
+                  });
+                }
+              }
+            } catch (error) {
+              
+              toast({
+                title: "Hata",
+                description: error instanceof Error ? error.message : "Bir hata oluştu",
+                variant: "destructive",
+              });
+            }
+          }} 
+          className="space-y-8"
         >
           <CurrentStepComponent form={form} />
-
-          <div className="flex justify-between pt-4">
+          <div className="flex justify-between">
             {currentStep > 0 && (
-              <Button
-                type="button"
-                variant="outline"
-                onClick={prevStep}
-                disabled={isSubmitting}
-              >
-                Previous
+              <Button type="button" variant="outline" onClick={prevStep}>
+                Geri
               </Button>
             )}
-            <Button
-              type="button"
-              className="ml-auto"
+            <Button 
+              type="submit" 
               disabled={isSubmitting}
-              onClick={() => onNextStep()}
             >
               {isSubmitting
-                ? "Submitting..."
+                ? "Kaydediliyor..."
                 : isLastStep
-                ? "Submit Registration"
-                : "Next"}
+                ? "Kaydet"
+                : "İleri"}
             </Button>
           </div>
         </form>
