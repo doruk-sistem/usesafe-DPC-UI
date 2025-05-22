@@ -3,6 +3,7 @@ export interface Document {
   name: string;
   url: string;
   type: string;
+  category?: string;
   size?: number;
   created_at?: string;
   updated_at?: string;
@@ -17,6 +18,7 @@ export interface Document {
   validUntil?: string;
   version?: string;
   notes?: string;
+  filePath?: string;
 }
 
 export interface DocumentWithMetadata extends Document {

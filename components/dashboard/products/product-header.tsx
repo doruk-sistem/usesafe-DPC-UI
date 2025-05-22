@@ -1,7 +1,8 @@
 "use client";
 
-import { Download, Plus } from "lucide-react";
+import { Download, Plus, Filter } from "lucide-react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState, useEffect, useRef } from "react";
 
@@ -17,7 +18,7 @@ import {
 
 interface ProductHeaderProps {
   onSearch?: (term: string) => void;
-  onFilterChange?: (filter: string) => void;
+  onFilterChange: (key: 'type' | 'status', value: string) => void;
   onStatusChange?: (status: string) => void;
 }
 
@@ -30,6 +31,9 @@ export function ProductHeader({
   const [filter, setFilter] = useState("all");
   const [status, setStatus] = useState("all-status");
   const t = useTranslations("productManagement");
+  const searchParams = useSearchParams();
+  const manufacturerId = searchParams.get('manufacturer');
+  const isViewingManufacturer = !!manufacturerId;
 
   const isInitialRender = useRef(true);
 
@@ -51,7 +55,7 @@ export function ProductHeader({
   const handleFilterChange = (value: string) => {
     setFilter(value);
     if (onFilterChange) {
-      onFilterChange(value);
+      onFilterChange('type', value);
     }
   };
 
@@ -116,12 +120,14 @@ export function ProductHeader({
           <Download className="h-4 w-4" />
         </Button>
 
-        <Button asChild>
-          <Link href="/dashboard/products/new">
-            <Plus className="h-4 w-4 mr-2" />
-            {t("actions.addProduct")}
-          </Link>
-        </Button>
+        {!isViewingManufacturer && (
+          <Button asChild>
+            <Link href="/dashboard/products/new">
+              <Plus className="h-4 w-4 mr-2" />
+              {t("actions.addProduct")}
+            </Link>
+          </Button>
+        )}
       </div>
     </div>
   );

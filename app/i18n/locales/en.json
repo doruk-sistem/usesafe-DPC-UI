@@ -9,6 +9,13 @@
     "verifyProducts": "Verify Products",
     "signIn": "Sign In"
   },
+  "list":{
+    "title": "List",
+    "description": "List of products",
+    "empty":{
+      "manufacturer": "No products found for your company"
+    }
+  },
   "loading": "Loading...",
   "certifications": {
     "title": "Certifications",
@@ -84,7 +91,12 @@
       "loading":"Loading certifications...",
       "empty":{
         "title":"No certifications found",
-        "description":"No certifications found for your company"
+        "description":"No certifications found for your company",
+        "manufacturer":"No certifications found for your company",
+        "addButton":"Add Product"
+      },
+      "actions":{
+       "view":"View"
       },
       "table":{
         "document":"Document",
@@ -115,7 +127,8 @@
       }
     },
     "actions":{
-      "new":"New Certificate"
+      "new":"New Certificate",
+      "download":"Download"
     }
   },
   "pages": {           
@@ -2388,6 +2401,61 @@
 }
   },
   "auth": {
+    "success":{
+     "updatePassword":{
+      "title": "Password Updated",
+      "description": "Your password has been updated successfully."
+     }
+    },
+    "forgot-password": {
+      "title": "Password Recovery",
+      "pageTitle": "Forgot Password",
+      "description": "Enter your email to reset your password",
+      "pageDescription": "Regain access to your account",
+      "submit":"Send Reset Password Link",
+      "reminder":"Remembered your password?",
+      "login":"Login",
+      "submitting":"Submitting...",
+      "success":{
+        "title":"Success",
+        "description":"Reset password link has been sent successfully.",
+        "button":"Login"
+      },
+      "email":{
+        "label":"Email",
+        "placeholder":"example@company.com"
+      },
+      "error":{
+        "title":"Error",
+        "description":"An unexpected error occurred"
+      }
+    },
+    "reset-password": {
+      "title": "Reset Password",
+      "pageTitle": "Create New Password",
+      "pageDescription": "Set a strong password for your account",
+      "description": "Please enter your new password",
+      "newPassword": "New Password",
+      "confirmPassword": "Confirm Password",
+      "submit": "Reset Password",
+      "submitting": "Processing...",
+      "error": {
+        "title": "Error",
+        "expiredLink": "Password reset link has expired. Please request a new password reset link.",
+        "generic": "An error occurred during the password reset process.",
+        "description": "Your password reset link may have expired. Click the button below to request a new password reset link.",
+        "requestNew": "Request New Password Reset Link",
+        "backToLogin": "Back to Login"
+      },
+      "success": {
+        "title": "Password Reset Successful",
+        "description": "You can now login with your new password."
+      },
+      "validation": {
+        "minLength": "Password must be at least 6 characters",
+        "passwordMismatch": "Passwords do not match"
+      }
+    },
     "createAccount": {
       "title": "Create Account",
       "description": "Create a new account",

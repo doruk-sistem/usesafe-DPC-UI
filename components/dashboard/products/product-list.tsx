@@ -59,9 +59,14 @@ import { StorageHelper } from "@/lib/utils/storage";
 interface ProductListProps {
   products: BaseProduct[];
   isLoading: boolean;
+  isViewingManufacturer: boolean;
+  filters: {
+    type: string;
+    status: string;
+  };
 }
 
-export function ProductList({ products, isLoading }: ProductListProps) {
+export function ProductList({ products, isLoading, isViewingManufacturer }: ProductListProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const t = useTranslations();
@@ -126,19 +131,28 @@ export function ProductList({ products, isLoading }: ProductListProps) {
   if (!products || products.length === 0) {
     return (
       <Card>
-        <CardContent className="flex flex-col items-center justify-center py-12">
-          <Battery className="h-12 w-12 text-muted-foreground mb-4" />
-          <h2 className="text-xl font-semibold mb-2">
-            {t("products.empty.title")}
-          </h2>
-          <p className="text-muted-foreground mb-4">
-            {t("products.empty.description")}
-          </p>
-          <Button asChild>
-            <Link href="/dashboard/products/new">
-              {t("products.empty.addButton")}
-            </Link>
-          </Button>
+        <CardHeader>
+          <CardTitle>{t('list.title')}</CardTitle>
+          <CardDescription>
+            {t('list.description')}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-4 text-muted-foreground">
+            {isViewingManufacturer ? (
+              <p>{t('list.empty.manufacturer')}</p>
+            ) : (
+              <>
+                <p>{t('list.empty.title')}</p>
+                <p className="mt-2">{t('list.empty.description')}</p>
+                <Button asChild className="mt-4">
+                  <Link href="/dashboard/products/new">
+                    {t('list.empty.addButton')}
+                  </Link>
+                </Button>
+              </>
+            )}
+          </div>
         </CardContent>
       </Card>
     );
