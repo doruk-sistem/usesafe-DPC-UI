@@ -92,17 +92,13 @@ function ApprovalContent() {
         
         // Show toast after successful verification
         toast({
-          title: "Success",
-          description: "Your email has been successfully verified.",
+          title: "Başarılı",
+          description: "E-posta adresiniz doğrulandı. Şimdi şifrenizi belirleyebilirsiniz.",
           variant: "default"
         });
         
-        // Redirect to the redirect_to parameter if it exists, otherwise to the home page
-        if (redirect_to) {
-          window.location.href = redirect_to;
-        } else {
-          router.push("/");
-        }
+        // Redirect to set-password page
+        router.push("/auth/set-password");
       } else {
         // If parameters are not found, redirect directly to the URL
         window.location.href = decodeURIComponent(confirmationURL);

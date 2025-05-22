@@ -16,7 +16,7 @@ export async function POST(request: Request) {
         full_name,
         company_id
       },
-      redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`
+      redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/set-password`
     });
     
     if (error) throw error;
