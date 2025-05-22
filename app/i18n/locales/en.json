@@ -9,6 +9,11 @@
     "verifyProducts": "Verify Products",
     "signIn": "Sign In"
   },
+  "settings":{
+  "tabs":{
+    "users":"Users"
+  }
+  },
   "list":{
     "title": "List",
     "description": "List of products",

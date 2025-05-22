@@ -3,10 +3,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
+import { useState, useEffect } from "react";
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -21,6 +23,7 @@ import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
+import { useUsers } from "@/lib/hooks/use-users";
 
 const settingsSchema = z.object({
   // Company Information (Read-only)
@@ -82,6 +85,13 @@ const defaultValues: Partial<SettingsFormValues> = {
 export function SettingsForm() {
   const { toast } = useToast();
   const t = useTranslations("settings");
+  const { users, invitations, loading, inviting, deleting, fetchUsers, inviteUser, deleteUser, updateInvitationStatus, deleteInvitation } = useUsers();
+  const [inviteFormData, setInviteFormData] = useState({ full_name: "", email: "", role: "user" });
+
+  // Sayfa yüklendiğinde kullanıcıları getir
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
   const form = useForm<SettingsFormValues>({
     resolver: zodResolver(settingsSchema),
@@ -94,6 +104,37 @@ export function SettingsForm() {
       description: t("success.description"),
     });
   }
+  
+  // Kullanıcı davet formu için değişiklik işleyicisi
+  const handleInviteFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { id, value } = e.target;
+    setInviteFormData(prev => ({
+      ...prev,
+      [id]: value
+    }));
+  };
+  
+  // Kullanıcı davet işlemi
+  const handleInviteSubmit = async () => {
+    if (!inviteFormData.email || !inviteFormData.full_name) {
+      toast({
+        title: "Hata",
+        description: "Lütfen tüm alanları doldurun",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    await inviteUser(inviteFormData);
+    setInviteFormData({ full_name: "", email: "", role: "user" });
+  };
+  
+  // Kullanıcı silme işlemi
+  const handleDeleteUser = async (userId: string) => {
+    if (confirm("Bu kullanıcıyı silmek istediğinizden emin misiniz?")) {
+      await deleteUser(userId);
+    }
+  };
 
   return (
     <Form {...form}>
@@ -104,6 +145,7 @@ export function SettingsForm() {
             <TabsTrigger value="contact">{t("tabs.contact")}</TabsTrigger>
             <TabsTrigger value="notifications">{t("tabs.notifications")}</TabsTrigger>
             <TabsTrigger value="security">{t("tabs.security")}</TabsTrigger>
+            <TabsTrigger value="users">{t("tabs.users")}</TabsTrigger>
           </TabsList>
 
           <TabsContent value="company">
@@ -358,6 +400,183 @@ export function SettingsForm() {
                 </CardContent>
               </Card>
             </div>
+          </TabsContent>
+
+          <TabsContent value="security">
+            <Card>
+              <CardHeader>
+                <CardTitle>{t("security.title")}</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="emailNotifications"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                      <div className="space-y-0.5">
+                        <FormLabel className="text-base">
+                          {t("security.changePassword.label")}
+                        </FormLabel>
+                        <FormDescription>
+                          {t("security.changePassword.description")}
+                        </FormDescription>
+                      </div>
+                      <Button variant="outline">
+                        {t("security.changePassword.button")}
+                      </Button>
+                    </FormItem>
+                  )}
+                />
+              </CardContent>
+            </Card>
+          </TabsContent>
+          
+          <TabsContent value="users">
+            <Card>
+              <CardHeader>
+                <CardTitle>Kullanıcı Yönetimi</CardTitle>
+                <FormDescription>
+                  Şirket kullanıcılarını yönetin ve yeni kullanıcılar davet edin
+                </FormDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex justify-between">
+                    <h3 className="text-lg font-medium">Mevcut Kullanıcılar</h3>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant="outline" size="sm">
+                          Yeni Kullanıcı Davet Et
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="sm:max-w-[425px]">
+                        <DialogHeader>
+                          <DialogTitle>Kullanıcı Davet Et</DialogTitle>
+                          <DialogDescription>
+                            Şirketinize yeni bir kullanıcı davet etmek için aşağıdaki formu doldurun.
+                          </DialogDescription>
+                        </DialogHeader>
+                        <div className="grid gap-4 py-4">
+                          <div className="grid grid-cols-4 items-center gap-4">
+                            <FormLabel className="text-right">Ad Soyad</FormLabel>
+                            <Input 
+                              id="full_name" 
+                              className="col-span-3" 
+                              placeholder="John Doe" 
+                              value={inviteFormData.full_name}
+                              onChange={handleInviteFormChange}
+                            />
+                          </div>
+                          <div className="grid grid-cols-4 items-center gap-4">
+                            <FormLabel className="text-right">E-posta</FormLabel>
+                            <Input 
+                              id="email" 
+                              className="col-span-3" 
+                              placeholder="john.doe@example.com" 
+                              type="email" 
+                              value={inviteFormData.email}
+                              onChange={handleInviteFormChange}
+                            />
+                          </div>
+                          <div className="grid grid-cols-4 items-center gap-4">
+                            <FormLabel className="text-right">Rol</FormLabel>
+                            <select 
+                              id="role"
+                              className="col-span-3 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                              value={inviteFormData.role}
+                              onChange={handleInviteFormChange}
+                            >
+                              <option value="user">Kullanıcı</option>
+                              <option value="admin">Yönetici</option>
+                            </select>
+                          </div>
+                        </div>
+                        <DialogFooter>
+                          <Button 
+                            type="button" 
+                            onClick={handleInviteSubmit}
+                            disabled={inviting}
+                          >
+                            {inviting ? "Gönderiliyor..." : "Davet Gönder"}
+                          </Button>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
+                  
+                  {/* Bekleyen Davetler */}
+                  {invitations.length > 0 && (
+                    <div className="mb-6">
+                      <h3 className="text-lg font-medium mb-2">Bekleyen Davetler</h3>
+                      <div className="rounded-md border">
+                        {invitations
+                          .filter(invitation => invitation.status === "pending")
+                          .map((invitation, index) => (
+                          <div key={invitation.id} className={index > 0 ? "border-t p-4" : "p-4"}>
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <p className="font-medium">{invitation.full_name}</p>
+                                <p className="text-sm text-muted-foreground">{invitation.email}</p>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <span className="rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-800">
+                                  Bekliyor
+                                </span>
+                                <Button 
+                                  variant="ghost" 
+                                  size="icon"
+                                  onClick={() => deleteInvitation(invitation.id)}
+                                >
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Mevcut Kullanıcılar */}
+                  <h3 className="text-lg font-medium mb-2">Mevcut Kullanıcılar</h3>
+                  {loading ? (
+                    <div className="flex justify-center p-4">
+                      <p>Kullanıcılar yükleniyor...</p>
+                    </div>
+                  ) : users.length === 0 ? (
+                    <div className="rounded-md border p-4 text-center">
+                      <p>Henüz kullanıcı bulunmuyor.</p>
+                    </div>
+                  ) : (
+                    <div className="rounded-md border">
+                      {users.map((user, index) => (
+                        <div key={user.id} className={index > 0 ? "border-t p-4" : "p-4"}>
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="font-medium">{user.full_name}</p>
+                              <p className="text-sm text-muted-foreground">{user.email}</p>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className={`rounded-full px-2 py-1 text-xs font-medium ${user.role === 'admin' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'}`}>
+                                {user.role === 'admin' ? 'Yönetici' : 'Kullanıcı'}
+                              </span>
+                              <Button 
+                                variant="ghost" 
+                                size="icon"
+                                onClick={() => handleDeleteUser(user.id)}
+                                disabled={deleting}
+                              >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
 
           <TabsContent value="notifications">

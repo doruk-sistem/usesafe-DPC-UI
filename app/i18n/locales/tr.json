@@ -2514,7 +2514,8 @@
       "company": "Şirket",
       "contact": "İletişim",
       "notifications": "Bildirimler",
-      "security": "Güvenlik"
+      "security": "Güvenlik",
+      "users": "Kullanıcılar"
     },
     "company": {
       "title": "Şirket Bilgileri",
