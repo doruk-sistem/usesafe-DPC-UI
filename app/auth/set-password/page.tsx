@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,7 +11,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -92,16 +91,15 @@ export default function SetPasswordPage() {
 
       toast({
         title: "Success",
-        description: "Your password has been updated successfully.",
+        description: "Your password has been set successfully.",
       });
 
-      // Redirect to dashboard
       window.location.href = "/dashboard";
     } catch (error) {
-      console.error("Error updating password:", error);
+      console.error("Error setting password:", error);
       toast({
         title: "Error",
-        description: "Failed to update password. Please try again.",
+        description: "Failed to set password. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -116,7 +114,7 @@ export default function SetPasswordPage() {
           <CardHeader>
             <CardTitle>Set Your Password</CardTitle>
             <CardDescription>
-              Please set a new password for your account
+              Please set a password for your account
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -157,7 +155,7 @@ export default function SetPasswordPage() {
                   )}
                 />
                 <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? "Updating..." : "Set Password"}
+                  {loading ? "Setting..." : "Set Password"}
                 </Button>
               </form>
             </Form>
