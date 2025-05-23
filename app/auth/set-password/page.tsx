@@ -49,8 +49,6 @@ export default function SetPassword() {
         const refresh_token = params.get('refresh_token');
         const email = params.get('email');
         
-        console.log("Hash params:", { access_token, refresh_token, email });
-        
         if (access_token) {
           setAccessToken(access_token);
           // Oturumu ayarla
@@ -106,19 +104,34 @@ export default function SetPassword() {
         
         if (access_token && refresh_token && type === 'invite') {
           try {
-            // Oturumu ayarla
-            await supabaseClient.auth.setSession({
+            // Önce oturumu ayarla
+            const { error: sessionError } = await supabaseClient.auth.setSession({
               access_token,
               refresh_token
             });
+
+            if (sessionError) {
+              throw sessionError;
+            }
+
+            // Oturumun ayarlandığından emin ol
+            const { data: { session }, error: getSessionError } = await supabaseClient.auth.getSession();
+            
+            if (getSessionError) {
+              throw getSessionError;
+            }
+
+            if (!session) {
+              throw new Error('Oturum bulunamadı');
+            }
             
             // Şifre güncelleme
-            const { error } = await supabaseClient.auth.updateUser({
+            const { error: updateError } = await supabaseClient.auth.updateUser({
               password
             });
             
-            if (error) {
-              throw error;
+            if (updateError) {
+              throw updateError;
             }
             
             toast({
@@ -127,14 +140,10 @@ export default function SetPassword() {
               variant: "default"
             });
             
-            // Başarılı olduktan sonra login sayfasına yönlendir
-            setTimeout(() => {
-              router.push("/auth/login");
-            }, 2000);
-            
+            // Başarılı olduktan sonra dashboard'a yönlendir
+            window.location.href = "http://localhost:3000/dashboard";
             return;
           } catch (err: any) {
-            console.error("Error setting session:", err);
             throw new Error(err.message || 'Şifre güncellenirken bir hata oluştu');
           }
         }
@@ -167,7 +176,6 @@ export default function SetPassword() {
         });
 
         if (verifyError) {
-          console.error("Verification error:", verifyError);
           toast({
             title: "Doğrulama Hatası",
             description: verifyError.message,
@@ -184,7 +192,6 @@ export default function SetPassword() {
       });
 
       if (updateError) {
-        console.error("Password update error:", updateError);
         toast({
           title: "Şifre Güncelleme Hatası",
           description: updateError.message,
@@ -200,12 +207,9 @@ export default function SetPassword() {
         variant: "default"
       });
 
-      // Başarılı olduktan sonra login sayfasına yönlendir
-      setTimeout(() => {
-        router.push("/auth/login");
-      }, 2000);
+      // Başarılı olduktan sonra dashboard'a yönlendir
+      window.location.href = "http://localhost:3000/dashboard";
     } catch (error: any) {
-      console.error("Error:", error);
       toast({
         title: "Hata",
         description: error.message || "Bir hata oluştu.",

@@ -17,7 +17,7 @@ export async function POST(request: Request) {
         full_name,
         company_id
       },
-      redirectTo: `https://app.usesafe.net/auth/set-password`
+      redirectTo: `http://localhost:3000/auth/set-password`
     });
     
     if (error) throw error;
