@@ -3,6 +3,7 @@ export interface Document {
   name: string;
   url: string;
   type: string;
+  category?: string;
   size?: number;
   created_at?: string;
   updated_at?: string;
@@ -17,6 +18,7 @@ export interface Document {
   validUntil?: string;
   version?: string;
   notes?: string;
+  filePath?: string;
 }
 
 export interface DocumentWithMetadata extends Document {
@@ -25,12 +27,22 @@ export interface DocumentWithMetadata extends Document {
   };
 }
 
+// Sertifika tipleri
+export type CertificateType = 
+  | 'quality_certificate'
+  | 'safety_certificate'
+  | 'environmental_certificate'
+  | 'iso_certificate'
+  | 'export_certificate'
+  | 'production_certificate'
+  | 'activity_permit';  
+
+// Döküman tipleri
 export type DocumentType = 
-  | 'quality_cert'
-  | 'safety_cert' 
-  | 'test_reports'
-  | 'technical_docs'
-  | 'compliance_docs';
+  | 'signature_circular'
+  | 'trade_registry_gazette'
+  | 'tax_plate'
+  | 'activity_certificate';  // Faaliyet Belgesi (döküman)
 
 export enum DocumentStatus {
   PENDING = 'pending',

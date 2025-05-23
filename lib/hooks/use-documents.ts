@@ -12,7 +12,6 @@ export const documentsApiHooks = {
       queryKey: ["documents"],
       queryFn: async () => {
         try {
-          // Basit sorgu ile başlayalım
           const { data, error } = await supabase.from("products").select("*");
 
           if (error) {
@@ -24,7 +23,7 @@ export const documentsApiHooks = {
             return [];
           }
 
-          // Belgeleri düzleştir
+          // Flatten all documents into a single array
           const allDocuments = data.flatMap((product: any) => {
             if (!product.documents) {
               return [];
@@ -32,14 +31,24 @@ export const documentsApiHooks = {
 
             const docs = Array.isArray(product.documents)
               ? product.documents
-              : Object.values(product.documents).flat();
+              : Object.entries(product.documents).flatMap(([type, docs]: [string, any]) => {
+                  if (Array.isArray(docs)) {
+                    return docs.map((doc: any) => ({
+                      ...doc,
+                      type,
+                      category: doc.category || type,
+                    }));
+                  }
+                  return [];
+                });
 
             return docs.map((doc: any) => ({
               id: doc.id || `doc-${Date.now()}-${Math.random()}`,
               name: doc.name || "Unnamed Document",
               type: doc.type || "unknown",
+              category: doc.category || doc.type || "unknown",
               url: doc.url || "",
-              status: (doc.status || "pending").toLowerCase() as DocumentStatus,
+              status: (doc.status || "pending").toLowerCase(),
               productId: product.id,
               manufacturer: product.manufacturer || "",
               manufacturerId: product.manufacturer_id || "",
@@ -60,8 +69,8 @@ export const documentsApiHooks = {
           throw error;
         }
       },
-      retry: 1, // Hata durumunda sadece bir kez yeniden dene
-      refetchOnWindowFocus: false, // Pencere odağı değiştiğinde yeniden sorgu yapma
+      retry: 1,
+      refetchOnWindowFocus: false,
     });
   },
   useDeleteDocument: () => {

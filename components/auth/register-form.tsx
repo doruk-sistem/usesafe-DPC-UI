@@ -52,11 +52,10 @@ export function RegisterForm() {
       city: "",
       district: "",
       postalCode: "",
-      // Opsiyonel belgeler kaldırıldı - Kullanıcılar bunları kayıt sonrası "Yeni DPC ekle" butonu ile ekleyecekler
       password: "",
       confirmPassword: "",
     },
-    mode: "onChange", // Enable real-time validation
+    mode: "onChange",
   });
 
   const { currentStep, totalSteps, nextStep, prevStep, isLastStep, progress } =
@@ -64,17 +63,13 @@ export function RegisterForm() {
 
   const onNextStep = async () => {
     try {
-      // Always try to progress to the next step
       const stepValidated = await nextStep();
 
-      // If this is the last step and validation passes, submit the full registration
       if (isLastStep && stepValidated) {
         setIsSubmitting(true);
 
         try {
           const formData = form.getValues();
-
-          // Prepare and submit manufacturer data
           const registrationData = prepareRegistrationData(formData);
           const response = await ManufacturerService.register(registrationData);
 
@@ -87,11 +82,6 @@ export function RegisterForm() {
             title: "Registration Submitted Successfully",
             description: "Please check your email to verify your account.",
           });
-
-          // // Redirect after showing success message
-          // setTimeout(() => {
-          //   router.push("/auth/pending-approval");
-          // }, 5000);
         } catch (error) {
           toast({
             title: "Registration Failed",
@@ -145,8 +135,12 @@ export function RegisterForm() {
 
       <Form {...form}>
         <form
-          className="space-y-8" // Add these for debugging
+          className="space-y-8"
           onKeyDown={handleKeyPress}
+          onSubmit={(e) => {
+            e.preventDefault();
+            onNextStep();
+          }}
         >
           <CurrentStepComponent form={form} />
 
@@ -155,7 +149,7 @@ export function RegisterForm() {
               <Button
                 type="button"
                 variant="outline"
-                onClick={prevStep}
+                onClick={() => prevStep()}
                 disabled={isSubmitting}
               >
                 Previous
@@ -165,7 +159,7 @@ export function RegisterForm() {
               type="button"
               className="ml-auto"
               disabled={isSubmitting}
-              onClick={() => onNextStep()}
+              onClick={onNextStep}
             >
               {isSubmitting
                 ? "Submitting..."

@@ -43,19 +43,8 @@ export class ManufacturerService {
 
       if (addressError) throw new Error(addressError.message);
 
-      // Insert documents
-      const documents = data.documents.map((doc) => ({
-        companyId: company.id,
-        type: doc.type as DocumentType,
-        filePath: doc.filePath,
-        status: DocumentStatus.PENDING,
-      }));
-
-      const { error: documentsError } = await supabase
-        .from("company_documents")
-        .insert(documents);
-
-      if (documentsError) throw new Error(documentsError.message);
+      // Remove direct document insert here!
+      // Documents will be uploaded after registration is complete.
 
       return {
         success: true,

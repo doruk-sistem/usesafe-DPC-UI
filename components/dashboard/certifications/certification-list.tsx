@@ -32,14 +32,25 @@ import {
 } from "@/components/ui/table";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { companyApiHooks } from "@/lib/hooks/use-company";
-import { DocumentType } from "@/lib/types/company";
+import { CertificateType } from "@/lib/types/document";
 
 import { getStatusIcon } from "../../../lib/utils/document-utils";
+
+// Sertifika tipleri
+const CERTIFICATE_TYPES = [
+  'quality_certificate',
+  'safety_certificate',
+  'environmental_certificate',
+  'iso_certificate',
+  'export_certificate',
+  'production_certificate',
+  'activity_permit'  // Faaliyet İzni (sertifika)
+] as const;
 
 interface CompanyDocument {
   id: string;
   companyId: string;
-  type: DocumentType;
+  type: string;
   filePath: string;
   status: string;
   createdAt: string;
@@ -68,10 +79,12 @@ export function CertificationList({ filters }: CertificationListProps) {
     { enabled: !!companyId }
   );
   
+  // Sadece sertifika tiplerini filtrele
   const filteredDocuments = allDocuments?.filter(doc => {
+    const isCertificate = CERTIFICATE_TYPES.includes(doc.type as CertificateType);
     const typeMatch = filters.type === "all" || doc.type === filters.type;
     const statusMatch = filters.status === "all-status" || doc.status === filters.status;
-    return typeMatch && statusMatch;
+    return isCertificate && typeMatch && statusMatch;
   });
 
   const getStatusVariant = (status: string) => {
@@ -98,14 +111,22 @@ export function CertificationList({ filters }: CertificationListProps) {
 
   const getDocumentType = (type: string) => {
     switch (type) {
-      case "quality_certificate":
-        return t('types.quality');
-      case "iso_certificate":
-        return t('types.iso');
-      case "production_permit":
-        return t('types.production');
-      case "export_certificate":
-        return t('types.export');
+      case 'quality_certificate':
+        return 'Kalite Sertifikası';
+      case 'safety_certificate':
+        return 'Güvenlik Sertifikası';
+      case 'environmental_certificate':
+        return 'Çevre Sertifikası';
+      case 'iso_certificate':
+        return 'ISO Sertifikası';
+      case 'export_certificate':
+        return 'İhracat Sertifikası';
+      case 'production_certificate':
+        return 'Üretim Sertifikası';
+      case 'activity_permit':
+        return 'Faaliyet İzni';
+      default:
+        return type;
     }
   };
 
