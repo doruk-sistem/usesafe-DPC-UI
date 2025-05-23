@@ -93,18 +93,7 @@ export function DocumentList({ filters }: { filters: { type: string; status: str
   };
 
   const getDocumentType = (type: string) => {
-    switch (type) {
-      case 'signature_circular':
-        return 'İmza Sirküleri';
-      case 'trade_registry_gazette':
-        return 'Ticaret Sicil Gazetesi';
-      case 'tax_plate':
-        return 'Vergi Levhası';
-      case 'activity_certificate':
-        return 'Faaliyet Belgesi';
-      default:
-        return type;
-    }
+    return t(`types.${type}`, { defaultValue: type });
   };
 
   if (isLoading) {
@@ -174,11 +163,11 @@ export function DocumentList({ filters }: { filters: { type: string; status: str
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Belge</TableHead>
-              <TableHead>Tip</TableHead>
-              <TableHead>Başvuru Tarihi</TableHead>
-              <TableHead>Güncelleme Tarihi</TableHead>
-              <TableHead></TableHead>
+              <TableHead>{t('table.document')}</TableHead>
+              <TableHead>{t('table.type')}</TableHead>
+              <TableHead>{t('table.applicationDate')}</TableHead>
+              <TableHead>{t('table.updateDate')}</TableHead>
+              <TableHead>{t('table.actions')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -222,26 +211,33 @@ export function DocumentList({ filters }: { filters: { type: string; status: str
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" size="icon">
                         <MoreHorizontal className="h-4 w-4" />
-                        <span className="sr-only">İşlemler</span>
+                        <span className="sr-only">{t('actions.title')}</span>
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>İşlemler</DropdownMenuLabel>
+                      <DropdownMenuLabel>{t('actions.title')}</DropdownMenuLabel>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem asChild>
                         <Link href={`/dashboard/documents/${doc.id}`}>
                           <FileText className="h-4 w-4 mr-2" />
-                          Görüntüle
+                          {t('actions.view')}
                         </Link>
                       </DropdownMenuItem>
                       {doc.status === "rejected" && (
                         <DropdownMenuItem asChild>
                           <Link href={`/dashboard/documents/${doc.id}/reupload`}>
                             <ExternalLink className="h-4 w-4 mr-2" />
-                            Yeniden Yükle
+                            {t('actions.download')}
                           </Link>
                         </DropdownMenuItem>
                       )}
+                      <DropdownMenuItem asChild>
+                        <Link href={`/dashboard/documents/${doc.id}/history`}>
+                          <History className="h-4 w-4 mr-2" />
+                          {t('actions.history')}
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="text-red-600">{t('actions.delete')}</DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>
