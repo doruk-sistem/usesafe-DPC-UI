@@ -188,7 +188,7 @@ export function useAuth() {
   const resetPassword = async (email: string) => {
     try {
       // Geliştirme ortamı URL'sini kullan
-      const baseUrl = "http://localhost:3000";
+      const baseUrl = "https://app.usesafe.net";
       
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${baseUrl}/auth/reset-password`,

@@ -105,7 +105,7 @@ export default function ResetPasswordPage() {
       });
 
       // Dashboard'a yönlendir
-      window.location.href = "http://localhost:3000/dashboard";
+      window.location.href = "https://app.usesafe.net/dashboard";
     } catch (error) {
       if (error instanceof Error) {
         toast({

@@ -94,7 +94,7 @@ export default function SetPasswordPage() {
         description: "Your password has been set successfully.",
       });
 
-      window.location.href = "/dashboard";
+      window.location.href = "https://app.usesafe.net/dashboard";
     } catch (error) {
       console.error("Error setting password:", error);
       toast({
