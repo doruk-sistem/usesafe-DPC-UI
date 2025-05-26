@@ -98,7 +98,7 @@ export function PendingApplications() {
                   ? "bg-blue-50 text-blue-600"
                   : "bg-yellow-50 text-yellow-600"}
               `}>
-                {app.status === "PENDING" ? t("status.pending") : "Pending Review"}
+                {app.status === "PENDING" ? t("status.pending") : t("status.review")}
               </div>
             </motion.div>
           ))

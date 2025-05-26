@@ -4,6 +4,7 @@ import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 import { motion } from "framer-motion";
 import { Box, CheckCircle2, XCircle , FileText, Trash2, PenLine } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { tr } from "date-fns/locale";
 
 import { useAuth } from "@/lib/hooks/use-auth";
 import { useProducts } from "@/lib/hooks/use-products";
@@ -58,7 +59,7 @@ export function RecentActivities() {
             <div className="flex-1">
               <h3 className="font-medium">{activity.name}</h3>
               <p className="text-sm text-muted-foreground">
-                {activity.status} · {formatDistanceToNow(new Date(activity.timestamp), { addSuffix: true })}
+                {t("status." + activity.status.toLowerCase())} · {formatDistanceToNow(new Date(activity.timestamp), { addSuffix: true, locale: tr })}
               </p>
             </div>
             <div className="px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-600">
@@ -109,7 +110,8 @@ export function RecentActivities() {
                     {activity.name}
                   </p>
                   <p className="flex items-center text-sm text-muted-foreground">
-                    {t("status." + activity.status.toLowerCase())}
+                    {t("submitted")}:{" "}
+                    {new Date(activity.timestamp).toLocaleDateString()}
                   </p>
                 </div>
               </div>
