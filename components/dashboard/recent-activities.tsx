@@ -22,9 +22,8 @@ const containerVariants = {
 
 export function RecentActivities() {
   const t = useTranslations("dashboard.activities");
-  const { user } = useAuth();
-  const companyId = user?.user_metadata["company_id"] || "7d26ed35-49ca-4c0d-932e-52254fb0e5b8";
-  const { products } = useProducts(companyId);
+  const { user, company } = useAuth();
+  const { products } = useProducts(company?.id);
   const activities = getRecentActivities(products || []);
 
   return (
@@ -49,50 +48,21 @@ export function RecentActivities() {
             initial={{ x: -20, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ delay: index * 0.1 }}
-            className="flex items-center space-x-4 p-4 
-              hover:bg-muted/50 rounded-lg 
+            className="flex items-center space-x-4 p-4 \
+              hover:bg-muted/50 rounded-lg \
               transition-colors duration-200 group"
           >
-            <div
-              className={`
-              p-3 rounded-full 
-              ${
-                activity.status === "NEW"
-                  ? "bg-green-100 text-green-600"
-                  : activity.status === "DRAFT"
-                  ? "bg-blue-100 text-blue-600"
-                  : "bg-red-100 text-red-600"
-              }
-            `}
-            >
-              {activity.status === "NEW" && (
-                <CheckCircle2 className="h-5 w-5" />
-              )}
-              {activity.status === "DRAFT" && <Box className="h-5 w-5" />}
-              {activity.status === "DELETED" && <XCircle className="h-5 w-5" />}
+            <div className="p-3 rounded-full bg-blue-100 text-blue-600">
+              <FileText className="h-5 w-5" />
             </div>
             <div className="flex-1">
               <h3 className="font-medium">{activity.name}</h3>
               <p className="text-sm text-muted-foreground">
-                {activity.id} ·{" "}
-                {formatDistanceToNow(new Date(activity.timestamp), {
-                  addSuffix: true,
-                })}
+                {activity.status} · {formatDistanceToNow(new Date(activity.timestamp), { addSuffix: true })}
               </p>
             </div>
-            <div
-              className={`
-              px-3 py-1 rounded-full text-xs font-medium
-              ${
-                activity.status === "NEW"
-                  ? "bg-green-50 text-green-600"
-                  : activity.status === "DRAFT"
-                  ? "bg-blue-50 text-blue-600"
-                  : "bg-red-50 text-red-600"
-              }
-            `}
-            >
-              {t(`status.${activity.status}`)}
+            <div className="px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-600">
+              {activity.status}
             </div>
           </motion.div>
         ))}
