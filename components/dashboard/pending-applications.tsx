@@ -89,7 +89,7 @@ export function PendingApplications() {
               <div className="flex-1">
                 <h3 className="font-medium">{app.name}</h3>
                 <p className="text-sm text-muted-foreground">
-                  {app.id} · {t("submitted")} {app.created_at ? new Date(app.created_at).toLocaleDateString() : "-"}
+                  {t("submitted")} {app.created_at ? new Date(app.created_at).toLocaleDateString() : "-"}
                 </p>
               </div>
               <div className={`
