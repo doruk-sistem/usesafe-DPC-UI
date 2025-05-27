@@ -643,108 +643,163 @@ export function SettingsForm() {
           <TabsContent value="users">
             <Card>
               <CardHeader>
-                <CardTitle>Kullanıcı Yönetimi</CardTitle>
-                <FormDescription>
-                  Şirket kullanıcılarını yönetin ve yeni kullanıcılar davet edin
-                </FormDescription>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle>Kullanıcı Yönetimi</CardTitle>
+                    <CardDescription>
+                      Şirket kullanıcılarını yönetin ve yeni kullanıcılar davet edin
+                    </CardDescription>
+                  </div>
+                  <Dialog open={inviteDialogOpen} onOpenChange={setInviteDialogOpen}>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" size="sm">
+                        Yeni Kullanıcı Davet Et
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[425px]">
+                      <DialogHeader>
+                        <DialogTitle>Kullanıcı Davet Et</DialogTitle>
+                        <DialogDescription>
+                          Şirketinize yeni bir kullanıcı davet etmek için aşağıdaki formu doldurun.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div className="grid gap-4 py-4">
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <FormLabel className="text-right">Ad Soyad</FormLabel>
+                          <Input 
+                            id="full_name" 
+                            className="col-span-3" 
+                            placeholder="John Doe" 
+                            value={inviteFormData.full_name}
+                            onChange={handleInviteFormChange}
+                          />
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <FormLabel className="text-right">E-posta</FormLabel>
+                          <Input 
+                            id="email" 
+                            className="col-span-3" 
+                            placeholder="john.doe@example.com" 
+                            type="email" 
+                            value={inviteFormData.email}
+                            onChange={handleInviteFormChange}
+                          />
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <FormLabel className="text-right">Rol</FormLabel>
+                          <select 
+                            id="role"
+                            className="col-span-3 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                            value={inviteFormData.role}
+                            onChange={handleInviteFormChange}
+                          >
+                            <option value="user">Kullanıcı</option>
+                            <option value="company_admin">Şirket Yöneticisi</option>
+                          </select>
+                        </div>
+                      </div>
+                      <DialogFooter>
+                        <Button 
+                          type="button" 
+                          onClick={handleInviteSubmit}
+                          disabled={inviting}
+                        >
+                          {inviting ? "Gönderiliyor..." : "Davet Gönder"}
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                </div>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  <div className="flex justify-between">
-                    <h3 className="text-lg font-medium">Mevcut Kullanıcılar</h3>
-                    <Dialog open={inviteDialogOpen} onOpenChange={setInviteDialogOpen}>
-                      <DialogTrigger asChild>
-                        <Button variant="outline" size="sm">
-                          Yeni Kullanıcı Davet Et
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent className="sm:max-w-[425px]">
-                        <DialogHeader>
-                          <DialogTitle>Kullanıcı Davet Et</DialogTitle>
-                          <DialogDescription>
-                            Şirketinize yeni bir kullanıcı davet etmek için aşağıdaki formu doldurun.
-                          </DialogDescription>
-                        </DialogHeader>
-                        <div className="grid gap-4 py-4">
-                          <div className="grid grid-cols-4 items-center gap-4">
-                            <FormLabel className="text-right">Ad Soyad</FormLabel>
-                            <Input 
-                              id="full_name" 
-                              className="col-span-3" 
-                              placeholder="John Doe" 
-                              value={inviteFormData.full_name}
-                              onChange={handleInviteFormChange}
-                            />
-                          </div>
-                          <div className="grid grid-cols-4 items-center gap-4">
-                            <FormLabel className="text-right">E-posta</FormLabel>
-                            <Input 
-                              id="email" 
-                              className="col-span-3" 
-                              placeholder="john.doe@example.com" 
-                              type="email" 
-                              value={inviteFormData.email}
-                              onChange={handleInviteFormChange}
-                            />
-                          </div>
-                          <div className="grid grid-cols-4 items-center gap-4">
-                            <FormLabel className="text-right">Rol</FormLabel>
-                            <select 
-                              id="role"
-                              className="col-span-3 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                              value={inviteFormData.role}
-                              onChange={handleInviteFormChange}
-                            >
-                              <option value="user">Kullanıcı</option>
-                              <option value="company_admin">Şirket Yöneticisi</option>
-                            </select>
-                          </div>
-                        </div>
-                        <DialogFooter>
-                          <Button 
-                            type="button" 
-                            onClick={handleInviteSubmit}
-                            disabled={inviting}
-                          >
-                            {inviting ? "Gönderiliyor..." : "Davet Gönder"}
-                          </Button>
-                        </DialogFooter>
-                      </DialogContent>
-                    </Dialog>
-                  </div>
-                  
+                <div className="space-y-6">
                   {/* Bekleyen Davetler */}
-                  {invitations.length > 0 && (
-                    <div className="mb-6">
-                      <h3 className="text-lg font-medium mb-2">Bekleyen Davetler</h3>
-                      <div className="rounded-md border">
+                  <div>
+                    <h3 className="text-lg font-medium mb-4">Bekleyen Davetler</h3>
+                    {invitations.length > 0 ? (
+                      <div className="rounded-md border divide-y">
                         {invitations
                           .filter(invitation => {
-                            // Sadece bekleyen davetleri göster
                             if (invitation.status !== "pending") return false;
-                            
-                            // Mevcut kullanıcıların e-posta adreslerini kontrol et
-                            // Eğer davet edilen kişi zaten kullanıcı olarak eklenmişse, daveti gösterme
                             const isAlreadyUser = users.some(
                               user => user.email.toLowerCase() === invitation.email.toLowerCase()
                             );
                             return !isAlreadyUser;
                           })
-                          .map((invitation, index) => (
-                          <div key={invitation.id} className={index > 0 ? "border-t p-4" : "p-4"}>
+                          .map((invitation) => (
+                            <div key={invitation.id} className="p-4">
+                              <div className="flex items-center justify-between">
+                                <div>
+                                  <p className="font-medium">{invitation.full_name}</p>
+                                  <p className="text-sm text-muted-foreground">{invitation.email}</p>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <span className="rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-800">
+                                    Bekliyor
+                                  </span>
+                                  <Button 
+                                    variant="ghost" 
+                                    size="icon"
+                                    onClick={() => deleteInvitation(invitation.id)}
+                                  >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                                  </Button>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                      </div>
+                    ) : (
+                      <div className="rounded-md border p-8 text-center">
+                        <div className="space-y-4">
+                          <p className="text-lg font-medium">Bekleyen davet bulunmuyor</p>
+                          <p className="text-sm text-muted-foreground">
+                            Şirketinize yeni kullanıcılar davet etmek için "Yeni Kullanıcı Davet Et" butonunu kullanabilirsiniz.
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  
+                  {/* Mevcut Kullanıcılar */}
+                  <div>
+                    <h3 className="text-lg font-medium mb-4">Mevcut Kullanıcılar</h3>
+                    {loading ? (
+                      <div className="flex justify-center p-4">
+                        <p>Kullanıcılar yükleniyor...</p>
+                      </div>
+                    ) : users.length === 0 ? (
+                      <div className="rounded-md border p-8 text-center">
+                        {invitations.length === 0 ? (
+                          <div className="space-y-4">
+                            <p className="text-lg font-medium">Henüz hiç kullanıcı bulunmuyor</p>
+                            <p className="text-sm text-muted-foreground">
+                              Şirketinize yeni kullanıcılar davet etmek için "Yeni Kullanıcı Davet Et" butonunu kullanabilirsiniz.
+                            </p>
+                          </div>
+                        ) : (
+                          <p>Henüz kullanıcı bulunmuyor.</p>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="rounded-md border divide-y">
+                        {users.map((user) => (
+                          <div key={user.id} className="p-4">
                             <div className="flex items-center justify-between">
                               <div>
-                                <p className="font-medium">{invitation.full_name}</p>
-                                <p className="text-sm text-muted-foreground">{invitation.email}</p>
+                                <p className="font-medium">{user.full_name}</p>
+                                <p className="text-sm text-muted-foreground">{user.email}</p>
                               </div>
                               <div className="flex items-center gap-2">
-                                <span className="rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-800">
-                                  Bekliyor
+                                <span className={`rounded-full px-2 py-1 text-xs font-medium ${getRoleBadgeColor(user.role)}`}>
+                                  {getRoleDisplayName(user.role)}
                                 </span>
                                 <Button 
                                   variant="ghost" 
                                   size="icon"
-                                  onClick={() => deleteInvitation(invitation.id)}
+                                  type="button"
+                                  onClick={() => handleDeleteUser(user.id)}
+                                  disabled={deleting}
                                 >
                                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
                                 </Button>
@@ -753,47 +808,8 @@ export function SettingsForm() {
                           </div>
                         ))}
                       </div>
-                    </div>
-                  )}
-                  
-                  {/* Mevcut Kullanıcılar */}
-                  <h3 className="text-lg font-medium mb-2">Mevcut Kullanıcılar</h3>
-                  {loading ? (
-                    <div className="flex justify-center p-4">
-                      <p>Kullanıcılar yükleniyor...</p>
-                    </div>
-                  ) : users.length === 0 ? (
-                    <div className="rounded-md border p-4 text-center">
-                      <p>Henüz kullanıcı bulunmuyor.</p>
-                    </div>
-                  ) : (
-                    <div className="rounded-md border">
-                      {users.map((user, index) => (
-                        <div key={user.id} className={index > 0 ? "border-t p-4" : "p-4"}>
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <p className="font-medium">{user.full_name}</p>
-                              <p className="text-sm text-muted-foreground">{user.email}</p>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <span className={`rounded-full px-2 py-1 text-xs font-medium ${getRoleBadgeColor(user.role)}`}>
-                                {getRoleDisplayName(user.role)}
-                              </span>
-                              <Button 
-                                variant="ghost" 
-                                size="icon"
-                                type="button"
-                                onClick={() => handleDeleteUser(user.id)}
-                                disabled={deleting}
-                              >
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
-                              </Button>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
               </CardContent>
             </Card>
