@@ -352,41 +352,33 @@
       }
     },
     "documents": {
-      "title": "Belgeler",
-      "description": "Firma belgelerini yönetin",
-      "loading": "Belgeler yükleniyor...",
-      "empty": {
-        "description": "Bu firma için belge bulunamadı",
-        "uploadFirst": "İlk Belgeyi Yükle"
+      "title": "Döküman Yönetimi",
+      "description": "Şirket dökümanlarınızı ve sertifikalarınızı yönetin",
+      "filters": {
+        "all": "Tümü",
+        "upload": "Yükle"
       },
-      "columns": {
-        "id": "Belge ID",
-        "name": "Belge Adı",
-        "type": "Belge Türü",
-        "status": "Durum",
-        "uploadDate": "Yükleme Tarihi",
+      "table": {
+        "document": "Belge",
+        "type": "Tip",
+        "applicationDate": "Başvuru Tarihi",
+        "updateDate": "Güncelleme Tarihi",
         "actions": "İşlemler"
       },
       "types": {
         "signature_circular": "İmza Sirküleri",
         "trade_registry_gazette": "Ticaret Sicil Gazetesi",
         "tax_plate": "Vergi Levhası",
-        "activity_certificate": "Faaliyet Belgesi",
-        "iso_certificate": "ISO Sertifikası"
-      },
-      "status": {
-        "approved": "Onaylandı",
-        "rejected": "Reddedildi",
-        "pending": "Onay Bekliyor"
+        "activity_certificate": "Faaliyet Belgesi"
       },
       "actions": {
         "title": "İşlemler",
-        "add": "Belge Ekle",
         "view": "Görüntüle",
         "download": "İndir",
-        "approve": "Onayla",
-        "reject": "Reddet",
-        "delete": "Sil"
+        "history": "Geçmiş",
+        "delete": "Sil",
+        "upload": "Yükle",
+        "reupload": "Yeniden Yükle"
       }
     },
     "products": {
@@ -716,7 +708,6 @@
     "overview": {
       "title": "Panel Genel Bakış",
       "description": "Ürünlerinizi, sertifikalarınızı ve belgelerinizi takip edin"
-      
     },
     "period": {
       "select": "Dönem seçin",
@@ -735,8 +726,8 @@
       "title": "Bekleyen Başvurular",
       "submitted": "Gönderildi",
       "status": {
-        "pending": "Beklemede",
-        "review": "İncelemede",
+        "pending": "İncelemede",
+        "review": "İnceleme Bekleniyor",
         "rejected": "Reddedildi"
       }
     },
@@ -751,7 +742,11 @@
         "draft": "Taslak",
         "new": "Yeni"
       }
-    
+    },
+    "time": {
+      "hoursAgo": "saat önce",
+      "daysAgo": "gün önce",
+      "about": "yaklaşık"
     },
     "menu": {
       "dashboard": "Panel",
@@ -2175,106 +2170,31 @@
   "documents": {
     "title": "Döküman Yönetimi",
     "description": "Şirket dökümanlarınızı ve sertifikalarınızı yönetin",
-    "repository": {
-      "title": "Döküman Deposu",
-      "description": "Şirket dökümanlarınızı ve sertifikalarınızı görüntüleyin ve yönetin",
-      "columns": {
-        "document": "Döküman",
-        "type": "Tür",
-        "category": "Kategori",
-        "status": "Durum",
-        "validUntil": "Geçerlilik Tarihi",
-        "issuer": "Düzenleyen",
-        "review": "İncelemede",
-        "approved": "Onaylandı",
-        "rejected": "Reddedildi"
-      }
-    },
-    "activities": {
-      "title": "Son Aktiviteler",
-      "description": "Son ürün ve sertifika aktiviteleriniz",
-      "empty": "Son aktivite yok",
-      "loading": "Aktiviteler yükleniyor...",
-      "submitted": "Gönderilme tarihi",
-      "status": {
-        "new": "Yeni",
-        "draft": "Taslak",
-        "deleted": "Silindi"
-      }
-    },
-    "menu": {
-      "dashboard": "Gösterge Paneli",
-      "products": "Ürünler",
-      "dpps": "DPP'ler",
-      "suppliers": "Tedarikçiler",
-      "documents": "Belgeler",
-      "certifications": "Sertifikalar"
-    },
-    "registration": {
-      "title": "Kaydı Tamamla",
-      "description": "UseSafe'i kullanmaya başlamadan önce lütfen şirket kaydınızı tamamlayın.",
-      "rejected": "Reddedildi",
-      "expired": "Süresi Doldu",
-      "expiring": "Süresi Doluyor"
-    },
     "filters": {
-        "allDocuments": "Tüm Dökümanlar",
-        "allStatus": "Tüm Durumlar"
+      "all": "Tümü",
+      "upload": "Yükle"
     },
-    "actions": {
-        "title": "İşlemler",
-        "view": "Detayları Görüntüle",
-        "download": "İndir",
-        "history": "Geçmişi Görüntüle",
-        "reupload": "Yeniden Yükle",
-        "delete": "Sil",
-        "upload": "Yükle"
+    "table": {
+      "document": "Belge",
+      "type": "Tip",
+      "applicationDate": "Başvuru Tarihi",
+      "updateDate": "Güncelleme Tarihi",
+      "actions": "İşlemler"
     },
     "types": {
-      "qualityManagement": "Kalite Yönetimi",
-      "safetyHealth": "İş Sağlığı ve Güvenliği",
-      "batteryStandards": "Akü Standartları",
-      "signature_circular": "İmza Dairesi",
-      "trade_registry_gazette": "Ticaret Kayıt Gazetesi",
-      "tax_plate": "Vergi Plakası",
-      "activity_certificate": "Faaliyet Sertifikası"
+      "signature_circular": "İmza Sirküleri",
+      "trade_registry_gazette": "Ticaret Sicil Gazetesi",
+      "tax_plate": "Vergi Levhası",
+      "activity_certificate": "Faaliyet Belgesi"
     },
-    "categories": {
-      "iso9001": "ISO 9001",
-      "iso45001": "ISO 45001",
-      "tsEn": "TS EN 50342-1"
-    },
-    "repository": {
-      "title": "Döküman Deposu",
-      "description": "Şirket dökümanlarınızı ve sertifikalarınızı görüntüleyin ve yönetin",
-      "columns": {
-        "document": "Döküman",
-        "type": "Tür",
-        "category": "Kategori",
-        "status": "Durum",
-        "validUntil": "Geçerlilik Tarihi",
-        "issuer": "Düzenleyen"
-      },
-      "actions": {
-        "title": "İşlemler",
-        "view": "Detayları Görüntüle",
-        "download": "İndir",
-        "history": "Geçmişi Görüntüle",
-        "delete": "Sil",
-        "upload": "Yükle",
-        "reupload": "Yeniden Yükle"
-      },
-      "filters": {
-        "allDocuments": "Tüm Dökümanlar",
-        "allStatus": "Tüm Durumlar"
-      },
-      "status": {
-        "allStatus": "Tüm Durumlar",
-        "pending": "Beklemede",
-        "approved": "Onaylandı",
-        "rejected": "Reddedildi",
-        "expired": "Süresi Doldu"
-      }
+    "actions": {
+      "title": "İşlemler",
+      "view": "Görüntüle",
+      "download": "İndir",
+      "history": "Geçmiş",
+      "delete": "Sil",
+      "upload": "Yükle",
+      "reupload": "Yeniden Yükle"
     }
   },
   "dpc": {
@@ -2514,7 +2434,8 @@
       "company": "Şirket",
       "contact": "İletişim",
       "notifications": "Bildirimler",
-      "security": "Güvenlik"
+      "security": "Güvenlik",
+      "users": "Kullanıcılar"
     },
     "company": {
       "title": "Şirket Bilgileri",
@@ -3428,7 +3349,61 @@
         }
       }
     }
-  } 
+  },
+  "documents": {
+    "title": "Döküman Yönetimi",
+    "description": "Şirket dökümanlarınızı ve sertifikalarınızı yönetin",
+    "filters": {
+      "all": "Tümü",
+      "upload": "Yükle"
+    },
+    "table": {
+      "document": "Belge",
+      "type": "Tip",
+      "applicationDate": "Başvuru Tarihi",
+      "updateDate": "Güncelleme Tarihi",
+      "actions": "İşlemler"
+    },
+    "types": {
+      "signature_circular": "İmza Sirküleri",
+      "trade_registry_gazette": "Ticaret Sicil Gazetesi",
+      "tax_plate": "Vergi Levhası",
+      "activity_certificate": "Faaliyet Belgesi"
+    },
+    "actions": {
+      "title": "İşlemler",
+      "view": "Görüntüle",
+      "download": "İndir",
+      "history": "Geçmiş",
+      "delete": "Sil",
+      "upload": "Yükle",
+      "reupload": "Yeniden Yükle"
+    },
+    "details": {
+      "backToList": "Listeye Dön",
+      "viewFile": "Dosyayı Görüntüle",
+      "downloadFile": "Dosyayı İndir",
+      "information": "Bilgiler",
+      "type": "Tür",
+      "fileSize": "Dosya Boyutu",
+      "createdAt": "Oluşturulma Tarihi",
+      "updatedAt": "Güncellenme Tarihi",
+      "status": "Durum",
+      "uploadDate": "Yükleme Tarihi",
+      "expiryDate": "Geçerlilik Tarihi",
+      "description": "Açıklama",
+      "notes": "Notlar",
+      "history": "Geçmiş",
+      "noHistory": "Geçmiş kaydı bulunmamaktadır",
+      "actions": {
+        "edit": "Düzenle",
+        "delete": "Sil",
+        "download": "İndir",
+        "view": "Görüntüle",
+        "reupload": "Yeniden Yükle"
+      }
+    }
+  }
 } 
 
 
