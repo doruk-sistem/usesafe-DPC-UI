@@ -74,39 +74,29 @@ function ApprovalContent() {
       const urlParams = new URLSearchParams(url.search);
       const token = urlParams.get('token');
       const type = urlParams.get('type');
-      const redirect_to = urlParams.get('redirect_to');
       
-      if (token && type) {
-        try {
-          // Perform token verification with use-auth hook
-          await verifyOtp(token, type);
-        } catch (error) {
-          toast({
-            title: "Verification Error",
-            description: "An error occurred during email verification.",
-            variant: "destructive"
-          });
-          setLoading(false);
-          return;
-        }
-        
-        // Show toast after successful verification
+      if (!token || !type) {
         toast({
-          title: "Success",
-          description: "Your email has been successfully verified.",
-          variant: "default"
+          title: "Error",
+          description: "Invalid verification parameters.",
+          variant: "destructive"
         });
-        
-        // Redirect to the redirect_to parameter if it exists, otherwise to the home page
-        if (redirect_to) {
-          window.location.href = redirect_to;
-        } else {
-          router.push("/");
-        }
-      } else {
-        // If parameters are not found, redirect directly to the URL
-        window.location.href = decodeURIComponent(confirmationURL);
+        setLoading(false);
+        return;
       }
+
+      // Perform token verification with use-auth hook
+      await verifyOtp(token, type);
+      
+      // Show toast after successful verification
+      toast({
+        title: "Başarılı",
+        description: "E-posta adresiniz doğrulandı. Şimdi şifrenizi belirleyebilirsiniz.",
+        variant: "default"
+      });
+      
+      // Redirect to set-password page
+      router.push("/auth/set-password");
     } catch (error) {
       console.error("Verification error:", error);
       toast({

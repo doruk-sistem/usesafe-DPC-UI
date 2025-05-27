@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useTranslations } from "next-intl";
+import { supabase } from "@/lib/supabase/client";
 
 import {
   Card,
@@ -81,12 +82,30 @@ export default function ResetPasswordPage() {
       
       await updatePassword(data.password);
 
+      // Oturumu yenile
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError) {
+        throw sessionError;
+      }
+
+      if (!session) {
+        throw new Error('Oturum bulunamadı');
+      }
+
+      // Oturumu yeniden ayarla
+      await supabase.auth.setSession({
+        access_token: session.access_token,
+        refresh_token: session.refresh_token
+      });
+
       toast({
         title: t("success.title"),
         description: t("success.description"),
       });
 
-      router.push("/auth/login");
+      // Dashboard'a yönlendir
+      window.location.href = "https://app.usesafe.net/dashboard";
     } catch (error) {
       if (error instanceof Error) {
         toast({
@@ -160,7 +179,11 @@ export default function ResetPasswordPage() {
                     <FormItem>
                       <FormLabel>{t("newPassword")}</FormLabel>
                       <FormControl>
-                        <Input type="password" {...field} />
+                        <Input 
+                          type="password" 
+                          {...field} 
+                          autoComplete="new-password"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -174,7 +197,11 @@ export default function ResetPasswordPage() {
                     <FormItem>
                       <FormLabel>{t("confirmPassword")}</FormLabel>
                       <FormControl>
-                        <Input type="password" {...field} />
+                        <Input 
+                          type="password" 
+                          {...field} 
+                          autoComplete="new-password"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
