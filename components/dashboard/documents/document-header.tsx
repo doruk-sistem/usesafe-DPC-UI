@@ -35,17 +35,17 @@ export function DocumentHeader({ onFilterChange }: DocumentHeaderProps) {
             <SelectValue placeholder="Filtrele" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Tümü</SelectItem>
-            <SelectItem value="signature_circular">İmza Sirküleri</SelectItem>
-            <SelectItem value="trade_registry_gazette">Ticaret Sicil Gazetesi</SelectItem>
-            <SelectItem value="tax_plate">Vergi Levhası</SelectItem>
-            <SelectItem value="activity_certificate">Faaliyet Belgesi</SelectItem>
+            <SelectItem value="all">{t('filters.all')}</SelectItem>
+            <SelectItem value="signature_circular">{t('types.signature_circular')}</SelectItem>
+            <SelectItem value="trade_registry_gazette">{t('types.trade_registry_gazette')}</SelectItem>
+            <SelectItem value="tax_plate">{t('types.tax_plate')}</SelectItem>
+            <SelectItem value="activity_certificate">{t('types.activity_certificate')}</SelectItem>
           </SelectContent>
         </Select>
         <Button asChild>
           <Link href="/dashboard/documents/upload">
             <Plus className="h-4 w-4 mr-2" />
-            Yükle
+            {t('filters.upload')}
           </Link>
         </Button>
       </div>
