@@ -117,7 +117,77 @@ export const REQUIRED_DOCUMENTS: RequiredDocuments = {
     quality_cert: true,
     compliance_docs: false,
     safety_cert: false,
-  }
+  },
+  detergents: {
+    test_reports: true,
+    technical_docs: true,
+    compliance_docs: true,
+    quality_cert: true,
+    safety_cert: true,
+  },
+  footwear: {
+    test_reports: true,
+    technical_docs: true,
+    compliance_docs: true,
+    quality_cert: true,
+    safety_cert: true,
+  },
+  telecommunications_equipment: {
+    test_reports: true,
+    technical_docs: true,
+    compliance_docs: true,
+    quality_cert: true,
+    safety_cert: true,
+  },
+  cosmetics: {
+    test_reports: true,
+    technical_docs: true,
+    compliance_docs: true,
+    quality_cert: true,
+    safety_cert: true,
+  },
+  stationery: {
+    test_reports: true,
+    technical_docs: true,
+    compliance_docs: true,
+    quality_cert: true,
+    safety_cert: true,
+  },
+  food_contact_materials: {
+    test_reports: true,
+    technical_docs: true,
+    compliance_docs: true,
+    quality_cert: true,
+    safety_cert: true,
+  },
+  electrical_equipment: {
+    test_reports: true,
+    technical_docs: true,
+    compliance_docs: true,
+    quality_cert: true,
+    safety_cert: true,
+  },
+  other_consumer_products: {
+    test_reports: true,
+    technical_docs: true,
+    compliance_docs: true,
+    quality_cert: true,
+    safety_cert: true,
+  },
+  toothbrushes: {
+    test_reports: true,
+    technical_docs: true,
+    compliance_docs: true,
+    quality_cert: true,
+    safety_cert: true,
+  },
+  food: {
+    test_reports: true,
+    technical_docs: true,
+    compliance_docs: true,
+    quality_cert: true,
+    safety_cert: true,
+  },
 };
 
 // Her doküman tipi için konfigürasyon ayarları
