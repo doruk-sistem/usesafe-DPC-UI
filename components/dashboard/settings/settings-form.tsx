@@ -91,7 +91,8 @@ export function SettingsForm() {
   const [inviteFormData, setInviteFormData] = useState({ full_name: "", email: "", role: "user" });
   const [userToDelete, setUserToDelete] = useState<string | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  
+  const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
+
   // Kullanıcı rolü için badge rengi belirleme
   const getRoleBadgeColor = (role: string) => {
     switch(role) {
@@ -159,8 +160,23 @@ export function SettingsForm() {
       return;
     }
     
-    await inviteUser(inviteFormData);
-    setInviteFormData({ full_name: "", email: "", role: "user" });
+    try {
+      await inviteUser(inviteFormData);
+      toast({
+        title: "Başarılı",
+        description: "Davet başarıyla gönderildi",
+      });
+      // Form alanlarını temizle
+      setInviteFormData({ full_name: "", email: "", role: "user" });
+      // Davet formunu kapat
+      setInviteDialogOpen(false);
+    } catch (error) {
+      toast({
+        title: "Hata",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
   };
   
   // Kullanıcı silme işlemi
@@ -502,7 +518,7 @@ export function SettingsForm() {
                 <div className="space-y-4">
                   <div className="flex justify-between">
                     <h3 className="text-lg font-medium">Mevcut Kullanıcılar</h3>
-                    <Dialog>
+                    <Dialog open={inviteDialogOpen} onOpenChange={setInviteDialogOpen}>
                       <DialogTrigger asChild>
                         <Button variant="outline" size="sm">
                           Yeni Kullanıcı Davet Et
