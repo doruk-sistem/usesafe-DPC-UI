@@ -65,12 +65,16 @@ type SettingsFormValues = z.infer<typeof settingsSchema>;
 export function SettingsForm() {
   const { toast } = useToast();
   const t = useTranslations("settings");
-  const { canManageUsers, company, isCompanyLoading } = useAuth();
+  const { canManageUsers, company, isCompanyLoading, updatePassword } = useAuth();
   const { users, invitations, loading, inviting, deleting, fetchUsers, inviteUser, deleteUser, updateInvitationStatus, deleteInvitation } = useUsers();
   const [inviteFormData, setInviteFormData] = useState({ full_name: "", email: "", role: "user" });
   const [userToDelete, setUserToDelete] = useState<string | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [showPasswordDialog, setShowPasswordDialog] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   // Kullanıcı rolü için badge rengi belirleme
   const getRoleBadgeColor = (role: string) => {
@@ -237,6 +241,39 @@ export function SettingsForm() {
     if (userToDelete) {
       await deleteUser(userToDelete);
       setDeleteDialogOpen(false);
+    }
+  };
+
+  const handlePasswordChange = async () => {
+    if (newPassword !== confirmPassword) {
+      toast({
+        title: t("security.changePassword.error.title"),
+        description: t("security.changePassword.error.mismatch"),
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      setIsChangingPassword(true);
+      await updatePassword(newPassword);
+      
+      toast({
+        title: t("security.changePassword.success.title"),
+        description: t("security.changePassword.success.description"),
+      });
+      
+      setShowPasswordDialog(false);
+      setNewPassword("");
+      setConfirmPassword("");
+    } catch (error) {
+      toast({
+        title: t("security.changePassword.error.title"),
+        description: error instanceof Error ? error.message : t("security.changePassword.error.generic"),
+        variant: "destructive",
+      });
+    } finally {
+      setIsChangingPassword(false);
     }
   };
 
@@ -543,7 +580,10 @@ export function SettingsForm() {
                           {t("security.changePassword.description")}
                         </FormDescription>
                       </div>
-                      <Button variant="outline">
+                      <Button 
+                        variant="outline"
+                        onClick={() => setShowPasswordDialog(true)}
+                      >
                         {t("security.changePassword.button")}
                       </Button>
                     </FormItem>
@@ -551,6 +591,53 @@ export function SettingsForm() {
                 />
               </CardContent>
             </Card>
+
+            <Dialog open={showPasswordDialog} onOpenChange={setShowPasswordDialog}>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>{t("security.changePassword.dialog.title")}</DialogTitle>
+                  <DialogDescription>
+                    {t("security.changePassword.dialog.description")}
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4 py-4">
+                  <div className="space-y-2">
+                    <FormLabel>{t("security.changePassword.dialog.newPassword")}</FormLabel>
+                    <Input
+                      type="password"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      placeholder={t("security.changePassword.dialog.newPasswordPlaceholder")}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <FormLabel>{t("security.changePassword.dialog.confirmPassword")}</FormLabel>
+                    <Input
+                      type="password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      placeholder={t("security.changePassword.dialog.confirmPasswordPlaceholder")}
+                    />
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowPasswordDialog(false)}
+                  >
+                    {t("security.changePassword.dialog.cancel")}
+                  </Button>
+                  <Button
+                    onClick={handlePasswordChange}
+                    disabled={isChangingPassword}
+                  >
+                    {isChangingPassword
+                      ? t("security.changePassword.dialog.changing")
+                      : t("security.changePassword.dialog.change")}
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </TabsContent>
           
           <TabsContent value="users">

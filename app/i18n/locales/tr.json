@@ -2522,7 +2522,27 @@
       "changePassword":{
         "label":"Şifre Değiştir",
         "description":"Hesabınızın güvenliğini sağlamak için şifrenizi değiştirin",
-        "button":"Şifre Değiştir"
+        "button":"Şifre Değiştir",
+        "dialog": {
+          "title": "Şifre Değiştir",
+          "description": "Yeni şifrenizi girin",
+          "newPassword": "Yeni Şifre",
+          "newPasswordPlaceholder": "Yeni şifrenizi girin",
+          "confirmPassword": "Şifre Tekrar",
+          "confirmPasswordPlaceholder": "Şifrenizi tekrar girin",
+          "cancel": "İptal",
+          "change": "Değiştir",
+          "changing": "Değiştiriliyor..."
+        },
+        "error": {
+          "title": "Hata",
+          "mismatch": "Şifreler eşleşmiyor",
+          "generic": "Şifre değiştirilirken bir hata oluştu"
+        },
+        "success": {
+          "title": "Başarılı",
+          "description": "Şifreniz başarıyla değiştirildi"
+        }
       }
     },
     "company": {
