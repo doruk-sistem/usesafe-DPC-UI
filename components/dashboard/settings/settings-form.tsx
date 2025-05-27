@@ -91,6 +91,36 @@ export function SettingsForm() {
   const [inviteFormData, setInviteFormData] = useState({ full_name: "", email: "", role: "user" });
   const [userToDelete, setUserToDelete] = useState<string | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  
+  // Kullanıcı rolü için badge rengi belirleme
+  const getRoleBadgeColor = (role: string) => {
+    switch(role) {
+      case 'admin':
+        return 'bg-red-100 text-red-800'; // Sistem yöneticisi
+      case 'company_admin':
+        return 'bg-green-100 text-green-800'; // Şirket yöneticisi
+      case 'manufacturer':
+        return 'bg-purple-100 text-purple-800'; // Şirket kurucusu
+      case 'user':
+      default:
+        return 'bg-blue-100 text-blue-800'; // Normal kullanıcı
+    }
+  };
+  
+  // Kullanıcı rolü için görüntülenecek isim
+  const getRoleDisplayName = (role: string) => {
+    switch(role) {
+      case 'admin':
+        return 'Sistem Yöneticisi';
+      case 'company_admin':
+        return 'Şirket Yöneticisi';
+      case 'manufacturer':
+        return 'Şirket Kurucusu';
+      case 'user':
+      default:
+        return 'Kullanıcı';
+    }
+  };
 
   // Sayfa yüklendiğinde kullanıcıları getir
   useEffect(() => {
@@ -539,7 +569,17 @@ export function SettingsForm() {
                       <h3 className="text-lg font-medium mb-2">Bekleyen Davetler</h3>
                       <div className="rounded-md border">
                         {invitations
-                          .filter(invitation => invitation.status === "pending")
+                          .filter(invitation => {
+                            // Sadece bekleyen davetleri göster
+                            if (invitation.status !== "pending") return false;
+                            
+                            // Mevcut kullanıcıların e-posta adreslerini kontrol et
+                            // Eğer davet edilen kişi zaten kullanıcı olarak eklenmişse, daveti gösterme
+                            const isAlreadyUser = users.some(
+                              user => user.email.toLowerCase() === invitation.email.toLowerCase()
+                            );
+                            return !isAlreadyUser;
+                          })
                           .map((invitation, index) => (
                           <div key={invitation.id} className={index > 0 ? "border-t p-4" : "p-4"}>
                             <div className="flex items-center justify-between">
@@ -586,8 +626,8 @@ export function SettingsForm() {
                               <p className="text-sm text-muted-foreground">{user.email}</p>
                             </div>
                             <div className="flex items-center gap-2">
-                              <span className={`rounded-full px-2 py-1 text-xs font-medium ${user.role === 'admin' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'}`}>
-                                {user.role === 'admin' ? 'Yönetici' : 'Kullanıcı'}
+                              <span className={`rounded-full px-2 py-1 text-xs font-medium ${getRoleBadgeColor(user.role)}`}>
+                                {getRoleDisplayName(user.role)}
                               </span>
                               <Button 
                                 variant="ghost" 
