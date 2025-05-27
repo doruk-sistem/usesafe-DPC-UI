@@ -40,6 +40,7 @@ interface Invitation {
   role: string;
   status: InvitationStatus;
   created_at: string;
+  company_id: string;
 }
 
 interface InviteUserParams {
@@ -63,12 +64,15 @@ export function useUsers() {
     if (savedInvitations) {
       try {
         const parsed = JSON.parse(savedInvitations);
-        setInvitations(parsed);
+        // Sadece mevcut şirkete ait davetleri göster
+        const companyId = user?.user_metadata?.company_id || company?.id;
+        const filteredInvitations = parsed.filter((inv: Invitation) => inv.company_id === companyId);
+        setInvitations(filteredInvitations);
       } catch (e) {
         console.error('Failed to parse invitations from localStorage', e);
       }
     }
-  }, []);
+  }, [user?.user_metadata?.company_id, company?.id]);
 
   // Kullanıcı listesini getir
   const fetchUsers = async () => {
@@ -166,7 +170,8 @@ export function useUsers() {
         full_name,
         role,
         status: InvitationStatus.PENDING,
-        created_at: new Date().toISOString()
+        created_at: new Date().toISOString(),
+        company_id: companyId
       };
       
       const updatedInvitations = [...invitations, newInvitation];
