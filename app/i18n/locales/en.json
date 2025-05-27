@@ -205,7 +205,7 @@
       "submitted": "Submitted",
       "status": {
         "pending": "Pending",
-        "review": "In Review",
+        "review": "Pending Review",
         "rejected": "Rejected"
       }
     },

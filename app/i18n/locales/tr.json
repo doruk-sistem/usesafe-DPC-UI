@@ -716,7 +716,6 @@
     "overview": {
       "title": "Panel Genel Bakış",
       "description": "Ürünlerinizi, sertifikalarınızı ve belgelerinizi takip edin"
-      
     },
     "period": {
       "select": "Dönem seçin",
@@ -735,8 +734,8 @@
       "title": "Bekleyen Başvurular",
       "submitted": "Gönderildi",
       "status": {
-        "pending": "Beklemede",
-        "review": "İncelemede",
+        "pending": "İncelemede",
+        "review": "İnceleme Bekleniyor",
         "rejected": "Reddedildi"
       }
     },
@@ -751,7 +750,11 @@
         "draft": "Taslak",
         "new": "Yeni"
       }
-    
+    },
+    "time": {
+      "hoursAgo": "saat önce",
+      "daysAgo": "gün önce",
+      "about": "yaklaşık"
     },
     "menu": {
       "dashboard": "Panel",
