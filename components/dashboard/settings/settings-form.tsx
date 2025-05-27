@@ -23,6 +23,7 @@ import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
+import { useAuth } from "@/lib/hooks/use-auth";
 import { useUsers } from "@/lib/hooks/use-users";
 
 const settingsSchema = z.object({
@@ -85,6 +86,7 @@ const defaultValues: Partial<SettingsFormValues> = {
 export function SettingsForm() {
   const { toast } = useToast();
   const t = useTranslations("settings");
+  const { canManageUsers } = useAuth();
   const { users, invitations, loading, inviting, deleting, fetchUsers, inviteUser, deleteUser, updateInvitationStatus, deleteInvitation } = useUsers();
   const [inviteFormData, setInviteFormData] = useState({ full_name: "", email: "", role: "user" });
   const [userToDelete, setUserToDelete] = useState<string | null>(null);
@@ -170,7 +172,9 @@ export function SettingsForm() {
             <TabsTrigger value="contact">{t("tabs.contact")}</TabsTrigger>
             <TabsTrigger value="notifications">{t("tabs.notifications")}</TabsTrigger>
             <TabsTrigger value="security">{t("tabs.security")}</TabsTrigger>
-            <TabsTrigger value="users">{t("tabs.users")}</TabsTrigger>
+            {canManageUsers() && (
+              <TabsTrigger value="users">{t("tabs.users")}</TabsTrigger>
+            )}
           </TabsList>
 
           <TabsContent value="company">

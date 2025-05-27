@@ -169,6 +169,21 @@ export function useAuth() {
     return user?.user_metadata?.role === "admin";
   };
 
+  const canManageUsers = () => {
+    // Admin rolüne sahip kullanıcılar veya şirketi ilk oluşturan kişi kullanıcı yönetimi yapabilir
+    
+    // Admin kontrolü
+    if (isAdmin()) return true;
+    
+    // Şirketi ilk oluşturan kişi kontrolü
+    // 1. Kullanıcının davet edilmemiş olması (invited_at null)
+    // 2. Rolünün manufacturer olması
+    const isCompanyCreator = user?.user_metadata?.role === "manufacturer" && 
+                             !user?.invited_at;
+    
+    return isCompanyCreator;
+  };
+
   const verifyOtp = async (token: string, type: string) => {
     const { error } = await supabase.auth.verifyOtp({
       token_hash: token,
@@ -206,15 +221,16 @@ export function useAuth() {
   return {
     user,
     company,
+    isLoading,
     isCompanyLoading,
     isCompanyFetched,
-    isLoading,
     signIn,
     signUp,
     signOut,
-    isAdmin,
     updateUser,
     updatePassword,
+    isAdmin,
+    canManageUsers,
     verifyOtp,
     resetPassword,
   };
