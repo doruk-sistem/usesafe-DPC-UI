@@ -170,14 +170,18 @@ export function useAuth() {
   };
 
   const canManageUsers = () => {
-    // Admin rolüne sahip kullanıcılar veya şirketi ilk oluşturan kişi kullanıcı yönetimi yapabilir
+    // Kullanıcı yönetimi yapabilecek roller:
+    // 1. Sistem yöneticileri (admin)
+    // 2. Şirket yöneticileri (company_admin)
+    // 3. Şirketi ilk oluşturan kişi (invited_at null olan manufacturer)
     
-    // Admin kontrolü
+    // Sistem yöneticisi kontrolü
     if (isAdmin()) return true;
     
+    // Şirket yöneticisi kontrolü
+    if (user?.user_metadata?.role === "company_admin") return true;
+    
     // Şirketi ilk oluşturan kişi kontrolü
-    // 1. Kullanıcının davet edilmemiş olması (invited_at null)
-    // 2. Rolünün manufacturer olması
     const isCompanyCreator = user?.user_metadata?.role === "manufacturer" && 
                              !user?.invited_at;
     

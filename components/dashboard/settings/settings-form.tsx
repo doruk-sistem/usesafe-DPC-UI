@@ -516,7 +516,7 @@ export function SettingsForm() {
                               onChange={handleInviteFormChange}
                             >
                               <option value="user">Kullanıcı</option>
-                              <option value="admin">Yönetici</option>
+                              <option value="company_admin">Şirket Yöneticisi</option>
                             </select>
                           </div>
                         </div>
