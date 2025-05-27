@@ -210,7 +210,7 @@
       "submitted": "Submitted",
       "status": {
         "pending": "Pending",
-        "review": "In Review",
+        "review": "Pending Review",
         "rejected": "Rejected"
       }
     },
@@ -292,6 +292,36 @@
           "previous": "Previous",
           "submit": "Submit Registration"
         }
+      }
+    },
+    "documents": {
+      "title": "Document Managementt",
+      "description": "Manage your company documents and certificates",
+      "filters": {
+        "all": "All",
+        "upload": "Upload"
+      },
+      "table": {
+        "document": "Document",
+        "type": "Type",
+        "applicationDate": "Application Date",
+        "updateDate": "Update Date",
+        "actions": "Actions"
+      },
+      "types": {
+        "signature_circular": "Signature Circular",
+        "trade_registry_gazette": "Trade Registry Gazette",
+        "tax_plate": "Tax Plate",
+        "activity_certificate": "Activity Certificate"
+      },
+      "actions": {
+        "title": "Actions",
+        "view": "View",
+        "download": "Download",
+        "history": "History",
+        "delete": "Delete",
+        "upload": "Upload",
+        "reupload": "Reupload"
       }
     }
   },
@@ -2079,44 +2109,60 @@
   "documents": {
     "title": "Document Management",
     "description": "Manage your company documents and certificates",
+    "filters": {
+      "all": "All",
+      "upload": "Upload"
+    },
+    "table": {
+      "document": "Document",
+      "type": "Type",
+      "applicationDate": "Application Date",
+      "updateDate": "Update Date",
+      "actions": "Actions"
+    },
     "types": {
-      "qualityManagement": "Quality Management",
-      "safetyHealth": "Safety & Health",
-      "batteryStandards": "Battery Standards",
       "signature_circular": "Signature Circular",
       "trade_registry_gazette": "Trade Registry Gazette",
       "tax_plate": "Tax Plate",
-      "activity_certificate": "Activity Certificate"
+      "activity_certificate": "Activity Certificate",
+      "quality_certificate": "Quality Certificate",
+      "safety_certificate": "Safety Certificate",
+      "environmental_certificate": "Environmental Certificate",
+      "iso_certificate": "ISO Certificate",
+      "production_permit": "Production Permit",
+      "export_certificate": "Export Certificate"
     },
-    "repository": {
-      "title": "Document Repository",
-      "description": "View and manage all uploaded documents",
-      "status": {
-        "pending": "Pending",
-        "approved": "Approved",
-        "rejected": "Rejected",
-        "expired": "Expired"
-      },
-      "columns": {
-        "document": "Document",
-        "type": "Type",
-        "category": "Category",
-        "status": "Status",
-        "validUntil": "Valid Until",
-        "issuer": "Issuer"
-      },
+    "actions": {
+      "title": "Actions",
+      "view": "View",
+      "download": "Download",
+      "history": "History",
+      "delete": "Delete",
+      "upload": "Upload",
+      "reupload": "Reupload"
+    },
+    "details": {
+      "backToList": "Back to List",
+      "viewFile": "View File",
+      "downloadFile": "Download File",
+      "information": "Information",
+      "type": "Type",
+      "fileSize": "File Size",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At",
+      "status": "Status",
+      "uploadDate": "Upload Date",
+      "expiryDate": "Expiry Date",
+      "description": "Description",
+      "notes": "Notes",
+      "history": "History",
+      "noHistory": "No history records found",
       "actions": {
-        "title": "Actions",
-        "view": "View",
-        "download": "Download",
-        "history": "History",
+        "edit": "Edit",
         "delete": "Delete",
-        "upload": "Upload",
+        "download": "Download",
+        "view": "View",
         "reupload": "Reupload"
-      },
-      "filters":{
-        "allDocuments": "All Documents",
-        "allStatus": "All Status"
       }
     }
   },
