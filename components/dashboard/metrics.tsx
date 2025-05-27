@@ -15,16 +15,51 @@ import { EnhancedCard } from "@/components/ui/enhanced-card";
 import { useProducts } from "@/lib/hooks/use-products";
 import { cn } from "@/lib/utils";
 import { calculateProductGrowth } from "@/lib/utils/metrics";
+import { useCompanyDocuments } from "@/lib/hooks/use-company-documents";
+import { REQUIRED_DOCUMENTS } from "@/lib/constants/documents";
+
+const CERTIFICATE_TYPES = [
+  "quality_certificate",
+  "safety_certificate",
+  "environmental_certificate",
+  "iso_certificate",
+  "export_certificate",
+  "production_certificate",
+  "activity_permit"
+];
+
+const DOCUMENT_TYPES = [
+  "signature_circular",
+  "trade_registry_gazette",
+  "tax_plate",
+  "activity_certificate"
+];
 
 export function DashboardMetrics() {
   const t = useTranslations("dashboard.metrics");
-  const { products } = useProducts();
+  const { useGetCompanyDocuments } = useCompanyDocuments();
+  const { data: documents = [], isLoading: docsLoading } = useGetCompanyDocuments();
+  const { products, isLoading: productsLoading } = useProducts();
   const productGrowth = calculateProductGrowth(products);
 
-  // Dummy values for demonstration; replace with actual data fetching logic
-  const pendingCertifications = 7; // Replace with actual value if available
-  const approvedDocuments = 128; // Replace with actual value if available
-  const complianceRate = 94; // Replace with actual value if available
+  if (docsLoading || productsLoading) {
+    return <div>Loading...</div>;
+  }
+
+  // Belgeler ve sertifikaları ayır
+  const certificates = documents.filter((d: any) => CERTIFICATE_TYPES.includes(d.type));
+  const regularDocuments = documents.filter((d: any) => DOCUMENT_TYPES.includes(d.type));
+
+  // Sertifika metrikleri (ORİJİNAL)
+  const approvedCertificates = certificates.filter((d: any) => d.status === "approved").length;
+  const pendingCertificates = certificates.filter((d: any) => d.status === "pending").length;
+  const complianceRate = certificates.length > 0
+    ? Math.round((approvedCertificates / certificates.length) * 100)
+    : 0;
+
+  // Belge metrikleri
+  const approvedDocuments = regularDocuments.filter((d: any) => d.status === "approved").length;
+  const pendingDocuments = regularDocuments.filter((d: any) => d.status === "pending").length;
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -46,24 +81,24 @@ export function DashboardMetrics() {
     },
     {
       title: t("pendingCertifications"),
-      value: pendingCertifications ? pendingCertifications.toString() : "0",
+      value: pendingCertificates.toString(),
       icon: AlertTriangle,
       gradient: "from-yellow-500 to-yellow-700",
-      trend: "+3.2%",
+      trend: "",
     },
     {
       title: t("approvedDocuments"),
-      value: approvedDocuments ? approvedDocuments.toString() : "0",
+      value: approvedDocuments.toString(),
       icon: FileText,
       gradient: "from-green-500 to-green-700",
-      trend: "+22.1%",
+      trend: "",
     },
     {
       title: t("complianceRate"),
-      value: complianceRate ? `${complianceRate}%` : "0%",
+      value: `${complianceRate}%`,
       icon: ShieldCheck,
       gradient: "from-purple-500 to-purple-700",
-      trend: "+5.6%",
+      trend: "",
     },
   ];
 

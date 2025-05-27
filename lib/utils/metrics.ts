@@ -1,6 +1,6 @@
-import { Product } from "@/lib/types/product";
+// import { Product } from "@/lib/types/product";
 
-export function calculateProductGrowth(products: Product[]): number {
+export function calculateProductGrowth(products: any[]): number {
   if (!products?.length) return 0;
 
   // Get products from last 30 days
@@ -29,17 +29,17 @@ export function calculateProductGrowth(products: Product[]): number {
   return Number(growthRate.toFixed(1));
 }
 
-export function getRecentActivities(products: Product[]) {
+export function getRecentActivities(products: any[]) {
   if (!products?.length) return [];
 
-  // Get activities from last 7 days
+  
   const sevenDaysAgo = new Date();
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
   const recentProducts = products
     .filter(product => new Date(product.created_at) >= sevenDaysAgo)
     .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-    .slice(0, 3) // Get only the 3 most recent
+    .slice(0, 3) 
     .map(product => ({
       id: product.id,
       type: "Product",
