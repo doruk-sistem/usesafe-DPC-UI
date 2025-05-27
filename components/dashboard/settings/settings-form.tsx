@@ -380,6 +380,80 @@ export function SettingsForm() {
             <div className="space-y-6">
               <Card>
                 <CardHeader>
+                  <CardTitle>{t("contact.authorized.title")}</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <FormField
+                      control={form.control}
+                      name="authorizedName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{t("contact.authorized.name")}</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="authorizedTitle"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{t("contact.authorized.title")}</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="authorizedDepartment"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{t("contact.authorized.department")}</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="authorizedEmail"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{t("contact.authorized.email")}</FormLabel>
+                          <FormControl>
+                            <Input {...field} type="email" />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="authorizedPhone"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{t("contact.authorized.phone")}</FormLabel>
+                          <FormControl>
+                            <Input {...field} type="tel" />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
                   <CardTitle>{t("contact.title")}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -482,80 +556,6 @@ export function SettingsForm() {
                       </FormItem>
                     )}
                   />
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>{t("contact.authorized.title")}</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid gap-4 md:grid-cols-2">
-                    <FormField
-                      control={form.control}
-                      name="authorizedName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>{t("contact.authorized.name")}</FormLabel>
-                          <FormControl>
-                            <Input {...field} />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="authorizedTitle"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>{t("contact.authorized.title")}</FormLabel>
-                          <FormControl>
-                            <Input {...field} />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="authorizedDepartment"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>{t("contact.authorized.department")}</FormLabel>
-                          <FormControl>
-                            <Input {...field} />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="authorizedEmail"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>{t("contact.authorized.email")}</FormLabel>
-                          <FormControl>
-                            <Input {...field} type="email" />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="authorizedPhone"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>{t("contact.authorized.phone")}</FormLabel>
-                          <FormControl>
-                            <Input {...field} type="tel" />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
                 </CardContent>
               </Card>
             </div>
