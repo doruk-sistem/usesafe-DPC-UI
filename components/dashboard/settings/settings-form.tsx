@@ -25,6 +25,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { useUsers } from "@/lib/hooks/use-users";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const settingsSchema = z.object({
   // Company Information (Read-only)
@@ -61,32 +62,10 @@ const settingsSchema = z.object({
 
 type SettingsFormValues = z.infer<typeof settingsSchema>;
 
-// This would come from your API in a real app
-const defaultValues: Partial<SettingsFormValues> = {
-  companyName: "İnci Akü",
-  taxId: "1234567890",
-  tradeRegisterNumber: "123456",
-  mersisNumber: "0123456789",
-  email: "contact@inciaku.com",
-  phone: "+90 555 123 4567",
-  website: "https://www.inciaku.com",
-  headquarters: "İzmir, Turkey",
-  authorizedName: "John Doe",
-  authorizedTitle: "Production Manager",
-  authorizedDepartment: "Manufacturing",
-  authorizedEmail: "john.doe@inciaku.com",
-  authorizedPhone: "+90 555 987 6543",
-  emailNotifications: true,
-  smsNotifications: false,
-  systemAlerts: true,
-  documentReminders: true,
-  certificationAlerts: true,
-};
-
 export function SettingsForm() {
   const { toast } = useToast();
   const t = useTranslations("settings");
-  const { canManageUsers } = useAuth();
+  const { canManageUsers, company, isCompanyLoading } = useAuth();
   const { users, invitations, loading, inviting, deleting, fetchUsers, inviteUser, deleteUser, updateInvitationStatus, deleteInvitation } = useUsers();
   const [inviteFormData, setInviteFormData] = useState({ full_name: "", email: "", role: "user" });
   const [userToDelete, setUserToDelete] = useState<string | null>(null);
@@ -130,8 +109,76 @@ export function SettingsForm() {
 
   const form = useForm<SettingsFormValues>({
     resolver: zodResolver(settingsSchema),
-    defaultValues,
+    defaultValues: {
+      companyName: company?.name || "",
+      taxId: company?.taxInfo?.taxNumber || "",
+      tradeRegisterNumber: company?.taxInfo?.tradeRegistryNo || "",
+      mersisNumber: company?.taxInfo?.mersisNo || "",
+      email: company?.email || "",
+      phone: company?.phone || "",
+      website: company?.website || "",
+      headquarters: company?.address?.headquarters || "",
+      factoryAddress: company?.address?.factory || "",
+      branchAddresses: company?.address?.branches || "",
+      authorizedName: company?.authorizedPerson?.name || "",
+      authorizedTitle: company?.authorizedPerson?.title || "",
+      authorizedDepartment: company?.authorizedPerson?.department || "",
+      authorizedEmail: company?.authorizedPerson?.email || "",
+      authorizedPhone: company?.authorizedPerson?.phone || "",
+      emailNotifications: company?.notifications?.email || false,
+      smsNotifications: company?.notifications?.sms || false,
+      systemAlerts: company?.notifications?.system || false,
+      documentReminders: company?.notifications?.documents || false,
+      certificationAlerts: company?.notifications?.certifications || false,
+    },
   });
+
+  // Şirket verileri yüklendiğinde form değerlerini güncelle
+  useEffect(() => {
+    if (company) {
+      form.reset({
+        companyName: company.name || "",
+        taxId: company.taxInfo?.taxNumber || "",
+        tradeRegisterNumber: company.taxInfo?.tradeRegistryNo || "",
+        mersisNumber: company.taxInfo?.mersisNo || "",
+        email: company.email || "",
+        phone: company.phone || "",
+        website: company.website || "",
+        headquarters: company.address?.headquarters || "",
+        factoryAddress: company.address?.factory || "",
+        branchAddresses: company.address?.branches || "",
+        authorizedName: company.authorizedPerson?.name || "",
+        authorizedTitle: company.authorizedPerson?.title || "",
+        authorizedDepartment: company.authorizedPerson?.department || "",
+        authorizedEmail: company.authorizedPerson?.email || "",
+        authorizedPhone: company.authorizedPerson?.phone || "",
+        emailNotifications: company.notifications?.email || false,
+        smsNotifications: company.notifications?.sms || false,
+        systemAlerts: company.notifications?.system || false,
+        documentReminders: company.notifications?.documents || false,
+        certificationAlerts: company.notifications?.certifications || false,
+      });
+    }
+  }, [company, form]);
+
+  if (isCompanyLoading) {
+    return (
+      <div className="space-y-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>{t("company.title")}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <Skeleton className="h-4 w-[200px]" />
+              <Skeleton className="h-4 w-[300px]" />
+              <Skeleton className="h-4 w-[250px]" />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   function onSubmit(data: SettingsFormValues) {
     toast({

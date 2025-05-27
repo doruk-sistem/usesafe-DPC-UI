@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { companyApiHooks } from "@/lib/hooks/use-company";
 import { supabase } from "@/lib/supabase/client";
+import { Company } from "@/lib/types/company";
 
 
 export function useAuth() {
@@ -29,7 +30,7 @@ export function useAuth() {
   } = companyApiHooks.useGetCompanyQuery(
     { id: companyId },
     { enabled: !!companyId }
-  );
+  ) as { data: Company | null; isLoading: boolean; isFetched: boolean };
 
   useEffect(() => {
     const {
