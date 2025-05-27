@@ -2508,7 +2508,7 @@
   },
   "settings": {
     "title": "Ayarlar",
-    "description": "Şirket profilinizi ve tercihlerinizi yönetin",
+    "description": "Hesabınızın ayarlarını yönetin ve tercihlerinizi yönetin",
     "saveChanges": "Değişiklikleri Kaydet",
     "tabs": {
       "company": "Şirket",
@@ -2516,6 +2516,14 @@
       "notifications": "Bildirimler",
       "security": "Güvenlik",
       "users": "Kullanıcılar"
+    },
+    "security":{
+      "title":"Güvenlik",
+      "changePassword":{
+        "label":"Şifre Değiştir",
+        "description":"Hesabınızın güvenliğini sağlamak için şifrenizi değiştirin",
+        "button":"Şifre Değiştir"
+      }
     },
     "company": {
       "title": "Şirket Bilgileri",

@@ -10,8 +10,83 @@
     "signIn": "Sign In"
   },
   "settings":{
+  "title":"Settings",
+  "description":"Manage your account settings and preferences",
+  "saveChanges":"Save Changes",
+  "notifications":{
+    "title":"Notifications",
+    "email":{
+      "label":"Email",
+      "description":"Email notifications"
+    },
+    "sms":{
+      "label":"SMS",
+      "description":"SMS notifications"
+    },
+    "system":{
+      "label":"System",
+      "description":"System notifications"
+    },
+    "documents":{
+      "label":"Documents",
+      "description":"Documents notifications"
+    },
+    "certifications":{
+      "label":"Certifications",
+      "description":"Certifications notifications"
+    }
+  },
+  "contact":{
+  "title":"Contact",
+  "email":"Email",
+  "phone":"Phone",
+  "fax":"Fax",
+  "website":"Website",
+  "authorized":{
+    "title":"Authorized Representative",
+    "name":"Name",
+    "department":"Department",
+    "email":"Email",
+    "phone":"Phone"
+  },
+  "address":{
+    "title":"Address",
+    "headquarters":"Headquarters",
+    "factory":"Factory",
+    "branches":"Branches"
+  }
+  },
   "tabs":{
-    "users":"Users"
+    "users":"Users",
+    "company":"Company",
+    "contact":"Contact",
+    "notifications":"Notifications",
+    "security":"Security"
+  },
+  "security":{
+  "title":"Security",
+  "changePassword":{
+    "label":"Change Password",
+    "description":"Change your password to secure your account",
+    "button":"Change Password"
+  }
+  },
+  "company":{
+    "title":"Company Information",
+    "tradeRegisterNumber":{
+      "label":"Trade Register Number"
+    },
+    "mersisNumber":{
+      "label":"MERSIS Number"
+    },
+    "name":{
+      "label":"Company Name",
+      "description":"Contact support for company name update"
+    },
+    "taxId":{
+      "label":"Tax ID",
+      "description":"Contact support for tax ID update"
+    }
   }
   },
   "list":{
