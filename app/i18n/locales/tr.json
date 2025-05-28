@@ -5,6 +5,11 @@
     "verifyProducts": "Ürün Doğrula",
     "signIn": "Giriş Yap"
   },
+  "documents": {
+    "list": {
+      "title": "Belge Listesi"
+    }
+  },
   "list":{
     "title": "Liste",
     "description": "Ürün listesi",
@@ -356,6 +361,18 @@
     "documents": {
       "title": "Döküman Yönetimi",
       "description": "Şirket dökümanlarınızı ve sertifikalarınızı yönetin",
+      "list": {
+        "title": "Belge Listesi",
+        "description": "Belgelerinizi görüntüleyin ve yönetin",
+        "error": {
+          "title": "Belgeler Yüklenirken Hata Oluştu",
+          "description": "Belgeleriniz yüklenirken bir hata oluştu. Lütfen tekrar deneyin."
+        },
+        "empty": {
+          "title": "Belge Bulunamadı",
+          "description": "Henüz hiç belge yüklemediniz."
+        }
+      },
       "filters": {
         "all": "Tümü",
         "upload": "Yükle"
@@ -3431,7 +3448,7 @@
     },
     "table": {
       "document": "Belge",
-      "type": "Tip",
+      "type": "Tür",
       "applicationDate": "Başvuru Tarihi",
       "updateDate": "Güncelleme Tarihi",
       "actions": "İşlemler"
@@ -3462,7 +3479,7 @@
       "updatedAt": "Güncellenme Tarihi",
       "status": "Durum",
       "uploadDate": "Yükleme Tarihi",
-      "expiryDate": "Geçerlilik Tarihi",
+      "expiryDate": "Son Geçerlilik Tarihi",
       "description": "Açıklama",
       "notes": "Notlar",
       "history": "Geçmiş",
@@ -3473,6 +3490,10 @@
         "download": "İndir",
         "view": "Görüntüle",
         "reupload": "Yeniden Yükle"
+      },
+      "notFound": {
+        "title": "Belge Bulunamadı",
+        "description": "Aradığınız belge bulunamadı."
       }
     }
   }

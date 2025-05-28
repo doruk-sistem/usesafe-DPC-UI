@@ -41,8 +41,8 @@ export default function DocumentDetailsPage() {
   if (!document) {
     return (
       <div className="text-center py-8">
-        <h2 className="text-lg font-medium mb-2">{t('details.notFound')}</h2>
-        <p className="text-muted-foreground mb-4">{t('details.notFoundDescription')}</p>
+        <h2 className="text-lg font-medium mb-2">{t('details.notFound.title')}</h2>
+        <p className="text-muted-foreground mb-4">{t('details.notFound.description')}</p>
         <Button asChild>
           <Link href="/dashboard/documents">
             <ArrowLeft className="h-4 w-4 mr-2" />

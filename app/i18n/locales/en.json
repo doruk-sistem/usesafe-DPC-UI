@@ -2308,6 +2308,10 @@
       "notes": "Notes",
       "history": "History",
       "noHistory": "No history records found",
+      "notFound": {
+        "title": "Document Not Found",
+        "description": "The document you are looking for could not be found."
+      },
       "actions": {
         "edit": "Edit",
         "delete": "Delete",
