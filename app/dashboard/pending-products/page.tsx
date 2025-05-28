@@ -48,7 +48,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
-import { usePendingProducts } from "@/lib/hooks/use-pending-products";
+import { useProducts } from "@/lib/hooks/use-products";
 import { Document } from "@/lib/types/document";
 import { BaseProduct } from "@/lib/types/product";
 
@@ -63,8 +63,7 @@ export default function PendingProductsPage() {
   const [showRejectDialog, setShowRejectDialog] = useState(false);
   const [rejectionReason, setRejectionReason] = useState("");
 
-  const { data, isLoading, error, approveProduct, rejectProduct } =
-    usePendingProducts(pageIndex, pageSize);
+  const { products = [], isLoading, error } = useProducts();
 
   const handleViewDocuments = (productId: string) => {
     setSelectedProductId(productId);
@@ -72,7 +71,7 @@ export default function PendingProductsPage() {
   };
 
   const handleApproveProduct = (productId: string) => {
-    approveProduct(productId);
+    // approveProduct(productId);
   };
 
   const handleRejectProduct = (productId: string) => {
@@ -83,16 +82,23 @@ export default function PendingProductsPage() {
   const handleRejectConfirm = () => {
     if (!selectedProductId) return;
 
-    rejectProduct({ productId: selectedProductId, reason: rejectionReason });
+    // rejectProduct({ productId: selectedProductId, reason: rejectionReason });
     setShowRejectDialog(false);
     setRejectionReason("");
   };
 
-  const hasPendingDocuments = (product: BaseProduct) => {
-    if (!product.documents) return false;
-    return Object.values(product.documents).some(
-      (doc: Document) => doc.status === "pending"
-    );
+  const getDocumentStatusBadge = (product: BaseProduct) => {
+    if (!product.documents || Object.keys(product.documents).length === 0) {
+      return <Badge variant="secondary">No Documents</Badge>;
+    }
+    const allDocs = Object.values(product.documents).flat();
+    if (allDocs.some((doc: any) => (doc.status || '').toLowerCase() === 'pending' || !doc.status)) {
+      return <Badge variant="warning">Pending</Badge>;
+    }
+    if (allDocs.every((doc: any) => (doc.status || '').toLowerCase() === 'approved')) {
+      return <Badge variant="success">All Documents Approved</Badge>;
+    }
+    return <Badge variant="secondary">No Documents</Badge>;
   };
 
   const getStatusDisplay = (status: string) => {
@@ -168,105 +174,67 @@ export default function PendingProductsPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {(data?.items || []).map((product: BaseProduct) => {
-                const pendingDocs = hasPendingDocuments(product);
-                return (
-                  <TableRow key={product.id}>
-                    <TableCell>
-                      <div className="flex flex-col">
-                        <span className="font-medium">{product.name}</span>
-                        <span className="text-sm text-muted-foreground">
-                          {product.model}
-                        </span>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant={getStatusVariant(product.status || "")}>
-                        {getStatusDisplay(product.status || "").toUpperCase()}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      {pendingDocs ? (
-                        <Badge variant="warning">
-                          {t("pages.pendingProducts.status.pendingDocuments")}
+              {products
+                .filter(product =>
+                  (product.status || '').toUpperCase() === 'PENDING' ||
+                  (product.document_status || '').toUpperCase() === 'PENDING REVIEW'
+                )
+                .map((product: BaseProduct) => {
+                  return (
+                    <TableRow key={product.id}>
+                      <TableCell>
+                        <div className="flex flex-col">
+                          <span className="font-medium">{product.name}</span>
+                          <span className="text-sm text-muted-foreground">
+                            {product.model}
+                          </span>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={getStatusVariant(product.status || "")}>
+                          {getStatusDisplay(product.status || "").toUpperCase()}
                         </Badge>
-                      ) : (
-                        <Badge variant="success">
-                          {t(
-                            "pages.pendingProducts.status.allDocumentsApproved"
-                          )}
-                        </Badge>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      {new Date(product.created_at).toLocaleDateString()}
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex space-x-2">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm">
-                              <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>
-                              {t("pages.pendingProducts.actions.title")}
-                            </DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem
-                              onClick={() => handleViewDocuments(product.id)}
-                            >
-                              <FileText className="h-4 w-4 mr-2" />
-                              {t(
-                                "pages.pendingProducts.actions.icons.documents"
-                              )}
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              onClick={() => {
-                                window.location.href = `/dashboard/products/${product.id}`;
-                              }}
-                            >
-                              <Eye className="h-4 w-4 mr-2" />
-                              {t("pages.pendingProducts.actions.icons.view")}
-                            </DropdownMenuItem>
-                            {product.status === "NEW" && (
-                              <>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuLabel>
-                                  {t("pages.pendingProducts.actions.control")}
-                                </DropdownMenuLabel>
-                                <DropdownMenuItem
-                                  onClick={() =>
-                                    handleApproveProduct(product.id)
-                                  }
-                                  className="text-green-600 hover:text-green-700 hover:bg-green-50"
-                                >
-                                  <CheckCircle className="h-4 w-4 mr-2 text-green-600" />
-                                  {t(
-                                    "pages.pendingProducts.actions.icons.approve"
-                                  )}
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
-                                  onClick={() =>
-                                    handleRejectProduct(product.id)
-                                  }
-                                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                                >
-                                  <XCircle className="h-4 w-4 mr-2 text-red-600" />
-                                  {t(
-                                    "pages.pendingProducts.actions.icons.reject"
-                                  )}
-                                </DropdownMenuItem>
-                              </>
-                            )}
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
+                      </TableCell>
+                      <TableCell>
+                        {getDocumentStatusBadge(product)}
+                      </TableCell>
+                      <TableCell>
+                        {new Date(product.created_at).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex space-x-2">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="sm">
+                                <MoreHorizontal className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuLabel>
+                                {t("pages.pendingProducts.actions.title")}
+                              </DropdownMenuLabel>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem
+                                onClick={() => handleViewDocuments(product.id)}
+                              >
+                                <FileText className="h-4 w-4 mr-2" />
+                                {t("pages.pendingProducts.actions.icons.documents")}
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                onClick={() => {
+                                  window.location.href = `/dashboard/products/${product.id}`;
+                                }}
+                              >
+                                <Eye className="h-4 w-4 mr-2" />
+                                {t("pages.pendingProducts.actions.icons.view")}
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
             </TableBody>
           </Table>
         </CardContent>
