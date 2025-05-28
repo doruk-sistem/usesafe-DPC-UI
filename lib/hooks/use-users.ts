@@ -228,13 +228,25 @@ export function useUsers() {
         throw new Error(error.error || "Kullanıcı silinirken bir hata oluştu");
       }
 
+      // Kullanıcı listesini güncelle
+      setUsers((prevUsers) => {
+        const deletedUser = prevUsers.find(user => user.id === userId);
+        if (deletedUser) {
+          // Silinen kullanıcının e-postasına sahip daveti de kaldır
+          const updatedInvitations = invitations.filter(
+            invitation => invitation.email.toLowerCase() !== deletedUser.email.toLowerCase()
+          );
+          setInvitations(updatedInvitations);
+          saveInvitations(updatedInvitations);
+        }
+        return prevUsers.filter((user) => user.id !== userId);
+      });
+
       toast({
         title: "Başarılı",
         description: "Kullanıcı başarıyla silindi",
       });
 
-      // Kullanıcı listesini güncelle
-      setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
       return true;
     } catch (error) {
       toast({
