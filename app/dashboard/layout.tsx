@@ -66,6 +66,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       title: t('menu.dpps'),
       href: "/dashboard/dpps",
       icon: QrCode,
+      show: false,
     },
     {
       title: t('menu.suppliers'),
