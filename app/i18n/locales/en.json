@@ -537,6 +537,7 @@
       },
       "certifications": {
         "title": "Certifications",
+        "loadingCertifications": "Loading certifications...",
         "table": {
           "name": "Certificate",
           "issuedBy": "Issued By",
@@ -2250,10 +2251,18 @@
   },
   "documents": {
     "title": "Document Management",
-    "description": "Manage your company documents and certificates",
+    "description": "Manage your company documents",
     "filters": {
       "all": "All",
       "upload": "Upload"
+    },
+    "list": {
+      "title": "Documents",
+      "description": "Manage your company documents",
+    "empty": {
+      "title": "No documents found",
+      "description": "Upload a document to get started"
+    }
     },
     "table": {
       "document": "Document",
@@ -2312,8 +2321,22 @@
     "companies": {
       "title": "Companies",
       "description": "Manage and review all companies in the system",
+      "details":"Details",
+      "documents":{
+        "title": "Documents",
+        "description": "Manage and review all documents in the system",
+        "loading": "Loading documents...",
+        "actions":{
+          "add": "Add Document"
+        },
+        "empty":{
+          "description": "Upload a document to get started",
+          "uploadFirst": "Upload a document first"
+        }
+      },
       "status":{
-        "false": "False"
+        "false": "False",
+        "true": "True"
       },
         "types":{
           "manufacturer": "Manufacturer",
@@ -2323,7 +2346,8 @@
           "title": "Companies",
          "total": "Total: {count} Company",
          "loading":{
-          "title": "Loading"
+          "title": "Loading",
+          "description": "Loading companies..."
          },
           "columns":{
             "name": "Name",
@@ -2453,6 +2477,33 @@
         "title": "Actions",
         "viewDetails": "View Details",
         "viewDocuments": "View Documents"
+      },
+      "list":{
+        "title": "Products",
+        "description": "Manage and review all products in the system",
+        "search":{
+          "placeholder": "Search products..."
+        },
+        "filter":{
+          "all": "All",
+          "active": "Active",
+          "inactive": "Inactive",
+          "pending": "Pending",
+          "placeholder": "Filter by status..."
+        },
+        "columns":{
+          "name": "Name",
+          "status": "Status",
+          "actions": "Actions"
+        },
+       "actions":{
+        "add": "Add Product",
+        "title": "Actions",
+        "view": "View Details",
+        "edit":"Edit",
+        "delete":"Delete"
+       }
+
       }
     },
     "dpc": {
@@ -2742,7 +2793,11 @@
         "instructions": "Use your smartphone camera or QR code reader app to scan",
         "downloadButton": "Download QR Code",
         "imageAlt": "Product Verification QR Code",
-        "productQRCode": "Product QR Code"
+        "productQRCode": "Product QR Code",
+        "success":{
+          "title": "QR Code Generated Successfully",
+          "download": "QR Code Downloaded."
+        }
       }
     }
   }

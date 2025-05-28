@@ -216,7 +216,9 @@
         "suspended": "Askıya Alınmış",
         "inactive": "Pasif",
         "approved": "Onaylandı",
-        "rejected": "Reddedildi"
+        "rejected": "Reddedildi",
+        "false": "Pasif",
+        "true": "Aktif"
       },
       "types": {
         "manufacturer": "Üretici",
@@ -449,9 +451,18 @@
         "title": "Ürünler",
         "description": "Tüm ürünlerin listesi",
         "total": "Toplam: {count} ürün bulundu",
-        "search": "Ürün ara...",
-        "filter": "Tümü",
+        "filter":{
+          "all": "Tümü",
+          "active": "Aktif",
+          "inactive": "Pasif",
+          "pending":"Beklemede",
+          "placeholder": "Duruma göre filtrele..."
+        },
+        "search":{
+          "placeholder": "Ürün ara..."
+        },
         "columns": {
+          "name": "Ürün Adı",
           "productCode": "Ürün Kodu",
           "productName": "Ürün Adı",
           "sku": "SKU",
@@ -524,7 +535,8 @@
           "delete": "Sil",
           "view": "Görüntüle",
           "approve": "Onayla",
-          "reject": "Reddet"
+          "reject": "Reddet",
+          "title": "İşlemler"
         },
         "filters": {
           "all": "Tümü",
@@ -959,7 +971,11 @@
         "title": "Ürün QR Kodu",
         "description": "Ürün detaylarını görüntülemek için bu QR kodu tarayın",
         "downloadButton": "QR Kodu İndir",
-        "imageAlt": "Ürün Doğrulama QR Kodu"
+        "imageAlt": "Ürün Doğrulama QR Kodu",
+        "success":{
+          "title": "QR Kodu Başarıyla Oluşturuldu",
+          "download": "QR Kodu İndirildi."
+        }
       }
     }
   },
@@ -1097,6 +1113,7 @@
       "certifications": {
         "title": "Sertifikalar",
         "description": "Ürün sertifikalarını görüntüleyin",
+        "loadingCertifications": "Sertifikalar yükleniyor...",
         "table": {
           "name": "Sertifika Adı",
           "issuedBy": "Düzenleyen",
@@ -1107,7 +1124,9 @@
         "status": {
           "valid": "Geçerli",
           "expired": "Süresi Dolmuş",
-          "pending": "Beklemede"
+          "pending": "Beklemede",
+          "approved": "Onaylandı",
+          "rejected": "Reddedildi"
         },
         "actions": {
           "download": "İndir",
@@ -2165,36 +2184,6 @@
       "editSupplier": "Tedarikçi Düzenle",
       "deleteSupplier": "Tedarikçi Sil",
       "export": "Tedarikçileri Dışa Aktar"
-    }
-  },
-  "documents": {
-    "title": "Döküman Yönetimi",
-    "description": "Şirket dökümanlarınızı ve sertifikalarınızı yönetin",
-    "filters": {
-      "all": "Tümü",
-      "upload": "Yükle"
-    },
-    "table": {
-      "document": "Belge",
-      "type": "Tip",
-      "applicationDate": "Başvuru Tarihi",
-      "updateDate": "Güncelleme Tarihi",
-      "actions": "İşlemler"
-    },
-    "types": {
-      "signature_circular": "İmza Sirküleri",
-      "trade_registry_gazette": "Ticaret Sicil Gazetesi",
-      "tax_plate": "Vergi Levhası",
-      "activity_certificate": "Faaliyet Belgesi"
-    },
-    "actions": {
-      "title": "İşlemler",
-      "view": "Görüntüle",
-      "download": "İndir",
-      "history": "Geçmiş",
-      "delete": "Sil",
-      "upload": "Yükle",
-      "reupload": "Yeniden Yükle"
     }
   },
   "dpc": {
@@ -3427,10 +3416,18 @@
   },
   "documents": {
     "title": "Döküman Yönetimi",
-    "description": "Şirket dökümanlarınızı ve sertifikalarınızı yönetin",
+    "description": "Şirket dökümanlarınızı yönetin",
     "filters": {
       "all": "Tümü",
       "upload": "Yükle"
+    },
+    "list":{
+      "title": "Dökümanlar",
+      "description": "Şirket dökümanlarınızı yönetin",
+      "empty":{
+        "title": "Döküman bulunamadı",
+        "description": "Bir döküman yüklemek için tıklayın"
+      }
     },
     "table": {
       "document": "Belge",
