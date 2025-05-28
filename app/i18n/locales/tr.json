@@ -5,6 +5,11 @@
     "verifyProducts": "Ürün Doğrula",
     "signIn": "Giriş Yap"
   },
+  "documents": {
+    "list": {
+      "title": "Belge Listesi"
+    }
+  },
   "list":{
     "title": "Liste",
     "description": "Ürün listesi",
@@ -354,6 +359,18 @@
     "documents": {
       "title": "Döküman Yönetimi",
       "description": "Şirket dökümanlarınızı ve sertifikalarınızı yönetin",
+      "list": {
+        "title": "Belge Listesi",
+        "description": "Belgelerinizi görüntüleyin ve yönetin",
+        "error": {
+          "title": "Belgeler Yüklenirken Hata Oluştu",
+          "description": "Belgeleriniz yüklenirken bir hata oluştu. Lütfen tekrar deneyin."
+        },
+        "empty": {
+          "title": "Belge Bulunamadı",
+          "description": "Henüz hiç belge yüklemediniz."
+        }
+      },
       "filters": {
         "all": "Tümü",
         "upload": "Yükle"
@@ -2168,15 +2185,27 @@
     }
   },
   "documents": {
-    "title": "Döküman Yönetimi",
-    "description": "Şirket dökümanlarınızı ve sertifikalarınızı yönetin",
+    "title": "Belge Yönetimi",
+    "description": "Şirket belgelerinizi ve sertifikalarınızı yönetin",
+    "list": {
+      "title": "Belge Listesi",
+      "description": "Belgelerinizi görüntüleyin ve yönetin",
+      "error": {
+        "title": "Belgeler Yüklenirken Hata Oluştu",
+        "description": "Belgeleriniz yüklenirken bir hata oluştu. Lütfen tekrar deneyin."
+      },
+      "empty": {
+        "title": "Belge Bulunamadı",
+        "description": "Henüz hiç belge yüklemediniz."
+      }
+    },
     "filters": {
       "all": "Tümü",
       "upload": "Yükle"
     },
     "table": {
       "document": "Belge",
-      "type": "Tip",
+      "type": "Tür",
       "applicationDate": "Başvuru Tarihi",
       "updateDate": "Güncelleme Tarihi",
       "actions": "İşlemler"
@@ -2185,7 +2214,13 @@
       "signature_circular": "İmza Sirküleri",
       "trade_registry_gazette": "Ticaret Sicil Gazetesi",
       "tax_plate": "Vergi Levhası",
-      "activity_certificate": "Faaliyet Belgesi"
+      "activity_certificate": "Faaliyet Belgesi",
+      "quality_certificate": "Kalite Sertifikası",
+      "safety_certificate": "Güvenlik Sertifikası",
+      "environmental_certificate": "Çevre Sertifikası",
+      "iso_certificate": "ISO Sertifikası",
+      "production_permit": "Üretim İzni",
+      "export_certificate": "İhracat Sertifikası"
     },
     "actions": {
       "title": "İşlemler",
@@ -2195,6 +2230,30 @@
       "delete": "Sil",
       "upload": "Yükle",
       "reupload": "Yeniden Yükle"
+    },
+    "details": {
+      "backToList": "Listeye Dön",
+      "viewFile": "Dosyayı Görüntüle",
+      "downloadFile": "Dosyayı İndir",
+      "information": "Bilgiler",
+      "type": "Tür",
+      "fileSize": "Dosya Boyutu",
+      "createdAt": "Oluşturulma Tarihi",
+      "updatedAt": "Güncellenme Tarihi",
+      "status": "Durum",
+      "uploadDate": "Yükleme Tarihi",
+      "expiryDate": "Son Geçerlilik Tarihi",
+      "description": "Açıklama",
+      "notes": "Notlar",
+      "history": "Geçmiş",
+      "noHistory": "Geçmiş kaydı bulunamadı",
+      "actions": {
+        "edit": "Düzenle",
+        "delete": "Sil",
+        "download": "İndir",
+        "view": "Görüntüle",
+        "reupload": "Yeniden Yükle"
+      }
     }
   },
   "dpc": {
@@ -3358,7 +3417,7 @@
     },
     "table": {
       "document": "Belge",
-      "type": "Tip",
+      "type": "Tür",
       "applicationDate": "Başvuru Tarihi",
       "updateDate": "Güncelleme Tarihi",
       "actions": "İşlemler"
@@ -3389,7 +3448,7 @@
       "updatedAt": "Güncellenme Tarihi",
       "status": "Durum",
       "uploadDate": "Yükleme Tarihi",
-      "expiryDate": "Geçerlilik Tarihi",
+      "expiryDate": "Son Geçerlilik Tarihi",
       "description": "Açıklama",
       "notes": "Notlar",
       "history": "Geçmiş",
@@ -3400,6 +3459,10 @@
         "download": "İndir",
         "view": "Görüntüle",
         "reupload": "Yeniden Yükle"
+      },
+      "notFound": {
+        "title": "Belge Bulunamadı",
+        "description": "Aradığınız belge bulunamadı."
       }
     }
   }

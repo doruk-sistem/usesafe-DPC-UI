@@ -100,7 +100,7 @@ export function DocumentList({ filters }: { filters: { type: string; status: str
     return (
       <Card>
         <CardHeader>
-          <CardTitle>{t('list.title')}</CardTitle>
+          <CardTitle>{t('list.title', { defaultValue: 'Belge Listesi' })}</CardTitle>
           <CardDescription>
             {t('list.description')}
           </CardDescription>
@@ -116,7 +116,7 @@ export function DocumentList({ filters }: { filters: { type: string; status: str
     return (
       <Card>
         <CardHeader>
-          <CardTitle>{t('list.title')}</CardTitle>
+          <CardTitle>{t('list.title', { defaultValue: 'Belge Listesi' })}</CardTitle>
           <CardDescription>
             {t('list.description')}
           </CardDescription>
@@ -139,7 +139,7 @@ export function DocumentList({ filters }: { filters: { type: string; status: str
     return (
       <Card>
         <CardHeader>
-          <CardTitle>{t('list.title')}</CardTitle>
+          <CardTitle>{t('list.title', { defaultValue: 'Belge Listesi' })}</CardTitle>
           <CardDescription>
             {t('list.description')}
           </CardDescription>
@@ -198,7 +198,7 @@ export function DocumentList({ filters }: { filters: { type: string; status: str
                   </div>
                 </TableCell>
                 <TableCell>
-                  {getDocumentType(doc.type)}
+                  {t(`types.${doc.type}`, { defaultValue: doc.type })}
                 </TableCell>
                 <TableCell>
                   {doc.created_at ? new Date(doc.created_at).toLocaleDateString() : "N/A"}
@@ -237,7 +237,6 @@ export function DocumentList({ filters }: { filters: { type: string; status: str
                           {t('actions.history')}
                         </Link>
                       </DropdownMenuItem>
-                      <DropdownMenuItem className="text-red-600">{t('actions.delete')}</DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>
