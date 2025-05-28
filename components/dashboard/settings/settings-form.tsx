@@ -23,7 +23,9 @@ import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
+import { useAuth } from "@/lib/hooks/use-auth";
 import { useUsers } from "@/lib/hooks/use-users";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const settingsSchema = z.object({
   // Company Information (Read-only)
@@ -60,35 +62,49 @@ const settingsSchema = z.object({
 
 type SettingsFormValues = z.infer<typeof settingsSchema>;
 
-// This would come from your API in a real app
-const defaultValues: Partial<SettingsFormValues> = {
-  companyName: "İnci Akü",
-  taxId: "1234567890",
-  tradeRegisterNumber: "123456",
-  mersisNumber: "0123456789",
-  email: "contact@inciaku.com",
-  phone: "+90 555 123 4567",
-  website: "https://www.inciaku.com",
-  headquarters: "İzmir, Turkey",
-  authorizedName: "John Doe",
-  authorizedTitle: "Production Manager",
-  authorizedDepartment: "Manufacturing",
-  authorizedEmail: "john.doe@inciaku.com",
-  authorizedPhone: "+90 555 987 6543",
-  emailNotifications: true,
-  smsNotifications: false,
-  systemAlerts: true,
-  documentReminders: true,
-  certificationAlerts: true,
-};
-
 export function SettingsForm() {
   const { toast } = useToast();
   const t = useTranslations("settings");
+  const { canManageUsers, company, isCompanyLoading, updatePassword } = useAuth();
   const { users, invitations, loading, inviting, deleting, fetchUsers, inviteUser, deleteUser, updateInvitationStatus, deleteInvitation } = useUsers();
   const [inviteFormData, setInviteFormData] = useState({ full_name: "", email: "", role: "user" });
   const [userToDelete, setUserToDelete] = useState<string | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [showPasswordDialog, setShowPasswordDialog] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  // Kullanıcı rolü için badge rengi belirleme
+  const getRoleBadgeColor = (role: string) => {
+    switch(role) {
+      case 'admin':
+        return 'bg-red-100 text-red-800'; // Sistem yöneticisi
+      case 'company_admin':
+        return 'bg-green-100 text-green-800'; // Şirket yöneticisi
+      case 'manufacturer':
+        return 'bg-purple-100 text-purple-800'; // Şirket kurucusu
+      case 'user':
+      default:
+        return 'bg-blue-100 text-blue-800'; // Normal kullanıcı
+    }
+  };
+  
+  // Kullanıcı rolü için görüntülenecek isim
+  const getRoleDisplayName = (role: string) => {
+    switch(role) {
+      case 'admin':
+        return t("users.roles.admin");
+      case 'company_admin':
+        return t("users.roles.company_admin");
+      case 'manufacturer':
+        return t("users.roles.manufacturer");
+      case 'user':
+      default:
+        return t("users.roles.user");
+    }
+  };
 
   // Sayfa yüklendiğinde kullanıcıları getir
   useEffect(() => {
@@ -97,8 +113,76 @@ export function SettingsForm() {
 
   const form = useForm<SettingsFormValues>({
     resolver: zodResolver(settingsSchema),
-    defaultValues,
+    defaultValues: {
+      companyName: company?.name || "",
+      taxId: company?.taxInfo?.taxNumber || "",
+      tradeRegisterNumber: company?.taxInfo?.tradeRegistryNo || "",
+      mersisNumber: company?.taxInfo?.mersisNo || "",
+      email: company?.email || "",
+      phone: company?.phone || "",
+      website: company?.website || "",
+      headquarters: company?.address?.headquarters || "",
+      factoryAddress: company?.address?.factory || "",
+      branchAddresses: company?.address?.branches || "",
+      authorizedName: company?.authorizedPerson?.name || "",
+      authorizedTitle: company?.authorizedPerson?.title || "",
+      authorizedDepartment: company?.authorizedPerson?.department || "",
+      authorizedEmail: company?.authorizedPerson?.email || "",
+      authorizedPhone: company?.authorizedPerson?.phone || "",
+      emailNotifications: company?.notifications?.email || false,
+      smsNotifications: company?.notifications?.sms || false,
+      systemAlerts: company?.notifications?.system || false,
+      documentReminders: company?.notifications?.documents || false,
+      certificationAlerts: company?.notifications?.certifications || false,
+    },
   });
+
+  // Şirket verileri yüklendiğinde form değerlerini güncelle
+  useEffect(() => {
+    if (company) {
+      form.reset({
+        companyName: company.name || "",
+        taxId: company.taxInfo?.taxNumber || "",
+        tradeRegisterNumber: company.taxInfo?.tradeRegistryNo || "",
+        mersisNumber: company.taxInfo?.mersisNo || "",
+        email: company.email || "",
+        phone: company.phone || "",
+        website: company.website || "",
+        headquarters: company.address?.headquarters || "",
+        factoryAddress: company.address?.factory || "",
+        branchAddresses: company.address?.branches || "",
+        authorizedName: company.authorizedPerson?.name || "",
+        authorizedTitle: company.authorizedPerson?.title || "",
+        authorizedDepartment: company.authorizedPerson?.department || "",
+        authorizedEmail: company.authorizedPerson?.email || "",
+        authorizedPhone: company.authorizedPerson?.phone || "",
+        emailNotifications: company.notifications?.email || false,
+        smsNotifications: company.notifications?.sms || false,
+        systemAlerts: company.notifications?.system || false,
+        documentReminders: company.notifications?.documents || false,
+        certificationAlerts: company.notifications?.certifications || false,
+      });
+    }
+  }, [company, form]);
+
+  if (isCompanyLoading) {
+    return (
+      <div className="space-y-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>{t("company.title")}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <Skeleton className="h-4 w-[200px]" />
+              <Skeleton className="h-4 w-[300px]" />
+              <Skeleton className="h-4 w-[250px]" />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   function onSubmit(data: SettingsFormValues) {
     toast({
@@ -120,15 +204,30 @@ export function SettingsForm() {
   const handleInviteSubmit = async () => {
     if (!inviteFormData.email || !inviteFormData.full_name) {
       toast({
-        title: "Hata",
-        description: "Lütfen tüm alanları doldurun",
+        title: t("users.invites.error.title"),
+        description: t("users.invites.error.description"),
         variant: "destructive",
       });
       return;
     }
     
-    await inviteUser(inviteFormData);
-    setInviteFormData({ full_name: "", email: "", role: "user" });
+    try {
+      await inviteUser(inviteFormData);
+      toast({
+        title: t("users.invites.success.title"),
+        description: t("users.invites.success.description"),
+      });
+      // Form alanlarını temizle
+      setInviteFormData({ full_name: "", email: "", role: "user" });
+      // Davet formunu kapat
+      setInviteDialogOpen(false);
+    } catch (error) {
+      toast({
+        title: t("users.invites.error.title"),
+        description: error.message,
+        variant: "destructive",
+      });
+    }
   };
   
   // Kullanıcı silme işlemi
@@ -145,19 +244,52 @@ export function SettingsForm() {
     }
   };
 
+  const handlePasswordChange = async () => {
+    if (newPassword !== confirmPassword) {
+      toast({
+        title: t("security.changePassword.error.title"),
+        description: t("security.changePassword.error.mismatch"),
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      setIsChangingPassword(true);
+      await updatePassword(newPassword);
+      
+      toast({
+        title: t("security.changePassword.success.title"),
+        description: t("security.changePassword.success.description"),
+      });
+      
+      setShowPasswordDialog(false);
+      setNewPassword("");
+      setConfirmPassword("");
+    } catch (error) {
+      toast({
+        title: t("security.changePassword.error.title"),
+        description: error instanceof Error ? error.message : t("security.changePassword.error.generic"),
+        variant: "destructive",
+      });
+    } finally {
+      setIsChangingPassword(false);
+    }
+  };
+
   return (
     <>
       <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Kullanıcıyı Sil</DialogTitle>
+            <DialogTitle>{t("users.delete.title")}</DialogTitle>
             <DialogDescription>
-              Bu kullanıcıyı silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.
+              {t("users.delete.description")}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>İptal</Button>
-            <Button variant="destructive" onClick={confirmDeleteUser}>Sil</Button>
+            <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>{t("users.delete.cancel")}</Button>
+            <Button variant="destructive" onClick={confirmDeleteUser}>{t("users.delete.delete")}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -170,7 +302,9 @@ export function SettingsForm() {
             <TabsTrigger value="contact">{t("tabs.contact")}</TabsTrigger>
             <TabsTrigger value="notifications">{t("tabs.notifications")}</TabsTrigger>
             <TabsTrigger value="security">{t("tabs.security")}</TabsTrigger>
-            <TabsTrigger value="users">{t("tabs.users")}</TabsTrigger>
+            {canManageUsers() && (
+              <TabsTrigger value="users">{t("tabs.users")}</TabsTrigger>
+            )}
           </TabsList>
 
           <TabsContent value="company">
@@ -244,6 +378,80 @@ export function SettingsForm() {
 
           <TabsContent value="contact">
             <div className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>{t("contact.authorized.title")}</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <FormField
+                      control={form.control}
+                      name="authorizedName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{t("contact.authorized.name")}</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="authorizedTitle"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{t("contact.authorized.title")}</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="authorizedDepartment"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{t("contact.authorized.department")}</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="authorizedEmail"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{t("contact.authorized.email")}</FormLabel>
+                          <FormControl>
+                            <Input {...field} type="email" />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="authorizedPhone"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{t("contact.authorized.phone")}</FormLabel>
+                          <FormControl>
+                            <Input {...field} type="tel" />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
               <Card>
                 <CardHeader>
                   <CardTitle>{t("contact.title")}</CardTitle>
@@ -350,80 +558,6 @@ export function SettingsForm() {
                   />
                 </CardContent>
               </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>{t("contact.authorized.title")}</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid gap-4 md:grid-cols-2">
-                    <FormField
-                      control={form.control}
-                      name="authorizedName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>{t("contact.authorized.name")}</FormLabel>
-                          <FormControl>
-                            <Input {...field} />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="authorizedTitle"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>{t("contact.authorized.title")}</FormLabel>
-                          <FormControl>
-                            <Input {...field} />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="authorizedDepartment"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>{t("contact.authorized.department")}</FormLabel>
-                          <FormControl>
-                            <Input {...field} />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="authorizedEmail"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>{t("contact.authorized.email")}</FormLabel>
-                          <FormControl>
-                            <Input {...field} type="email" />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="authorizedPhone"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>{t("contact.authorized.phone")}</FormLabel>
-                          <FormControl>
-                            <Input {...field} type="tel" />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
             </div>
           </TabsContent>
 
@@ -446,7 +580,10 @@ export function SettingsForm() {
                           {t("security.changePassword.description")}
                         </FormDescription>
                       </div>
-                      <Button variant="outline">
+                      <Button 
+                        variant="outline"
+                        onClick={() => setShowPasswordDialog(true)}
+                      >
                         {t("security.changePassword.button")}
                       </Button>
                     </FormItem>
@@ -454,103 +591,215 @@ export function SettingsForm() {
                 />
               </CardContent>
             </Card>
+
+            <Dialog open={showPasswordDialog} onOpenChange={setShowPasswordDialog}>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>{t("security.changePassword.dialog.title")}</DialogTitle>
+                  <DialogDescription>
+                    {t("security.changePassword.dialog.description")}
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4 py-4">
+                  <div className="space-y-2">
+                    <FormLabel>{t("security.changePassword.dialog.newPassword")}</FormLabel>
+                    <Input
+                      type="password"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      placeholder={t("security.changePassword.dialog.newPasswordPlaceholder")}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <FormLabel>{t("security.changePassword.dialog.confirmPassword")}</FormLabel>
+                    <Input
+                      type="password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      placeholder={t("security.changePassword.dialog.confirmPasswordPlaceholder")}
+                    />
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowPasswordDialog(false)}
+                  >
+                    {t("security.changePassword.dialog.cancel")}
+                  </Button>
+                  <Button
+                    onClick={handlePasswordChange}
+                    disabled={isChangingPassword}
+                  >
+                    {isChangingPassword
+                      ? t("security.changePassword.dialog.changing")
+                      : t("security.changePassword.dialog.change")}
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </TabsContent>
           
           <TabsContent value="users">
             <Card>
               <CardHeader>
-                <CardTitle>Kullanıcı Yönetimi</CardTitle>
-                <FormDescription>
-                  Şirket kullanıcılarını yönetin ve yeni kullanıcılar davet edin
-                </FormDescription>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle>{t("users.title")}</CardTitle>
+                    <CardDescription>
+                     {t("users.description")}
+                    </CardDescription>
+                  </div>
+                  <Dialog open={inviteDialogOpen} onOpenChange={setInviteDialogOpen}>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" size="sm">
+                        {t("users.invite")}
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[425px]">
+                      <DialogHeader>
+                        <DialogTitle>{t("users.invite")}</DialogTitle>
+                        <DialogDescription>
+                          {t("users.invites.description")}
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div className="grid gap-4 py-4">
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <FormLabel className="text-right">{t("users.invites.full_name")}</FormLabel>
+                          <Input 
+                            id="full_name" 
+                            className="col-span-3" 
+                            placeholder={t("users.invites.full_name_placeholder")}
+                            value={inviteFormData.full_name}
+                            onChange={handleInviteFormChange}
+                          />
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <FormLabel className="text-right">{t("users.invites.email")}</FormLabel>
+                          <Input 
+                            id="email" 
+                            className="col-span-3" 
+                            placeholder={t("users.invites.email_placeholder")} 
+                            type="email" 
+                            value={inviteFormData.email}
+                            onChange={handleInviteFormChange}
+                          />
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <FormLabel className="text-right">{t("users.invites.role")}</FormLabel>
+                          <select 
+                            id="role"
+                            className="col-span-3 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                            value={inviteFormData.role}
+                            onChange={handleInviteFormChange}
+                          >
+                            <option value="user">{t("users.invites.roles.user")}</option>
+                            <option value="company_admin">{t("users.invites.roles.company_admin")}</option>
+                          </select>
+                        </div>
+                      </div>
+                      <DialogFooter>
+                        <Button 
+                          type="button" 
+                          onClick={handleInviteSubmit}
+                          disabled={inviting}
+                        >
+                          {inviting ? t("users.invites.sending") : t("users.invites.send")}
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                </div>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  <div className="flex justify-between">
-                    <h3 className="text-lg font-medium">Mevcut Kullanıcılar</h3>
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <Button variant="outline" size="sm">
-                          Yeni Kullanıcı Davet Et
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent className="sm:max-w-[425px]">
-                        <DialogHeader>
-                          <DialogTitle>Kullanıcı Davet Et</DialogTitle>
-                          <DialogDescription>
-                            Şirketinize yeni bir kullanıcı davet etmek için aşağıdaki formu doldurun.
-                          </DialogDescription>
-                        </DialogHeader>
-                        <div className="grid gap-4 py-4">
-                          <div className="grid grid-cols-4 items-center gap-4">
-                            <FormLabel className="text-right">Ad Soyad</FormLabel>
-                            <Input 
-                              id="full_name" 
-                              className="col-span-3" 
-                              placeholder="John Doe" 
-                              value={inviteFormData.full_name}
-                              onChange={handleInviteFormChange}
-                            />
-                          </div>
-                          <div className="grid grid-cols-4 items-center gap-4">
-                            <FormLabel className="text-right">E-posta</FormLabel>
-                            <Input 
-                              id="email" 
-                              className="col-span-3" 
-                              placeholder="john.doe@example.com" 
-                              type="email" 
-                              value={inviteFormData.email}
-                              onChange={handleInviteFormChange}
-                            />
-                          </div>
-                          <div className="grid grid-cols-4 items-center gap-4">
-                            <FormLabel className="text-right">Rol</FormLabel>
-                            <select 
-                              id="role"
-                              className="col-span-3 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                              value={inviteFormData.role}
-                              onChange={handleInviteFormChange}
-                            >
-                              <option value="user">Kullanıcı</option>
-                              <option value="admin">Yönetici</option>
-                            </select>
-                          </div>
+                <div className="space-y-6">
+                  {/* Bekleyen Davetler */}
+                  <div>
+                    <h3 className="text-lg font-medium mb-4">{t("users.invites.pending")}</h3>
+                    {invitations.length > 0 ? (
+                      <div className="rounded-md border divide-y">
+                        {invitations
+                          .filter(invitation => {
+                            if (invitation.status !== "pending") return false;
+                            const isAlreadyUser = users.some(
+                              user => user.email.toLowerCase() === invitation.email.toLowerCase()
+                            );
+                            return !isAlreadyUser;
+                          })
+                          .map((invitation) => (
+                            <div key={invitation.id} className="p-4">
+                              <div className="flex items-center justify-between">
+                                <div>
+                                  <p className="font-medium">{invitation.full_name}</p>
+                                  <p className="text-sm text-muted-foreground">{invitation.email}</p>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <span className="rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-800">
+                                    {t("users.invites.pending_status")}
+                                  </span>
+                                  <Button 
+                                    variant="ghost" 
+                                    size="icon"
+                                    onClick={() => deleteInvitation(invitation.id)}
+                                  >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                                  </Button>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                      </div>
+                    ) : (
+                      <div className="rounded-md border p-8 text-center">
+                        <div className="space-y-4">
+                          <p className="text-lg font-medium">{t("users.invites.no_pending")}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {t("users.invites.no_pending_description")}
+                          </p>
                         </div>
-                        <DialogFooter>
-                          <Button 
-                            type="button" 
-                            onClick={handleInviteSubmit}
-                            disabled={inviting}
-                          >
-                            {inviting ? "Gönderiliyor..." : "Davet Gönder"}
-                          </Button>
-                        </DialogFooter>
-                      </DialogContent>
-                    </Dialog>
+                      </div>
+                    )}
                   </div>
                   
-                  {/* Bekleyen Davetler */}
-                  {invitations.length > 0 && (
-                    <div className="mb-6">
-                      <h3 className="text-lg font-medium mb-2">Bekleyen Davetler</h3>
-                      <div className="rounded-md border">
-                        {invitations
-                          .filter(invitation => invitation.status === "pending")
-                          .map((invitation, index) => (
-                          <div key={invitation.id} className={index > 0 ? "border-t p-4" : "p-4"}>
+                  {/* Mevcut Kullanıcılar */}
+                  <div>
+                    <h3 className="text-lg font-medium mb-4">{t("users.existing")}</h3>
+                    {loading ? (
+                      <div className="flex justify-center p-4">
+                        <p>{t("users.loading")}</p>
+                      </div>
+                    ) : users.length === 0 ? (
+                      <div className="rounded-md border p-8 text-center">
+                        {invitations.length === 0 ? (
+                          <div className="space-y-4">
+                            <p className="text-lg font-medium">{t("users.no_users")}</p>
+                            <p className="text-sm text-muted-foreground">
+                              {t("users.no_users_description")}
+                            </p>
+                          </div>
+                        ) : (
+                          <p>{t("users.no_users")}</p>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="rounded-md border divide-y">
+                        {users.map((user) => (
+                          <div key={user.id} className="p-4">
                             <div className="flex items-center justify-between">
                               <div>
-                                <p className="font-medium">{invitation.full_name}</p>
-                                <p className="text-sm text-muted-foreground">{invitation.email}</p>
+                                <p className="font-medium">{user.full_name}</p>
+                                <p className="text-sm text-muted-foreground">{user.email}</p>
                               </div>
                               <div className="flex items-center gap-2">
-                                <span className="rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-800">
-                                  Bekliyor
+                                <span className={`rounded-full px-2 py-1 text-xs font-medium ${getRoleBadgeColor(user.role)}`}>
+                                  {getRoleDisplayName(user.role)}
                                 </span>
                                 <Button 
                                   variant="ghost" 
                                   size="icon"
-                                  onClick={() => deleteInvitation(invitation.id)}
+                                  type="button"
+                                  onClick={() => handleDeleteUser(user.id)}
+                                  disabled={deleting}
                                 >
                                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
                                 </Button>
@@ -559,47 +808,8 @@ export function SettingsForm() {
                           </div>
                         ))}
                       </div>
-                    </div>
-                  )}
-                  
-                  {/* Mevcut Kullanıcılar */}
-                  <h3 className="text-lg font-medium mb-2">Mevcut Kullanıcılar</h3>
-                  {loading ? (
-                    <div className="flex justify-center p-4">
-                      <p>Kullanıcılar yükleniyor...</p>
-                    </div>
-                  ) : users.length === 0 ? (
-                    <div className="rounded-md border p-4 text-center">
-                      <p>Henüz kullanıcı bulunmuyor.</p>
-                    </div>
-                  ) : (
-                    <div className="rounded-md border">
-                      {users.map((user, index) => (
-                        <div key={user.id} className={index > 0 ? "border-t p-4" : "p-4"}>
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <p className="font-medium">{user.full_name}</p>
-                              <p className="text-sm text-muted-foreground">{user.email}</p>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <span className={`rounded-full px-2 py-1 text-xs font-medium ${user.role === 'admin' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'}`}>
-                                {user.role === 'admin' ? 'Yönetici' : 'Kullanıcı'}
-                              </span>
-                              <Button 
-                                variant="ghost" 
-                                size="icon"
-                                type="button"
-                                onClick={() => handleDeleteUser(user.id)}
-                                disabled={deleting}
-                              >
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
-                              </Button>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
               </CardContent>
             </Card>

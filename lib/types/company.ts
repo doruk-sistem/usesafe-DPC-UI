@@ -43,10 +43,30 @@ export interface Company {
     tradeRegistryNo?: string;
     mersisNo?: string;
   };
-  // status tipini boolean'dan CompanyStatus'a değiştirin
   status: CompanyStatus;
   email?: string;
   phone?: string;
+  fax?: string;
+  website?: string;
+  address?: {
+    headquarters?: string;
+    factory?: string;
+    branches?: string;
+  };
+  authorizedPerson?: {
+    name?: string;
+    title?: string;
+    department?: string;
+    email?: string;
+    phone?: string;
+  };
+  notifications?: {
+    email?: boolean;
+    sms?: boolean;
+    system?: boolean;
+    documents?: boolean;
+    certifications?: boolean;
+  };
   createdAt?: Date | string;
   updatedAt?: Date | string;
 }
