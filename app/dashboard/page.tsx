@@ -14,9 +14,13 @@ export default function DashboardPage() {
   
 
       <DashboardMetrics />
-      <div className="grid gap-6 md:grid-cols-2">
-        <PendingApplications />
-        <RecentActivities />
+      <div className="flex flex-col md:flex-row gap-6">
+        <div className="w-full md:w-1/2">
+          <PendingApplications />
+        </div>
+        <div className="w-full md:w-1/2">
+          <RecentActivities />
+        </div>
       </div>
     </div>
   );

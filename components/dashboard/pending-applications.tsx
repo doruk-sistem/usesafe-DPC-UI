@@ -86,14 +86,14 @@ export function PendingApplications() {
                 {app.status === "PENDING" && <FileQuestion className="h-5 w-5" />}
                 {app.status === "NEW" && <CheckCircle2 className="h-5 w-5" />}
               </div>
-              <div className="flex-1">
-                <h3 className="font-medium">{app.name}</h3>
-                <p className="text-sm text-muted-foreground">
+              <div className="flex-1 min-w-0">
+                <h3 className="font-medium truncate max-w-[180px]" title={app.name}>{app.name}</h3>
+                <p className="text-sm text-muted-foreground truncate max-w-[160px]">
                   {t("submitted")} {app.created_at ? new Date(app.created_at).toLocaleDateString() : "-"}
                 </p>
               </div>
               <div className={`
-                px-3 py-1 rounded-full text-xs font-medium
+                px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap
                 ${app.status === "PENDING"
                   ? "bg-blue-50 text-blue-600"
                   : "bg-yellow-50 text-yellow-600"}
