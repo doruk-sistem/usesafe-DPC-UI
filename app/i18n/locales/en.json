@@ -2251,6 +2251,18 @@
   "documents": {
     "title": "Document Management",
     "description": "Manage your company documents and certificates",
+    "list": {
+      "title": "Document List",
+      "description": "View and manage your documents",
+      "error": {
+        "title": "Error Loading Documents",
+        "description": "There was an error loading your documents. Please try again."
+      },
+      "empty": {
+        "title": "No Documents Found",
+        "description": "You haven't uploaded any documents yet."
+      }
+    },
     "filters": {
       "all": "All",
       "upload": "Upload"
@@ -2299,6 +2311,10 @@
       "notes": "Notes",
       "history": "History",
       "noHistory": "No history records found",
+      "notFound": {
+        "title": "Document Not Found",
+        "description": "The document you are looking for could not be found."
+      },
       "actions": {
         "edit": "Edit",
         "delete": "Delete",
