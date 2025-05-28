@@ -95,14 +95,14 @@ export function SettingsForm() {
   const getRoleDisplayName = (role: string) => {
     switch(role) {
       case 'admin':
-        return 'Sistem Yöneticisi';
+        return t("users.roles.admin");
       case 'company_admin':
-        return 'Şirket Yöneticisi';
+        return t("users.roles.company_admin");
       case 'manufacturer':
-        return 'Şirket Kurucusu';
+        return t("users.roles.manufacturer");
       case 'user':
       default:
-        return 'Kullanıcı';
+        return t("users.roles.user");
     }
   };
 
@@ -204,8 +204,8 @@ export function SettingsForm() {
   const handleInviteSubmit = async () => {
     if (!inviteFormData.email || !inviteFormData.full_name) {
       toast({
-        title: "Hata",
-        description: "Lütfen tüm alanları doldurun",
+        title: t("users.invites.error.title"),
+        description: t("users.invites.error.description"),
         variant: "destructive",
       });
       return;
@@ -214,8 +214,8 @@ export function SettingsForm() {
     try {
       await inviteUser(inviteFormData);
       toast({
-        title: "Başarılı",
-        description: "Davet başarıyla gönderildi",
+        title: t("users.invites.success.title"),
+        description: t("users.invites.success.description"),
       });
       // Form alanlarını temizle
       setInviteFormData({ full_name: "", email: "", role: "user" });
@@ -223,7 +223,7 @@ export function SettingsForm() {
       setInviteDialogOpen(false);
     } catch (error) {
       toast({
-        title: "Hata",
+        title: t("users.invites.error.title"),
         description: error.message,
         variant: "destructive",
       });
@@ -282,14 +282,14 @@ export function SettingsForm() {
       <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Kullanıcıyı Sil</DialogTitle>
+            <DialogTitle>{t("users.delete.title")}</DialogTitle>
             <DialogDescription>
-              Bu kullanıcıyı silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.
+              {t("users.delete.description")}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>İptal</Button>
-            <Button variant="destructive" onClick={confirmDeleteUser}>Sil</Button>
+            <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>{t("users.delete.cancel")}</Button>
+            <Button variant="destructive" onClick={confirmDeleteUser}>{t("users.delete.delete")}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -645,56 +645,56 @@ export function SettingsForm() {
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <div>
-                    <CardTitle>Kullanıcı Yönetimi</CardTitle>
+                    <CardTitle>{t("users.title")}</CardTitle>
                     <CardDescription>
-                      Şirket kullanıcılarını yönetin ve yeni kullanıcılar davet edin
+                     {t("users.description")}
                     </CardDescription>
                   </div>
                   <Dialog open={inviteDialogOpen} onOpenChange={setInviteDialogOpen}>
                     <DialogTrigger asChild>
                       <Button variant="outline" size="sm">
-                        Yeni Kullanıcı Davet Et
+                        {t("users.invite")}
                       </Button>
                     </DialogTrigger>
                     <DialogContent className="sm:max-w-[425px]">
                       <DialogHeader>
-                        <DialogTitle>Kullanıcı Davet Et</DialogTitle>
+                        <DialogTitle>{t("users.invite")}</DialogTitle>
                         <DialogDescription>
-                          Şirketinize yeni bir kullanıcı davet etmek için aşağıdaki formu doldurun.
+                          {t("users.invites.description")}
                         </DialogDescription>
                       </DialogHeader>
                       <div className="grid gap-4 py-4">
                         <div className="grid grid-cols-4 items-center gap-4">
-                          <FormLabel className="text-right">Ad Soyad</FormLabel>
+                          <FormLabel className="text-right">{t("users.invites.full_name")}</FormLabel>
                           <Input 
                             id="full_name" 
                             className="col-span-3" 
-                            placeholder="John Doe" 
+                            placeholder={t("users.invites.full_name_placeholder")}
                             value={inviteFormData.full_name}
                             onChange={handleInviteFormChange}
                           />
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
-                          <FormLabel className="text-right">E-posta</FormLabel>
+                          <FormLabel className="text-right">{t("users.invites.email")}</FormLabel>
                           <Input 
                             id="email" 
                             className="col-span-3" 
-                            placeholder="john.doe@example.com" 
+                            placeholder={t("users.invites.email_placeholder")} 
                             type="email" 
                             value={inviteFormData.email}
                             onChange={handleInviteFormChange}
                           />
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
-                          <FormLabel className="text-right">Rol</FormLabel>
+                          <FormLabel className="text-right">{t("users.invites.role")}</FormLabel>
                           <select 
                             id="role"
                             className="col-span-3 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                             value={inviteFormData.role}
                             onChange={handleInviteFormChange}
                           >
-                            <option value="user">Kullanıcı</option>
-                            <option value="company_admin">Şirket Yöneticisi</option>
+                            <option value="user">{t("users.invites.roles.user")}</option>
+                            <option value="company_admin">{t("users.invites.roles.company_admin")}</option>
                           </select>
                         </div>
                       </div>
@@ -704,7 +704,7 @@ export function SettingsForm() {
                           onClick={handleInviteSubmit}
                           disabled={inviting}
                         >
-                          {inviting ? "Gönderiliyor..." : "Davet Gönder"}
+                          {inviting ? t("users.invites.sending") : t("users.invites.send")}
                         </Button>
                       </DialogFooter>
                     </DialogContent>
@@ -715,7 +715,7 @@ export function SettingsForm() {
                 <div className="space-y-6">
                   {/* Bekleyen Davetler */}
                   <div>
-                    <h3 className="text-lg font-medium mb-4">Bekleyen Davetler</h3>
+                    <h3 className="text-lg font-medium mb-4">{t("users.invites.pending")}</h3>
                     {invitations.length > 0 ? (
                       <div className="rounded-md border divide-y">
                         {invitations
@@ -735,7 +735,7 @@ export function SettingsForm() {
                                 </div>
                                 <div className="flex items-center gap-2">
                                   <span className="rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-800">
-                                    Bekliyor
+                                    {t("users.invites.pending_status")}
                                   </span>
                                   <Button 
                                     variant="ghost" 
@@ -752,9 +752,9 @@ export function SettingsForm() {
                     ) : (
                       <div className="rounded-md border p-8 text-center">
                         <div className="space-y-4">
-                          <p className="text-lg font-medium">Bekleyen davet bulunmuyor</p>
+                          <p className="text-lg font-medium">{t("users.invites.no_pending")}</p>
                           <p className="text-sm text-muted-foreground">
-                            Şirketinize yeni kullanıcılar davet etmek için "Yeni Kullanıcı Davet Et" butonunu kullanabilirsiniz.
+                            {t("users.invites.no_pending_description")}
                           </p>
                         </div>
                       </div>
@@ -763,22 +763,22 @@ export function SettingsForm() {
                   
                   {/* Mevcut Kullanıcılar */}
                   <div>
-                    <h3 className="text-lg font-medium mb-4">Mevcut Kullanıcılar</h3>
+                    <h3 className="text-lg font-medium mb-4">{t("users.existing")}</h3>
                     {loading ? (
                       <div className="flex justify-center p-4">
-                        <p>Kullanıcılar yükleniyor...</p>
+                        <p>{t("users.loading")}</p>
                       </div>
                     ) : users.length === 0 ? (
                       <div className="rounded-md border p-8 text-center">
                         {invitations.length === 0 ? (
                           <div className="space-y-4">
-                            <p className="text-lg font-medium">Henüz hiç kullanıcı bulunmuyor</p>
+                            <p className="text-lg font-medium">{t("users.no_users")}</p>
                             <p className="text-sm text-muted-foreground">
-                              Şirketinize yeni kullanıcılar davet etmek için "Yeni Kullanıcı Davet Et" butonunu kullanabilirsiniz.
+                              {t("users.no_users_description")}
                             </p>
                           </div>
                         ) : (
-                          <p>Henüz kullanıcı bulunmuyor.</p>
+                          <p>{t("users.no_users")}</p>
                         )}
                       </div>
                     ) : (
