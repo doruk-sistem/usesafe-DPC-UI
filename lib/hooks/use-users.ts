@@ -40,6 +40,7 @@ interface Invitation {
   role: string;
   status: InvitationStatus;
   created_at: string;
+  company_id: string;
 }
 
 interface InviteUserParams {
@@ -63,12 +64,15 @@ export function useUsers() {
     if (savedInvitations) {
       try {
         const parsed = JSON.parse(savedInvitations);
-        setInvitations(parsed);
+        // Sadece mevcut şirkete ait davetleri göster
+        const companyId = user?.user_metadata?.company_id || company?.id;
+        const filteredInvitations = parsed.filter((inv: Invitation) => inv.company_id === companyId);
+        setInvitations(filteredInvitations);
       } catch (e) {
         console.error('Failed to parse invitations from localStorage', e);
       }
     }
-  }, []);
+  }, [user?.user_metadata?.company_id, company?.id]);
 
   // Kullanıcı listesini getir
   const fetchUsers = async () => {
@@ -166,7 +170,8 @@ export function useUsers() {
         full_name,
         role,
         status: InvitationStatus.PENDING,
-        created_at: new Date().toISOString()
+        created_at: new Date().toISOString(),
+        company_id: companyId
       };
       
       const updatedInvitations = [...invitations, newInvitation];
@@ -223,13 +228,25 @@ export function useUsers() {
         throw new Error(error.error || "Kullanıcı silinirken bir hata oluştu");
       }
 
+      // Kullanıcı listesini güncelle
+      setUsers((prevUsers) => {
+        const deletedUser = prevUsers.find(user => user.id === userId);
+        if (deletedUser) {
+          // Silinen kullanıcının e-postasına sahip daveti de kaldır
+          const updatedInvitations = invitations.filter(
+            invitation => invitation.email.toLowerCase() !== deletedUser.email.toLowerCase()
+          );
+          setInvitations(updatedInvitations);
+          saveInvitations(updatedInvitations);
+        }
+        return prevUsers.filter((user) => user.id !== userId);
+      });
+
       toast({
         title: "Başarılı",
         description: "Kullanıcı başarıyla silindi",
       });
 
-      // Kullanıcı listesini güncelle
-      setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
       return true;
     } catch (error) {
       toast({
