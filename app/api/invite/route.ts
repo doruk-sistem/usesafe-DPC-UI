@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server';
 
 export async function POST(request: Request) {
   const body = await request.json();
-  const { email, company_name, full_name, company_id } = body;
+  const { email, company_name, full_name, company_id, role = 'user' } = body;
 
   const supabase = await createClient();
 
@@ -12,11 +12,11 @@ export async function POST(request: Request) {
     const { data, error } = await supabase.auth.admin.inviteUserByEmail(email, {
       data: {
         company_name,
-        role: 'manufacturer',
+        role,
         full_name,
         company_id
       },
-      redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`
+      redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/set-password`
     });
     
     if (error) throw error;

@@ -2487,13 +2487,89 @@
   },
   "settings": {
     "title": "Ayarlar",
-    "description": "Şirket profilinizi ve tercihlerinizi yönetin",
+    "description": "Hesabınızın ayarlarını yönetin ve tercihlerinizi yönetin",
     "saveChanges": "Değişiklikleri Kaydet",
+    "users":{
+      "title":"Kullanıcılar",
+      "description":"Kullanıcılarınızı yönetin ve yeni kullanıcılar davet edin",
+      "invite":"Yeni Kullanıcı Davet Et",
+      "existing":"Mevcut Kullanıcılar",
+      "loading":"Kullanıcılar yükleniyor...",
+      "no_users":"Henüz hiç kullanıcı bulunmuyor",
+      "no_users_description":"Şirketinize yeni kullanıcılar davet etmek için 'Yeni Kullanıcı Davet Et' butonunu kullanabilirsiniz.",
+      "roles":{
+        "admin":"Sistem Yöneticisi",
+        "company_admin":"Şirket Yöneticisi",
+        "manufacturer":"Şirket Kurucusu",
+        "user":"Kullanıcı"
+      },
+      "delete":{
+        "title":"Kullanıcıyı Sil",
+        "description":"Bu kullanıcıyı silmek istediğinizden emin misiniz?",
+        "cancel":"İptal",
+        "delete":"Sil"
+      },
+      "invites":{
+        "description":"Şirketinize yeni bir kullanıcı davet etmek için aşağıdaki formu doldurun.",
+        "full_name":"Ad Soyad",
+        "full_name_placeholder":"Ad Soyad giriniz",
+        "email":"E-posta",
+        "email_placeholder":"E-posta giriniz",
+        "role":"Rol",
+        "send":"Gönder",
+        "sending":"Gönderiliyor...",
+        "pending":"Bekleyen Davetler",
+        "pending_status":"Bekliyor",
+        "no_pending":"Bekleyen davet bulunmuyor",
+        "no_pending_description":"Şirketinize yeni kullanıcılar davet etmek için 'Yeni Kullanıcı Davet Et' butonunu kullanabilirsiniz.",
+        "error":{
+          "title":"Hata",
+          "description":"Lütfen tüm alanları doldurun"
+        },
+        "success":{
+          "title":"Başarılı",
+          "description":"Davet başarıyla gönderildi"
+        },
+        "roles":{
+          "user":"Kullanıcı",
+          "company_admin":"Şirket Yöneticisi"
+        }
+      }
+    },
     "tabs": {
       "company": "Şirket",
       "contact": "İletişim",
       "notifications": "Bildirimler",
-      "security": "Güvenlik"
+      "security": "Güvenlik",
+      "users": "Kullanıcılar"
+    },
+    "security":{
+      "title":"Güvenlik",
+      "changePassword":{
+        "label":"Şifre Değiştir",
+        "description":"Hesabınızın güvenliğini sağlamak için şifrenizi değiştirin",
+        "button":"Şifre Değiştir",
+        "dialog": {
+          "title": "Şifre Değiştir",
+          "description": "Yeni şifrenizi girin",
+          "newPassword": "Yeni Şifre",
+          "newPasswordPlaceholder": "Yeni şifrenizi girin",
+          "confirmPassword": "Şifre Tekrar",
+          "confirmPasswordPlaceholder": "Şifrenizi tekrar girin",
+          "cancel": "İptal",
+          "change": "Değiştir",
+          "changing": "Değiştiriliyor..."
+        },
+        "error": {
+          "title": "Hata",
+          "mismatch": "Şifreler eşleşmiyor",
+          "generic": "Şifre değiştirilirken bir hata oluştu"
+        },
+        "success": {
+          "title": "Başarılı",
+          "description": "Şifreniz başarıyla değiştirildi"
+        }
+      }
     },
     "company": {
       "title": "Şirket Bilgileri",

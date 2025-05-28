@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { companyApiHooks } from "@/lib/hooks/use-company";
 import { supabase } from "@/lib/supabase/client";
+import { Company } from "@/lib/types/company";
 
 
 export function useAuth() {
@@ -29,7 +30,7 @@ export function useAuth() {
   } = companyApiHooks.useGetCompanyQuery(
     { id: companyId },
     { enabled: !!companyId }
-  );
+  ) as { data: Company | null; isLoading: boolean; isFetched: boolean };
 
   useEffect(() => {
     const {
@@ -169,6 +170,25 @@ export function useAuth() {
     return user?.user_metadata?.role === "admin";
   };
 
+  const canManageUsers = () => {
+    // Kullanıcı yönetimi yapabilecek roller:
+    // 1. Sistem yöneticileri (admin)
+    // 2. Şirket yöneticileri (company_admin)
+    // 3. Şirketi ilk oluşturan kişi (invited_at null olan manufacturer)
+    
+    // Sistem yöneticisi kontrolü
+    if (isAdmin()) return true;
+    
+    // Şirket yöneticisi kontrolü
+    if (user?.user_metadata?.role === "company_admin") return true;
+    
+    // Şirketi ilk oluşturan kişi kontrolü
+    const isCompanyCreator = user?.user_metadata?.role === "manufacturer" && 
+                             !user?.invited_at;
+    
+    return isCompanyCreator;
+  };
+
   const verifyOtp = async (token: string, type: string) => {
     const { error } = await supabase.auth.verifyOtp({
       token_hash: token,
@@ -187,8 +207,7 @@ export function useAuth() {
 
   const resetPassword = async (email: string) => {
     try {
-      // Canlı ortam URL'sini kullan
-      // window.location.origin yerine sabit URL kullanıyoruz
+      // Geliştirme ortamı URL'sini kullan
       const baseUrl = "https://app.usesafe.net";
       
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
@@ -207,15 +226,16 @@ export function useAuth() {
   return {
     user,
     company,
+    isLoading,
     isCompanyLoading,
     isCompanyFetched,
-    isLoading,
     signIn,
     signUp,
     signOut,
-    isAdmin,
     updateUser,
     updatePassword,
+    isAdmin,
+    canManageUsers,
     verifyOtp,
     resetPassword,
   };

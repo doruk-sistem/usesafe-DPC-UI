@@ -216,35 +216,78 @@ export const companyService = createService({
         throw new Error("Company ID is required");
       }
 
-      const { data, error } = await supabase
+      // Şirket bilgilerini getir
+      const { data: companyData, error: companyError } = await supabase
         .from("companies")
         .select("*")
         .eq("id", id)
         .single();
 
-      if (error) {
+      if (companyError) {
         console.error("Supabase error:", {
-          message: error.message,
-          details: error.details,
-          hint: error.hint,
-          code: error.code
+          message: companyError.message,
+          details: companyError.details,
+          hint: companyError.hint,
+          code: companyError.code
         });
-        throw error;
+        throw companyError;
       }
 
-      if (!data) {
+      if (!companyData) {
         console.warn(`No company found with id: ${id}`);
         return null;
       }
 
+      // Şirket adreslerini getir
+      const { data: addressData, error: addressError } = await supabase
+        .from("company_addresses")
+        .select("*")
+        .eq("companyId", id);
+
+      if (addressError) {
+        console.error("Error fetching addresses:", addressError);
+        throw addressError;
+      }
+
+      // Mevcut kullanıcı bilgilerini getir
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+
+      if (userError) {
+        console.error("Error fetching user:", userError);
+        throw userError;
+      }
+
+      // Adresleri tiplerine göre grupla
+      const addresses = {
+        headquarters: addressData?.find(addr => addr.type === "headquarters")?.street || "",
+        factory: addressData?.find(addr => addr.type === "factory")?.street || "",
+        branches: addressData?.filter(addr => addr.type === "branch").map(addr => addr.street).join("\n") || ""
+      };
+
+      // Yetkili kişi bilgilerini kullanıcı bilgilerinden al
+      const authorizedPerson = {
+        name: user?.user_metadata?.full_name || "",
+        title: "Yetkili Kişi", // Varsayılan değer
+        department: "Yönetim", // Varsayılan değer
+        email: user?.email || "",
+        phone: user?.phone || ""
+      };
+
       return {
-        id: data.id,
-        name: data.name,
-        companyType: data.companyType,
-        taxInfo: data.taxInfo,
-        status: data.status,
-        email: data.email,
-        phone: data.phone
+        id: companyData.id,
+        name: companyData.name,
+        companyType: companyData.companyType,
+        taxInfo: companyData.taxInfo,
+        status: companyData.status,
+        email: companyData.email,
+        phone: companyData.phone,
+        fax: companyData.fax,
+        website: companyData.website,
+        address: addresses,
+        authorizedPerson: authorizedPerson,
+        notifications: companyData.notifications,
+        createdAt: companyData.createdAt,
+        updatedAt: companyData.updatedAt
       };
     } catch (error) {
       console.error("Error in getCompany:", error);
