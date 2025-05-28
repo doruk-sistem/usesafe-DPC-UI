@@ -56,13 +56,13 @@ export function RecentActivities() {
             <div className="p-3 rounded-full bg-blue-100 text-blue-600">
               <FileText className="h-5 w-5" />
             </div>
-            <div className="flex-1">
-              <h3 className="font-medium">{activity.name}</h3>
-              <p className="text-sm text-muted-foreground">
+            <div className="flex-1 min-w-0">
+              <h3 className="font-medium truncate max-w-[180px]" title={activity.name}>{activity.name}</h3>
+              <p className="text-sm text-muted-foreground truncate max-w-[160px]">
                 {t("status." + activity.status.toLowerCase())} · {formatDistanceToNow(new Date(activity.timestamp), { addSuffix: true, locale: tr })}
               </p>
             </div>
-            <div className="px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-600">
+            <div className="px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-600 whitespace-nowrap">
               {activity.status}
             </div>
           </motion.div>
