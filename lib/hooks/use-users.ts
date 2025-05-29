@@ -65,7 +65,6 @@ export function useUsers() {
   // Davetleri getir
   const fetchInvitations = async () => {
     if (!company?.id) {
-      console.log('No company ID available');
       return;
     }
     
