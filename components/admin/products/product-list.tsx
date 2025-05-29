@@ -32,6 +32,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -41,15 +50,6 @@ import {
 import { useImageUrl } from "@/lib/hooks/use-image-url";
 import { useProducts } from "@/lib/hooks/use-products";
 import { BaseProduct, ProductStatus } from "@/lib/types/product";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
 
 export function ProductList() {
   const t = useTranslations("admin.products");

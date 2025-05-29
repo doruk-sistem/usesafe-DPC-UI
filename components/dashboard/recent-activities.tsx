@@ -1,10 +1,10 @@
 "use client";
 
 import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
+import { tr } from "date-fns/locale";
 import { motion } from "framer-motion";
 import { Box, CheckCircle2, XCircle , FileText, Trash2, PenLine } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { tr } from "date-fns/locale";
 
 import { useAuth } from "@/lib/hooks/use-auth";
 import { useProducts } from "@/lib/hooks/use-products";

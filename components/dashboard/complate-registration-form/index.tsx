@@ -1,8 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
-import React from "react";
+
 
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
@@ -11,8 +11,8 @@ import { useAuth } from "@/lib/hooks/use-auth";
 import { useRegistrationSteps } from "@/lib/hooks/use-registration-steps";
 import { useToast } from "@/lib/hooks/use-toast";
 import { registerSchema } from "@/lib/schemas/auth";
-import { ManufacturerService } from "@/lib/services/manufacturer";
 import { CompanyDocumentService } from "@/lib/services/companyDocument";
+import { ManufacturerService } from "@/lib/services/manufacturer";
 import { prepareRegistrationData } from "@/lib/utils/registration-mapper";
 
 import { AddressStep } from "./steps/address";
