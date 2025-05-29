@@ -14,6 +14,19 @@ import { useCompanyDocuments } from "@/lib/hooks/use-company-documents";
 import { Loading } from "@/components/ui/loading";
 import { CompanyDocumentService } from "@/lib/services/companyDocument";
 
+const getStatusColor = (status: string) => {
+  switch (status.toLowerCase()) {
+    case "approved":
+      return "bg-green-500";
+    case "pending":
+      return "bg-yellow-500";
+    case "rejected":
+      return "bg-red-500";
+    default:
+      return "bg-gray-500";
+  }
+};
+
 export default function DocumentDetailsPage() {
   const t = useTranslations('documents');
   const params = useParams();
@@ -54,78 +67,62 @@ export default function DocumentDetailsPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <Button variant="ghost" asChild className="mb-4">
-            <Link href="/dashboard/documents">
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              {t('details.backToList')}
-            </Link>
-          </Button>
-          <h1 className="text-2xl font-semibold">{document.name}</h1>
-          <p className="text-sm text-muted-foreground">
-            {document.id}
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          {publicUrl && (
-            <>
-              <Button asChild variant="outline">
-                <a href={publicUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
-                  <Eye className="h-4 w-4" />
-                  {t('details.viewFile')}
-                </a>
-              </Button>
-              <Button asChild variant="outline">
-                <a href={publicUrl} download className="flex items-center gap-2">
-                  <Download className="h-4 w-4" />
-                  {t('details.downloadFile')}
-                </a>
-              </Button>
-            </>
-          )}
-        </div>
+    <div className="container mx-auto py-10 space-y-6">
+      <div className="flex items-center gap-4">
+        <Button variant="ghost" size="icon" asChild>
+          <Link href="/dashboard/documents">
+            <ArrowLeft className="h-5 w-5" />
+          </Link>
+        </Button>
+        <h1 className="text-2xl font-bold">{t("detail.title")}</h1>
       </div>
 
-      <div className="grid gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>{t('details.information')}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <dl className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <dt className="text-sm font-medium text-muted-foreground">{t('details.type')}</dt>
-                <dd className="mt-1">{t(`types.${document.type}`)}</dd>
-              </div>
-              <div>
-                <dt className="text-sm font-medium text-muted-foreground">{t('details.fileSize')}</dt>
-                <dd className="mt-1">{document.fileSize}</dd>
-              </div>
-              <div>
-                <dt className="text-sm font-medium text-muted-foreground">{t('details.createdAt')}</dt>
-                <dd className="mt-1">{document.created_at ? new Date(document.created_at).toLocaleDateString() : 'N/A'}</dd>
-              </div>
-              <div>
-                <dt className="text-sm font-medium text-muted-foreground">{t('details.updatedAt')}</dt>
-                <dd className="mt-1">{document.updated_at ? new Date(document.updated_at).toLocaleDateString() : 'N/A'}</dd>
-              </div>
-            </dl>
-          </CardContent>
-        </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center justify-between">
+            <span>{document.name}</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <p className="text-sm text-muted-foreground">{t("detail.type")}</p>
+              <p className="font-medium">{t(`types.${document.type.toLowerCase()}`)}</p>
+            </div>
+            <div className="space-y-1">
+              <p className="text-sm text-muted-foreground">{t("detail.createdAt")}</p>
+              <p className="font-medium">
+                {document.created_at ? new Date(document.created_at).toLocaleDateString("tr-TR") : 'N/A'}
+              </p>
+            </div>
+            <div className="space-y-1">
+              <p className="text-sm text-muted-foreground">{t("detail.updatedAt")}</p>
+              <p className="font-medium">
+                {document.updated_at ? new Date(document.updated_at).toLocaleDateString("tr-TR") : 'N/A'}
+              </p>
+            </div>
+          </div>
 
-        {document.notes && (
-          <Card>
-            <CardHeader>
-              <CardTitle>{t('details.notes')}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">{document.notes}</p>
-            </CardContent>
-          </Card>
-        )}
-      </div>
+          <div className="flex gap-4 pt-4">
+            {publicUrl && (
+              <>
+                <Button asChild className="flex-1">
+                  <a href={publicUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
+                    <Eye className="h-4 w-4" />
+                    {t("detail.view")}
+                  </a>
+                </Button>
+                <Button asChild variant="outline" className="flex-1">
+                  <a href={publicUrl} download className="flex items-center gap-2">
+                    <Download className="h-4 w-4" />
+                    {t("detail.download")}
+                  </a>
+                </Button>
+              </>
+            )}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 } 

@@ -2319,6 +2319,15 @@
         "view": "View",
         "reupload": "Reupload"
       }
+    },
+    "detail": {
+      "title": "Document Details",
+      "type": "Document Type",
+      "status": "Status",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At",
+      "view": "View",
+      "download": "Download"
     }
   },
   "admin": {
