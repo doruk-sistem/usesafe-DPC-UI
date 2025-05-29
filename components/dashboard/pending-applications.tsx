@@ -5,11 +5,14 @@ import {
   FileQuestion, 
   CheckCircle2, 
   XCircle,
-  Loader2 
+  Loader2,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useProducts } from "@/lib/hooks/use-products";
 import { useAuth } from "@/lib/hooks/use-auth";
+import React, { useState } from "react";
 
 // Define the BaseProduct type
 interface BaseProduct {
@@ -23,10 +26,31 @@ interface BaseProduct {
   document_status?: string;
 }
 
+function getPaginationRange(current: number, total: number): (number | string)[] {
+  const delta = 2;
+  const range: (number | string)[] = [];
+  for (let i = Math.max(2, current - delta); i <= Math.min(total - 1, current + delta); i++) {
+    range.push(i);
+  }
+  if (current - delta > 2) {
+    range.unshift('...');
+  }
+  if (current + delta < total - 1) {
+    range.push('...');
+  }
+  range.unshift(1);
+  if (total > 1) range.push(total);
+  return range;
+}
+
 export function PendingApplications() {
   const t = useTranslations("dashboard.applications");
   const { company } = useAuth();
   const { products, isLoading, error } = useProducts(company?.id);
+
+  // Sayfalama için sabitler ve state
+  const ITEMS_PER_PAGE = 5;
+  const [currentPage, setCurrentPage] = useState(1);
 
   // Filter pending applications - match admin panel logic
   const pendingApps = products.filter((p: BaseProduct) => {
@@ -38,6 +62,14 @@ export function PendingApplications() {
     // 2. Have document_status "PENDING REVIEW"
     return status === "PENDING" || docStatus === "PENDING REVIEW";
   });
+
+  // Sayfalama mantığı
+  const totalPages = Math.ceil(pendingApps.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedApps = pendingApps.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+  // Sayfa değişince en üste kaydır (isteğe bağlı)
+  // React.useEffect(() => { window.scrollTo(0, 0); }, [currentPage]);
 
   // Loading state
   if (isLoading) {
@@ -67,7 +99,7 @@ export function PendingApplications() {
         {pendingApps.length === 0 ? (
           <div className="text-muted-foreground">{t("empty")}</div>
         ) : (
-          pendingApps.map((app: BaseProduct, index: number) => (
+          paginatedApps.map((app: BaseProduct, index: number) => (
             <motion.div
               key={app.id}
               initial={{ x: -20, opacity: 0 }}
@@ -104,6 +136,45 @@ export function PendingApplications() {
           ))
         )}
       </div>
+      {/* Pagination UI */}
+      {totalPages > 1 && (
+        <nav className="flex justify-center items-center gap-1 mt-6 select-none" aria-label="Pagination">
+          <button
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+            className={`w-9 h-9 flex items-center justify-center rounded-lg border transition-colors duration-150 text-lg
+              ${currentPage === 1 ? 'bg-muted text-muted-foreground border-muted cursor-not-allowed' : 'bg-white hover:bg-muted/70 border-muted text-muted-foreground'}`}
+            aria-label="Önceki Sayfa"
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+          {getPaginationRange(currentPage, totalPages).map((page, idx) =>
+            typeof page === 'string'
+              ? <span key={"ellipsis-"+idx} className="w-9 h-9 flex items-center justify-center text-muted-foreground text-sm">...</span>
+              : <button
+                  key={page}
+                  onClick={() => setCurrentPage(Number(page))}
+                  className={`w-9 h-9 flex items-center justify-center rounded-lg border transition-colors duration-150 font-medium
+                    ${currentPage === page
+                      ? 'bg-primary/10 text-primary border-primary font-semibold'
+                      : 'bg-white text-muted-foreground border-muted hover:bg-muted/70'}
+                  `}
+                  aria-current={currentPage === page ? 'page' : undefined}
+                >
+                  {page}
+                </button>
+          )}
+          <button
+            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+            disabled={currentPage === totalPages}
+            className={`w-9 h-9 flex items-center justify-center rounded-lg border transition-colors duration-150 text-lg
+              ${currentPage === totalPages ? 'bg-muted text-muted-foreground border-muted cursor-not-allowed' : 'bg-white hover:bg-muted/70 border-muted text-muted-foreground'}`}
+            aria-label="Sonraki Sayfa"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        </nav>
+      )}
     </motion.div>
   );
 }

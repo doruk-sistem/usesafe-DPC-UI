@@ -2,9 +2,10 @@
 
 import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 import { motion } from "framer-motion";
-import { Box, CheckCircle2, XCircle , FileText, Trash2, PenLine } from "lucide-react";
+import { Box, CheckCircle2, XCircle , FileText, Trash2, PenLine, ChevronLeft, ChevronRight } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { tr } from "date-fns/locale";
+import React from "react";
 
 import { useAuth } from "@/lib/hooks/use-auth";
 import { useProducts } from "@/lib/hooks/use-products";
@@ -21,11 +22,35 @@ const containerVariants = {
   },
 };
 
+function getPaginationRange(current: number, total: number): (number | string)[] {
+  const delta = 2;
+  const range: (number | string)[] = [];
+  for (let i = Math.max(2, current - delta); i <= Math.min(total - 1, current + delta); i++) {
+    range.push(i);
+  }
+  if (current - delta > 2) {
+    range.unshift('...');
+  }
+  if (current + delta < total - 1) {
+    range.push('...');
+  }
+  range.unshift(1);
+  if (total > 1) range.push(total);
+  return range;
+}
+
 export function RecentActivities() {
   const t = useTranslations("dashboard.activities");
   const { user, company } = useAuth();
   const { products } = useProducts(company?.id);
   const activities = getRecentActivities(products || []);
+
+  // Pagination
+  const ITEMS_PER_PAGE = 5;
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const totalPages = Math.ceil(activities.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedActivities = activities.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   return (
     <motion.div
@@ -43,7 +68,7 @@ export function RecentActivities() {
         )}
       </h2>
       <div className="space-y-4">
-        {activities.map((activity, index) => (
+        {paginatedActivities.map((activity, index) => (
           <motion.div
             key={activity.id}
             initial={{ x: -20, opacity: 0 }}
@@ -68,63 +93,45 @@ export function RecentActivities() {
           </motion.div>
         ))}
       </div>
-      <div className="divide-y divide-border rounded-md border">
-        {activities.length === 0 ? (
-          <p className="p-4 text-center text-sm text-muted-foreground">
-            {t("noActivities")}
-          </p>
-        ) : (
-          activities.map((activity) => (
-            <motion.div
-              key={activity.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="flex items-center justify-between p-4"
-            >
-              <div className="flex items-center space-x-4">
-                <div
-                  className={cn(
-                    "flex h-9 w-9 items-center justify-center rounded-lg border",
-                    {
-                      "border-blue-100 bg-blue-50 text-blue-600":
-                        activity.status === "NEW",
-                      "border-yellow-100 bg-yellow-50 text-yellow-600":
-                        activity.status === "DRAFT",
-                      "border-red-100 bg-red-50 text-red-600":
-                        activity.status === "DELETED",
-                    }
-                  )}
+      {/* Pagination UI */}
+      {totalPages > 1 && (
+        <nav className="flex justify-center items-center gap-1 mt-6 select-none" aria-label="Pagination">
+          <button
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+            className={`w-9 h-9 flex items-center justify-center rounded-lg border transition-colors duration-150 text-lg
+              ${currentPage === 1 ? 'bg-muted text-muted-foreground border-muted cursor-not-allowed' : 'bg-white hover:bg-muted/70 border-muted text-muted-foreground'}`}
+            aria-label="Önceki Sayfa"
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+          {getPaginationRange(currentPage, totalPages).map((page, idx) =>
+            typeof page === 'string'
+              ? <span key={"ellipsis-"+idx} className="w-9 h-9 flex items-center justify-center text-muted-foreground text-sm">...</span>
+              : <button
+                  key={page}
+                  onClick={() => setCurrentPage(Number(page))}
+                  className={`w-9 h-9 flex items-center justify-center rounded-lg border transition-colors duration-150 font-medium
+                    ${currentPage === page
+                      ? 'bg-primary/10 text-primary border-primary font-semibold'
+                      : 'bg-white text-muted-foreground border-muted hover:bg-muted/70'}
+                  `}
+                  aria-current={currentPage === page ? 'page' : undefined}
                 >
-                  {activity.status === "NEW" && (
-                    <FileText className="h-5 w-5" />
-                  )}
-                  {activity.status === "DRAFT" && (
-                    <PenLine className="h-5 w-5" />
-                  )}
-                  {activity.status === "DELETED" && (
-                    <Trash2 className="h-5 w-5" />
-                  )}
-                </div>
-                <div className="space-y-1">
-                  <p className="text-sm font-medium leading-none">
-                    {activity.name}
-                  </p>
-                  <p className="flex items-center text-sm text-muted-foreground">
-                    {t("submitted")}:{" "}
-                    {new Date(activity.timestamp).toLocaleDateString()}
-                  </p>
-                </div>
-              </div>
-              <div className="ml-4">
-                <p className="text-sm text-muted-foreground">
-                  {t("submitted")}:{" "}
-                  {new Date(activity.timestamp).toLocaleDateString()}
-                </p>
-              </div>
-            </motion.div>
-          ))
-        )}
-      </div>
+                  {page}
+                </button>
+          )}
+          <button
+            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+            disabled={currentPage === totalPages}
+            className={`w-9 h-9 flex items-center justify-center rounded-lg border transition-colors duration-150 text-lg
+              ${currentPage === totalPages ? 'bg-muted text-muted-foreground border-muted cursor-not-allowed' : 'bg-white hover:bg-muted/70 border-muted text-muted-foreground'}`}
+            aria-label="Sonraki Sayfa"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        </nav>
+      )}
     </motion.div>
   );
 }
