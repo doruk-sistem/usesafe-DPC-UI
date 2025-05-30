@@ -14,6 +14,9 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import type { NewProduct } from "@/lib/types/product";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface EsprComplianceStepProps {
   form: UseFormReturn<NewProduct>;
@@ -79,7 +82,7 @@ export function EsprComplianceStep({ form }: EsprComplianceStepProps) {
       <div className="space-y-2">
         <h3 className="text-lg font-semibold">ESPR Compliance</h3>
         <p className="text-sm text-muted-foreground">
-          Check your product's compliance with the Ecodesign for Sustainable Products Regulation (ESPR)
+          Check your product&apos;s compliance with the Ecodesign for Sustainable Products Regulation (ESPR)
         </p>
       </div>
 
@@ -99,14 +102,50 @@ export function EsprComplianceStep({ form }: EsprComplianceStepProps) {
             name="espr_compliance.directives"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>ESPR Directives</FormLabel>
+                <FormLabel className="text-lg font-semibold">ESPR Directives</FormLabel>
                 <FormControl>
-                  <Textarea
-                    placeholder="ESPR directives will appear here..."
-                    value={JSON.stringify(field.value, null, 2)}
-                    readOnly
-                    className="h-32"
-                  />
+                  <ScrollArea className="h-[400px] rounded-md border p-4">
+                    <div className="space-y-3">
+                      {field.value?.map((directive: any, index: number) => (
+                        <Card key={index} className="overflow-hidden border-2 border-primary/10 bg-card shadow-md transition-all hover:shadow-lg">
+                          <CardHeader className="bg-primary/5 px-4 py-3">
+                            <div className="flex items-center justify-between">
+                              <CardTitle className="text-base font-semibold text-primary">{directive.directive_name}</CardTitle>
+                              <Badge variant="secondary" className="ml-2">{directive.directive_number}</Badge>
+                            </div>
+                          </CardHeader>
+                          <CardContent className="p-4">
+                            <div className="space-y-3">
+                              <div className="flex items-start gap-2">
+                                <Badge variant="outline" className="mt-1">Date</Badge>
+                                <span className="text-sm text-muted-foreground">{directive.directive_edition_date}</span>
+                              </div>
+                              <div className="space-y-2">
+                                <h4 className="text-sm font-medium text-primary">Description</h4>
+                                <p className="text-sm text-muted-foreground">{directive.directive_description}</p>
+                              </div>
+                              <div className="space-y-2">
+                                <h4 className="text-sm font-medium text-primary">Sustainability Requirements</h4>
+                                <p className="text-sm text-muted-foreground">{directive.sustainability_requirements}</p>
+                              </div>
+                              <div className="space-y-2">
+                                <h4 className="text-sm font-medium text-primary">Environmental Impact</h4>
+                                <p className="text-sm text-muted-foreground">{directive.environmental_impact}</p>
+                              </div>
+                              <div className="space-y-2">
+                                <h4 className="text-sm font-medium text-primary">Circular Economy Criteria</h4>
+                                <p className="text-sm text-muted-foreground">{directive.circular_economy_criteria}</p>
+                              </div>
+                              <div className="space-y-2">
+                                <h4 className="text-sm font-medium text-primary">Product Lifecycle Assessment</h4>
+                                <p className="text-sm text-muted-foreground">{directive.product_lifecycle_assessment}</p>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </ScrollArea>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -118,14 +157,50 @@ export function EsprComplianceStep({ form }: EsprComplianceStepProps) {
             name="espr_compliance.regulations"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>ESPR Regulations</FormLabel>
+                <FormLabel className="text-lg font-semibold">ESPR Regulations</FormLabel>
                 <FormControl>
-                  <Textarea
-                    placeholder="ESPR regulations will appear here..."
-                    value={JSON.stringify(field.value, null, 2)}
-                    readOnly
-                    className="h-32"
-                  />
+                  <ScrollArea className="h-[400px] rounded-md border p-4">
+                    <div className="space-y-3">
+                      {field.value?.map((regulation: any, index: number) => (
+                        <Card key={index} className="overflow-hidden border-2 border-primary/10 bg-card shadow-md transition-all hover:shadow-lg">
+                          <CardHeader className="bg-primary/5 px-4 py-3">
+                            <div className="flex items-center justify-between">
+                              <CardTitle className="text-base font-semibold text-primary">{regulation.regulation_name}</CardTitle>
+                              <Badge variant="secondary" className="ml-2">{regulation.regulation_number}</Badge>
+                            </div>
+                          </CardHeader>
+                          <CardContent className="p-4">
+                            <div className="space-y-3">
+                              <div className="flex items-start gap-2">
+                                <Badge variant="outline" className="mt-1">Date</Badge>
+                                <span className="text-sm text-muted-foreground">{regulation.regulation_edition_date}</span>
+                              </div>
+                              <div className="space-y-2">
+                                <h4 className="text-sm font-medium text-primary">Description</h4>
+                                <p className="text-sm text-muted-foreground">{regulation.regulation_description}</p>
+                              </div>
+                              <div className="space-y-2">
+                                <h4 className="text-sm font-medium text-primary">Sustainability Criteria</h4>
+                                <p className="text-sm text-muted-foreground">{regulation.sustainability_criteria}</p>
+                              </div>
+                              <div className="space-y-2">
+                                <h4 className="text-sm font-medium text-primary">Circular Economy Requirements</h4>
+                                <p className="text-sm text-muted-foreground">{regulation.circular_economy_requirements}</p>
+                              </div>
+                              <div className="space-y-2">
+                                <h4 className="text-sm font-medium text-primary">Environmental Impact Assessment</h4>
+                                <p className="text-sm text-muted-foreground">{regulation.environmental_impact_assessment}</p>
+                              </div>
+                              <div className="space-y-2">
+                                <h4 className="text-sm font-medium text-primary">Resource Efficiency Requirements</h4>
+                                <p className="text-sm text-muted-foreground">{regulation.resource_efficiency_requirements}</p>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </ScrollArea>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -137,14 +212,46 @@ export function EsprComplianceStep({ form }: EsprComplianceStepProps) {
             name="espr_compliance.standards"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>ESPR Standards</FormLabel>
+                <FormLabel className="text-lg font-semibold">ESPR Standards</FormLabel>
                 <FormControl>
-                  <Textarea
-                    placeholder="ESPR standards will appear here..."
-                    value={JSON.stringify(field.value, null, 2)}
-                    readOnly
-                    className="h-32"
-                  />
+                  <ScrollArea className="h-[400px] rounded-md border p-4">
+                    <div className="space-y-3">
+                      {field.value?.map((standard: any, index: number) => (
+                        <Card key={index} className="overflow-hidden border-2 border-primary/10 bg-card shadow-md transition-all hover:shadow-lg">
+                          <CardHeader className="bg-primary/5 px-4 py-3">
+                            <div className="flex items-center justify-between">
+                              <CardTitle className="text-base font-semibold text-primary">{standard.title}</CardTitle>
+                              <Badge variant="secondary" className="ml-2">{standard.ref_no}</Badge>
+                            </div>
+                          </CardHeader>
+                          <CardContent className="p-4">
+                            <div className="space-y-3">
+                              <div className="flex items-start gap-2">
+                                <Badge variant="outline" className="mt-1">Date</Badge>
+                                <span className="text-sm text-muted-foreground">{standard.edition_or_date}</span>
+                              </div>
+                              <div className="space-y-2">
+                                <h4 className="text-sm font-medium text-primary">Sustainability Metrics</h4>
+                                <p className="text-sm text-muted-foreground">{standard.sustainability_metrics}</p>
+                              </div>
+                              <div className="space-y-2">
+                                <h4 className="text-sm font-medium text-primary">Environmental Standards</h4>
+                                <p className="text-sm text-muted-foreground">{standard.environmental_standards}</p>
+                              </div>
+                              <div className="space-y-2">
+                                <h4 className="text-sm font-medium text-primary">Circular Economy Standards</h4>
+                                <p className="text-sm text-muted-foreground">{standard.circular_economy_standards}</p>
+                              </div>
+                              <div className="space-y-2">
+                                <h4 className="text-sm font-medium text-primary">Lifecycle Assessment Methodology</h4>
+                                <p className="text-sm text-muted-foreground">{standard.lifecycle_assessment_methodology}</p>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </ScrollArea>
                 </FormControl>
                 <FormMessage />
               </FormItem>

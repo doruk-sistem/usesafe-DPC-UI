@@ -1,5 +1,6 @@
-import { openai } from "@/lib/utils/openai";
 import { NextRequest, NextResponse } from "next/server";
+
+import { openai } from "@/lib/utils/openai";
 
 /**
  * API endpoint to check ESPR compliance requirements for a new product.

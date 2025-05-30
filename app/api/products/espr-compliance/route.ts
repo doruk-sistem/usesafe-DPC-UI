@@ -1,6 +1,7 @@
+import { NextRequest, NextResponse } from "next/server";
+
 import { createClient } from "@/lib/supabase/server";
 import { openai } from "@/lib/utils/openai";
-import { NextRequest, NextResponse } from "next/server";
 
 /**
  * API endpoint to save ESPR compliance requirements for a product.

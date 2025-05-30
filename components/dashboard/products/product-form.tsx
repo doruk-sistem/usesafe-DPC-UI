@@ -14,8 +14,8 @@ import type { NewProduct } from "@/lib/types/product";
 
 import { BasicInfoStep } from "./steps/BasicInfoStep";
 import { DocumentUploadStep } from "./steps/DocumentUploadStep";
-import { ManufacturerSelect } from "./steps/manufacturerSelect/ManufacturerSelect";
 import { EsprComplianceStep } from "./steps/EsprComplianceStep";
+import { ManufacturerSelect } from "./steps/manufacturerSelect/ManufacturerSelect";
 
 const documentSchema = z.object({
   quality_cert: z.array(z.object({
