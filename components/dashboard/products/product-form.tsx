@@ -15,6 +15,7 @@ import type { NewProduct } from "@/lib/types/product";
 import { BasicInfoStep } from "./steps/BasicInfoStep";
 import { DocumentUploadStep } from "./steps/DocumentUploadStep";
 import { ManufacturerSelect } from "./steps/manufacturerSelect/ManufacturerSelect";
+import { EsprComplianceStep } from "./steps/EsprComplianceStep";
 
 const documentSchema = z.object({
   quality_cert: z.array(z.object({
@@ -82,7 +83,7 @@ interface ProductFormProps {
 }
 
 // ✅ Toplam Adım Sabitlendi
-const TOTAL_STEPS = 3;
+const TOTAL_STEPS = 4;
 
 export function ProductForm({
   onSubmit,
@@ -154,6 +155,9 @@ export function ProductForm({
 
         {/* ✅ Adım 3 */}
         {step === 3 && <ManufacturerSelect form={form} />}
+
+        {/* ✅ Adım 4 - ESPR Uyumluluğu */}
+        {step === 4 && <EsprComplianceStep form={form as any} />}
 
         {/* ✅ Butonlar */}
         <div className="flex justify-end gap-4">
