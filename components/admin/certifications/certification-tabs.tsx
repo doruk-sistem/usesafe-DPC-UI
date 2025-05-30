@@ -16,10 +16,7 @@ export function CertificationTabs({ certificationId }: CertificationTabsProps) {
 
   return (
     <Tabs defaultValue="documents" className="space-y-4">
-      <TabsList>
-        <TabsTrigger value="documents">{t("tabs.documents")}</TabsTrigger>
-        <TabsTrigger value="tests">{t("tabs.testReports")}</TabsTrigger>
-      </TabsList>
+    
       <TabsContent value="documents" className="space-y-4">
         <CertificationDocuments certificationId={certificationId} />
       </TabsContent>
