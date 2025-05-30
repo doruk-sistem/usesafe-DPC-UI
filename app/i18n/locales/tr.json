@@ -2802,22 +2802,31 @@
       "allStatuses": "Tüm Durumlar"
     },
     "repository": {
-      "description": "Belge arşivini inceleyin ve yönetin"
+      "description": "Belge arşivini inceleyin ve yönetin",
+      "forManufacturer": "Üretici belgelerini görüntüleyin ve yönetin",
+      "categories": {
+        "testReports": "Test Raporları",
+        "qualityManagement": "Kalite Yönetimi",
+        "safetyAndHealth": "Güvenlik ve Sağlık",
+        "batteryStandards": "Akü Standartları"
+      },
+      "status": {
+        "pending": "Beklemede",
+        "approved": "Onaylandı",
+        "rejected": "Reddedildi",
+        "expiringSoon": "Süresi Yakında Doluyor"
+      },
+      "actions": {
+        "upload": "Yükle"
+      }
     },
-    "categories": {
-      "testReports": "Test Raporları",
-      "qualityManagement": "Kalite Yönetimi",
-      "safetyAndHealth": "Güvenlik ve Sağlık",
-      "batteryStandards": "Akü Standartları"
-      
-    },
-    "status":{
+    "status": {
       "pending": "Beklemede",
       "approved": "Onaylandı",
       "rejected": "Reddedildi",
       "expiringSoon": "Süresi Yakında Doluyor"
     },
-    "actions":{
+    "actions": {
       "upload": "Yükle"
     }
   },
@@ -2965,7 +2974,8 @@
               "verified": "Doğrulandı",
               "pending": "Beklemede"
             }
-          }
+          },
+          "ChosenAlpha": "ChosenAlpha"
         }
       },
       "sections": {

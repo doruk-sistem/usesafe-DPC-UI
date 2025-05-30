@@ -9,6 +9,17 @@
     "verifyProducts": "Verify Products",
     "signIn": "Sign In"
   },
+  "admin": {
+    "sidebar": {
+      "dashboard": "Dashboard",
+      "manufacturers": "Manufacturers",
+      "documents": "Documents",
+      "certifications": "Certifications",
+      "dppTemplates": "DPP Templates",
+      "products": "Products",
+      "companies": "Companies"
+    }
+  },
   "settings":{
   "title":"Settings",
   "description":"Manage your account settings and preferences",
@@ -2055,6 +2066,7 @@
     "repository": {
       "title": "Document Repository",
       "description": "View and manage your company documents and certificates",
+      "forManufacturer": "View and manage manufacturer documents and certificates",
       "columns": {
         "document": "Document",
         "type": "Type",
@@ -2198,6 +2210,64 @@
           "highVolume": "High volume of pending approvals detected",
           "failedVerification": "Blockchain verification attempt failed",
           "maintenance": "System maintenance scheduled for tonight"
+        }
+      },
+      "manufacturers": {
+        "details": {
+          "backToList": "Back to List",
+          "status": {
+            "pending": "Pending"
+          },
+          "actions": {
+            "reject": "Reject",
+            "approve": "Approve"
+          },
+          "companyInfo": {
+            "title": "Company Information",
+            "address": "Address",
+            "taxId": "Tax ID",
+            "registrationDate": "Registration Date"
+          },
+          "verification": {
+            "title": "Verification",
+            "document": "Document",
+            "status": {
+              "inProgress": "In Progress",
+              "verified": "Verified",
+              "pending": "Pending"
+            },
+            "taxId": "Tax ID",
+            "address": "Address",
+            "contact": "Contact"
+          },
+          "documents": {
+            "title": "Documents",
+            "list": {
+              "empty": {
+                "description": "No documents found for this manufacturer."
+              }
+            },
+            "uploadedAt": "Uploaded At",
+            "status": {
+              "pending": "Pending",
+              "approved": "Approved",
+              "rejected": "Rejected",
+              "verified": "Verified",
+              "REJECTED": "Rejected",
+              "APPROVED": "Approved",
+              "PENDING": "Pending",
+              "VERIFIED": "Verified"
+            }
+          },
+          "products": {
+            "title": "Products",
+            "empty": "No products found",
+            "status": {
+              "NEW": "New",
+              "DRAFT": "Draft",
+              "ARCHIVED": "Archived"
+            }
+          }
         }
       }
     },

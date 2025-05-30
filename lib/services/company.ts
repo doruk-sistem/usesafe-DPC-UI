@@ -147,7 +147,7 @@ export class CompanyService {
   static async searchManufacturers(query: string): Promise<Company[]> {
     const { data, error } = await supabase
       .from("companies")
-      .select("id, name, taxInfo, companyType, status")
+      .select("id, name, taxInfo, companyType, status, createdAt")
       .or(`name.ilike.%${query}%, taxInfo->>'taxNumber'.ilike.%${query}%`)
       .in("companyType", ["manufacturer", "factory"])
       .limit(10);
@@ -163,7 +163,7 @@ export class CompanyService {
   static async getManufacturer(id: string): Promise<Company | null> {
     const { data, error } = await supabase
       .from("companies")
-      .select("id, name, taxInfo, companyType, status")
+      .select("id, name, taxInfo, companyType, status, createdAt")
       .eq("id", id)
       .in("companyType", ["manufacturer", "factory"])
       .single();
@@ -378,7 +378,7 @@ export const companyService = createService({
   searchManufacturers: async (query: string): Promise<Company[]> => {
     const { data, error } = await supabase
       .from("companies")
-      .select("id, name, taxInfo, companyType, status")
+      .select("id, name, taxInfo, companyType, status, createdAt")
       .or(`name.ilike.%${query}%, taxInfo->>'taxNumber'.ilike.%${query}%`)
       .in("companyType", ["manufacturer", "factory"])
       .limit(10);
@@ -395,7 +395,7 @@ export const companyService = createService({
   getManufacturer: async (id: string): Promise<Company | null> => {
     const { data, error } = await supabase
       .from("companies")
-      .select("id, name, taxInfo, companyType, status")
+      .select("id, name, taxInfo, companyType, status, createdAt")
       .eq("id", id)
       .in("companyType", ["manufacturer", "factory"])
       .single();

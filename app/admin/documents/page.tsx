@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 
@@ -8,28 +8,41 @@ import { DocumentHeader } from "@/components/admin/documents/document-header";
 import { DocumentList } from "@/components/admin/documents/document-list";
 import { Error } from "@/components/ui/error";
 import { Loading } from "@/components/ui/loading";
-import { documentsApiHooks } from "@/lib/hooks/use-documents";
-
-export const dynamic = "force-dynamic";
+import { DocumentService } from "@/lib/services/document";
+import { Document } from "@/lib/types/document";
 
 export default function DocumentsPage() {
   const t = useTranslations();
   const searchParams = useSearchParams();
-  const productId = searchParams.get("product");
+  const manufacturerId = searchParams.get("manufacturer");
   const [filters, setFilters] = useState({
     type: "all",
     status: "all-status"
   });
+  const [documents, setDocuments] = useState<Document[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
 
-  const {
-    data: documents,
-    isLoading,
-    error,
-  } = documentsApiHooks.useGetDocuments();
+  useEffect(() => {
+    async function fetchDocuments() {
+      try {
+        setIsLoading(true);
+        let docs: Document[] = [];
 
-  const filteredDocuments = productId
-    ? documents?.filter((doc) => doc.productId === productId)
-    : documents;
+        if (manufacturerId) {
+          docs = await DocumentService.getDocumentsByManufacturer(manufacturerId);
+        }
+
+        setDocuments(docs);
+      } catch (err) {
+        setError(err as Error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchDocuments();
+  }, [manufacturerId]);
 
   const handleFilterChange = (key: 'type' | 'status', value: string) => {
     setFilters(prev => ({
@@ -59,14 +72,14 @@ export default function DocumentsPage() {
             {t("documentManagement.title")}
           </h1>{" "}
           <p className="text-muted-foreground">
-            {productId
-              ? t("documentManagement.repository.description.forProduct")
+            {manufacturerId
+              ? t("documentManagement.repository.description.forManufacturer")
               : t("documentManagement.repository.description")}
           </p>
         </div>
       </div>
       <DocumentHeader onFilterChange={handleFilterChange} filters={filters} />
-      <DocumentList initialDocuments={filteredDocuments || []} filters={filters} />
+      <DocumentList initialDocuments={documents} filters={filters} />
     </div>
   );
 }

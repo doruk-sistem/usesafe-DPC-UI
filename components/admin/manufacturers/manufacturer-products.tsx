@@ -1,42 +1,14 @@
 "use client";
 
-import { Box, ExternalLink } from "lucide-react";
+import { Box, ExternalLink, ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
+import { productService } from "@/lib/services/product";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
-// Mock data - In a real app, this would come from an API
-const productsData = {
-  "MFR-001": [
-    {
-      id: "PROD-001",
-      name: "Organic Cotton T-Shirt",
-      category: "Apparel",
-      status: "certified",
-      dpcId: "DPC-001",
-      certifiedAt: "2024-03-15T10:30:00",
-    },
-    {
-      id: "PROD-002",
-      name: "Recycled Denim Jeans",
-      category: "Apparel",
-      status: "pending",
-      dpcId: "DPC-002",
-      certifiedAt: null,
-    },
-    {
-      id: "PROD-003",
-      name: "Sustainable Wool Sweater",
-      category: "Apparel",
-      status: "certified",
-      dpcId: "DPC-003",
-      certifiedAt: "2024-03-14T15:45:00",
-    },
-  ],
-};
 
 interface ManufacturerProductsProps {
   manufacturerId: string;
@@ -44,8 +16,42 @@ interface ManufacturerProductsProps {
 
 export function ManufacturerProducts({ manufacturerId }: ManufacturerProductsProps) {
   const t = useTranslations("adminDashboard.sections.manufacturers.details");
-  const products = productsData[manufacturerId] || [];
+  const [products, setProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const ITEMS_PER_PAGE = 10;
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = Math.ceil(products.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedProducts = products.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
+  function getPaginationRange(current: number, total: number): (number | string)[] {
+    const delta = 2;
+    const range: (number | string)[] = [];
+    for (let i = Math.max(2, current - delta); i <= Math.min(total - 1, current + delta); i++) {
+      range.push(i);
+    }
+    if (current - delta > 2) {
+      range.unshift('...');
+    }
+    if (current + delta < total - 1) {
+      range.push('...');
+    }
+    range.unshift(1);
+    if (total > 1) range.push(total);
+    return range;
+  }
+
+  useEffect(() => {
+    async function fetchProducts() {
+      setLoading(true);
+      const prods = await productService.getProducts({ manufacturerId });
+      setProducts(prods);
+      setLoading(false);
+    }
+    fetchProducts();
+  }, [manufacturerId]);
+
+  if (loading) return <div>Loading...</div>;
   return (
     <Card>
       <CardHeader>
@@ -53,7 +59,8 @@ export function ManufacturerProducts({ manufacturerId }: ManufacturerProductsPro
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          {products.map((product) => (
+          {products.length === 0 && <div>{t("products.list.empty.description")}</div>}
+          {paginatedProducts.map((product) => (
             <div
               key={product.id}
               className="flex items-center justify-between rounded-lg border p-4"
@@ -79,7 +86,21 @@ export function ManufacturerProducts({ manufacturerId }: ManufacturerProductsPro
               </div>
               <div className="flex items-center gap-2">
                 <Badge
-                  variant={product.status === "certified" ? "success" : "warning"}
+                  variant={
+                    product.status === "APPROVED" || product.status === "approved" || product.status === "certified"
+                      ? "success"
+                      : product.status === "REJECTED" || product.status === "rejected"
+                      ? "destructive"
+                      : product.status === "DRAFT" || product.status === "draft"
+                      ? "secondary"
+                      : product.status === "ARCHIVED" || product.status === "archived"
+                      ? "outline"
+                      : product.status === "NEW" || product.status === "new"
+                      ? "default"
+                      : product.status === "PENDING" || product.status === "pending"
+                      ? "warning"
+                      : "warning"
+                  }
                 >
                   {t(`products.status.${product.status}`)}
                 </Badge>
@@ -91,6 +112,45 @@ export function ManufacturerProducts({ manufacturerId }: ManufacturerProductsPro
               </div>
             </div>
           ))}
+          {/* Pagination UI */}
+          {totalPages > 1 && (
+            <nav className="flex justify-center items-center gap-1 mt-6 select-none" aria-label="Pagination">
+              <button
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+                className={`w-9 h-9 flex items-center justify-center rounded-lg border transition-colors duration-150 text-lg
+                  ${currentPage === 1 ? 'bg-muted text-muted-foreground border-muted cursor-not-allowed' : 'bg-white hover:bg-muted/70 border-muted text-muted-foreground'}`}
+                aria-label="Previous Page"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              {getPaginationRange(currentPage, totalPages).map((page, idx) =>
+                typeof page === 'string'
+                  ? <span key={"ellipsis-"+idx} className="w-9 h-9 flex items-center justify-center text-muted-foreground text-sm">...</span>
+                  : <button
+                      key={page}
+                      onClick={() => setCurrentPage(Number(page))}
+                      className={`w-9 h-9 flex items-center justify-center rounded-lg border transition-colors duration-150 font-medium
+                        ${currentPage === page
+                          ? 'bg-primary/10 text-primary border-primary font-semibold'
+                          : 'bg-white text-muted-foreground border-muted hover:bg-muted/70'}
+                      `}
+                      aria-current={currentPage === page ? 'page' : undefined}
+                    >
+                      {page}
+                    </button>
+              )}
+              <button
+                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                disabled={currentPage === totalPages}
+                className={`w-9 h-9 flex items-center justify-center rounded-lg border transition-colors duration-150 text-lg
+                  ${currentPage === totalPages ? 'bg-muted text-muted-foreground border-muted cursor-not-allowed' : 'bg-white hover:bg-muted/70 border-muted text-muted-foreground'}`}
+                aria-label="Next Page"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </nav>
+          )}
         </div>
       </CardContent>
     </Card>
