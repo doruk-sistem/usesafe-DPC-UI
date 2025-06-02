@@ -2319,6 +2319,24 @@
         "view": "View",
         "reupload": "Reupload"
       }
+    },
+    "detail": {
+      "title": "Document Details",
+      "type": "Document Type",
+      "status": "Status",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At",
+      "view": "View",
+      "download": "Download"
+    },
+    "upload": {
+      "title": "Upload Document",
+      "description": "Upload a new document",
+      "typeLabel": "Document Type",
+      "typePlaceholder": "Select document type",
+      "fileLabel": "File",
+      "filePlaceholder": "Select or drag a file here",
+      "submit": "Upload"
     }
   },
   "admin": {

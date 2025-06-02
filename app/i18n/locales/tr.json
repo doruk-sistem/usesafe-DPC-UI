@@ -438,6 +438,15 @@
         "delete": "Sil",
         "upload": "Yükle",
         "reupload": "Yeniden Yükle"
+      },
+      "detail": {
+        "title": "Belge Detayları",
+        "type": "Belge Tipi",
+        "status": "Durum",
+        "createdAt": "Oluşturulma Tarihi",
+        "updatedAt": "Güncellenme Tarihi",
+        "view": "Görüntüle",
+        "download": "İndir"
       }
     },
     "products": {
@@ -3535,6 +3544,15 @@
         "title": "Belge Bulunamadı",
         "description": "Aradığınız belge bulunamadı."
       }
+    },
+    "detail": {
+      "title": "Belge Detayları",
+      "type": "Belge Tipi",
+      "status": "Durum",
+      "createdAt": "Oluşturulma Tarihi",
+      "updatedAt": "Güncellenme Tarihi",
+      "view": "Görüntüle",
+      "download": "İndir"
     }
   }
 } 
