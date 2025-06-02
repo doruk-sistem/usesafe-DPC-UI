@@ -16,17 +16,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { getStatusIcon } from "@/lib/utils/document-utils";
-import { certificationService } from "@/lib/services/certification";
-import { supabase } from "@/lib/supabase/client";
-import {
   Pagination,
   PaginationContent,
   PaginationEllipsis,
@@ -35,6 +24,17 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { certificationService } from "@/lib/services/certification";
+import { supabase } from "@/lib/supabase/client";
+import { getStatusIcon } from "@/lib/utils/document-utils";
 
 // Sertifika tipleri - Sertifika yükleme formundaki değerlerle eşleşecek şekilde güncellendi
 const CERTIFICATE_TYPES = [

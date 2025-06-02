@@ -1,16 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { use } from "react";
+import { useTranslations } from "next-intl";
+import { useEffect, useState , use } from "react";
 
+
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { supabase } from "@/lib/supabase/client";
 import { certificationService } from "@/lib/services/certification";
+import { supabase } from "@/lib/supabase/client";
 
 // Sertifika tipleri - Sertifika yükleme formundaki değerlerle eşleşecek şekilde güncellendi
 const CERTIFICATE_TYPES = [
