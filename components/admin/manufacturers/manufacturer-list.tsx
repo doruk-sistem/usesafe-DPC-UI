@@ -210,12 +210,12 @@ export function ManufacturerList() {
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link href={`/admin/documents?manufacturer=${manufacturer.id}`}>
+                        <Link href={`/admin/manufacturers/${manufacturer.id}/documents`}>
                           {t("list.actions.reviewDocuments")}
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link href={`/admin/manufacturers/${manufacturer.id}?tab=products`}>
+                        <Link href={`/admin/manufacturers/${manufacturer.id}/products`}>
                           {t("list.actions.viewProducts")}
                         </Link>
                       </DropdownMenuItem>

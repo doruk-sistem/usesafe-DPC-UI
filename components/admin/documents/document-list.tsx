@@ -73,14 +73,14 @@ interface DocumentListProps {
     type: string;
     status: string;
   };
+  manufacturerId?: string;
 }
 
-export function DocumentList({ initialDocuments = [], filters }: DocumentListProps) {
+export function DocumentList({ initialDocuments = [], filters, manufacturerId }: DocumentListProps) {
   const t = useTranslations("documentManagement");
   const { toast } = useToast();
   const { user } = useAuth();
   const searchParams = useSearchParams();
-  const manufacturerId = searchParams.get("manufacturer");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [expandedProducts, setExpandedProducts] = useState<
     Record<string, boolean>
