@@ -16,9 +16,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { useProduct as useProductOriginal } from "@/lib/hooks/use-product";
+import { ProductDetails } from "@/components/products/product-details";
 
 interface ManufacturerProductsProps {
   manufacturerId: string;
+}
+
+function useProductForModal(id: string) {
+  return useProductOriginal(id);
 }
 
 export function ManufacturerProducts({ manufacturerId }: ManufacturerProductsProps) {
@@ -40,6 +47,8 @@ export function ManufacturerProducts({ manufacturerId }: ManufacturerProductsPro
         return product.status === statusFilter;
       });
   const paginatedProducts = filteredProducts.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
+  const { product: selectedProduct, isLoading: isProductLoading, error: productError } = useProductForModal(selectedProductId || "");
 
   function getPaginationRange(current: number, total: number): (number | string)[] {
     const delta = 2;
@@ -136,10 +145,8 @@ export function ManufacturerProducts({ manufacturerId }: ManufacturerProductsPro
                   >
                     {t(`products.status.${product.status}`)}
                   </Badge>
-                  <Button variant="ghost" size="icon" asChild>
-                    <Link href={`/admin/certifications/${product.dpcId}`}>
-                      <ExternalLink className="h-4 w-4" />
-                    </Link>
+                  <Button variant="ghost" size="icon" onClick={() => setSelectedProductId(product.id)}>
+                    <ExternalLink className="h-4 w-4" />
                   </Button>
                 </div>
               </div>
@@ -186,6 +193,20 @@ export function ManufacturerProducts({ manufacturerId }: ManufacturerProductsPro
           </div>
         </CardContent>
       </Card>
+      {/* Modal for product details */}
+      <Dialog open={!!selectedProductId} onOpenChange={() => setSelectedProductId(null)}>
+        <DialogContent className="max-w-5xl w-full h-[90vh] overflow-y-auto p-0 bg-background">
+          {isProductLoading ? (
+            <div className="flex items-center justify-center h-40">Loading...</div>
+          ) : productError ? (
+            <div className="flex items-center justify-center h-40 text-destructive">Ürün bulunamadı</div>
+          ) : selectedProduct ? (
+            <div className="p-4 sm:p-8">
+              <ProductDetails product={selectedProduct} additionalComponents={null} />
+            </div>
+          ) : null}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
