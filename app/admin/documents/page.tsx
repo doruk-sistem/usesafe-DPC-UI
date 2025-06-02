@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { useState } from "react";
 
 import { DocumentHeader } from "@/components/admin/documents/document-header";
 import { DocumentList } from "@/components/admin/documents/document-list";

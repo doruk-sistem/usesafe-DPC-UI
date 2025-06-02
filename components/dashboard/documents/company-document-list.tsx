@@ -21,6 +21,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Loading } from "@/components/ui/loading";
 import {
   Table,
   TableBody,
@@ -35,11 +36,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Loading } from "@/components/ui/loading";
-
-import { getStatusIcon } from "@/lib/utils/document-utils";
 import { useCompanyDocuments } from "@/lib/hooks/use-company-documents";
 import { Document } from "@/lib/types/document";
+import { getStatusIcon } from "@/lib/utils/document-utils";
 
 export function CompanyDocumentList() {
   const t = useTranslations();

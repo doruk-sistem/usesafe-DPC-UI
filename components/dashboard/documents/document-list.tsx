@@ -22,6 +22,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Loading } from "@/components/ui/loading";
 import {
   Table,
   TableBody,
@@ -36,13 +37,12 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-
-import { getStatusIcon } from "../../../lib/utils/document-utils";
+import { useAuth } from "@/lib/hooks/use-auth";
+import { useCompanyDocuments } from "@/lib/hooks/use-company-documents";
 import { documentsApiHooks } from "@/lib/hooks/use-documents";
 import { Document, DocumentType } from "@/lib/types/document";
-import { Loading } from "@/components/ui/loading";
-import { useCompanyDocuments } from "@/lib/hooks/use-company-documents";
-import { useAuth } from "@/lib/hooks/use-auth";
+
+import { getStatusIcon } from "../../../lib/utils/document-utils";
 
 // Döküman tipleri
 const DOCUMENT_TYPES = [

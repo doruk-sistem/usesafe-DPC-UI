@@ -8,8 +8,9 @@ import {
   Loader2 
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useProducts } from "@/lib/hooks/use-products";
+
 import { useAuth } from "@/lib/hooks/use-auth";
+import { useProducts } from "@/lib/hooks/use-products";
 
 // Define the BaseProduct type
 interface BaseProduct {
