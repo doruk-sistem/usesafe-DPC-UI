@@ -1,12 +1,25 @@
 "use client";
 
-import { useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ArrowLeft, Upload } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/lib/hooks/use-auth";
-import { CompanyDocumentService } from "@/lib/services/companyDocument";
+import { useTranslations } from "next-intl";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+
 import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -14,9 +27,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
+import { useAuth } from "@/lib/hooks/use-auth";
+import { CompanyDocumentService } from "@/lib/services/companyDocument";
 import { DocumentType } from "@/lib/types/company";
+
 
 const DOCUMENT_TYPES = [
   { id: DocumentType.SIGNATURE_CIRCULAR, label: "İmza Sirküleri" },
@@ -25,114 +39,125 @@ const DOCUMENT_TYPES = [
   { id: DocumentType.ACTIVITY_CERTIFICATE, label: "Faaliyet Belgesi" }
 ];
 
+const formSchema = z.object({
+  type: z.nativeEnum(DocumentType, { errorMap: () => ({ message: "Döküman tipi seçin" }) }),
+});
+
+type FormValues = z.infer<typeof formSchema>;
+
 export default function UploadDocumentPage() {
   const router = useRouter();
   const { user } = useAuth();
-  const [file, setFile] = useState<File | null>(null);
-  const [docType, setDocType] = useState<DocumentType | "">("");
   const [isUploading, setIsUploading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [selectedFileName, setSelectedFileName] = useState<string>("");
+  const [file, setFile] = useState<File | null>(null);
+  const [fileError, setFileError] = useState<string>("");
+  const t = useTranslations("documents.upload");
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0]);
-      setError(null);
-    }
-  };
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: { type: undefined as unknown as DocumentType },
+  });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!file || !docType) {
-      setError("Lütfen bir dosya ve döküman tipi seçin");
+  async function onSubmit(values: FormValues) {
+    setFileError("");
+    if (!file) {
+      setFileError("Dosya seçin");
       return;
     }
-
     if (!user?.user_metadata?.data?.company_id) {
-      setError("Şirket bilgisi bulunamadı");
+      form.setError("type", { message: "Şirket bilgisi bulunamadı" });
       return;
     }
-
     setIsUploading(true);
-    setError(null);
-
     try {
       await CompanyDocumentService.uploadDocument(
         file,
         user.user_metadata.data.company_id,
-        docType
+        values.type
       );
       router.push("/dashboard/documents");
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Döküman yüklenirken bir hata oluştu");
+      setFileError(err instanceof Error ? err.message : "Döküman yüklenirken bir hata oluştu");
     } finally {
       setIsUploading(false);
     }
-  };
+  }
 
   return (
-    <div className="container mx-auto py-8">
-      <div className="max-w-2xl mx-auto">
-        <h1 className="text-2xl font-bold mb-6">Döküman Yükle</h1>
-
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-2">
-            <Label htmlFor="documentType">Döküman Tipi</Label>
-            <Select
-              value={docType}
-              onValueChange={(value) => {
-                setDocType(value as DocumentType);
-                setError(null);
-              }}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Döküman tipi seçin" />
-              </SelectTrigger>
-              <SelectContent>
-                {DOCUMENT_TYPES.map((type) => (
-                  <SelectItem key={type.id} value={type.id}>
-                    {type.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+    <div className="py-6">
+      <Card>
+        <CardHeader className="flex flex-row items-center gap-4">
+          <Button variant="ghost" size="icon" asChild>
+            <Link href="/dashboard/documents">
+              <ArrowLeft className="h-5 w-5" />
+            </Link>
+          </Button>
+          <div>
+            <CardTitle>{t("title")}</CardTitle>
+            <CardDescription>{t("description")}</CardDescription>
           </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="file">Dosya</Label>
-            <Input
-              id="file"
-              type="file"
-              onChange={handleFileChange}
-              accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-            />
-            <p className="text-sm text-gray-500">
-              Desteklenen formatlar: PDF, DOC, DOCX, JPG, JPEG, PNG
-            </p>
-          </div>
-
-          {error && (
-            <Alert variant="destructive">
-              <AlertCircle className="h-4 w-4" />
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
-
-          <div className="flex justify-end space-x-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => router.back()}
-              disabled={isUploading}
-            >
-              İptal
-            </Button>
-            <Button type="submit" disabled={isUploading}>
-              {isUploading ? "Yükleniyor..." : "Yükle"}
-            </Button>
-          </div>
-        </form>
-      </div>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+              <FormField
+                control={form.control}
+                name="type"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("typeLabel")}</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder={t("typePlaceholder")} />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {DOCUMENT_TYPES.map((type) => (
+                          <SelectItem key={type.id} value={type.id}>
+                            {type.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div>
+                <FormLabel>{t("fileLabel")}</FormLabel>
+                <div className="flex flex-col gap-4">
+                  <Input
+                    type="file"
+                    onChange={(e) => {
+                      const f = e.target.files?.[0];
+                      setFile(f || null);
+                      setSelectedFileName(f ? f.name : "");
+                      setFileError("");
+                    }}
+                    className="hidden"
+                    id="file-upload"
+                    accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                  />
+                  <label
+                    htmlFor="file-upload"
+                    className="border border-dashed rounded-md p-6 flex flex-col items-center justify-center text-muted-foreground cursor-pointer hover:border-gray-400"
+                  >
+                    <Upload className="w-8 h-8 mb-2 text-gray-400" />
+                    <span>{selectedFileName || t("filePlaceholder")}</span>
+                  </label>
+                  {fileError && <p className="text-sm text-red-500 mt-2">{fileError}</p>}
+                </div>
+              </div>
+              <Button type="submit" className="w-full" disabled={isUploading}>
+                {isUploading ? "Yükleniyor..." : t("submit")}
+              </Button>
+            </form>
+          </Form>
+        </CardContent>
+      </Card>
     </div>
   );
 } 

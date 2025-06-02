@@ -1,6 +1,7 @@
 "use client";
 
 import { KeyRound } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Suspense } from "react";
 
 import { ForgotPasswordForm } from "@/components/auth/forgot-password-form";
@@ -11,7 +12,6 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { useTranslations } from "next-intl";
 
 function ForgotPasswordContent() {
   const t = useTranslations("auth.forgot-password");

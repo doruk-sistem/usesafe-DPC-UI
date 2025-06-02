@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+
 import { DocumentHeader } from "@/components/dashboard/documents/document-header";
 import { DocumentList } from "@/components/dashboard/documents/document-list";
+import { Button } from "@/components/ui/button";
 
 export default function DocumentsPage() {
   const router = useRouter();
