@@ -39,7 +39,6 @@ export function getRecentActivities(products: any[]) {
   const recentProducts = products
     .filter(product => new Date(product.created_at) >= sevenDaysAgo)
     .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-    .slice(0, 3) 
     .map(product => ({
       id: product.id,
       type: "Product",
