@@ -1,3 +1,5 @@
+"use client";
+
 import { Download, Plus } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
@@ -12,14 +14,14 @@ import {
 } from "@/components/ui/select";
 
 export function CertificationHeader() {
-  const t = useTranslations("admin.dpc");
+  const t = useTranslations("admin.certifications");
   
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
-        <h1 className="text-2xl font-semibold">{t("title")}</h1>
+        <h1 className="text-2xl font-semibold">{t("header.title")}</h1>
         <p className="text-sm text-muted-foreground">
-          {t("description")}
+          {t("header.description")}
         </p>
       </div>
       <div className="flex items-center gap-2">
@@ -48,7 +50,7 @@ export function CertificationHeader() {
         <Button asChild>
           <Link href="/admin/certifications/new">
             <Plus className="h-4 w-4 mr-2" />
-            {t("actions.newDPC")}
+            {t("actions.newCertification")}
           </Link>
         </Button>
       </div>

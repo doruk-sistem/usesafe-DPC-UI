@@ -2340,6 +2340,41 @@
     }
   },
   "admin": {
+    "certifications": {
+      "title": "Certifications",
+      "description": "Review certifications",
+      "header":{
+        "title": "Company Certifications Page",
+        "description": "This page is used to view all certifications for a selected company."
+      },
+      "types": {
+        "quality_certificate": "Quality Certificate",
+        "iso_certificate": "ISO Certificate",
+        "export_certificate": "Export Certificate",
+        "production_permit": "Production Permit"
+      },
+      "status": {
+        "pending": "Pending",
+        "approved": "Approved",
+        "rejected": "Rejected"
+      },
+      "filters": {
+        "allCategories": "All Categories",
+        "allStatus": "All Status"
+      },
+      "actions": {
+        "view": "View",
+        "new": "New",
+        "download": "Download",
+        "newCertification": "New Certification"
+      },
+      "columns": {
+        "company": "Company",
+        "certificationCount": "Certification Count",
+        "lastUpdated": "Last Updated",
+        "certifications": "Certification"
+      }
+    },
     "companies": {
       "title": "Companies",
       "description": "Manage and review all companies in the system",
@@ -2531,6 +2566,11 @@
     "dpc": {
       "title": "DPC Applications",
       "description": "View and manage DPC applications",
+      "details":{
+        "notFound": "certificate installation is not active",
+        "notFoundDescription": "Please contact your administrator to activate the certificate installation.",
+        "backToList": "Back to Certifications"
+      },
       "columns": {
         "product": "Product",
         "category": "Category",
