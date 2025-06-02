@@ -9,7 +9,25 @@ export async function POST(request: Request) {
   const supabase = await createClient();
 
   try {
-    const { data, error } = await supabase.auth.admin.inviteUserByEmail(email, {
+    // Önce davet kaydını oluştur
+    const { data: invitation, error: invitationError } = await supabase
+      .from('invitations')
+      .insert([
+        {
+          email,
+          full_name,
+          role,
+          company_id,
+          status: 'pending'
+        }
+      ])
+      .select()
+      .single();
+
+    if (invitationError) throw invitationError;
+
+    // Supabase üzerinden davet e-postası gönder
+    const { error: inviteError } = await supabase.auth.admin.inviteUserByEmail(email, {
       data: {
         company_name,
         role,
@@ -18,11 +36,15 @@ export async function POST(request: Request) {
       },
       redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/set-password`
     });
-    
-    if (error) throw error;
-    
-    return NextResponse.json({ message: 'User invited successfully', data });
+
+    if (inviteError) throw inviteError;
+
+    return NextResponse.json({ 
+      message: 'User invited successfully', 
+      data: invitation 
+    });
   } catch (error) {
+    console.error('Invitation error:', error);
     return NextResponse.json(
       { error: `Failed to invite user: ${error.message}` },
       { status: 500 }

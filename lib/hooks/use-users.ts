@@ -145,22 +145,25 @@ export function useUsers() {
       const companyId = user?.user_metadata?.company_id || company?.id;
       const companyName = user?.user_metadata?.company_name || company?.name || "";
 
-      // Supabase'e davet ekle
-      const { data, error } = await supabase
-        .from('invitations')
-        .insert([
-          {
-            email,
-            full_name,
-            role,
-            company_id: companyId,
-            created_by: user?.id
-          }
-        ])
-        .select()
-        .single();
+      // API üzerinden davet gönder
+      const response = await fetch('/api/invite', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          full_name,
+          role,
+          company_id: companyId,
+          company_name: companyName
+        }),
+      });
 
-      if (error) throw error;
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "Davet gönderilirken bir hata oluştu");
+      }
 
       // Davet listesini güncelle
       await fetchInvitations();
