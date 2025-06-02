@@ -1,5 +1,6 @@
+import { useEffect } from "react";
 import type { UseFormReturn } from "react-hook-form";
-import { useAuth } from "@/lib/hooks/use-auth";
+
 import {
   FormControl,
   FormField,
@@ -8,9 +9,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useAuth } from "@/lib/hooks/use-auth";
 import { CompanyDocumentService } from "@/lib/services/companyDocument";
 import { DocumentType } from "@/lib/types/company";
-import { useEffect } from "react";
 
 interface DocumentsStepProps {
   form: UseFormReturn<any>;

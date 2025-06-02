@@ -1,6 +1,6 @@
 import { supabase } from "@/lib/supabase/client";
-import { Document } from "@/lib/types/document";
 import { DocumentType } from "@/lib/types/company";
+import { Document } from "@/lib/types/document";
 
 export class CompanyDocumentService {
   static readonly BUCKET = "company-documents";

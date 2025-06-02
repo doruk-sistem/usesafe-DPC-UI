@@ -1,8 +1,10 @@
 "use client";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+
 import { CompanyDocumentService } from "@/lib/services/companyDocument";
 import { Document } from "@/lib/types/document";
+
 import { useAuth } from "./use-auth";
 
 export const useCompanyDocuments = () => {

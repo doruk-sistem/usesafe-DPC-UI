@@ -1,11 +1,10 @@
 "use client";
 
-import { FileText, MoreHorizontal, Download, History, ExternalLink } from "lucide-react";
+import { FileText, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import React from "react";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -17,10 +16,9 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Loading } from "@/components/ui/loading";
 import {
   Table,
   TableBody,
@@ -35,11 +33,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-
-import { getStatusIcon } from "@/lib/utils/document-utils";
 import { useCompanyDocuments } from "@/lib/hooks/use-company-documents";
-import { Document, DocumentType } from "@/lib/types/document";
-import { Loading } from "@/components/ui/loading";
+import { DocumentType } from "@/lib/types/document";
+
 
 // Döküman tipleri
 const DOCUMENT_TYPES = [
