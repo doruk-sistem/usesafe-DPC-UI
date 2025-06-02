@@ -60,6 +60,41 @@
     }
   },
   "admin": {
+    "certifications": {
+      "title": "Sertifikalar",
+      "description": "Sertifikaları gözden geçirin",
+      "header":{
+        "title": "Şirket Sertifikaları Sayfası",
+        "description": "Bu sayfa, seçilen şirketin tüm sertifikalarını görüntülemek için kullanılır."
+      },
+      "types":{
+        "quality_certificate": "Kalite Sertifikası",
+        "iso_certificate": "ISO Sertifikası",
+        "export_certificate": "İhracat Sertifikası",
+        "production_permit": "Üretim İzni"
+      },
+      "status":{
+        "pending": "Beklemede",
+        "approved": "Onaylandı",
+        "rejected": "Reddedildi"
+      },
+      "filters":{
+        "allCategories": "Tüm Kategoriler",
+        "allStatus": "Tüm Durumlar"
+      },
+      "actions":{
+        "view": "Görüntüle",
+        "new": "Yeni",
+        "download": "İndir",
+        "newCertification": "Yeni Sertifika"
+      },
+      "columns":{
+        "company": "Şirket",
+        "certificationCount": "Sertifika Sayısı",
+        "lastUpdated": "Son Güncelleme",
+        "certifications": "Sertifika"
+      }
+    },
     "product": {
       "steps": {
        "documentUpload": {
@@ -335,6 +370,11 @@
     "dpc": {
       "title": "DPC Başlığı",
       "description": "DPC Açıklaması",
+        "details":{
+          "notFound": "Sertifika Yükleme Aktif Değil",
+          "notFoundDescription": "Lütfen yöneticinize başvurunuz.",
+          "backToList": "Sertifikalar Listesine Dön"
+        },
       "columns": {
         "product": "Ürün",
         "category": "Kategori",
@@ -398,6 +438,15 @@
         "delete": "Sil",
         "upload": "Yükle",
         "reupload": "Yeniden Yükle"
+      },
+      "detail": {
+        "title": "Belge Detayları",
+        "type": "Belge Tipi",
+        "status": "Durum",
+        "createdAt": "Oluşturulma Tarihi",
+        "updatedAt": "Güncellenme Tarihi",
+        "view": "Görüntüle",
+        "download": "İndir"
       }
     },
     "products": {
@@ -3505,6 +3554,15 @@
         "title": "Belge Bulunamadı",
         "description": "Aradığınız belge bulunamadı."
       }
+    },
+    "detail": {
+      "title": "Belge Detayları",
+      "type": "Belge Tipi",
+      "status": "Durum",
+      "createdAt": "Oluşturulma Tarihi",
+      "updatedAt": "Güncellenme Tarihi",
+      "view": "Görüntüle",
+      "download": "İndir"
     }
   }
 } 

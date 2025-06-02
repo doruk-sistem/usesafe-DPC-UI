@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { z } from "zod";
+
 import { registerSchema } from "@/lib/schemas/auth";
 
 type FormData = z.infer<typeof registerSchema>;

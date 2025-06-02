@@ -217,7 +217,11 @@ export function CertificationList({ filters }: CertificationListProps) {
           </TableHeader>
           <TableBody>
             {filteredDocuments.map((doc) => (
-              <TableRow key={doc.id}>
+              <TableRow 
+                key={doc.id}
+                className="cursor-pointer hover:bg-muted/50"
+                onClick={() => window.location.href = `/dashboard/certifications/${doc.id}`}
+              >
                 <TableCell>
                   <div className="flex items-center gap-2">
                     <FileText className="h-4 w-4 text-muted-foreground" />

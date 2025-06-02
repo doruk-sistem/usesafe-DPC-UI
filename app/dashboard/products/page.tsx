@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { useState } from "react";
 
 import { ProductHeader } from "@/components/dashboard/products/product-header";
 import { ProductList } from "@/components/dashboard/products/product-list";

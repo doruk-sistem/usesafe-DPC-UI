@@ -4,10 +4,12 @@ import { ArrowLeft, Box, Download } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 // Mock data - In a real app, this would come from an API
 const certificationsData = {
@@ -46,7 +48,19 @@ export function CertificationDetails({ certificationId }: CertificationDetailsPr
   const certification = certificationsData[certificationId];
 
   if (!certification) {
-    return <div>{t("details.notFound")}</div>;
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4">
+        <Box className="h-12 w-12 text-muted-foreground" />
+        <h2 className="text-2xl font-semibold">{t("details.notFound")}</h2>
+        <p className="text-muted-foreground">{t("details.notFoundDescription")}</p>
+        <Link href="/admin/certifications">
+          <Button>
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            {t("details.backToList")}
+          </Button>
+        </Link>
+      </div>
+    );
   }
 
   return (
@@ -82,101 +96,109 @@ export function CertificationDetails({ certificationId }: CertificationDetailsPr
         </div>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Box className="h-5 w-5" />
-              {t("details.productInfo.title")}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <p className="text-sm text-muted-foreground">{t("details.productInfo.category")}</p>
-                <p className="font-medium">{certification.category}</p>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">{t("details.productInfo.manufacturer")}</p>
-                <p className="font-medium">{certification.manufacturer}</p>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">{t("details.productInfo.productionMethod")}</p>
-                <p className="font-medium">{certification.productionMethod}</p>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">{t("details.productInfo.dyeingProcess")}</p>
-                <p className="font-medium">{certification.dyeingProcess}</p>
-              </div>
-            </div>
+      <Tabs defaultValue="overview" className="space-y-6">
+        <TabsList>
+          <TabsTrigger value="overview">{t("tabs.overview")}</TabsTrigger>
+        </TabsList>
 
-            <div>
-              <p className="text-sm text-muted-foreground mb-2">{t("details.productInfo.materials")}</p>
-              <div className="space-y-2">
-                {certification.materials.map((material, index) => (
-                  <div key={index} className="flex items-center justify-between">
-                    <span>{material.name}</span>
-                    <div className="flex items-center gap-2">
-                      <Badge variant={material.sustainable ? "success" : "secondary"}>
-                        {material.percentage}%
-                      </Badge>
+        <TabsContent value="overview">
+          <div className="grid gap-6 md:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Box className="h-5 w-5" />
+                  {t("details.productInfo.title")}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm text-muted-foreground">{t("details.productInfo.category")}</p>
+                    <p className="font-medium">{certification.category}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">{t("details.productInfo.manufacturer")}</p>
+                    <p className="font-medium">{certification.manufacturer}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">{t("details.productInfo.productionMethod")}</p>
+                    <p className="font-medium">{certification.productionMethod}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">{t("details.productInfo.dyeingProcess")}</p>
+                    <p className="font-medium">{certification.dyeingProcess}</p>
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-sm text-muted-foreground mb-2">{t("details.productInfo.materials")}</p>
+                  <div className="space-y-2">
+                    {certification.materials.map((material, index) => (
+                      <div key={index} className="flex items-center justify-between">
+                        <span>{material.name}</span>
+                        <div className="flex items-center gap-2">
+                          <Badge variant={material.sustainable ? "success" : "secondary"}>
+                            {material.percentage}%
+                          </Badge>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>{t("details.certificationStatus.title")}</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div>
+                  <div className="flex justify-between text-sm mb-2">
+                    <span>{t("details.certificationStatus.sustainabilityScore")}</span>
+                    <span>{certification.sustainabilityScore}%</span>
+                  </div>
+                  <Progress value={certification.sustainabilityScore} className="h-2" />
+                </div>
+
+                <div className="space-y-4">
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-2">{t("details.certificationStatus.requiredCertifications")}</p>
+                    <div className="space-y-2">
+                      {certification.certifications.map((cert, index) => (
+                        <div key={index} className="flex items-center justify-between">
+                          <span>{cert.name}</span>
+                          <Badge
+                            variant={cert.status === "verified" ? "success" : "warning"}
+                          >
+                            {t(`details.status.${cert.status}`)}
+                          </Badge>
+                        </div>
+                      ))}
                     </div>
                   </div>
-                ))}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("details.certificationStatus.title")}</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div>
-              <div className="flex justify-between text-sm mb-2">
-                <span>{t("details.certificationStatus.sustainabilityScore")}</span>
-                <span>{certification.sustainabilityScore}%</span>
-              </div>
-              <Progress value={certification.sustainabilityScore} className="h-2" />
-            </div>
-
-            <div className="space-y-4">
-              <div>
-                <p className="text-sm text-muted-foreground mb-2">{t("details.certificationStatus.requiredCertifications")}</p>
-                <div className="space-y-2">
-                  {certification.certifications.map((cert, index) => (
-                    <div key={index} className="flex items-center justify-between">
-                      <span>{cert.name}</span>
-                      <Badge
-                        variant={cert.status === "verified" ? "success" : "warning"}
-                      >
-                        {t(`details.status.${cert.status}`)}
-                      </Badge>
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-2">{t("details.certificationStatus.testReports")}</p>
+                    <div className="space-y-2">
+                      {certification.testReports.map((test, index) => (
+                        <div key={index} className="flex items-center justify-between">
+                          <span>{test.name}</span>
+                          <Badge
+                            variant={test.status === "passed" ? "success" : "warning"}
+                          >
+                            {t(`details.status.${test.status}`)}
+                          </Badge>
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  </div>
                 </div>
-              </div>
-
-              <div>
-                <p className="text-sm text-muted-foreground mb-2">{t("details.certificationStatus.testReports")}</p>
-                <div className="space-y-2">
-                  {certification.testReports.map((test, index) => (
-                    <div key={index} className="flex items-center justify-between">
-                      <span>{test.name}</span>
-                      <Badge
-                        variant={test.status === "passed" ? "success" : "warning"}
-                      >
-                        {t(`details.status.${test.status}`)}
-                      </Badge>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

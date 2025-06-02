@@ -1,7 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
+
 import { useToast } from "@/components/ui/use-toast";
+import { supabase } from '@/lib/supabase/client';
+
 import { useAuth } from "./use-auth";
 
 interface User {
@@ -41,6 +44,7 @@ interface Invitation {
   status: InvitationStatus;
   created_at: string;
   company_id: string;
+  company_name?: string;
 }
 
 interface InviteUserParams {
@@ -58,21 +62,39 @@ export function useUsers() {
   const { toast } = useToast();
   const { user, company } = useAuth();
   
-  // LocalStorage'dan davetleri yükle
-  useEffect(() => {
-    const savedInvitations = localStorage.getItem('invitations');
-    if (savedInvitations) {
-      try {
-        const parsed = JSON.parse(savedInvitations);
-        // Sadece mevcut şirkete ait davetleri göster
-        const companyId = user?.user_metadata?.company_id || company?.id;
-        const filteredInvitations = parsed.filter((inv: Invitation) => inv.company_id === companyId);
-        setInvitations(filteredInvitations);
-      } catch (e) {
-        console.error('Failed to parse invitations from localStorage', e);
-      }
+  // Davetleri getir
+  const fetchInvitations = async () => {
+    if (!company?.id) {
+      return;
     }
-  }, [user?.user_metadata?.company_id, company?.id]);
+    
+    try {
+      const { data, error } = await supabase
+        .from('invitations')
+        .select('*')
+        .eq('company_id', company.id)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Supabase error:', error);
+        toast({
+          title: "Error",
+          description: `Error fetching invitations: ${error.message}`,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      setInvitations(data || []);
+    } catch (error) {
+      console.error('Error fetching invitations:', error);
+      toast({
+        title: "Error",
+        description: `Error fetching invitations: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        variant: "destructive",
+      });
+    }
+  };
 
   // Kullanıcı listesini getir
   const fetchUsers = async () => {
@@ -96,19 +118,9 @@ export function useUsers() {
       
       setUsers(formattedUsers);
       
-      // Kabul edilen davetleri kontrol et ve bekleyen davetlerden kaldır
-      if (formattedUsers.length > 0 && invitations.length > 0) {
-        const userEmails = formattedUsers.map(user => user.email.toLowerCase());
-        const updatedInvitations = invitations.filter(invitation => {
-          // Eğer kullanıcı listesinde bu e-posta adresi varsa, daveti kaldır
-          return !userEmails.includes(invitation.email.toLowerCase());
-        });
-        
-        // Eğer davet listesi değiştiyse, güncelle
-        if (updatedInvitations.length !== invitations.length) {
-          setInvitations(updatedInvitations);
-          saveInvitations(updatedInvitations);
-        }
+      // Kabul edilen davetleri kontrol et
+      if (formattedUsers.length > 0) {
+        await fetchInvitations();
       }
     } catch (error) {
       toast({
@@ -118,15 +130,6 @@ export function useUsers() {
       });
     } finally {
       setLoading(false);
-    }
-  };
-
-  // Davetleri LocalStorage'a kaydet
-  const saveInvitations = (invites: Invitation[]) => {
-    try {
-      localStorage.setItem('invitations', JSON.stringify(invites));
-    } catch (e) {
-      console.error('Failed to save invitations to localStorage', e);
     }
   };
 
@@ -142,17 +145,18 @@ export function useUsers() {
       const companyId = user?.user_metadata?.company_id || company?.id;
       const companyName = user?.user_metadata?.company_name || company?.name || "";
 
-      const response = await fetch("/api/invite", {
-        method: "POST",
+      // API üzerinden davet gönder
+      const response = await fetch('/api/invite', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           email,
           full_name,
-          company_id: companyId,
-          company_name: companyName,
           role,
+          company_id: companyId,
+          company_name: companyName
         }),
       });
 
@@ -161,22 +165,8 @@ export function useUsers() {
         throw new Error(error.error || "Davet gönderilirken bir hata oluştu");
       }
 
-      const result = await response.json();
-      
-      // Daveti kaydet
-      const newInvitation: Invitation = {
-        id: `inv_${Date.now()}`,
-        email,
-        full_name,
-        role,
-        status: InvitationStatus.PENDING,
-        created_at: new Date().toISOString(),
-        company_id: companyId
-      };
-      
-      const updatedInvitations = [...invitations, newInvitation];
-      setInvitations(updatedInvitations);
-      saveInvitations(updatedInvitations);
+      // Davet listesini güncelle
+      await fetchInvitations();
 
       toast({
         title: "Başarılı",
@@ -197,22 +187,43 @@ export function useUsers() {
   };
   
   // Davet durumunu güncelle
-  const updateInvitationStatus = (invitationId: string, status: InvitationStatus) => {
-    const updatedInvitations = invitations.map(invitation => 
-      invitation.id === invitationId 
-        ? { ...invitation, status } 
-        : invitation
-    );
-    
-    setInvitations(updatedInvitations);
-    saveInvitations(updatedInvitations);
+  const updateInvitationStatus = async (invitationId: string, status: InvitationStatus) => {
+    try {
+      const { error } = await supabase
+        .from('invitations')
+        .update({ status })
+        .eq('id', invitationId);
+
+      if (error) throw error;
+      
+      await fetchInvitations();
+    } catch (error) {
+      toast({
+        title: "Hata",
+        description: "Davet durumu güncellenirken bir hata oluştu",
+        variant: "destructive",
+      });
+    }
   };
   
   // Daveti sil
-  const deleteInvitation = (invitationId: string) => {
-    const updatedInvitations = invitations.filter(invitation => invitation.id !== invitationId);
-    setInvitations(updatedInvitations);
-    saveInvitations(updatedInvitations);
+  const deleteInvitation = async (invitationId: string) => {
+    try {
+      const { error } = await supabase
+        .from('invitations')
+        .delete()
+        .eq('id', invitationId);
+
+      if (error) throw error;
+      
+      await fetchInvitations();
+    } catch (error) {
+      toast({
+        title: "Hata",
+        description: "Davet silinirken bir hata oluştu",
+        variant: "destructive",
+      });
+    }
   };
 
   // Kullanıcı sil
@@ -229,18 +240,10 @@ export function useUsers() {
       }
 
       // Kullanıcı listesini güncelle
-      setUsers((prevUsers) => {
-        const deletedUser = prevUsers.find(user => user.id === userId);
-        if (deletedUser) {
-          // Silinen kullanıcının e-postasına sahip daveti de kaldır
-          const updatedInvitations = invitations.filter(
-            invitation => invitation.email.toLowerCase() !== deletedUser.email.toLowerCase()
-          );
-          setInvitations(updatedInvitations);
-          saveInvitations(updatedInvitations);
-        }
-        return prevUsers.filter((user) => user.id !== userId);
-      });
+      setUsers(prevUsers => prevUsers.filter(user => user.id !== userId));
+      
+      // İlgili davetleri kontrol et
+      await fetchInvitations();
 
       toast({
         title: "Başarılı",
@@ -259,6 +262,13 @@ export function useUsers() {
       setDeleting(false);
     }
   };
+
+  // İlk yüklemede davetleri getir
+  useEffect(() => {
+    if (company?.id) {
+      fetchInvitations();
+    }
+  }, [company?.id]);
 
   return {
     users,
