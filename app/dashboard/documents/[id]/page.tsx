@@ -1,18 +1,18 @@
 "use client";
 
-import { useTranslations } from "next-intl";
-import { useParams } from "next/navigation";
 import { ArrowLeft, Eye, Download } from "lucide-react";
 import Link from "next/link";
+import { useParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { getStatusIcon } from "@/lib/utils/document-utils";
-import { useCompanyDocuments } from "@/lib/hooks/use-company-documents";
 import { Loading } from "@/components/ui/loading";
+import { useCompanyDocuments } from "@/lib/hooks/use-company-documents";
 import { CompanyDocumentService } from "@/lib/services/companyDocument";
+import { getStatusIcon } from "@/lib/utils/document-utils";
 
 export default function DocumentDetailsPage() {
   const t = useTranslations('documents');

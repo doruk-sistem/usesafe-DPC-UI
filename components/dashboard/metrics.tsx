@@ -12,11 +12,11 @@ import {
 import { useTranslations } from "next-intl";
 
 import { EnhancedCard } from "@/components/ui/enhanced-card";
+import { REQUIRED_DOCUMENTS } from "@/lib/constants/documents";
+import { useCompanyDocuments } from "@/lib/hooks/use-company-documents";
 import { useProducts } from "@/lib/hooks/use-products";
 import { cn } from "@/lib/utils";
 import { calculateProductGrowth } from "@/lib/utils/metrics";
-import { useCompanyDocuments } from "@/lib/hooks/use-company-documents";
-import { REQUIRED_DOCUMENTS } from "@/lib/constants/documents";
 
 const CERTIFICATE_TYPES = [
   "quality_certificate",
