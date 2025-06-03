@@ -190,40 +190,9 @@ export class DocumentService {
       // Tüm ürünlerin dökümanlarını birleştir
       const allDocuments = (products || []).flatMap((product: any) => {
         if (!product.documents) return [];
-        
-        // Dökümanları düzleştir ve dönüştür
-        const docs = Array.isArray(product.documents)
-          ? product.documents
-          : Object.entries(product.documents).flatMap(([type, docs]: [string, any]) => {
-              if (Array.isArray(docs)) {
-                return docs.map((doc: any) => ({
-                  ...doc,
-                  type,
-                  category: doc.category || type,
-                }));
-              }
-              return [];
-            });
-
-        return docs.map((doc: any) => ({
-          id: doc.id || `doc-${Date.now()}-${Math.random()}`,
-          name: doc.name || "Unnamed Document",
-          type: doc.type || "unknown",
-          category: doc.category || doc.type || "unknown",
-          url: doc.url || "",
-          status: (doc.status || "pending").toLowerCase(),
-          productId: product.id,
-          manufacturer: product.manufacturer || "",
-          manufacturerId: product.manufacturer_id || "",
-          fileSize: doc.fileSize || "",
-          version: doc.version || "1.0",
-          validUntil: doc.validUntil || null,
-          rejection_reason: doc.rejection_reason || null,
-          created_at: doc.created_at || new Date().toISOString(),
-          updated_at: doc.updated_at || new Date().toISOString(),
-          uploadedAt: doc.uploadedAt || new Date().toISOString(),
-          size: doc.size || 0
-        }));
+        if (Array.isArray(product.documents)) return product.documents;
+        // Eğer obje ise, tüm tipleri birleştir
+        return Object.values(product.documents).flat();
       });
 
       return allDocuments;

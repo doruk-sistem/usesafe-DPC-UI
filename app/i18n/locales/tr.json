@@ -5,11 +5,6 @@
     "verifyProducts": "Ürün Doğrula",
     "signIn": "Giriş Yap"
   },
-  "documents": {
-    "list": {
-      "title": "Belge Listesi"
-    }
-  },
   "list":{
     "title": "Liste",
     "description": "Ürün listesi",
@@ -2851,19 +2846,29 @@
       "allStatuses": "Tüm Durumlar"
     },
     "repository": {
-      "description": "Belge arşivini inceleyin ve yönetin",
       "forManufacturer": "Üretici belgelerini görüntüleyin ve yönetin",
+      "noDocumentsFound": "Henüz belge yüklenmemiş",
+      "title": "Belgeler",
+      "document": "Belge",
+      "type": "Tip",
+      "status": "Durum",
+      "validUntil": "Geçerlilik Süresi",
+      "version": "Versiyon",
+      "description":{
+        "forManufacturer":"Üretici belgelerini görüntüleyin ve yönetin"
+      },
       "categories": {
         "testReports": "Test Raporları",
         "qualityManagement": "Kalite Yönetimi",
         "safetyAndHealth": "Güvenlik ve Sağlık",
         "batteryStandards": "Akü Standartları"
       },
-      "status": {
+      "statuses": {
+        "all": "Tüm Durumlar",
         "pending": "Beklemede",
         "approved": "Onaylandı",
         "rejected": "Reddedildi",
-        "expiringSoon": "Süresi Yakında Doluyor"
+        "expired": "Süresi Doldu"
       },
       "actions": {
         "upload": "Yükle"
@@ -3028,6 +3033,74 @@
         }
       },
       "sections": {
+        "manufacturers":{
+          "details":{
+            "notFound":"Ürün Bulunamadı",
+            "backToList":"Listeye Dön",
+            "products":{
+              "title":"Ürünler",
+              "allStatus":"Tüm Durumlar",
+              "allApproved":"Tüm Onaylananlar",
+              "pendingReview":"Tüm Bekleyenler",
+              "hasRejectedDocuments":"Reddedilen Belgeleri Olan Ürünler",
+              "noDocuments":"Belgeleri Olmayan Ürünler",
+              "filterByStatus":"Duruma Göre Filtrele",
+              "category":"Kategori",
+              "status":{
+                "NEW":"Yeni",
+                "DRAFT":"Taslak",
+                "ARCHIVED":"Arşivde"
+              },
+              "list":{
+                "empty":{
+                  "description":"Ürünler Bulunamadı"
+                }
+              }
+            },
+            "documents":{
+              "title":"Belgeler",
+               "uploadedAt":"Yüklendi",
+              "status":{
+                "PENDING":"Beklemede",
+                "APPROVED":"Onaylandı",
+                "REJECTED":"Reddedildi"
+              },
+              "list":{
+                "empty":{
+                  "description":"Belgeler Bulunamadı"
+                }
+              }
+            },
+            "verification":{
+              "title":"Doğrulama Durumu",
+              "document":"Belge Doğrulama",
+              "taxId":"Vergi No Doğrulama",
+              "address":"Adres Doğrulama",
+              "contact":"İletişim Doğrulama",
+              "status":{
+                "inProgress":"İşlemde",
+                "verified":"Doğrulandı",
+                "pending":"Beklemede"
+              }
+            },
+            "companyInfo":{
+            "title":"Firma Bilgileri",
+            "address":"Adres",
+            "taxId":"Vergi No",
+            "registrationDate":"Kayıt Tarihi"
+          },
+            "status":{
+              "pending":"Beklemede",
+              "approved":"Onaylandı",
+              "rejected":"Reddedildi"
+            },
+            "actions":{
+              "approve":"Onayla",
+              "reject":"Reddet"
+            }
+          }
+        },
+       
       "pendingApprovals": {
         "title": "Bekleyen Onaylar",
         "description": "Dikkat gerektiren son onay istekleri"
@@ -3476,23 +3549,32 @@
       "devices": "Elektrikli cihazları kapatın ve uzaklaştırın."
     }
   },
-  "addProduct": {
-    "form": {
-      "fields": {
-        "manufacturer": {
-          "companyName": "Firma Adı *",
-          "taxId": "Vergi Numarası *",
-          "contactPerson": "İletişim Kişisi *",
-          "contactEmail": "İletişim E-posta *",
-          "cancel": "İptal",
-          "create": "Üretici Oluştur"
-        }
+ "addProduct": {
+  "form": {
+    "fields": {
+      "manufacturer": {
+        "companyName": "Firma Adı *",
+        "taxId": "Vergi Numarası *",
+        "contactPerson": "İletişim Kişisi *",
+        "contactEmail": "İletişim E-posta *",
+        "cancel": "İptal",
+        "create": "Üretici Oluştur"
       }
     }
-  },
+  }
+},
   "documents": {
     "title": "Döküman Yönetimi",
     "description": "Şirket dökümanlarınızı yönetin",
+    "upload":{
+      "title":"Döküman Yükle",
+      "description":"Döküman yüklemek için tıklayın",
+      "typeLabel":"Döküman Tipi",
+      "typePlaceholder":"Döküman tipini seçin",
+      "fileLabel":"Dosya Seçin",
+      "filePlaceholder":"Dosyayı seçin",
+      "submit":"Yükle"
+    },
     "filters": {
       "all": "Tümü",
       "upload": "Yükle"

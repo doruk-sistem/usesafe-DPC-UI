@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { DocumentService } from "@/lib/services/document";
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { Document } from "@/lib/types/document";
 import { Loading } from "@/components/ui/loading";
 import { Error } from "@/components/ui/error";
@@ -50,8 +50,15 @@ function getPaginationRange(current: number, total: number): (number | string)[]
   return range;
 }
 
-export default function ManufacturerDocumentsPage({ params }: { params: { id: string } }) {
+interface PageProps {
+  params: Promise<{
+    id: string;
+  }>;
+}
+
+export default function ManufacturerDocumentsPage({ params }: PageProps) {
   const t = useTranslations();
+  const { id } = use(params);
   const [documents, setDocuments] = useState<Document[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
@@ -63,7 +70,7 @@ export default function ManufacturerDocumentsPage({ params }: { params: { id: st
     async function fetchDocuments() {
       try {
         setIsLoading(true);
-        const docs = await DocumentService.getDocumentsByManufacturer(params.id);
+        const docs = await DocumentService.getDocumentsByManufacturer(id);
         setDocuments(docs);
       } catch (err) {
         setError(err as Error);
@@ -73,13 +80,12 @@ export default function ManufacturerDocumentsPage({ params }: { params: { id: st
     }
 
     fetchDocuments();
-  }, [params.id]);
+  }, [id]);
 
   const filteredDocuments = documents.filter((doc) =>
     statusFilter === "all" ? true : doc.status === statusFilter
   );
 
-  // Pagination logic
   const totalPages = Math.ceil(filteredDocuments.length / ITEMS_PER_PAGE);
   const paginatedDocuments = filteredDocuments.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
@@ -122,11 +128,11 @@ export default function ManufacturerDocumentsPage({ params }: { params: { id: st
               <SelectValue placeholder="Filter by status" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Statuses</SelectItem>
-              <SelectItem value="pending">Pending Review</SelectItem>
-              <SelectItem value="approved">Approved</SelectItem>
-              <SelectItem value="rejected">Rejected</SelectItem>
-              <SelectItem value="expired">Expired</SelectItem>
+              <SelectItem value="all">{t("documentManagement.repository.statuses.all")}</SelectItem>
+              <SelectItem value="pending">{t("documentManagement.repository.statuses.pending")}</SelectItem>
+              <SelectItem value="approved">{t("documentManagement.repository.statuses.approved")}</SelectItem>
+              <SelectItem value="rejected">{t("documentManagement.repository.statuses.rejected")}</SelectItem>
+              <SelectItem value="expired">{t("documentManagement.repository.statuses.expired")}</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -134,13 +140,13 @@ export default function ManufacturerDocumentsPage({ params }: { params: { id: st
 
       <Card>
         <CardHeader>
-          <CardTitle>Documents</CardTitle>
+          <CardTitle>{t("documentManagement.repository.title")}</CardTitle>
         </CardHeader>
         <CardContent>
           {filteredDocuments.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12">
               <FileText className="h-12 w-12 text-muted-foreground mb-4" />
-              <h2 className="text-xl font-semibold mb-2">No Documents Found</h2>
+              <h2 className="text-xl font-semibold mb-2">{t("documentManagement.repository.noDocumentsFound")}</h2>
               <p className="text-muted-foreground mb-4">
                 {documents.length === 0
                   ? "No documents have been uploaded yet."
@@ -152,17 +158,17 @@ export default function ManufacturerDocumentsPage({ params }: { params: { id: st
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Document</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Valid Until</TableHead>
-                    <TableHead>Version</TableHead>
+                    <TableHead>{t("documentManagement.repository.document")}</TableHead>
+                    <TableHead>{t("documentManagement.repository.type")}</TableHead>
+                    <TableHead>{t("documentManagement.repository.status")}</TableHead>
+                    <TableHead>{t("documentManagement.repository.validUntil")}</TableHead>
+                    <TableHead>{t("documentManagement.repository.version")}</TableHead>
                     <TableHead></TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {paginatedDocuments.map((doc) => (
-                    <TableRow key={doc.id}>
+                  {paginatedDocuments.map((doc, index) => (
+                    <TableRow key={`${doc.id}-${doc.type}-${index}`}>
                       <TableCell>
                         <div className="flex items-center gap-2">
                           <FileText className="h-4 w-4 text-muted-foreground" />
@@ -203,8 +209,8 @@ export default function ManufacturerDocumentsPage({ params }: { params: { id: st
                           }
                           className="flex w-fit items-center gap-1"
                         >
-                          {getStatusIcon(doc.status)}
-                          {doc.status.toUpperCase()}
+                          {getStatusIcon(doc.status || "pending")}
+                          {(doc.status || "pending").toUpperCase()}
                         </Badge>
                       </TableCell>
                       <TableCell>
@@ -226,7 +232,6 @@ export default function ManufacturerDocumentsPage({ params }: { params: { id: st
                   ))}
                 </TableBody>
               </Table>
-              {/* Pagination UI */}
               {totalPages > 1 && (
                 <nav className="flex justify-center items-center gap-1 mt-6 select-none" aria-label="Pagination">
                   <button

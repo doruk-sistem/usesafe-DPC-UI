@@ -2065,8 +2065,23 @@
     "description": "Manage your company documents and certificates",
     "repository": {
       "title": "Document Repository",
-      "description": "View and manage your company documents and certificates",
+      "noDocumentsFound": "No documents found",
       "forManufacturer": "View and manage manufacturer documents and certificates",
+      "document": "Document",
+      "type": "Type",
+      "status": "Status",
+      "validUntil": "Valid Until",
+      "version": "Version",
+      "statuses":{
+        "all": "All",
+        "pending": "Pending",
+        "approved": "Approved",
+        "rejected": "Rejected",
+        "expired": "Expired"
+      },
+      "description":{
+        "forManufacturer":"View and manage your company documents and certificates"
+      },
       "columns": {
         "document": "Document",
         "type": "Type",
@@ -2262,6 +2277,18 @@
           "products": {
             "title": "Products",
             "empty": "No products found",
+            "allStatus": "All Statuses",
+            "allApproved": "All Approved",
+            "pendingReview": "Pending Review",
+            "hasRejectedDocuments": "Has Rejected Documents",
+            "noDocuments": "No Documents",
+            "filterByStatus": "Filter by Status",
+            "category": "Category",
+            "list": {
+              "empty": {
+                "description": "No products found for this manufacturer."
+              }
+            },
             "status": {
               "NEW": "New",
               "DRAFT": "Draft",
