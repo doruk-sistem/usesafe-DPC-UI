@@ -549,6 +549,7 @@
       "certifications": {
         "title": "Certifications",
         "loadingCertifications": "Loading certifications...",
+        "noCertifications": "No certifications found",
         "table": {
           "name": "Certificate",
           "issuedBy": "Issued By",
@@ -719,6 +720,9 @@
         "unknown": "Unknown"
       },
       "categories": {
+        "das": "DAS",
+        "Güneş Gözlüğü": "Sunglasses",
+        "dsa": "DSA",
         "textile": "Textile",
         "battery": "Battery",
         "automotive": "Automotive",
@@ -1578,7 +1582,8 @@
           "approved": "Approved"
         },
         "actions": {
-          "download": "Download"
+          "download": "Download",
+          "noDocument": "No documents found"
         }
       },
       "qr": {
@@ -2079,6 +2084,15 @@
         "rejected": "Rejected",
         "expired": "Expired"
       },
+      "reject":{
+        "title": "Reject Document",
+        "description": "Document rejected. Please enter the reason.",
+        "reasonLabel": "Reason",
+        "reasonPlaceholder": "Enter the reason...",
+        "cancel": "Cancel",
+        "confirm": "Reject"
+
+      },
       "description":{
         "forManufacturer":"View and manage your company documents and certificates"
       },
@@ -2284,6 +2298,7 @@
             "noDocuments": "No Documents",
             "filterByStatus": "Filter by Status",
             "category": "Category",
+            "description": "Product Description",
             "list": {
               "empty": {
                 "description": "No products found for this manufacturer."
@@ -2292,7 +2307,13 @@
             "status": {
               "NEW": "New",
               "DRAFT": "Draft",
-              "ARCHIVED": "Archived"
+              "ARCHIVED": "Archived",
+              "draft": "Draft",
+              "approved": "Approved",
+              "pending":"Pending",
+              "rejected":"Rejected"
+              
+
             }
           }
         }

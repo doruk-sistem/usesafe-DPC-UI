@@ -146,7 +146,6 @@ export function ManufacturerList() {
               <TableHead>{t("list.columns.products")}</TableHead>
               <TableHead>{t("list.columns.documents")}</TableHead>
               <TableHead>{t("list.columns.date")}</TableHead>
-              <TableHead>{t("list.columns.status")}</TableHead>
               <TableHead>{t("list.columns.actions")}</TableHead>
             </TableRow>
           </TableHeader>
@@ -171,27 +170,6 @@ export function ManufacturerList() {
                   {manufacturer.createdAt
                     ? new Date(manufacturer.createdAt).toLocaleDateString()
                     : "-"}
-                </TableCell>
-                <TableCell>
-                  <Badge
-                    variant={
-                      mapStatus(manufacturer.status) === "approved"
-                        ? "success"
-                        : mapStatus(manufacturer.status) === "rejected"
-                        ? "destructive"
-                        : "warning"
-                    }
-                    className="flex w-fit items-center gap-1"
-                  >
-                    {mapStatus(manufacturer.status) === "approved" ? (
-                      <CheckCircle className="h-3 w-3" />
-                    ) : mapStatus(manufacturer.status) === "rejected" ? (
-                      <XCircle className="h-3 w-3" />
-                    ) : (
-                      <Clock className="h-3 w-3" />
-                    )}
-                    {t(`list.status.${mapStatus(manufacturer.status)}`)}
-                  </Badge>
                 </TableCell>
                 <TableCell>
                   <DropdownMenu>
@@ -222,12 +200,12 @@ export function ManufacturerList() {
                       {mapStatus(manufacturer.status) === "pending" && (
                         <>
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem className="text-green-600">
+                          {/* <DropdownMenuItem className="text-green-600">
                             {t("list.actions.approve")}
                           </DropdownMenuItem>
                           <DropdownMenuItem className="text-red-600">
                             {t("list.actions.reject")}
-                          </DropdownMenuItem>
+                          </DropdownMenuItem> */}
                         </>
                       )}
                     </DropdownMenuContent>

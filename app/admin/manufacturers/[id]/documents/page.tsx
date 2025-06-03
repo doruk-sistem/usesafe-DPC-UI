@@ -32,6 +32,17 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { getStatusIcon } from "@/lib/utils/document-utils";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { ProductDocuments } from "@/components/dashboard/products/product-documents";
 
 function getPaginationRange(current: number, total: number): (number | string)[] {
   const delta = 2;
@@ -65,6 +76,10 @@ export default function ManufacturerDocumentsPage({ params }: PageProps) {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 10;
+  const [showDocumentsDialog, setShowDocumentsDialog] = useState(false);
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
+  const [showRejectDialog, setShowRejectDialog] = useState(false);
+  const [rejectionReason, setRejectionReason] = useState("");
 
   useEffect(() => {
     async function fetchDocuments() {
@@ -96,6 +111,13 @@ export default function ManufacturerDocumentsPage({ params }: PageProps) {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
     }
+  };
+
+  const handleRejectConfirm = () => {
+    // Implement the logic to reject the document
+    setShowRejectDialog(false);
+    setRejectionReason("");
+    setSelectedProductId(null);
   };
 
   if (isLoading) {
@@ -196,22 +218,25 @@ export default function ManufacturerDocumentsPage({ params }: PageProps) {
                         </div>
                       </TableCell>
                       <TableCell>{doc.type}</TableCell>
-                      <TableCell>
-                        <Badge
-                          variant={
-                            doc.status === "approved"
-                              ? "success"
-                              : doc.status === "rejected"
-                              ? "destructive"
-                              : doc.status === "expired"
-                              ? "warning"
-                              : "default"
-                          }
-                          className="flex w-fit items-center gap-1"
-                        >
-                          {getStatusIcon(doc.status || "pending")}
-                          {(doc.status || "pending").toUpperCase()}
-                        </Badge>
+                      <TableCell><Badge
+  variant={
+    doc.status === "approved"
+      ? "success"
+      : doc.status === "rejected"
+      ? "destructive"
+      : doc.status === "expired"
+      ? "warning"
+      : "default"
+  }
+  className="flex w-fit items-center gap-1"
+>
+  {getStatusIcon(doc.status || "pending")}
+  {t(`documentManagement.status.${doc.status === "approved" ? "approved" : 
+     doc.status === "rejected" ? "rejected" : 
+     doc.status === "expired" ? "expired" : 
+     "pending"}`)}
+</Badge>
+          
                       </TableCell>
                       <TableCell>
                         {doc.validUntil
@@ -274,6 +299,63 @@ export default function ManufacturerDocumentsPage({ params }: PageProps) {
           )}
         </CardContent>
       </Card>
+
+      <Dialog open={showDocumentsDialog} onOpenChange={setShowDocumentsDialog}>
+        <DialogContent className="max-w-4xl">
+          <DialogHeader>
+            <DialogTitle>
+              {t("documentManagement.repository.title")}
+            </DialogTitle>
+            <DialogDescription>
+              {t("documentManagement.repository.description.forManufacturer")}
+            </DialogDescription>
+          </DialogHeader>
+          {selectedProductId && (
+            <div className="space-y-4">
+              <ProductDocuments productId={selectedProductId} />
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showRejectDialog} onOpenChange={setShowRejectDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {t("documentManagement.repository.reject.title")}
+            </DialogTitle>
+            <DialogDescription>
+              {t("documentManagement.repository.reject.description")}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <Label htmlFor="rejection-reason">
+              {t("documentManagement.repository.reject.reasonLabel")}
+            </Label>
+            <Textarea
+              id="rejection-reason"
+              value={rejectionReason}
+              onChange={(e) => setRejectionReason(e.target.value)}
+              placeholder={t("documentManagement.repository.reject.reasonPlaceholder")}
+            />
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowRejectDialog(false);
+                setRejectionReason("");
+                setSelectedProductId(null);
+              }}
+            >
+              {t("documentManagement.repository.reject.cancel")}
+            </Button>
+            <Button variant="destructive" onClick={handleRejectConfirm}>
+              {t("documentManagement.repository.reject.confirm")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 } 

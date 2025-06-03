@@ -81,8 +81,8 @@ export function ManufacturerDetails({ manufacturerId }: ManufacturerDetailsProps
           </Badge>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline">{t("actions.reject")}</Button>
-          <Button>{t("actions.approve")}</Button>
+          {/* <Button variant="outline">{t("actions.reject")}</Button>
+          <Button>{t("actions.approve")}</Button> */}
         </div>
       </div>
 

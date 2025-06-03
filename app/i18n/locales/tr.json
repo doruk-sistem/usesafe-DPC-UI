@@ -1175,6 +1175,7 @@
         "title": "Sertifikalar",
         "description": "Ürün sertifikalarını görüntüleyin",
         "loadingCertifications": "Sertifikalar yükleniyor...",
+        "noCertifications": "Sertifika Bulunamadı",
         "table": {
           "name": "Sertifika Adı",
           "issuedBy": "Düzenleyen",
@@ -1260,6 +1261,9 @@
         "unknown": "Bilinmiyor"
       },
       "categories": {
+        "das": "DAS",
+        "Güneş Gözlüğü": "Sunglasses",
+        "dsa": "DSA",
         "textile": "Tekstil",
         "battery": "Akü",
         "automotive": "Otomotiv",
@@ -2854,6 +2858,14 @@
       "status": "Durum",
       "validUntil": "Geçerlilik Süresi",
       "version": "Versiyon",
+      "reject":{
+        "title": "Belge Reddet",
+        "description": "Belge reddedildi. Lütfen sebebi giriniz.",
+        "reasonLabel": "Sebebi",
+        "reasonPlaceholder": "Sebebi giriniz...",
+        "cancel": "İptal",
+        "confirm": "Reddet"
+      },
       "description":{
         "forManufacturer":"Üretici belgelerini görüntüleyin ve yönetin"
       },
@@ -2928,6 +2940,7 @@
       "manufacturer": "Üretici",
       "document": "Belge",
       "dpc": "DPC"
+
     },
     "actions": {
       "review": "İncele"
@@ -3042,14 +3055,22 @@
               "allStatus":"Tüm Durumlar",
               "allApproved":"Tüm Onaylananlar",
               "pendingReview":"Tüm Bekleyenler",
+             
               "hasRejectedDocuments":"Reddedilen Belgeleri Olan Ürünler",
               "noDocuments":"Belgeleri Olmayan Ürünler",
               "filterByStatus":"Duruma Göre Filtrele",
+
               "category":"Kategori",
+              "description":"Ürün Açıklaması",
               "status":{
+                "approved":"Onaylandı",
+                "rejected":"Reddedildi",
+                "pending":"Beklemede",
                 "NEW":"Yeni",
                 "DRAFT":"Taslak",
-                "ARCHIVED":"Arşivde"
+                "ARCHIVED":"Arşivde",
+                "draft":"Taslak"
+
               },
               "list":{
                 "empty":{

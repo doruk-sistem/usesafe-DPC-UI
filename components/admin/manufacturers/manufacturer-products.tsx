@@ -16,7 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { useProduct as useProductOriginal } from "@/lib/hooks/use-product";
 import { ProductDetails } from "@/components/products/product-details";
 
@@ -40,10 +40,10 @@ export function ManufacturerProducts({ manufacturerId }: ManufacturerProductsPro
   const filteredProducts = statusFilter === "all"
     ? products
     : products.filter((product) => {
-        if (statusFilter === "All Approved") return product.status === "APPROVED" || product.status === "approved";
-        if (statusFilter === "Pending Review") return product.status === "PENDING" || product.status === "pending";
-        if (statusFilter === "Has Rejected Documents") return product.status === "REJECTED" || product.status === "rejected";
-        if (statusFilter === "No Documents") return !product.status || product.status === "";
+        if (statusFilter === "approved") return product.status === "APPROVED" || product.status === "approved";
+        if (statusFilter === "pending") return product.status === "PENDING" || product.status === "pending";
+        if (statusFilter === "rejected") return product.status === "REJECTED" || product.status === "rejected";
+        if (statusFilter === "draft") return product.status === "DRAFT" || product.status === "draft";
         return product.status === statusFilter;
       });
   const paginatedProducts = filteredProducts.slice(startIndex, startIndex + ITEMS_PER_PAGE);
@@ -87,10 +87,10 @@ export function ManufacturerProducts({ manufacturerId }: ManufacturerProductsPro
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">{t("products.allStatus") || "All Statuses"}</SelectItem>
-            <SelectItem value="All Approved">{t("products.allApproved") || "All Approved"}</SelectItem>
-            <SelectItem value="Pending Review">{t("products.pendingReview") || "Pending Review"}</SelectItem>
-            <SelectItem value="Has Rejected Documents">{t("products.hasRejectedDocuments") || "Has Rejected Documents"}</SelectItem>
-            <SelectItem value="No Documents">{t("products.noDocuments") || "No Documents"}</SelectItem>
+            <SelectItem value="approved">{t("products.status.approved") || "Approved"}</SelectItem>
+            <SelectItem value="pending">{t("products.status.pending") || "Pending"}</SelectItem>
+            <SelectItem value="rejected">{t("products.status.rejected") || "Rejected"}</SelectItem>
+            <SelectItem value="draft">{t("products.status.draft") || "Draft"}</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -196,6 +196,14 @@ export function ManufacturerProducts({ manufacturerId }: ManufacturerProductsPro
       {/* Modal for product details */}
       <Dialog open={!!selectedProductId} onOpenChange={() => setSelectedProductId(null)}>
         <DialogContent className="max-w-5xl w-full h-[90vh] overflow-y-auto p-0 bg-background">
+          <DialogHeader>
+            <DialogTitle>
+              {t("products.title")}
+            </DialogTitle>
+            <DialogDescription>
+              {t("products.description")}
+            </DialogDescription>
+          </DialogHeader>
           {isProductLoading ? (
             <div className="flex items-center justify-center h-40">Loading...</div>
           ) : productError ? (
