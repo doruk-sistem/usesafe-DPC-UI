@@ -20,6 +20,7 @@
         "documents": "Belgeler"
       },
       "status": {
+        
         "pendingDocuments": "Bekleyen Belgeler",
         "allDocumentsApproved": "Tüm Belgeler Onaylı",
         "draft": "Taslak",
@@ -2838,6 +2839,7 @@
   "documentManagement": {
     "title": "Belge Yönetimi",
     "description": "Belge yüklemelerini inceleyin ve yönetin",
+    "backToList": "Listeye Dön",
     "documentTypes": {
       "testReports": "Test Raporları",
       "technicalDocumentation": "Teknik Dokümantasyon",
@@ -2997,7 +2999,9 @@
         "status": {
           "pending": "Beklemede",
           "approved": "Onaylandı",
-          "rejected": "Reddedildi"}
+          "rejected": "Reddedildi"
+          
+        }
         },
         "filters": {
           "status": "Duruma göre filtrele",
@@ -3013,6 +3017,13 @@
         },
         "details": {
           "backToList": "Listeye Dön",
+          "documents":{
+            "list":{
+              "empty":{
+                "description":"Bu üretici için belge bulunamadı."
+              }
+            }
+          },
           "actions": {
             "reject": "Reddet",
             "approve": "Onayla"
@@ -3020,7 +3031,8 @@
           "status": {
             "approved": "Onaylandı",
             "rejected": "Reddedildi",
-            "pending": "Beklemede"
+            "pending": "Beklemede" 
+           
           },
           "companyInfo": {
             "title": "Firma Bilgileri",
@@ -3063,13 +3075,17 @@
               "category":"Kategori",
               "description":"Ürün Açıklaması",
               "status":{
+                
                 "approved":"Onaylandı",
                 "rejected":"Reddedildi",
                 "pending":"Beklemede",
                 "NEW":"Yeni",
                 "DRAFT":"Taslak",
                 "ARCHIVED":"Arşivde",
-                "draft":"Taslak"
+                "draft":"Taslak",
+                "new":"Yeni",
+                "archived":"Arşivde"
+                
 
               },
               "list":{
@@ -3665,9 +3681,12 @@
       "createdAt": "Oluşturulma Tarihi",
       "updatedAt": "Güncellenme Tarihi",
       "view": "Görüntüle",
-      "download": "İndir"
+      "download": "İndir",
+      "backToList": "Listeye Dön"
+      
     }
   }
 } 
+
 
 

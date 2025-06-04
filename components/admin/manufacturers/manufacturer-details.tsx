@@ -16,7 +16,7 @@ interface ManufacturerDetailsProps {
 }
 
 export function ManufacturerDetails({ manufacturerId }: ManufacturerDetailsProps) {
-  const t = useTranslations("adminDashboard.sections.manufacturers.details");
+  const t = useTranslations("adminDashboard.manufacturers.details");
   const [manufacturer, setManufacturer] = useState<Company | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -32,13 +32,18 @@ export function ManufacturerDetails({ manufacturerId }: ManufacturerDetailsProps
         const data = await companyService.getManufacturer(manufacturerId);
         setManufacturer(data);
       } catch (error) {
-        console.error("Error fetching manufacturer:", error);
       } finally {
         setIsLoading(false);
       }
     };
     fetchManufacturer();
   }, [manufacturerId]);
+
+  useEffect(() => {
+    if (manufacturer) {
+      console.log("Manufacturer:", manufacturer);
+    }
+  }, [manufacturer]);
 
   if (isLoading) {
     return (
@@ -68,17 +73,6 @@ export function ManufacturerDetails({ manufacturerId }: ManufacturerDetailsProps
             </Button>
           </Link>
           <h1 className="text-2xl font-semibold">{manufacturer.name}</h1>
-          <Badge
-            variant={
-              mapStatus(manufacturer.status) === "approved"
-                ? "success"
-                : mapStatus(manufacturer.status) === "rejected"
-                ? "destructive"
-                : "warning"
-            }
-          >
-            {t(`status.${mapStatus(manufacturer.status)}`)}
-          </Badge>
         </div>
         <div className="flex gap-2">
           {/* <Button variant="outline">{t("actions.reject")}</Button>
@@ -125,32 +119,6 @@ export function ManufacturerDetails({ manufacturerId }: ManufacturerDetailsProps
                 ? new Date(manufacturer.createdAt).toLocaleDateString()
                 : "-"}
             </p>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("verification.title")}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <span>{t("verification.document")}</span>
-              <Badge variant="warning">{t("verification.status.inProgress")}</Badge>
-            </div>
-            <div className="flex items-center justify-between">
-              <span>{t("verification.taxId")}</span>
-              <Badge variant="success">{t("verification.status.verified")}</Badge>
-            </div>
-            <div className="flex items-center justify-between">
-              <span>{t("verification.address")}</span>
-              <Badge variant="warning">{t("verification.status.pending")}</Badge>
-            </div>
-            <div className="flex items-center justify-between">
-              <span>{t("verification.contact")}</span>
-              <Badge variant="success">{t("verification.status.verified")}</Badge>
-            </div>
           </div>
         </CardContent>
       </Card>

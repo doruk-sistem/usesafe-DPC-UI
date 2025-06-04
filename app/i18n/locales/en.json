@@ -2068,6 +2068,7 @@
   "documentManagement": {
     "title": "Document Management",
     "description": "Manage your company documents and certificates",
+    "backToList": "Back to List",
     "repository": {
       "title": "Document Repository",
       "noDocumentsFound": "No documents found",
@@ -2196,9 +2197,18 @@
       },
       "details": {
         "backToList": "Back to List",
+        "documents":{
+          "list":{
+            "empty":{
+              "description":"No documents found for this manufacturer."
+            }
+          }
+        },
         "actions": {
           "reject": "Reject",
           "approve": "Approve"
+          
+          
         },
         "status": {
           "approved": "Approved",
@@ -2230,7 +2240,12 @@
     "sections": {
       "pendingApprovals": {
         "title": "Pending Approvals",
-        "description": "Recent approval requests requiring attention"
+        "description": "Recent approval requests requiring attention",
+        "products":{
+           "uncategorized": "Uncategorized"
+          
+        }
+
       },
       "systemAlerts": {
         "title": "System Alerts",
@@ -2311,7 +2326,8 @@
               "draft": "Draft",
               "approved": "Approved",
               "pending":"Pending",
-              "rejected":"Rejected"
+              "rejected":"Rejected",
+              "archived":"Archived"
               
 
             }
@@ -2977,8 +2993,11 @@
         "success":{
           "title": "QR Code Generated Successfully",
           "download": "QR Code Downloaded."
+          
+         
         }
-      }
+        
+      } 
     }
   }
 }

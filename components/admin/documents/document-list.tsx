@@ -171,10 +171,6 @@ export function DocumentList({ initialDocuments = [], filters, manufacturerId }:
       const document = filteredDocuments.find((doc) => doc.id === documentId);
 
       if (!document) {
-        console.error(
-          "Document not found in filtered documents. Document ID:",
-          documentId
-        );
         return;
       }
 
@@ -195,7 +191,6 @@ export function DocumentList({ initialDocuments = [], filters, manufacturerId }:
         description: "Document approved successfully",
       });
     } catch (error) {
-      console.error("Error approving document:", error);
       toast({
         title: "Error",
         description: "Failed to approve document. Please try again.",
@@ -216,10 +211,6 @@ export function DocumentList({ initialDocuments = [], filters, manufacturerId }:
       );
 
       if (!document) {
-        console.error(
-          "Belge bulunamadı. Belge ID:",
-          selectedDocumentId
-        );
         return;
       }
 
@@ -249,7 +240,6 @@ export function DocumentList({ initialDocuments = [], filters, manufacturerId }:
         description: "Belge başarıyla reddedildi",
       });
     } catch (error) {
-      console.error("Belge reddetme hatası:", error);
       toast({
         title: "Hata",
         description: "Belge reddedilemedi. Lütfen tekrar deneyin.",
@@ -265,7 +255,6 @@ export function DocumentList({ initialDocuments = [], filters, manufacturerId }:
 
   const submitRejectProduct = async () => {
     if (!selectedProductId || !rejectReason) {
-      console.error("Missing product ID or reject reason");
       return;
     }
 
@@ -283,7 +272,6 @@ export function DocumentList({ initialDocuments = [], filters, manufacturerId }:
       setRejectReason("");
       setSelectedProductId("");
     } catch (error) {
-      console.error("Error rejecting product:", error);
       toast({
         title: "Error",
         description: "Failed to reject product. Please try again.",

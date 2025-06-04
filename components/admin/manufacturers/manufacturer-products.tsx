@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, ExternalLink, ChevronLeft, ChevronRight } from "lucide-react";
+import { Box, ExternalLink, ChevronLeft, ChevronRight, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
@@ -30,6 +30,8 @@ function useProductForModal(id: string) {
 
 export function ManufacturerProducts({ manufacturerId }: ManufacturerProductsProps) {
   const t = useTranslations("adminDashboard.sections.manufacturers.details");
+  const tCategories = useTranslations("products.list.categories");
+  const tProducts = useTranslations("products");
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const ITEMS_PER_PAGE = 10;
@@ -40,11 +42,8 @@ export function ManufacturerProducts({ manufacturerId }: ManufacturerProductsPro
   const filteredProducts = statusFilter === "all"
     ? products
     : products.filter((product) => {
-        if (statusFilter === "approved") return product.status === "APPROVED" || product.status === "approved";
-        if (statusFilter === "pending") return product.status === "PENDING" || product.status === "pending";
-        if (statusFilter === "rejected") return product.status === "REJECTED" || product.status === "rejected";
-        if (statusFilter === "draft") return product.status === "DRAFT" || product.status === "draft";
-        return product.status === statusFilter;
+        const status = (product.status || "").toLowerCase();
+        return status === statusFilter.toLowerCase();
       });
   const paginatedProducts = filteredProducts.slice(startIndex, startIndex + ITEMS_PER_PAGE);
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
@@ -80,25 +79,39 @@ export function ManufacturerProducts({ manufacturerId }: ManufacturerProductsPro
   if (loading) return <div>Loading...</div>;
   return (
     <div className="space-y-4">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-end gap-4">
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-[200px]">
-            <SelectValue placeholder={t("products.filterByStatus") || "All Statuses"} />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">{t("products.allStatus") || "All Statuses"}</SelectItem>
-            <SelectItem value="approved">{t("products.status.approved") || "Approved"}</SelectItem>
-            <SelectItem value="pending">{t("products.status.pending") || "Pending"}</SelectItem>
-            <SelectItem value="rejected">{t("products.status.rejected") || "Rejected"}</SelectItem>
-            <SelectItem value="draft">{t("products.status.draft") || "Draft"}</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
       <Card>
         <CardHeader>
-          <CardTitle>{t("products.title")}</CardTitle>
+          <div className="flex items-center gap-4 mb-2">
+            <Link href="/admin/manufacturers">
+              <Button variant="ghost" size="sm">
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                {t("backToList")}
+              </Button>
+            </Link>
+            <CardTitle>{t("products.title")}</CardTitle>
+          </div>
         </CardHeader>
         <CardContent>
+          {/* Status Filter Dropdown - top right */}
+          <div className="flex items-center justify-between mb-4">
+            <div />
+            <div className="flex items-center gap-2">
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger className="w-[160px]">
+                  <SelectValue placeholder={t("products.allStatus")} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">{t("products.allStatus")}</SelectItem>
+                  <SelectItem value="approved">{t("products.status.approved")}</SelectItem>
+                  <SelectItem value="pending">{t("products.status.pending")}</SelectItem>
+                  <SelectItem value="rejected">{t("products.status.rejected")}</SelectItem>
+                  <SelectItem value="draft">{t("products.status.draft")}</SelectItem>
+                  <SelectItem value="archived">{t("products.status.archived")}</SelectItem>
+                  <SelectItem value="new">{t("products.status.NEW")}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
           <div className="space-y-4">
             {filteredProducts.length === 0 && <div>{t("products.list.empty.description")}</div>}
             {paginatedProducts.map((product) => (
@@ -111,12 +124,8 @@ export function ManufacturerProducts({ manufacturerId }: ManufacturerProductsPro
                   <div>
                     <p className="font-medium">{product.name}</p>
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <span>{t("products.category")}: {product.category}</span>
-                      <span>·</span>
-                      <span>{product.id}</span>
                       {product.certifiedAt && (
                         <>
-                          <span>·</span>
                           <span>
                             {t("products.certifiedAt")} {new Date(product.certifiedAt).toLocaleDateString()}
                           </span>

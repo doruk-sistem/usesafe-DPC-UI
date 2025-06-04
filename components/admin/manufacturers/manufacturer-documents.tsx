@@ -1,9 +1,10 @@
 "use client";
 
-import { Download, FileText, ChevronLeft, ChevronRight } from "lucide-react";
+import { Download, FileText, ChevronLeft, ChevronRight, ArrowLeft } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
-import { DocumentService } from "@/lib/services/document";
+import { supabase } from "@/lib/supabase/client";
+import Link from "next/link";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -13,8 +14,21 @@ interface ManufacturerDocumentsProps {
   manufacturerId: string;
 }
 
+// Belge tipinden Türkçe isim eşleştirmesi
+const documentTypeLabels: Record<string, string> = {
+  tax_plate: "Vergi Levhası",
+  export_certificate: "İhracat Sertifikası",
+  quality_certificate: "Kalite Sertifikası",
+  production_permit: "Üretim İzni",
+  iso_certificate: "ISO Sertifikası",
+  signature_circular: "İmza Sirküleri",
+  trade_registry_gazette: "Ticaret Sicil Gazetesi",
+  activity_certificate: "Faaliyet Belgesi",
+  // Diğer tipler eklenebilir
+};
+
 export function ManufacturerDocuments({ manufacturerId }: ManufacturerDocumentsProps) {
-  const t = useTranslations("adminDashboard.sections.manufacturers.details");
+  const t = useTranslations("adminDashboard.manufacturers.details");
   const [documents, setDocuments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const ITEMS_PER_PAGE = 10;
@@ -43,19 +57,62 @@ export function ManufacturerDocuments({ manufacturerId }: ManufacturerDocumentsP
   useEffect(() => {
     async function fetchDocuments() {
       setLoading(true);
-      const docs = await DocumentService.getDocumentsByManufacturer(manufacturerId);
-      console.log("Fetched documents:", docs);
-      setDocuments(docs);
-      setLoading(false);
+      if (!manufacturerId) {
+        setDocuments([]);
+        setLoading(false);
+        return;
+      }
+      try {
+        const { data: companyDocs, error } = await supabase
+          .from("company_documents")
+          .select("*")
+          .eq("companyId", manufacturerId);
+
+        if (error) {
+          console.error("Error fetching documents:", error);
+          setDocuments([]);
+          return;
+        }
+
+        const filteredDocs = (companyDocs || []).filter(doc => {
+          if (!doc) return false;
+          if (!doc.filePath) return false;
+          return (
+            !doc.productId ||
+            doc.productId === null ||
+            doc.productId === undefined ||
+            doc.productId === "" ||
+            doc.productId === "null" ||
+            doc.productId === "undefined" ||
+            doc.productId === 0 ||
+            doc.productId === false ||
+            (typeof doc.productId === "number" && isNaN(doc.productId))
+          );
+        }).map(doc => ({
+          ...doc,
+          name: doc.name || 'Unnamed Document',
+          type: doc.type || 'Unknown',
+          status: doc.status || 'pending',
+          filePath: doc.filePath || '',
+          uploadedAt: doc.uploadedAt || new Date().toISOString()
+        }));
+
+        setDocuments(filteredDocs);
+      } catch (err) {
+        console.error("Error in fetchDocuments:", err);
+        setDocuments([]);
+      } finally {
+        setLoading(false);
+      }
     }
     fetchDocuments();
   }, [manufacturerId]);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div>Yükleniyor...</div>;
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{t("documents.title")}</CardTitle>
+        <CardTitle>Belgeler</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
@@ -68,47 +125,32 @@ export function ManufacturerDocuments({ manufacturerId }: ManufacturerDocumentsP
               <div className="flex items-start gap-4">
                 <FileText className="h-8 w-8 text-muted-foreground" />
                 <div>
-                  <p className="font-medium">{doc.name}</p>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <span>{doc.type}</span>
-                    <span>·</span>
-                    <span>
-                      {t("documents.uploadedAt")} {new Date(doc.uploadedAt).toLocaleDateString()}
-                    </span>
-                  </div>
+                  <p className="font-medium">
+                    {documentTypeLabels[doc.type] || doc.name}
+                  </p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <Badge
-                  variant={
-                    doc.status === "verified" || doc.status === "approved"
-                      ? "success"
-                      : doc.status === "rejected"
-                      ? "destructive"
-                      : "warning"
-                  }
-                >
-                  {t(`documents.status.${doc.status.toUpperCase()}`)}
-                </Badge>
                 <Button
                   variant="ghost"
                   size="icon"
-                  disabled={!doc.url}
+                  disabled={!doc.filePath}
                   onClick={async () => {
-                    if (!doc.url) return;
+                    if (!doc.filePath) return;
                     try {
-                      const response = await fetch(doc.url);
-                      const blob = await response.blob();
-                      const url = window.URL.createObjectURL(blob);
-                      const a = document.createElement("a");
-                      a.href = url;
-                      a.download = doc.name || "document";
-                      document.body.appendChild(a);
-                      a.click();
-                      window.URL.revokeObjectURL(url);
-                      document.body.removeChild(a);
+                      const { data: { publicUrl } } = supabase.storage
+                        .from("company-documents")
+                        .getPublicUrl(doc.filePath);
+
+                      if (!publicUrl) {
+                        console.error("No public URL available for document");
+                        return;
+                      }
+
+                      // Belgeyi yeni sekmede aç
+                      window.open(publicUrl, '_blank');
                     } catch (error) {
-                      console.error("Error downloading document:", error);
+                      console.error("Error opening document:", error);
                     }
                   }}
                 >

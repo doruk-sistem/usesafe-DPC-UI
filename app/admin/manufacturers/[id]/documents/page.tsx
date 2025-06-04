@@ -2,14 +2,14 @@
 
 import { useTranslations } from "next-intl";
 import { DocumentService } from "@/lib/services/document";
-import { useState, useEffect, use } from "react";
+import { useState, useEffect, use, useMemo } from "react";
 import { Document } from "@/lib/types/document";
 import { Loading } from "@/components/ui/loading";
 import { Error } from "@/components/ui/error";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { FileText, Download, ChevronLeft, ChevronRight } from "lucide-react";
+import { FileText, Download, ChevronLeft, ChevronRight, ArrowLeft } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -43,22 +43,40 @@ import {
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ProductDocuments } from "@/components/dashboard/products/product-documents";
+import { supabase } from "@/lib/supabase/client";
+import { useToast } from "@/components/ui/use-toast";
+import { CompanyDocumentService } from "@/lib/services/companyDocument";
+import Link from "next/link";
 
 function getPaginationRange(current: number, total: number): (number | string)[] {
+  if (total <= 1) return [1];
+  
   const delta = 2;
   const range: (number | string)[] = [];
+  
+  // Her zaman ilk sayfayı ekle
+  range.push(1);
+  
+  // Orta kısmı oluştur
   for (let i = Math.max(2, current - delta); i <= Math.min(total - 1, current + delta); i++) {
     range.push(i);
   }
-  if (current - delta > 2) {
-    range.unshift('...');
+  
+  // Son sayfayı ekle (eğer toplam sayfa sayısı 1'den büyükse)
+  if (total > 1) {
+    range.push(total);
   }
-  if (current + delta < total - 1) {
-    range.push('...');
+  
+  // Eksik sayıları "..." ile doldur
+  const result: (number | string)[] = [];
+  for (let i = 0; i < range.length; i++) {
+    if (i > 0 && typeof range[i] === 'number' && typeof range[i - 1] === 'number' && Number(range[i]) - Number(range[i - 1]) > 1) {
+      result.push('...');
+    }
+    result.push(range[i]);
   }
-  range.unshift(1);
-  if (total > 1) range.push(total);
-  return range;
+  
+  return result;
 }
 
 interface PageProps {
@@ -69,7 +87,7 @@ interface PageProps {
 
 export default function ManufacturerDocumentsPage({ params }: PageProps) {
   const t = useTranslations();
-  const { id } = use(params);
+  const { id: manufacturerId } = use(params);
   const [documents, setDocuments] = useState<Document[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
@@ -80,32 +98,112 @@ export default function ManufacturerDocumentsPage({ params }: PageProps) {
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const [showRejectDialog, setShowRejectDialog] = useState(false);
   const [rejectionReason, setRejectionReason] = useState("");
+  const { toast } = useToast();
+
+  // Belge tipinden Türkçe isim eşleştirmesi
+  const documentTypeLabels: Record<string, string> = {
+    tax_plate: "Vergi Levhası",
+    export_certificate: "İhracat Sertifikası",
+    quality_certificate: "Kalite Sertifikası",
+    production_permit: "Üretim İzni",
+    iso_certificate: "ISO Sertifikası",
+    signature_circular: "İmza Sirküleri",
+    trade_registry_gazette: "Ticaret Sicil Gazetesi",
+    activity_certificate: "Faaliyet Belgesi",
+    // Diğer tipler eklenebilir
+  };
 
   useEffect(() => {
     async function fetchDocuments() {
       try {
         setIsLoading(true);
-        const docs = await DocumentService.getDocumentsByManufacturer(id);
-        setDocuments(docs);
+        const { data: companyDocs, error } = await supabase
+          .from("company_documents")
+          .select("*")
+          .eq("companyId", manufacturerId);
+        
+        if (error) {
+          throw error;
+        }
+
+        // Veri kontrolü ve dönüşümü
+        const docsArray = Array.isArray(companyDocs) ? companyDocs : [];
+        const filteredDocs = docsArray.filter(doc => {
+          if (!doc) return false;
+          // filePath değeri olmayan belgeleri filtrele
+          if (!doc.filePath) return false;
+          return (
+            !doc.productId ||
+            doc.productId === null ||
+            doc.productId === undefined ||
+            doc.productId === "" ||
+            doc.productId === "null" ||
+            doc.productId === "undefined" ||
+            doc.productId === 0 ||
+            doc.productId === false ||
+            (typeof doc.productId === "number" && isNaN(doc.productId))
+          );
+        }).map(doc => {
+          const filePath = doc.filePath;
+          const fileName = filePath.split('/').pop() || 'Unnamed Document';
+          
+          return {
+            ...doc,
+            name: doc.name || fileName,
+            type: doc.type || 'Unknown',
+            status: doc.status || 'pending',
+            fileSize: doc.fileSize || '0 KB',
+            version: doc.version || '1.0',
+            filePath: filePath
+          };
+        });
+
+        setDocuments(filteredDocs);
       } catch (err) {
         setError(err as Error);
+        setDocuments([]);
       } finally {
         setIsLoading(false);
       }
     }
 
-    fetchDocuments();
-  }, [id]);
+    if (manufacturerId) {
+      fetchDocuments();
+    } else {
+      setDocuments([]);
+      setIsLoading(false);
+    }
+  }, [manufacturerId]);
 
-  const filteredDocuments = documents.filter((doc) =>
-    statusFilter === "all" ? true : doc.status === statusFilter
-  );
+  // Filtreleme işlemi
+  const filteredDocuments = useMemo(() => {
+    if (!documents) return [];
+    return documents.filter((doc) =>
+      statusFilter === "all" ? true : doc?.status === statusFilter
+    );
+  }, [documents, statusFilter]);
 
-  const totalPages = Math.ceil(filteredDocuments.length / ITEMS_PER_PAGE);
-  const paginatedDocuments = filteredDocuments.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
-  );
+  // Sayfalama hesaplamaları
+  const totalPages = useMemo(() => 
+    Math.max(1, Math.ceil((filteredDocuments?.length || 0) / ITEMS_PER_PAGE))
+  , [filteredDocuments]);
+
+  const paginatedDocuments = useMemo(() => 
+    filteredDocuments.slice(
+      (currentPage - 1) * ITEMS_PER_PAGE,
+      currentPage * ITEMS_PER_PAGE
+    )
+  , [filteredDocuments, currentPage, ITEMS_PER_PAGE]);
+
+  // Sayfa değiştiğinde currentPage'i sıfırla
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [statusFilter]);
+
+  // Sayfalama aralığını hesapla
+  const paginationRange = useMemo(() => 
+    getPaginationRange(currentPage, totalPages)
+  , [currentPage, totalPages]);
 
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
@@ -118,6 +216,42 @@ export default function ManufacturerDocumentsPage({ params }: PageProps) {
     setShowRejectDialog(false);
     setRejectionReason("");
     setSelectedProductId(null);
+  };
+
+  const handleDownload = async (doc: Document) => {
+    try {
+      if (!doc.filePath) {
+        toast({
+          title: "Error",
+          description: "Document URL not available",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Doğrudan Supabase storage'dan public URL al
+      const { data: { publicUrl } } = supabase.storage
+        .from("company-documents")
+        .getPublicUrl(doc.filePath);
+
+      if (!publicUrl) {
+        toast({
+          title: "Error",
+          description: "Document URL not available",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Belgeyi yeni sekmede aç
+      window.open(publicUrl, '_blank');
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to open document",
+        variant: "destructive",
+      });
+    }
   };
 
   if (isLoading) {
@@ -136,27 +270,16 @@ export default function ManufacturerDocumentsPage({ params }: PageProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <div>
+        <div className="flex items-center gap-4">
+          <Link href="/admin/manufacturers">
+            <Button variant="ghost" size="sm">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              {t("documentManagement.backToList")}
+            </Button>
+          </Link>
           <h1 className="text-2xl font-semibold">
             {t("documentManagement.title")}
           </h1>
-          <p className="text-muted-foreground">
-            {t("documentManagement.repository.description.forManufacturer")}
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Filter by status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{t("documentManagement.repository.statuses.all")}</SelectItem>
-              <SelectItem value="pending">{t("documentManagement.repository.statuses.pending")}</SelectItem>
-              <SelectItem value="approved">{t("documentManagement.repository.statuses.approved")}</SelectItem>
-              <SelectItem value="rejected">{t("documentManagement.repository.statuses.rejected")}</SelectItem>
-              <SelectItem value="expired">{t("documentManagement.repository.statuses.expired")}</SelectItem>
-            </SelectContent>
-          </Select>
         </div>
       </div>
 
@@ -181,10 +304,6 @@ export default function ManufacturerDocumentsPage({ params }: PageProps) {
                 <TableHeader>
                   <TableRow>
                     <TableHead>{t("documentManagement.repository.document")}</TableHead>
-                    <TableHead>{t("documentManagement.repository.type")}</TableHead>
-                    <TableHead>{t("documentManagement.repository.status")}</TableHead>
-                    <TableHead>{t("documentManagement.repository.validUntil")}</TableHead>
-                    <TableHead>{t("documentManagement.repository.version")}</TableHead>
                     <TableHead></TableHead>
                   </TableRow>
                 </TableHeader>
@@ -199,56 +318,22 @@ export default function ManufacturerDocumentsPage({ params }: PageProps) {
                               <Tooltip>
                                 <TooltipTrigger asChild>
                                   <p className="font-medium truncate max-w-[200px]">
-                                    {doc.name.length > 25
-                                      ? `${doc.name.slice(0, 25)}...`
-                                      : doc.name}
+                                    {documentTypeLabels[doc.type] || doc.name}
                                   </p>
                                 </TooltipTrigger>
                                 <TooltipContent side="top" align="start">
-                                  <p className="max-w-[300px] break-words text-xs">
-                                    {doc.name}
-                                  </p>
+                                  {/* Dosya boyutu veya ID gösterilmeyecek */}
                                 </TooltipContent>
                               </Tooltip>
                             </TooltipProvider>
-                            <p className="text-sm text-muted-foreground">
-                              {doc.id} · {doc.fileSize}
-                            </p>
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell>{doc.type}</TableCell>
-                      <TableCell><Badge
-  variant={
-    doc.status === "approved"
-      ? "success"
-      : doc.status === "rejected"
-      ? "destructive"
-      : doc.status === "expired"
-      ? "warning"
-      : "default"
-  }
-  className="flex w-fit items-center gap-1"
->
-  {getStatusIcon(doc.status || "pending")}
-  {t(`documentManagement.status.${doc.status === "approved" ? "approved" : 
-     doc.status === "rejected" ? "rejected" : 
-     doc.status === "expired" ? "expired" : 
-     "pending"}`)}
-</Badge>
-          
-                      </TableCell>
-                      <TableCell>
-                        {doc.validUntil
-                          ? new Date(doc.validUntil).toLocaleDateString()
-                          : "N/A"}
-                      </TableCell>
-                      <TableCell>v{doc.version}</TableCell>
                       <TableCell>
                         <Button
                           variant="ghost"
                           size="icon"
-                          onClick={() => window.open(doc.url, "_blank")}
+                          onClick={() => handleDownload(doc)}
                         >
                           <Download className="h-4 w-4" />
                         </Button>
@@ -257,7 +342,7 @@ export default function ManufacturerDocumentsPage({ params }: PageProps) {
                   ))}
                 </TableBody>
               </Table>
-              {totalPages > 1 && (
+              {totalPages > 1 && filteredDocuments.length > 0 && (
                 <nav className="flex justify-center items-center gap-1 mt-6 select-none" aria-label="Pagination">
                   <button
                     onClick={() => handlePageChange(currentPage - 1)}
@@ -268,7 +353,7 @@ export default function ManufacturerDocumentsPage({ params }: PageProps) {
                   >
                     <ChevronLeft className="w-4 h-4" />
                   </button>
-                  {getPaginationRange(currentPage, totalPages).map((page, idx) =>
+                  {paginationRange.map((page, idx) =>
                     typeof page === 'string'
                       ? <span key={"ellipsis-"+idx} className="w-9 h-9 flex items-center justify-center text-muted-foreground text-sm">...</span>
                       : <button

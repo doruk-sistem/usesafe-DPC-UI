@@ -56,13 +56,12 @@ export function ManufacturerList() {
         // Fetch product and document counts for each manufacturer
         const productCountPromises = results.map(async (manufacturer) => {
           const products = await productService.getProducts({ manufacturerId: manufacturer.id });
-          // Document count: sum all document arrays in all products
-          const documentCount = products.reduce((acc, product) => {
-            if (product.documents && typeof product.documents === 'object') {
-              return acc + Object.values(product.documents).flat().length;
-            }
-            return acc;
-          }, 0);
+          // Sadece company_documents tablosundaki aktif (filePath'i dolu) belgeleri say
+          const { data: companyDocs, error } = await supabase
+            .from("company_documents")
+            .select("id, filePath")
+            .eq("companyId", manufacturer.id);
+          const documentCount = companyDocs ? companyDocs.filter(doc => !!doc.filePath).length : 0;
           return { id: manufacturer.id, productCount: products.length, documentCount };
         });
         const countsArr = await Promise.all(productCountPromises);
@@ -197,17 +196,6 @@ export function ManufacturerList() {
                           {t("list.actions.viewProducts")}
                         </Link>
                       </DropdownMenuItem>
-                      {mapStatus(manufacturer.status) === "pending" && (
-                        <>
-                          <DropdownMenuSeparator />
-                          {/* <DropdownMenuItem className="text-green-600">
-                            {t("list.actions.approve")}
-                          </DropdownMenuItem>
-                          <DropdownMenuItem className="text-red-600">
-                            {t("list.actions.reject")}
-                          </DropdownMenuItem> */}
-                        </>
-                      )}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>
