@@ -2175,7 +2175,8 @@
           "reviewDocuments": "Review Documents",
           "viewProducts": "View Products",
           "approve": "Approve",
-          "reject": "Reject"
+          "reject": "Reject",
+          "view": "View"
         },
         "status": {
           "pending": "Pending",

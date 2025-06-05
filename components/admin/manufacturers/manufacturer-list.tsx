@@ -75,11 +75,20 @@ export function ManufacturerList() {
         // Ürün ve belge sayıları
         const productCountPromises = (manufacturersData || []).map(async (manufacturer) => {
           const products = await productService.getProducts({ manufacturerId: manufacturer.id });
-          const { data: companyDocs } = await supabase
+          
+          // Get company document count
+          const { data: companyDocs, error: docError } = await supabase
             .from("company_documents")
-            .select("id, filePath")
-            .eq("companyId", manufacturer.id);
-          const documentCount = companyDocs ? companyDocs.filter(doc => !!doc.filePath).length : 0;
+            .select("id")
+            .eq("companyId", manufacturer.id)
+            .not("filePath", "is", null);
+
+          if (docError) {
+            console.error("Error fetching company documents:", docError);
+            return { id: manufacturer.id, productCount: products.length, documentCount: 0 };
+          }
+
+          const documentCount = companyDocs?.length || 0;
           return { id: manufacturer.id, productCount: products.length, documentCount };
         });
         const countsArr = await Promise.all(productCountPromises);

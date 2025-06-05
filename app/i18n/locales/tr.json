@@ -2994,7 +2994,8 @@
           "reviewDocuments": "Belgeleri İncele",
           "viewProducts": "Ürünleri Görüntüle",
           "approve": "Onayla",
-          "reject": "Reddet"
+          "reject": "Reddet",
+          "view": "Görüntüle"
         },
         "status": {
           "pending": "Beklemede",
