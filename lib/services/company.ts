@@ -87,7 +87,7 @@ export class CompanyService {
         email: string;
       };
     },
-    mainCompany: Company
+    mainCompany?: Company
   ): Promise<{ success: boolean; message?: string; companyId?: string }> {
     try {
       const { data: company, error: companyError } = await supabase
@@ -96,8 +96,8 @@ export class CompanyService {
           {
             name: data.name,
             taxInfo: data.taxInfo,
-            companyType: data.companyType,
-            status: true
+            companyType: "manufacturer", // Always set to manufacturer
+            status: false // Always start as pending
           },
         ])
         .select()
@@ -105,27 +105,31 @@ export class CompanyService {
 
       if (companyError) throw companyError;
 
-      try {
-        const response = await fetch('/api/invite', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ 
-            email: data.contact.email, 
-            company_name: mainCompany?.name,
-            full_name: data.contact.name,
-            company_id: company.id,
-          }),
-        });
-        
-        const result = await response.json();
-        
-        if (!response.ok) {
-          throw new Error(result.error);
+      // Only send invite if mainCompany is provided
+      if (mainCompany) {
+        try {
+          const response = await fetch('/api/invite', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ 
+              email: data.contact.email, 
+              company_name: mainCompany?.name,
+              full_name: data.contact.name,
+              company_id: company.id,
+            }),
+          });
+          
+          const result = await response.json();
+          
+          if (!response.ok) {
+            throw new Error(result.error);
+          }
+        } catch (error) {
+          console.error("Error sending invite:", error);
+          // Don't throw here, as the company was created successfully
         }
-      } catch (error) {
-        throw error;
       }
 
       return {
@@ -149,8 +153,8 @@ export class CompanyService {
       .from("companies")
       .select("id, name, taxInfo, companyType, status, createdAt")
       .or(`name.ilike.%${query}%, taxInfo->>'taxNumber'.ilike.%${query}%`)
-      .in("companyType", ["manufacturer", "factory"])
-      .limit(10);
+      .eq("companyType", "manufacturer")
+      .order("createdAt", { ascending: false });
 
     if (error) {
       console.error("Error searching manufacturers:", error);
@@ -330,67 +334,6 @@ export const companyService = createService({
     });
   },
 
-  // Üretici oluştur
-  createManufacturer: async (data: {
-    name: string;
-    taxInfo: {
-      taxNumber: string;
-    };
-    companyType: string;
-    contact: {
-      name: string;
-      email: string;
-    };
-  }): Promise<{ success: boolean; message?: string; companyId?: string }> => {
-    try {
-      const { data: company, error: companyError } = await supabase
-        .from("companies")
-        .insert([
-          {
-            name: data.name,
-            taxInfo: data.taxInfo,
-            companyType: data.companyType,
-            status: true
-          },
-        ])
-        .select()
-        .single();
-
-      if (companyError) throw companyError;
-
-      return {
-        success: true,
-        companyId: company.id,
-      };
-    } catch (error) {
-      console.error("Error creating manufacturer:", error);
-      return {
-        success: false,
-        message:
-          error instanceof Error
-            ? error.message
-            : "Failed to create manufacturer",
-      };
-    }
-  },
-
-
-  searchManufacturers: async (query: string): Promise<Company[]> => {
-    const { data, error } = await supabase
-      .from("companies")
-      .select("id, name, taxInfo, companyType, status, createdAt")
-      .or(`name.ilike.%${query}%, taxInfo->>'taxNumber'.ilike.%${query}%`)
-      .in("companyType", ["manufacturer", "factory"])
-      .limit(10);
-
-    if (error) {
-      console.error("Error searching manufacturers:", error);
-      throw error;
-    }
-
-    return data || [];
-  },
-
   // Üretici getir
   getManufacturer: async (id: string): Promise<Company | null> => {
     const { data, error } = await supabase
@@ -406,5 +349,22 @@ export const companyService = createService({
     }
 
     return data;
+  },
+
+  // Üreticileri ara
+  searchManufacturers: async (query: string): Promise<Company[]> => {
+    const { data, error } = await supabase
+      .from("companies")
+      .select("id, name, taxInfo, companyType, status, createdAt")
+      .or(`name.ilike.%${query}%, taxInfo->>'taxNumber'.ilike.%${query}%`)
+      .eq("companyType", "manufacturer")
+      .order("createdAt", { ascending: false });
+
+    if (error) {
+      console.error("Error searching manufacturers:", error);
+      throw error;
+    }
+
+    return data || [];
   },
 });

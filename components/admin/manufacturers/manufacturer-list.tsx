@@ -30,10 +30,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { companyService } from "@/lib/services/company";
 import type { Company } from "@/lib/types/company";
 import { productService } from "@/lib/services/product";
-import { DocumentService } from "@/lib/services/document";
 import { supabase } from "@/lib/supabase/client";
 
 export function ManufacturerList() {
@@ -51,13 +49,33 @@ export function ManufacturerList() {
   useEffect(() => {
     const fetchManufacturers = async () => {
       try {
-        const results = await companyService.searchManufacturers("");
-        setManufacturers(results);
-        // Fetch product and document counts for each manufacturer
-        const productCountPromises = results.map(async (manufacturer) => {
+        // 1. Tüm ürünlerden manufacturer_id'leri çek (tekrarsız)
+        const { data: productManufacturers, error: prodErr } = await supabase
+          .from("products")
+          .select("manufacturer_id")
+          .not("manufacturer_id", "is", null);
+        if (prodErr) throw prodErr;
+        const uniqueManufacturerIds = Array.from(
+          new Set((productManufacturers || []).map((p) => p.manufacturer_id))
+        ).filter(Boolean);
+        if (uniqueManufacturerIds.length === 0) {
+          setManufacturers([]);
+          setIsLoading(false);
+          return;
+        }
+        // 2. Bu id'lere sahip firmaları getir
+        const { data: manufacturersData, error: manuErr } = await supabase
+          .from("companies")
+          .select("id, name, taxInfo, companyType, status, createdAt")
+          .in("id", uniqueManufacturerIds)
+          .eq("companyType", "manufacturer")
+          .order("createdAt", { ascending: false });
+        if (manuErr) throw manuErr;
+        setManufacturers(manufacturersData || []);
+        // Ürün ve belge sayıları
+        const productCountPromises = (manufacturersData || []).map(async (manufacturer) => {
           const products = await productService.getProducts({ manufacturerId: manufacturer.id });
-          // Sadece company_documents tablosundaki aktif (filePath'i dolu) belgeleri say
-          const { data: companyDocs, error } = await supabase
+          const { data: companyDocs } = await supabase
             .from("company_documents")
             .select("id, filePath")
             .eq("companyId", manufacturer.id);
@@ -183,17 +201,7 @@ export function ManufacturerList() {
                       <DropdownMenuSeparator />
                       <DropdownMenuItem asChild>
                         <Link href={`/admin/manufacturers/${manufacturer.id}`}>
-                          {t("list.actions.viewDetails")}
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link href={`/admin/manufacturers/${manufacturer.id}/documents`}>
-                          {t("list.actions.reviewDocuments")}
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link href={`/admin/manufacturers/${manufacturer.id}/products`}>
-                          {t("list.actions.viewProducts")}
+                          {t("list.actions.view")}
                         </Link>
                       </DropdownMenuItem>
                     </DropdownMenuContent>
@@ -203,45 +211,6 @@ export function ManufacturerList() {
             ))}
           </TableBody>
         </Table>
-        {/* Pagination UI */}
-        {totalPages > 1 && (
-          <nav className="flex justify-center items-center gap-1 mt-6 select-none" aria-label="Pagination">
-            <button
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-              disabled={currentPage === 1}
-              className={`w-9 h-9 flex items-center justify-center rounded-lg border transition-colors duration-150 text-lg
-                ${currentPage === 1 ? 'bg-muted text-muted-foreground border-muted cursor-not-allowed' : 'bg-white hover:bg-muted/70 border-muted text-muted-foreground'}`}
-              aria-label="Previous Page"
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-            {getPaginationRange(currentPage, totalPages).map((page, idx) =>
-              typeof page === 'string'
-                ? <span key={"ellipsis-"+idx} className="w-9 h-9 flex items-center justify-center text-muted-foreground text-sm">...</span>
-                : <button
-                    key={page}
-                    onClick={() => setCurrentPage(Number(page))}
-                    className={`w-9 h-9 flex items-center justify-center rounded-lg border transition-colors duration-150 font-medium
-                      ${currentPage === page
-                        ? 'bg-primary/10 text-primary border-primary font-semibold'
-                        : 'bg-white text-muted-foreground border-muted hover:bg-muted/70'}
-                    `}
-                    aria-current={currentPage === page ? 'page' : undefined}
-                  >
-                    {page}
-                  </button>
-            )}
-            <button
-              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-              disabled={currentPage === totalPages}
-              className={`w-9 h-9 flex items-center justify-center rounded-lg border transition-colors duration-150 text-lg
-                ${currentPage === totalPages ? 'bg-muted text-muted-foreground border-muted cursor-not-allowed' : 'bg-white hover:bg-muted/70 border-muted text-muted-foreground'}`}
-              aria-label="Next Page"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </nav>
-        )}
       </CardContent>
     </Card>
   );
