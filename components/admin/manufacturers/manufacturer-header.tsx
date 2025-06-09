@@ -1,3 +1,4 @@
+"use client";
 import { Download, Plus } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
@@ -23,7 +24,7 @@ export function ManufacturerHeader() {
         </p>
       </div>
       <div className="flex items-center gap-2">
-        <Select defaultValue="all">
+        {/* <Select defaultValue="all">
           <SelectTrigger className="w-[160px]">
             <SelectValue placeholder={t("filters.status")} />
           </SelectTrigger>
@@ -33,8 +34,8 @@ export function ManufacturerHeader() {
             <SelectItem value="approved">{t("filters.approved")}</SelectItem>
             <SelectItem value="rejected">{t("filters.rejected")}</SelectItem>
           </SelectContent>
-        </Select>
-        <Button variant="outline" size="icon">
+        </Select> */}
+        {/* <Button variant="outline" size="icon">
           <Download className="h-4 w-4" />
         </Button>
         <Button asChild>
@@ -42,7 +43,7 @@ export function ManufacturerHeader() {
             <Plus className="h-4 w-4 mr-2" />
             {t("actions.addNew")}
           </Link>
-        </Button>
+        </Button> */}
       </div>
     </div>
   );

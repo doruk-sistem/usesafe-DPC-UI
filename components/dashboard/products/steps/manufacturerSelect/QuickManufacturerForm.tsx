@@ -70,12 +70,11 @@ export function QuickManufacturerForm({ onSuccess, onCancel }: QuickManufacturer
         taxInfo: {
           taxNumber: data.taxNumber,
         },
-        companyType: CompanyType.MANUFACTURER,
+        companyType: "manufacturer",
         contact: {
           name: data.contactName,
           email: data.contactEmail,
-        },
-        status: false,
+        }
       }
 
       const response = await CompanyService.createManufacturer(company, mainCompany);
@@ -83,11 +82,12 @@ export function QuickManufacturerForm({ onSuccess, onCancel }: QuickManufacturer
       if (response.success) {
         toast({
           title: "Success",
-          description: "Manufacturer created successfully",
+          description: "Manufacturer created successfully and pending approval",
         });
         onSuccess({
           ...company,
           id: response.companyId,
+          status: false
         });
       } else {
         throw new Error(response.message || "Failed to create manufacturer");

@@ -177,4 +177,28 @@ export class DocumentService {
       throw error;
     }
   }
+
+  static async getDocumentsByManufacturer(manufacturerId: string) {
+    try {
+      const { data: products, error } = await supabase
+        .from("products")
+        .select("*")
+        .eq("manufacturer_id", manufacturerId);
+
+      if (error) throw error;
+
+      // Tüm ürünlerin dökümanlarını birleştir
+      const allDocuments = (products || []).flatMap((product: any) => {
+        if (!product.documents) return [];
+        if (Array.isArray(product.documents)) return product.documents;
+        // Eğer obje ise, tüm tipleri birleştir
+        return Object.values(product.documents).flat();
+      });
+
+      return allDocuments;
+    } catch (err) {
+      console.error("getDocumentsByManufacturer error:", err);
+      throw err;
+    }
+  }
 }
