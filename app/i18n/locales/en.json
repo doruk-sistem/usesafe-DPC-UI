@@ -2216,6 +2216,15 @@
           "rejected": "Rejected",
           "pending": "Pending"
         },
+        "companies" : {
+           "details" : {
+            "title" : "Company Details",
+            "description" : "View and manage company details",
+            "columns" : {
+              
+            }
+           }
+        },
         "companyInfo": {
           "title": "Company Information",
           "email": "Email",

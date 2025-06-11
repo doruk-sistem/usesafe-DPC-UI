@@ -1,10 +1,9 @@
 "use client";
 
-import { Plus, Search, MoreHorizontal } from "lucide-react";
+import { Box, ExternalLink } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -13,30 +12,10 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { useProduct } from "@/lib/hooks/use-product";
+import { ProductDetails } from "@/components/products/product-details";
 import { useProducts } from "@/lib/hooks/use-products";
 
 interface CompanyProductsProps {
@@ -46,8 +25,9 @@ interface CompanyProductsProps {
 export function CompanyProducts({ companyId }: CompanyProductsProps) {
   const t = useTranslations("admin.products");
   const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState("all");
   const { products, isLoading, error } = useProducts(companyId);
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
+  const { product: selectedProduct, isLoading: isProductLoading, error: productError } = useProduct(selectedProductId || "");
 
   if (error) {
     return (
@@ -71,93 +51,76 @@ export function CompanyProducts({ companyId }: CompanyProductsProps) {
     );
   }
 
-  const filteredProducts = products.filter((product) => {
-    const matchesSearch =
-      product.name?.toLowerCase().includes(search.toLowerCase())
-
-    if (filter === "all") return matchesSearch;
-    return matchesSearch && product.status === filter;
-  });
+  const filteredProducts = products.filter((product) =>
+    product.name?.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle>{t("list.title")}</CardTitle>
-            <CardDescription>{t("list.description")}</CardDescription>
+    <div className="space-y-4">
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>{t("list.title")}</CardTitle>
+              <CardDescription>{t("list.description")}</CardDescription>
+            </div>
+            <div className="flex items-center gap-2">
+              <Input
+                placeholder={t("list.search.placeholder")}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-[200px]"
+              />
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Input
-              placeholder={t("list.search.placeholder")}
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-[200px]"
-            />
-            <Select value={filter} onValueChange={setFilter}>
-              <SelectTrigger className="w-[150px]">
-                <SelectValue placeholder={t("list.filter.placeholder")} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{t("list.filter.all")}</SelectItem>
-                <SelectItem value="active">{t("list.filter.active")}</SelectItem>
-                <SelectItem value="inactive">{t("list.filter.inactive")}</SelectItem>
-                <SelectItem value="pending">{t("list.filter.pending")}</SelectItem>
-              </SelectContent>
-            </Select>
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              {t("list.actions.add")}
-            </Button>
-          </div>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>{t("list.columns.name")}</TableHead>
-              <TableHead>{t("list.columns.status")}</TableHead>
-              <TableHead>{t("list.columns.actions")}</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {filteredProducts.length === 0 && <div>{t("list.empty.description")}</div>}
             {filteredProducts.map((product) => (
-              <TableRow key={product.id}>
-                <TableCell>{product.name}</TableCell>
-                <TableCell>
-                  <Badge variant={product.status === "APPROVED" ? "default" : "secondary"}>
-                    {product.status}
-                  </Badge>
-                </TableCell>
-                <TableCell>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon">
-                        <MoreHorizontal className="h-4 w-4" />
-                        <span className="sr-only">{t("list.actions.title")}</span>
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>{t("list.actions.title")}</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem>
-                        {t("list.actions.view")}
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        {t("list.actions.edit")}
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        {t("list.actions.delete")}
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </TableCell>
-              </TableRow>
+              <div
+                key={product.id}
+                className="flex items-center justify-between rounded-lg border p-4"
+              >
+                <div className="flex items-start gap-4">
+                  <Box className="h-8 w-8 text-muted-foreground" />
+                  <div>
+                    <p className="font-medium">{product.name}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button variant="ghost" size="icon" onClick={() => setSelectedProductId(product.id)}>
+                    <ExternalLink className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
             ))}
-          </TableBody>
-        </Table>
-      </CardContent>
-    </Card>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Modal for product details */}
+      <Dialog open={!!selectedProductId} onOpenChange={() => setSelectedProductId(null)}>
+        <DialogContent className="max-w-5xl w-full h-[90vh] overflow-y-auto p-0 bg-background">
+          <DialogHeader>
+            <DialogTitle>
+              {t("list.title")}
+            </DialogTitle>
+            <DialogDescription>
+              {t("list.description")}
+            </DialogDescription>
+          </DialogHeader>
+          {isProductLoading ? (
+            <div className="flex items-center justify-center h-40">Loading...</div>
+          ) : productError ? (
+            <div className="flex items-center justify-center h-40 text-destructive">Ürün bulunamadı</div>
+          ) : selectedProduct ? (
+            <div className="p-4 sm:p-8">
+              <ProductDetails product={selectedProduct} additionalComponents={null} />
+            </div>
+          ) : null}
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 }
