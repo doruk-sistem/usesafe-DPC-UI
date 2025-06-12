@@ -12,21 +12,22 @@ interface CompanyDocumentsProps {
   companyId: string;
 }
 
-// Belge tipinden Türkçe isim eşleştirmesi
+// Document type translation keys
 const documentTypeLabels: Record<string, string> = {
-  tax_plate: "Vergi Levhası",
-  export_certificate: "İhracat Sertifikası",
-  quality_certificate: "Kalite Sertifikası",
-  production_permit: "Üretim İzni",
-  iso_certificate: "ISO Sertifikası",
-  signature_circular: "İmza Sirküleri",
-  trade_registry_gazette: "Ticaret Sicil Gazetesi",
-  activity_certificate: "Faaliyet Belgesi",
-  // Diğer tipler eklenebilir
+  tax_plate: "tax_plate",
+  export_certificate: "export_certificate",
+  quality_certificate: "quality_certificate",
+  production_permit: "production_permit",
+  iso_certificate: "iso_certificate",
+  signature_circular: "signature_circular",
+  trade_registry_gazette: "trade_registry_gazette",
+  activity_certificate: "activity_certificate",
+  // Other types can be added
 };
 
 export function CompanyDocuments({ companyId }: CompanyDocumentsProps) {
   const t = useTranslations("adminDashboard.companies.details");
+  const tDocTypes = useTranslations("documents.types");
   const [documents, setDocuments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const ITEMS_PER_PAGE = 10;
@@ -124,7 +125,7 @@ export function CompanyDocuments({ companyId }: CompanyDocumentsProps) {
                 <FileText className="h-8 w-8 text-muted-foreground" />
                 <div>
                   <p className="font-medium">
-                    {documentTypeLabels[doc.type] || doc.name}
+                    {tDocTypes(documentTypeLabels[doc.type]) || doc.name}
                   </p>
                 </div>
               </div>
