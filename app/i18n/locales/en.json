@@ -2129,6 +2129,9 @@
   "adminDashboard": {
     "title": "Admin Dashboard",
     "description": "Monitor and manage system-wide operations",
+    "companies" : {
+      "details":"Details"
+    },
     "period": {
       "select": "Select period",
       "today": "Today",
@@ -2548,7 +2551,8 @@
          "total": "Total: {count} Company",
          "loading":{
           "title": "Loading",
-          "description": "Loading companies..."
+          "description": "Loading companies...",
+          "companies": "Companies"
          },
           "columns":{
             "name": "Name",
@@ -2682,6 +2686,9 @@
       "list":{
         "title": "Products",
         "description": "Manage and review all products in the system",
+        "empty":{
+          "description": "Add a product to get started"
+        },
         "search":{
           "placeholder": "Search products..."
         },

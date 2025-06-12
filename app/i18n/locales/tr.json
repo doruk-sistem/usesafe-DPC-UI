@@ -2938,6 +2938,9 @@
   "adminDashboard": {
     "title": "Yönetici Paneli",
     "description": "Sistem genelindeki işlemleri izleyin ve yönetin",
+    "companies":{
+      "details":"Detaylar"
+    },
     "labels": {
       "manufacturer": "Üretici",
       "document": "Belge",
