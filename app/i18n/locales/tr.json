@@ -185,6 +185,10 @@
       "details": {
         "title": "Firma Detayları",
         "loading": "Yükleniyor...",
+        "backToList": "Listeye Dön",
+        "types":{
+          "manufacturer": "Üretici"
+        },
         "error": {
           "title": "Hata",
           "companyIdRequired": "Firma ID'si gereklidir",
@@ -449,6 +453,7 @@
     "title": "Products",
       "description": "Manage and review all products in the system",
       "loading": "Loading products...",
+      "products":"Ürünler",
       "searchPlaceholder": "Search products...",
       "filterByManufacturer": "Filter by manufacturer",
       "filterByStatus": "Filter by status",
@@ -474,6 +479,8 @@
       "details": {
         "backButton": "Back to Products",
         "viewDocuments": "View Documents",
+        "title": "Ürün Detayları",
+        "description": "Ürün detaylarını görüntüleyin ve yönetin",
         "productInfo": {
           "title": "Product Information",
           "id": "Product ID",

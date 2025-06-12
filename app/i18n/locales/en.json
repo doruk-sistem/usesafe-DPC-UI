@@ -2525,7 +2525,12 @@
     "companies": {
       "title": "Companies",
       "description": "Manage and review all companies in the system",
-      "details":"Details",
+      "details":{
+        "backToList": "Back to List",
+        "types":{
+          "manufacturer": "Manufacturer"
+        }
+      },
       "documents":{
         "title": "Documents",
         "description": "Manage and review all documents in the system",
@@ -2620,6 +2625,7 @@
       "loading": "Loading products...",
       "searchPlaceholder": "Search products...",
       "filterByManufacturer": "Filter by manufacturer",
+      "products":"Products",
       "filterByStatus": "Filter by status",
       "allManufacturers": "All Manufacturers",
       "allStatus": "All Status",
@@ -2641,6 +2647,8 @@
       "documentCount_plural": "{count} documents",
       "unknownManufacturer": "Unknown Manufacturer",
       "details": {
+        "title": "Product Details",
+        "description": "View and manage product details",
         "backButton": "Back to Products",
         "viewDocuments": "View Documents",
         "productInfo": {
