@@ -114,7 +114,7 @@ export function ProductHeader({
               {t("filters.status.PENDING")}
             </SelectItem>
             <SelectItem value="archived">
-              {t("filters.status.ARCHIVED")}
+              {t("filters.status.archived")}
             </SelectItem>
           </SelectContent>
         </Select>

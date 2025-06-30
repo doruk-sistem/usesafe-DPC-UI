@@ -376,7 +376,8 @@
         "DRAFT": "Draft",
         "DELETED": "Deleted",
         "draft": "Draft",
-        "new": "New"
+        "new": "New",
+        "archived": "Archived"
       }
     },
     "menu": {
@@ -1872,6 +1873,7 @@
         "marine": "Marine Batteries"
       },
       "status": {
+        "archived": "Archived",
         "label": "Status",
         "all": "All Status",
         "APPROVED": "Approved",

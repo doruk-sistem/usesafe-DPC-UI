@@ -814,7 +814,8 @@
         "DRAFT": "Taslak",
         "DELETED": "Silindi",
         "draft": "Taslak",
-        "new": "Yeni"
+        "new": "Yeni",
+        "archived": "Arşivlendi"
       }
     },
     "time": {
@@ -2695,7 +2696,8 @@
         "draft": "Taslak",
         "APPROVED": "Onaylandı",
         "REJECTED": "Reddedildi",
-        "PENDING": "Pending"
+        "PENDING": "Pending",
+        "archived": "Arşivlendi"
       },
       "category": {
         "label": "Kategori",

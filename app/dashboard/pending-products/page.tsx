@@ -95,7 +95,7 @@ export default function PendingProductsPage() {
     );
   };
 
-  const getStatusDisplay = (status: string) => {
+  const getStatusDisplay = (status: string, product?: BaseProduct) => {
     switch (status) {
       case "NEW":
         return t("pages.pendingProducts.status.new");
@@ -107,6 +107,9 @@ export default function PendingProductsPage() {
         return t("pages.pendingProducts.status.rejected");
       case "ARCHIVED":
         return t("pages.pendingProducts.status.archived");
+      case "DELETED":
+        return t("pages.pendingProducts.status.rejected");
+
       default:
         return status.toLowerCase();
     }
@@ -122,6 +125,8 @@ export default function PendingProductsPage() {
         return "destructive";
       case "ARCHIVED":
         return "secondary";
+      case "DELETED":
+        return "destructive";
       default:
         return "default";
     }
@@ -186,7 +191,7 @@ export default function PendingProductsPage() {
                     </TableCell>
                     <TableCell>
                       <Badge variant={getStatusVariant(product.status || "")}>
-                        {getStatusDisplay(product.status || "").toUpperCase()}
+                        {getStatusDisplay(product.status || "", product).toUpperCase()}
                       </Badge>
                     </TableCell>
                     <TableCell>

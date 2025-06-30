@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { productService } from "@/lib/services/product";
 import { Document } from "@/lib/types/document";
@@ -10,6 +10,7 @@ import { productsApiHooks } from "./use-products";
 export function useProduct(id: string) {
   const { user, company } = useAuth();
   const isAdmin = user?.user_metadata?.role === "admin";
+  const queryClient = useQueryClient();
 
   const {
     data: product,
@@ -59,6 +60,10 @@ export function useProduct(id: string) {
   ): ProductStatus => {
     if (!product) return null;
 
+    // Önce ürünün kendi statüsünü kontrol et (sadece özel durumlar için)
+    if (product.status === "DELETED") return "DELETED";
+    if (product.status === "ARCHIVED") return "ARCHIVED";
+
     // Belge durumuna göre ürün durumunu belirle
     if (product.document_status === "All Approved") return "APPROVED";
     if (product.document_status === "Has Rejected Documents") return "REJECTED";
@@ -92,8 +97,8 @@ export function useProduct(id: string) {
       }
     }
 
-    // Varsayılan durum
-    return "PENDING";
+    // Varsayılan durum - ürünün kendi statüsünü kullan
+    return product.status as ProductStatus || "PENDING";
   };
 
   const { mutate: _updateProduct } =
@@ -121,6 +126,9 @@ export function useProduct(id: string) {
       id: product.data?.id || '',
       product: updateData as any,
     });
+
+    // Invalidate the query after updating
+    queryClient.invalidateQueries({ queryKey: ["product", id] });
   };
 
   const productData = product?.data || null;

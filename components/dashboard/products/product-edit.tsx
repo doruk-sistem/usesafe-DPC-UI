@@ -16,6 +16,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
+import { productService } from "@/lib/services/product";
 import { Product } from "@/lib/types/product";
 
 interface ProductEditProps {
@@ -358,10 +359,10 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
     setIsSaving(true);
     
     try {
-      // Update product information
-      const { error } = await supabase
-        .from("products")
-        .update({
+      // Update product information using productService
+      const { data, error } = await productService.updateProduct({
+        id: productId,
+        product: {
           name: formData.name,
           model: formData.model,
           product_type: formData.product_type,
@@ -372,8 +373,8 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
             acc[doc.type].push(doc);
             return acc;
           }, {} as Record<string, any[]>),
-        })
-        .eq("id", productId);
+        },
+      });
       
       if (error) throw error;
       

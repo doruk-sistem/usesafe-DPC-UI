@@ -257,10 +257,12 @@ export function ProductList({ products, isLoading, isViewingManufacturer }: Prod
                             ? "destructive"
                             : status === "ARCHIVED"
                             ? "secondary"
+                            : status === "DELETED"
+                            ? "destructive"
                             : "secondary"
                         }
                       >
-                        {status || "PENDING"}
+                        {status === "DELETED" ? "REDDEDİLDİ" : status === "NEW" ? "PENDING" : status || "PENDING"}
                       </Badge>
                     </TableCell>
                     <TableCell>

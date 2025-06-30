@@ -178,12 +178,57 @@ export const productService = createService({
   }): Promise<ProductResponse> => {
     const { manufacturer_id, ...productData } = product;
     
+    // Önce mevcut ürünü al
+    const { data: existingProduct, error: fetchError } = await supabase
+      .from("products")
+      .select("status, status_history, manufacturer_id")
+      .eq("id", id)
+      .single();
+
+    if (fetchError) {
+      return {
+        error: {
+          message: "Failed to fetch existing product",
+          field: fetchError.details,
+        },
+      };
+    }
+
+    // Eğer ürün DELETED statüsündeyse, NEW'e çevir
+    let updatedStatus = productData.status;
+    let updatedStatusHistory = existingProduct?.status_history || [];
+
+    if (existingProduct?.status === "DELETED") {
+      updatedStatus = "NEW";
+      updatedStatusHistory = [
+        ...updatedStatusHistory,
+        {
+          from: "DELETED",
+          to: "NEW",
+          timestamp: new Date().toISOString(),
+          userId: (await supabase.auth.getUser()).data.user?.id,
+          reason: "Product updated after rejection",
+        },
+      ];
+    } else {
+      // Eğer statü belirtilmemişse, mevcut statüyü koru
+      updatedStatus = updatedStatus || existingProduct?.status;
+    }
+    
+    // Sadece gerekli alanları güncelle, status'u ayrı işle
+    const updateData = {
+      ...productData,
+      manufacturer_id: manufacturer_id || existingProduct?.manufacturer_id,
+      updated_at: new Date().toISOString(),
+    };
+
+    // Status'u ayrı bir update ile güncelle
     const { data, error } = await supabase
       .from("products")
       .update({
-        ...productData,
-        manufacturer_id: manufacturer_id || null, // Set to null if empty
-        updated_at: new Date().toISOString(),
+        ...updateData,
+        status: updatedStatus,
+        status_history: updatedStatusHistory,
       })
       .eq("id", id)
       .select()
@@ -275,7 +320,7 @@ export const productService = createService({
             updatedDocuments[docType] = updatedDocuments[docType].map(
               (doc: any) => ({
                 ...doc,
-                status: "rejected",
+                status: "DELETED",
                 rejection_reason: reason,
               })
             );
@@ -284,7 +329,7 @@ export const productService = createService({
       } else if (Array.isArray(product.documents)) {
         updatedDocuments = product.documents.map((doc: any) => ({
           ...doc,
-          status: "rejected",
+          status: "DELETED",
           rejection_reason: reason,
         }));
       } else {
@@ -293,7 +338,7 @@ export const productService = createService({
             id: `rejected-${product.id}-${Date.now()}`,
             name: "Product Rejection",
             type: "rejection",
-            status: "rejected",
+            status: "DELETED",
             rejection_reason: reason,
           },
         ];
@@ -303,15 +348,15 @@ export const productService = createService({
         .from("products")
         .update({
           documents: updatedDocuments,
-          status: "REJECTED",
+          status: "DELETED",
           status_history: [
             ...(product.status_history || []),
             {
               from: product.status,
-              to: "REJECTED",
+              to: "DELETED",
               timestamp: new Date().toISOString(),
               userId: (await supabase.auth.getUser()).data.user?.id,
-              reason,
+              reason: `Rejected: ${reason}`,
             },
           ],
         })
@@ -352,12 +397,12 @@ export const productService = createService({
         };
       }
 
-      // Fetch products by manufacturer_id with status NEW or DRAFT
+      // Fetch products by manufacturer_id with status NEW, DRAFT, or DELETED
       const { data, error, count } = await supabase
         .from("products")
         .select("*, manufacturer:manufacturer_id (name)", { count: "exact" })
         .eq("manufacturer_id", companyId)
-        .in("status", ["NEW", "DRAFT"])
+        .in("status", ["NEW", "DRAFT", "DELETED"])
         .range(pageIndex * pageSize, (pageIndex + 1) * pageSize - 1)
         .order("created_at", { ascending: false });
 
@@ -365,10 +410,10 @@ export const productService = createService({
         throw new Error("Failed to fetch pending products");
       }
 
-      // Filter out NEW products if they have a DRAFT version
+      // Filter out NEW products if they have a DRAFT version, but always show DELETED products
       const filteredData = data?.filter((product) => {
-        if (product.status === "DRAFT") {
-          return true; // Always show DRAFT products
+        if (product.status === "DRAFT" || product.status === "DELETED") {
+          return true; // Always show DRAFT and DELETED products
         }
         
         // For NEW products, check if there's a DRAFT version with the same name and model
