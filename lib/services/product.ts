@@ -213,6 +213,51 @@ export const productService = createService({
     } else {
       // Eğer statü belirtilmemişse, mevcut statüyü koru
       updatedStatus = updatedStatus || existingProduct?.status;
+      
+      // Belgelerde rejected statüsü varsa, ürün statüsünü PENDING'e çevir
+      if (productData.documents) {
+        const flattenedDocs = Array.isArray(productData.documents)
+          ? productData.documents
+          : Object.values(productData.documents).flat();
+        
+        const hasRejectedDocuments = flattenedDocs.some(
+          (doc: any) => doc.status === "rejected"
+        );
+        
+        if (hasRejectedDocuments && existingProduct?.status !== "PENDING") {
+          updatedStatus = "PENDING";
+          updatedStatusHistory = [
+            ...updatedStatusHistory,
+            {
+              from: existingProduct?.status,
+              to: "PENDING",
+              timestamp: new Date().toISOString(),
+              userId: (await supabase.auth.getUser()).data.user?.id,
+              reason: "Product has rejected documents",
+            },
+          ];
+          
+          // Dökümanların statüsünü de pending yap
+          if (productData.documents) {
+            const docs = productData.documents as any;
+            if (Array.isArray(docs)) {
+              productData.documents = docs.map((doc: any) => ({
+                ...doc,
+                status: "pending",
+              }));
+            } else {
+              Object.keys(docs).forEach((docType) => {
+                if (Array.isArray(docs[docType])) {
+                  docs[docType] = docs[docType].map((doc: any) => ({
+                    ...doc,
+                    status: "pending",
+                  }));
+                }
+              });
+            }
+          }
+        }
+      }
     }
     
     // Sadece gerekli alanları güncelle, status'u ayrı işle
@@ -222,14 +267,19 @@ export const productService = createService({
       updated_at: new Date().toISOString(),
     };
 
+    // Eğer statü değişiyorsa güncelle, değişmiyorsa sadece diğer alanları güncelle
+    const finalUpdateData = updatedStatus !== existingProduct?.status 
+      ? {
+          ...updateData,
+          status: updatedStatus,
+          status_history: updatedStatusHistory,
+        }
+      : updateData;
+
     // Status'u ayrı bir update ile güncelle
     const { data, error } = await supabase
       .from("products")
-      .update({
-        ...updateData,
-        status: updatedStatus,
-        status_history: updatedStatusHistory,
-      })
+      .update(finalUpdateData)
       .eq("id", id)
       .select()
       .single();
