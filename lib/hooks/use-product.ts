@@ -62,7 +62,7 @@ export function useProduct(id: string) {
 
     // Önce ürünün kendi statüsünü kontrol et (sadece özel durumlar için)
     if (product.status === "DELETED") return "DELETED";
-    if (product.status === "ARCHIVED") return "ARCHIVED";
+    if (product.status === "ARCHIVED") return "PENDING";
 
     // Belge durumuna göre ürün durumunu belirle
     if (product.document_status === "All Approved") return "APPROVED";
