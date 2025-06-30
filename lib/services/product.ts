@@ -330,31 +330,98 @@ export const productService = createService({
   },
   getPendingProducts: async ({ pageIndex, pageSize }: { pageIndex: number; pageSize: number }) => {
     try {
-      const { data, error } = await supabase
+      // Get current user's session to access company_id
+      const {
+        data: { session },
+        error: sessionError,
+      } = await supabase.auth.getSession();
+      if (sessionError) {
+        throw new Error("Failed to get user session");
+      }
+      if (!session) {
+        throw new Error("No active session found");
+      }
+      const userMetadata = session.user.user_metadata;
+      const companyId = userMetadata?.company_id;
+      if (!companyId) {
+        return {
+          items: [],
+          totalPages: 0,
+          currentPage: pageIndex,
+          totalItems: 0,
+        };
+      }
+      // Fetch products by manufacturer_id with status NEW only, with count
+      const { data, error, count } = await supabase
         .from("products")
-        .select(`
-          *,
-          manufacturer:manufacturer_id (
-            id,
-            name
-          )
-        `)
-        .in("status", [ "PENDING"])
-        .order("created_at", { ascending: false })
-        .range(pageIndex * pageSize, (pageIndex + 1) * pageSize - 1);
-
+        .select("*, manufacturer:manufacturer_id (name)", { count: "exact" })
+        .eq("manufacturer_id", companyId)
+        .eq("status", "NEW")
+        .range(pageIndex * pageSize, (pageIndex + 1) * pageSize - 1)
+        .order("created_at", { ascending: false });
       if (error) {
         throw new Error("Failed to fetch pending products");
       }
-
       return {
         items: data || [],
-        total: data?.length || 0,
-        pageIndex,
-        pageSize,
+        totalPages: Math.ceil((count || 0) / pageSize),
+        currentPage: pageIndex,
+        totalItems: count || 0,
       };
     } catch (error) {
       console.error("Error in getPendingProducts:", error);
+      throw error;
+    }
+  },
+  approveProduct: async ({ productId }: { productId: string }) => {
+    try {
+      // 1. Get the product
+      const { data: product, error: fetchError } = await supabase
+        .from("products")
+        .select("*")
+        .eq("id", productId)
+        .single();
+
+      if (fetchError) {
+        throw new Error(`Failed to fetch product: ${fetchError.message}`);
+      }
+
+      if (!product) {
+        throw new Error(`No product found with ID ${productId}`);
+      }
+
+      // 2. Create a new product for the manufacturer
+      const newProduct = {
+        ...product,
+        id: crypto.randomUUID(),
+        company_id: product.manufacturer_id,
+        status: "DRAFT",
+        status_history: [
+          {
+            from: null,
+            to: "DRAFT",
+            timestamp: new Date().toISOString(),
+            userId: (await supabase.auth.getUser()).data.user?.id,
+          },
+        ],
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+
+      // 3. Insert the new product
+      const { error: createError } = await supabase
+        .from("products")
+        .insert([newProduct])
+        .select()
+        .single();
+
+      if (createError) {
+        throw new Error(`Failed to create new product: ${createError.message}`);
+      }
+
+      return { success: true };
+    } catch (error) {
+      console.error("Error in product approval:", error);
       throw error;
     }
   },
