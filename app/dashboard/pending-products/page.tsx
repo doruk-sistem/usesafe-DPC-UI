@@ -105,6 +105,8 @@ export default function PendingProductsPage() {
         return t("pages.pendingProducts.status.pending");
       case "REJECTED":
         return t("pages.pendingProducts.status.rejected");
+      case "ARCHIVED":
+        return t("pages.pendingProducts.status.archived");
       default:
         return status.toLowerCase();
     }
@@ -118,6 +120,8 @@ export default function PendingProductsPage() {
         return "warning";
       case "REJECTED":
         return "destructive";
+      case "ARCHIVED":
+        return "secondary";
       default:
         return "default";
     }

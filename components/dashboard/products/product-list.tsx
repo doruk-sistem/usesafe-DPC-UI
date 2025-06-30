@@ -255,6 +255,8 @@ export function ProductList({ products, isLoading, isViewingManufacturer }: Prod
                             ? "warning"
                             : status === "REJECTED"
                             ? "destructive"
+                            : status === "ARCHIVED"
+                            ? "secondary"
                             : "secondary"
                         }
                       >

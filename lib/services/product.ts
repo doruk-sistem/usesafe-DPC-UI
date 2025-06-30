@@ -351,22 +351,44 @@ export const productService = createService({
           totalItems: 0,
         };
       }
-      // Fetch products by manufacturer_id with status NEW only, with count
+
+      // Fetch products by manufacturer_id with status NEW or DRAFT
       const { data, error, count } = await supabase
         .from("products")
         .select("*, manufacturer:manufacturer_id (name)", { count: "exact" })
         .eq("manufacturer_id", companyId)
-        .eq("status", "NEW")
+        .in("status", ["NEW", "DRAFT"])
         .range(pageIndex * pageSize, (pageIndex + 1) * pageSize - 1)
         .order("created_at", { ascending: false });
+
       if (error) {
         throw new Error("Failed to fetch pending products");
       }
+
+      // Filter out NEW products if they have a DRAFT version
+      const filteredData = data?.filter((product) => {
+        if (product.status === "DRAFT") {
+          return true; // Always show DRAFT products
+        }
+        
+        // For NEW products, check if there's a DRAFT version with the same name and model
+        if (product.status === "NEW") {
+          const hasDraftVersion = data?.some((otherProduct) => 
+            otherProduct.status === "DRAFT" && 
+            otherProduct.name === product.name && 
+            otherProduct.model === product.model
+          );
+          return !hasDraftVersion; // Only show NEW if no DRAFT version exists
+        }
+        
+        return false;
+      }) || [];
+
       return {
-        items: data || [],
-        totalPages: Math.ceil((count || 0) / pageSize),
+        items: filteredData,
+        totalPages: Math.ceil((filteredData.length) / pageSize),
         currentPage: pageIndex,
-        totalItems: count || 0,
+        totalItems: filteredData.length,
       };
     } catch (error) {
       console.error("Error in getPendingProducts:", error);
@@ -390,7 +412,29 @@ export const productService = createService({
         throw new Error(`No product found with ID ${productId}`);
       }
 
-      // 2. Create a new product for the manufacturer
+      // 2. Update the original product status to ARCHIVED
+      const { error: updateError } = await supabase
+        .from("products")
+        .update({
+          status: "ARCHIVED",
+          status_history: [
+            ...(product.status_history || []),
+            {
+              from: product.status,
+              to: "ARCHIVED",
+              timestamp: new Date().toISOString(),
+              userId: (await supabase.auth.getUser()).data.user?.id,
+              reason: "Approved and moved to draft",
+            },
+          ],
+        })
+        .eq("id", productId);
+
+      if (updateError) {
+        throw new Error(`Failed to update original product: ${updateError.message}`);
+      }
+
+      // 3. Create a new product for the manufacturer
       const newProduct = {
         ...product,
         id: crypto.randomUUID(),
@@ -408,7 +452,7 @@ export const productService = createService({
         updated_at: new Date().toISOString(),
       };
 
-      // 3. Insert the new product
+      // 4. Insert the new product
       const { error: createError } = await supabase
         .from("products")
         .insert([newProduct])
