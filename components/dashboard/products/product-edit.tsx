@@ -17,7 +17,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
 import { productService } from "@/lib/services/product";
-import { Product } from "@/lib/types/product";
+import { BaseProduct } from "@/lib/types/product";
 
 interface ProductEditProps {
   productId: string;
@@ -47,7 +47,7 @@ const documentTypeLabels: Record<string, string> = {
 };
 
 export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps) {
-  const [product, setProduct] = useState<Product | null>(null);
+  const [product, setProduct] = useState<BaseProduct | null>(null);
   const [rejectedDocument, setRejectedDocument] = useState<Document | null>(null);
   const [allDocuments, setAllDocuments] = useState<Document[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -372,7 +372,7 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
             }
             acc[doc.type].push(doc);
             return acc;
-          }, {} as Record<string, any[]>),
+          }, {} as any),
         },
       });
       
@@ -570,6 +570,28 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
       </CardHeader>
       <CardContent>
         <div className="space-y-6">
+          {/* Ürün reddedilme sebebi */}
+          {product?.status === "DELETED" && product?.status_history && product.status_history.length > 0 && (
+            (() => {
+              const lastHistory = product.status_history[product.status_history.length - 1];
+              if (lastHistory.reason && lastHistory.reason.startsWith("Rejected:")) {
+                return (
+                  <Alert variant="destructive">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertTitle>Product Rejected</AlertTitle>
+                    <AlertDescription>
+                      <div className="mt-2">
+                        <p><strong>Rejection Reason:</strong> {lastHistory.reason.replace("Rejected: ", "")}</p>
+                        <p><strong>Rejection Date:</strong> {new Date(lastHistory.timestamp).toLocaleDateString()}</p>
+                      </div>
+                    </AlertDescription>
+                  </Alert>
+                );
+              }
+              return null;
+            })()
+          )}
+
           {rejectedDocument && (
             <Alert variant="destructive" key="rejected-document-alert">
               <AlertCircle className="h-4 w-4" />
