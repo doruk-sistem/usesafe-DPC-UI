@@ -3138,10 +3138,37 @@
             }
           }
         },
+
+        "recentApprovals": {
+          "title": "Son Onaylananlar",
+          "description": "Son onaylananları görüntüleyin",
+          "products":{
+            "uncategorized":"Kategorize Edilmemiş"
+          },
+
+          "pagination":{
+            "previous":"Önceki",
+            "next":"Sonraki"
+          },
+          
+          "status":{
+            "approved":"Onaylandı",
+            "rejected":"Reddedildi",
+            "pending":"Bekleniyor"
+          }
+
+        },
        
       "pendingApprovals": {
         "title": "Bekleyen Onaylar",
-        "description": "Dikkat gerektiren son onay istekleri"
+        "description": "Dikkat gerektiren son onay istekleri",
+        "products":{
+          "uncategorized":"Kategorize Edilmemiş"
+        },
+        "status":{
+          "pending":"Bekleniyor",
+          "review":"İnceleme Bekliyor"
+        }
       },
       "systemAlerts": {
         "title": "Sistem Uyarıları",

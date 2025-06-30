@@ -2179,6 +2179,7 @@
           "view": "View"
         },
         "status": {
+
           "pending": "Pending",
           "approved": "Approved",
           "rejected": "Rejected"
@@ -2239,14 +2240,35 @@
       }
     },
     "sections": {
+
+      "recentApprovals": {
+        "title": "Recent Approvals",
+        "description": "Recent approval requests requiring attention",
+        "products":{
+          "uncategorized": "Uncategorized"
+        },
+        "pagination":{
+          "previous":"Previous",
+          "next":"Next"
+        },
+        "status": {
+          "approved": "Approved",
+          "rejected": "Rejected",
+          "pending": "Pending"
+        }
+      },
+       
       "pendingApprovals": {
         "title": "Pending Approvals",
         "description": "Recent approval requests requiring attention",
         "products":{
            "uncategorized": "Uncategorized"
+        },
+        "status": {
+          "pending": "Pending",
+          "review": "Pending Review"
           
         }
-
       },
       "systemAlerts": {
         "title": "System Alerts",
@@ -2335,6 +2357,7 @@
           }
         }
       }
+      
     },
     "labels": {
       "manufacturer": "Manufacturer",
