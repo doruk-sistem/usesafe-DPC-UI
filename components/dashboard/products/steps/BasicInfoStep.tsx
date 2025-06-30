@@ -186,6 +186,20 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
 
         <FormField
           control={form.control}
+          name="model"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{t("model.label")}</FormLabel>
+              <FormControl>
+                <Input placeholder={t("model.placeholder")} {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
           name="product_type"
           render={({ field }) => (
             <FormItem>
@@ -239,49 +253,9 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
 
         <FormField
           control={form.control}
-          name="model"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{t("model.label")}</FormLabel>
-              <FormControl>
-                <Select
-                  options={
-                    PRODUCT_TYPE_OPTIONS.find(
-                      (option) => option.value === form.watch("product_type")
-                    )?.subcategories || []
-                  }
-                  value={
-                    PRODUCT_TYPE_OPTIONS.find(
-                      (option) => option.value === form.watch("product_type")
-                    )?.subcategories.find((sub) => sub.value === field.value) ||
-                    null
-                  }
-                  onChange={(selectedOption: OptionType | null) => {
-                    const newValue = selectedOption?.value || "";
-                    field.onChange(newValue);
-                  }}
-                  placeholder={t("model.placeholder")}
-                  classNames={selectClassNames}
-                  isDisabled={
-                    !form.watch("product_type") ||
-                    form.watch("product_type") === "please_select"
-                  }
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
           name="description"
           render={({ field }) => (
-            <FormItem
-              className={
-                subcategories.length > 0 ? "md:col-span-1" : "col-span-2"
-              }
-            >
+            <FormItem className="col-span-2">
               <FormLabel>{t("description.label")}</FormLabel>
               <FormControl>
                 <Textarea
