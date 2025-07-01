@@ -11,6 +11,8 @@ import { productService } from "@/lib/services/product";
 import { productBlockchainService } from "@/lib/services/product-blockchain";
 import { ProductStatusService } from "@/lib/services/product-status";
 import { StorageService } from "@/lib/services/storage";
+import { DocumentService } from "@/lib/services/document";
+import { AI_TO_STANDARD_MAPPING } from "@/lib/constants/documents";
 import type { NewProduct, ProductImage } from "@/lib/types/product";
 
 export default function NewProductPageClient() {
@@ -19,10 +21,11 @@ export default function NewProductPageClient() {
   const router = useRouter();
   const t = useTranslations("productManagement.addProduct");
 
-  const handleSubmit = async (data: NewProduct) => {
+  const handleSubmit = async (data: NewProduct & { documentFiles?: Record<string, any[]> }) => {
     if (!user?.id || !company?.id) return;
 
     try {
+      // 1. Önce resimleri yükle
       const uploadedImages = await Promise.all(
         data.images.map(async (image) => {
           // Use type assertion to access fileObject
@@ -63,10 +66,71 @@ export default function NewProductPageClient() {
         return;
       }
 
-      // Continue with product creation using validImages
+      // 2. Belgeleri product-documents bucket'a yükle
+      const uploadedDocuments: any = {};
+      
+      if (data.documentFiles) {
+        await Promise.all(
+          Object.entries(data.documentFiles).map(async ([aiDocType, docs]) => {
+            // Tüm AI belgelerini technical_docs türüne yükle
+            const standardDocType = "technical_docs";
+            
+            if (Array.isArray(docs)) {
+              // technical_docs için array oluştur (eğer yoksa)
+              if (!uploadedDocuments[standardDocType]) {
+                uploadedDocuments[standardDocType] = [];
+              }
+              
+              const uploadedDocs = await Promise.all(
+                docs.map(async (doc: any) => {
+                  if (doc.file) {
+                    try {
+                      // Dosyayı bucket'a yükle
+                      const url = await DocumentService.uploadDocument(doc.file, {
+                        companyId: company.id,
+                        bucketName: process.env.NEXT_PUBLIC_PRODUCT_DOCUMENTS_BUCKET || "product-documents",
+                      });
+
+                      return {
+                        ...doc,
+                        url: url || "",
+                        file: undefined, // File objesini kaldır
+                        type: standardDocType, // Hepsi technical_docs
+                        originalType: aiDocType // Orijinal AI türünü sakla
+                      };
+                    } catch (error) {
+                      console.error(`Error uploading file ${doc.name}:`, error);
+                      return {
+                        ...doc,
+                        url: "",
+                        file: undefined,
+                        type: standardDocType,
+                        originalType: aiDocType
+                      };
+                    }
+                  }
+                  return {
+                    ...doc,
+                    type: standardDocType,
+                    originalType: aiDocType
+                  };
+                })
+              );
+              
+              // technical_docs'e ekle
+              uploadedDocuments[standardDocType].push(...uploadedDocs);
+            }
+          })
+        );
+      }
+
+      // 3. Ürünü oluştur - documentFiles alanını kaldır
+      const { documentFiles, ...productData } = data;
+      
       const response = await productService.createProduct({
-        ...data,
+        ...productData,
         images: validImages,
+        documents: uploadedDocuments, // Yüklenmiş belgeleri kullan
         company_id: company.id,
         status: "DRAFT",
         status_history: [

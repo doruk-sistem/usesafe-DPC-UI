@@ -74,7 +74,14 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
 
     // Override the trigger method
     form.trigger = async (name?: string | string[]) => {
-      if (!isVerified) {
+      // AI belgeleri varsa verification'ı bypass et
+      const documents = form.getValues('documents');
+      const hasAIDocuments = documents && Object.keys(documents).some(key => 
+        !['test_reports', 'technical_docs', 'compliance_docs', 'quality_cert', 'safety_cert'].includes(key) &&
+        Array.isArray(documents[key]) && documents[key].length > 0
+      );
+      
+      if (!isVerified && !hasAIDocuments) {
         toast({
           title: t("admin.product.steps.documentUpload.verificationRequired"),
           description: t(
@@ -93,14 +100,14 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
     };
   }, [form, isVerified, toast]);
 
-  // ✅ Dosya yükleme işlemi
+  // ✅ Dosya yükleme işlemi - Artık sadece form state'inde tutuyoruz
   const handleDocumentUpload = useCallback(
     async (
       files: FileList,
       docType: string,
       existingDocs: Document[] = []
     ): Promise<HandleUploadResult> => {
-      if (!companyId || !files.length) {
+      if (!files.length) {
         return {
           success: false,
           documents: existingDocs,
@@ -138,34 +145,22 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
         return { success: false, documents: existingDocs, errors };
       }
 
-      await Promise.all(
-        validFiles.map(async (file) => {
-          try {
-            const url = await DocumentService.uploadDocument(file, {
-              companyId,
-              bucketName:
-                process.env.NEXT_PUBLIC_PRODUCT_DOCUMENTS_BUCKET ||
-                "product-documents",
-            });
-
-            newDocs.push({
-              name: file.name,
-              url: url || "",
-              type: docType as DocumentType,
-              id: "",
-              manufacturer: "",
-              manufacturerId: "",
-              status: "pending",
-            } as Document);
-          } catch (error) {
-            errors.push(
-              `Error uploading ${file.name}: ${
-                error instanceof Error ? error.message : "Unknown error"
-              }`
-            );
-          }
-        })
-      );
+      // Artık bucket'a kaydetmiyoruz, sadece form state'inde tutuyoruz
+      validFiles.forEach((file) => {
+        newDocs.push({
+          name: file.name,
+          url: "", // Boş bırakıyoruz, submit sırasında doldurulacak
+          type: docType, // AI'dan gelen orijinal belge türü
+          id: `doc-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+          manufacturer: "",
+          manufacturerId: "",
+          status: "pending",
+          uploadedAt: new Date().toISOString(),
+          fileSize: `${(file.size / 1024 / 1024).toFixed(2)} MB`,
+          version: "1.0",
+          file: file // File objesini saklıyoruz
+        } as Document);
+      });
 
       return {
         success: errors.length === 0,
@@ -173,7 +168,7 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
         errors,
       };
     },
-    [companyId]
+    []
   );
 
   // ✅ Dosya yükleme fonksiyonu

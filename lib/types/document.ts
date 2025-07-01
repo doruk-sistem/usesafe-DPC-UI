@@ -19,6 +19,8 @@ export interface Document {
   version?: string;
   notes?: string;
   filePath?: string;
+  file?: File; // File objesi için eklendi
+  originalType?: string; // AI'dan gelen orijinal tür
 }
 
 export interface DocumentWithMetadata extends Document {
