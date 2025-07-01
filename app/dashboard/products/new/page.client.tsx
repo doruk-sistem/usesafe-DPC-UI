@@ -156,8 +156,7 @@ export default function NewProductPageClient() {
         throw new Error("Product ID not received from server");
       }
 
-      // Blockchain kaydı oluştur - Temporarily disabled due to insufficient HBAR balance
-      /*
+      // Blockchain kaydı oluştur
       try {
         console.log('Starting blockchain record creation...', {
           productId: response.data.id,
@@ -200,7 +199,6 @@ export default function NewProductPageClient() {
           variant: "destructive",
         });
       }
-      */
 
       // Validate if product can be moved to NEW status
       if (ProductStatusService.validateStatus(response.data)) {

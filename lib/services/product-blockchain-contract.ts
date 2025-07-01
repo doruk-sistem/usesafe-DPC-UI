@@ -16,9 +16,12 @@ class ProductBlockchainContractService {
 
   private constructor() {
     // Get operator credentials from environment variables
-    const operatorId = process.env.HEDERA_ACCOUNT_ID || "0.0.5442115";
-    const operatorKey = process.env.HEDERA_PRIVATE_KEY || 
-      "1b41eadf206073acb0a1c789402b760e26ffcba2240fd57f0ac28552fc87327e";
+    const operatorId = process.env.NEXT_PUBLIC_HEDERA_ACCOUNT_ID;
+    const operatorKey = process.env.NEXT_PUBLIC_HEDERA_PRIVATE_KEY;
+    
+    if (!operatorId || !operatorKey) {
+      throw new Error("Hedera account credentials are not configured. Please check NEXT_PUBLIC_HEDERA_ACCOUNT_ID and NEXT_PUBLIC_HEDERA_PRIVATE_KEY environment variables.");
+    }
 
     try {
       // Initialize Hedera client
