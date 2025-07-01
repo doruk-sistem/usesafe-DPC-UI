@@ -9,6 +9,17 @@
     "verifyProducts": "Verify Products",
     "signIn": "Sign In"
   },
+  "admin": {
+    "sidebar": {
+      "dashboard": "Dashboard",
+      "manufacturers": "Manufacturers",
+      "documents": "Documents",
+      "certifications": "Certifications",
+      "dppTemplates": "DPP Templates",
+      "products": "Products",
+      "companies": "Companies"
+    }
+  },
   "settings":{
   "title":"Settings",
   "description":"Manage your account settings and preferences",
@@ -365,7 +376,8 @@
         "DRAFT": "Draft",
         "DELETED": "Deleted",
         "draft": "Draft",
-        "new": "New"
+        "new": "New",
+        "archived": "Archived"
       }
     },
     "menu": {
@@ -538,6 +550,7 @@
       "certifications": {
         "title": "Certifications",
         "loadingCertifications": "Loading certifications...",
+        "noCertifications": "No certifications found",
         "table": {
           "name": "Certificate",
           "issuedBy": "Issued By",
@@ -708,6 +721,9 @@
         "unknown": "Unknown"
       },
       "categories": {
+        "das": "DAS",
+        "Güneş Gözlüğü": "Sunglasses",
+        "dsa": "DSA",
         "textile": "Textile",
         "battery": "Battery",
         "automotive": "Automotive",
@@ -1567,7 +1583,8 @@
           "approved": "Approved"
         },
         "actions": {
-          "download": "Download"
+          "download": "Download",
+          "noDocument": "No documents found"
         }
       },
       "qr": {
@@ -1856,6 +1873,7 @@
         "marine": "Marine Batteries"
       },
       "status": {
+        "archived": "Archived",
         "label": "Status",
         "all": "All Status",
         "APPROVED": "Approved",
@@ -2052,9 +2070,35 @@
   "documentManagement": {
     "title": "Document Management",
     "description": "Manage your company documents and certificates",
+    "backToList": "Back to List",
     "repository": {
       "title": "Document Repository",
-      "description": "View and manage your company documents and certificates",
+      "noDocumentsFound": "No documents found",
+      "forManufacturer": "View and manage manufacturer documents and certificates",
+      "document": "Document",
+      "type": "Type",
+      "status": "Status",
+      "validUntil": "Valid Until",
+      "version": "Version",
+      "statuses":{
+        "all": "All",
+        "pending": "Pending",
+        "approved": "Approved",
+        "rejected": "Rejected",
+        "expired": "Expired"
+      },
+      "reject":{
+        "title": "Reject Document",
+        "description": "Document rejected. Please enter the reason.",
+        "reasonLabel": "Reason",
+        "reasonPlaceholder": "Enter the reason...",
+        "cancel": "Cancel",
+        "confirm": "Reject"
+
+      },
+      "description":{
+        "forManufacturer":"View and manage your company documents and certificates"
+      },
       "columns": {
         "document": "Document",
         "type": "Type",
@@ -2133,9 +2177,11 @@
           "reviewDocuments": "Review Documents",
           "viewProducts": "View Products",
           "approve": "Approve",
-          "reject": "Reject"
+          "reject": "Reject",
+          "view": "View"
         },
         "status": {
+
           "pending": "Pending",
           "approved": "Approved",
           "rejected": "Rejected"
@@ -2155,9 +2201,18 @@
       },
       "details": {
         "backToList": "Back to List",
+        "documents":{
+          "list":{
+            "empty":{
+              "description":"No documents found for this manufacturer."
+            }
+          }
+        },
         "actions": {
           "reject": "Reject",
           "approve": "Approve"
+          
+          
         },
         "status": {
           "approved": "Approved",
@@ -2187,9 +2242,35 @@
       }
     },
     "sections": {
+
+      "recentApprovals": {
+        "title": "Recent Approvals",
+        "description": "Recent approval requests requiring attention",
+        "products":{
+          "uncategorized": "Uncategorized"
+        },
+        "pagination":{
+          "previous":"Previous",
+          "next":"Next"
+        },
+        "status": {
+          "approved": "Approved",
+          "rejected": "Rejected",
+          "pending": "Pending"
+        }
+      },
+       
       "pendingApprovals": {
         "title": "Pending Approvals",
-        "description": "Recent approval requests requiring attention"
+        "description": "Recent approval requests requiring attention",
+        "products":{
+           "uncategorized": "Uncategorized"
+        },
+        "status": {
+          "pending": "Pending",
+          "review": "Pending Review"
+          
+        }
       },
       "systemAlerts": {
         "title": "System Alerts",
@@ -2199,7 +2280,86 @@
           "failedVerification": "Blockchain verification attempt failed",
           "maintenance": "System maintenance scheduled for tonight"
         }
+      },
+      "manufacturers": {
+        "details": {
+          "backToList": "Back to List",
+          "status": {
+            "pending": "Pending"
+          },
+          "actions": {
+            "reject": "Reject",
+            "approve": "Approve"
+          },
+          "companyInfo": {
+            "title": "Company Information",
+            "address": "Address",
+            "taxId": "Tax ID",
+            "registrationDate": "Registration Date"
+          },
+          "verification": {
+            "title": "Verification",
+            "document": "Document",
+            "status": {
+              "inProgress": "In Progress",
+              "verified": "Verified",
+              "pending": "Pending"
+            },
+            "taxId": "Tax ID",
+            "address": "Address",
+            "contact": "Contact"
+          },
+          "documents": {
+            "title": "Documents",
+            "list": {
+              "empty": {
+                "description": "No documents found for this manufacturer."
+              }
+            },
+            "uploadedAt": "Uploaded At",
+            "status": {
+              "pending": "Pending",
+              "approved": "Approved",
+              "rejected": "Rejected",
+              "verified": "Verified",
+              "REJECTED": "Rejected",
+              "APPROVED": "Approved",
+              "PENDING": "Pending",
+              "VERIFIED": "Verified"
+            }
+          },
+          "products": {
+            "title": "Products",
+            "empty": "No products found",
+            "allStatus": "All Statuses",
+            "allApproved": "All Approved",
+            "pendingReview": "Pending Review",
+            "hasRejectedDocuments": "Has Rejected Documents",
+            "noDocuments": "No Documents",
+            "filterByStatus": "Filter by Status",
+            "category": "Category",
+            "description": "Product Description",
+            "list": {
+              "empty": {
+                "description": "No products found for this manufacturer."
+              }
+            },
+            "status": {
+              "NEW": "New",
+              "DRAFT": "Draft",
+              "ARCHIVED": "Archived",
+              "draft": "Draft",
+              "approved": "Approved",
+              "pending":"Pending",
+              "rejected":"Rejected",
+              "archived":"Archived"
+              
+
+            }
+          }
+        }
       }
+      
     },
     "labels": {
       "manufacturer": "Manufacturer",
@@ -2859,8 +3019,11 @@
         "success":{
           "title": "QR Code Generated Successfully",
           "download": "QR Code Downloaded."
+          
+         
         }
-      }
+        
+      } 
     }
   }
 }

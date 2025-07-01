@@ -73,14 +73,14 @@ interface DocumentListProps {
     type: string;
     status: string;
   };
+  manufacturerId?: string;
 }
 
-export function DocumentList({ initialDocuments = [], filters }: DocumentListProps) {
+export function DocumentList({ initialDocuments = [], filters, manufacturerId }: DocumentListProps) {
   const t = useTranslations("documentManagement");
   const { toast } = useToast();
   const { user } = useAuth();
   const searchParams = useSearchParams();
-  const manufacturerId = searchParams.get("manufacturer");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [expandedProducts, setExpandedProducts] = useState<
     Record<string, boolean>
@@ -171,10 +171,6 @@ export function DocumentList({ initialDocuments = [], filters }: DocumentListPro
       const document = filteredDocuments.find((doc) => doc.id === documentId);
 
       if (!document) {
-        console.error(
-          "Document not found in filtered documents. Document ID:",
-          documentId
-        );
         return;
       }
 
@@ -195,7 +191,6 @@ export function DocumentList({ initialDocuments = [], filters }: DocumentListPro
         description: "Document approved successfully",
       });
     } catch (error) {
-      console.error("Error approving document:", error);
       toast({
         title: "Error",
         description: "Failed to approve document. Please try again.",
@@ -216,10 +211,6 @@ export function DocumentList({ initialDocuments = [], filters }: DocumentListPro
       );
 
       if (!document) {
-        console.error(
-          "Belge bulunamadı. Belge ID:",
-          selectedDocumentId
-        );
         return;
       }
 
@@ -249,7 +240,6 @@ export function DocumentList({ initialDocuments = [], filters }: DocumentListPro
         description: "Belge başarıyla reddedildi",
       });
     } catch (error) {
-      console.error("Belge reddetme hatası:", error);
       toast({
         title: "Hata",
         description: "Belge reddedilemedi. Lütfen tekrar deneyin.",
@@ -265,7 +255,6 @@ export function DocumentList({ initialDocuments = [], filters }: DocumentListPro
 
   const submitRejectProduct = async () => {
     if (!selectedProductId || !rejectReason) {
-      console.error("Missing product ID or reject reason");
       return;
     }
 
@@ -283,7 +272,6 @@ export function DocumentList({ initialDocuments = [], filters }: DocumentListPro
       setRejectReason("");
       setSelectedProductId("");
     } catch (error) {
-      console.error("Error rejecting product:", error);
       toast({
         title: "Error",
         description: "Failed to reject product. Please try again.",

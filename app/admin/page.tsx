@@ -47,16 +47,14 @@ export default function AdminDashboard() {
         <DashboardMetrics />
       </motion.div>
 
+      <motion.div variants={itemVariants}>
+        <SystemAlerts />
+      </motion.div>
+
       <div className="grid gap-6 md:grid-cols-2">
         <motion.div variants={itemVariants}>
           <PendingApprovals />
         </motion.div>
-        <motion.div variants={itemVariants}>
-          <SystemAlerts />
-        </motion.div>
-      </div>
-
-      <div className="grid gap-6 md:grid-cols-2">
         <motion.div variants={itemVariants}>
           <RecentApprovals />
         </motion.div>

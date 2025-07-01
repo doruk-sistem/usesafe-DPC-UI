@@ -189,7 +189,7 @@ export function ProductList({ products, isLoading, isViewingManufacturer }: Prod
             <TableBody>
               {products.map((product) => {
                 const status = determineProductStatus(product);
-
+                
                 return (
                   <TableRow key={product.id}>
                     <TableCell>
@@ -255,10 +255,14 @@ export function ProductList({ products, isLoading, isViewingManufacturer }: Prod
                             ? "warning"
                             : status === "REJECTED"
                             ? "destructive"
+                            : status === "ARCHIVED"
+                            ? "secondary"
+                            : status === "DELETED"
+                            ? "destructive"
                             : "secondary"
                         }
                       >
-                        {status || "PENDING"}
+                        {status === "DELETED" ? "REDDEDİLDİ" : status === "NEW" ? "PENDING" : status === "REJECTED" ? "REJECTED" : status || "PENDING"}
                       </Badge>
                     </TableCell>
                     <TableCell>

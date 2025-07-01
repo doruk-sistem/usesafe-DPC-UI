@@ -42,9 +42,12 @@ export function SystemAlerts() {
     );
   }
 
+  if (alerts.length === 0) {
+    return null;
+  }
+
   return (
     <Card className="p-6">
-      <h3 className="text-lg font-semibold mb-4">{t("systemAlerts.title")}</h3>
       <div className="space-y-4">
         {isLoading ? (
           Array(3).fill(0).map((_, index) => (
@@ -56,10 +59,6 @@ export function SystemAlerts() {
               </div>
             </div>
           ))
-        ) : alerts.length === 0 ? (
-          <p className="text-muted-foreground text-sm">
-            {t("systemAlerts.noAlerts")}
-          </p>
         ) : (
           alerts.map((alert, index) => (
             <motion.div

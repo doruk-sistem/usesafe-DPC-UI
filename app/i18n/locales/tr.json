@@ -5,11 +5,6 @@
     "verifyProducts": "Ürün Doğrula",
     "signIn": "Giriş Yap"
   },
-  "documents": {
-    "list": {
-      "title": "Belge Listesi"
-    }
-  },
   "list":{
     "title": "Liste",
     "description": "Ürün listesi",
@@ -25,6 +20,7 @@
         "documents": "Belgeler"
       },
       "status": {
+        
         "pendingDocuments": "Bekleyen Belgeler",
         "allDocumentsApproved": "Tüm Belgeler Onaylı",
         "draft": "Taslak",
@@ -818,7 +814,8 @@
         "DRAFT": "Taslak",
         "DELETED": "Silindi",
         "draft": "Taslak",
-        "new": "Yeni"
+        "new": "Yeni",
+        "archived": "Arşivlendi"
       }
     },
     "time": {
@@ -1180,6 +1177,7 @@
         "title": "Sertifikalar",
         "description": "Ürün sertifikalarını görüntüleyin",
         "loadingCertifications": "Sertifikalar yükleniyor...",
+        "noCertifications": "Sertifika Bulunamadı",
         "table": {
           "name": "Sertifika Adı",
           "issuedBy": "Düzenleyen",
@@ -1265,6 +1263,9 @@
         "unknown": "Bilinmiyor"
       },
       "categories": {
+        "das": "DAS",
+        "Güneş Gözlüğü": "Sunglasses",
+        "dsa": "DSA",
         "textile": "Tekstil",
         "battery": "Akü",
         "automotive": "Otomotiv",
@@ -2695,7 +2696,8 @@
         "draft": "Taslak",
         "APPROVED": "Onaylandı",
         "REJECTED": "Reddedildi",
-        "PENDING": "Pending"
+        "PENDING": "Pending",
+        "archived": "Arşivlendi"
       },
       "category": {
         "label": "Kategori",
@@ -2839,6 +2841,7 @@
   "documentManagement": {
     "title": "Belge Yönetimi",
     "description": "Belge yüklemelerini inceleyin ve yönetin",
+    "backToList": "Listeye Dön",
     "documentTypes": {
       "testReports": "Test Raporları",
       "technicalDocumentation": "Teknik Dokümantasyon",
@@ -2851,22 +2854,49 @@
       "allStatuses": "Tüm Durumlar"
     },
     "repository": {
-      "description": "Belge arşivini inceleyin ve yönetin"
+      "forManufacturer": "Üretici belgelerini görüntüleyin ve yönetin",
+      "noDocumentsFound": "Henüz belge yüklenmemiş",
+      "title": "Belgeler",
+      "document": "Belge",
+      "type": "Tip",
+      "status": "Durum",
+      "validUntil": "Geçerlilik Süresi",
+      "version": "Versiyon",
+      "reject":{
+        "title": "Belge Reddet",
+        "description": "Belge reddedildi. Lütfen sebebi giriniz.",
+        "reasonLabel": "Sebebi",
+        "reasonPlaceholder": "Sebebi giriniz...",
+        "cancel": "İptal",
+        "confirm": "Reddet"
+      },
+      "description":{
+        "forManufacturer":"Üretici belgelerini görüntüleyin ve yönetin"
+      },
+      "categories": {
+        "testReports": "Test Raporları",
+        "qualityManagement": "Kalite Yönetimi",
+        "safetyAndHealth": "Güvenlik ve Sağlık",
+        "batteryStandards": "Akü Standartları"
+      },
+      "statuses": {
+        "all": "Tüm Durumlar",
+        "pending": "Beklemede",
+        "approved": "Onaylandı",
+        "rejected": "Reddedildi",
+        "expired": "Süresi Doldu"
+      },
+      "actions": {
+        "upload": "Yükle"
+      }
     },
-    "categories": {
-      "testReports": "Test Raporları",
-      "qualityManagement": "Kalite Yönetimi",
-      "safetyAndHealth": "Güvenlik ve Sağlık",
-      "batteryStandards": "Akü Standartları"
-      
-    },
-    "status":{
+    "status": {
       "pending": "Beklemede",
       "approved": "Onaylandı",
       "rejected": "Reddedildi",
       "expiringSoon": "Süresi Yakında Doluyor"
     },
-    "actions":{
+    "actions": {
       "upload": "Yükle"
     }
   },
@@ -2914,6 +2944,7 @@
       "manufacturer": "Üretici",
       "document": "Belge",
       "dpc": "DPC"
+
     },
     "actions": {
       "review": "İncele"
@@ -2965,12 +2996,15 @@
           "reviewDocuments": "Belgeleri İncele",
           "viewProducts": "Ürünleri Görüntüle",
           "approve": "Onayla",
-          "reject": "Reddet"
+          "reject": "Reddet",
+          "view": "Görüntüle"
         },
         "status": {
           "pending": "Beklemede",
           "approved": "Onaylandı",
-          "rejected": "Reddedildi"}
+          "rejected": "Reddedildi"
+          
+        }
         },
         "filters": {
           "status": "Duruma göre filtrele",
@@ -2986,6 +3020,13 @@
         },
         "details": {
           "backToList": "Listeye Dön",
+          "documents":{
+            "list":{
+              "empty":{
+                "description":"Bu üretici için belge bulunamadı."
+              }
+            }
+          },
           "actions": {
             "reject": "Reddet",
             "approve": "Onayla"
@@ -2993,7 +3034,8 @@
           "status": {
             "approved": "Onaylandı",
             "rejected": "Reddedildi",
-            "pending": "Beklemede"
+            "pending": "Beklemede" 
+           
           },
           "companyInfo": {
             "title": "Firma Bilgileri",
@@ -3014,13 +3056,121 @@
               "verified": "Doğrulandı",
               "pending": "Beklemede"
             }
-          }
+          },
+          "ChosenAlpha": "ChosenAlpha"
         }
       },
       "sections": {
+        "manufacturers":{
+          "details":{
+            "notFound":"Ürün Bulunamadı",
+            "backToList":"Listeye Dön",
+            "products":{
+              "title":"Ürünler",
+              "allStatus":"Tüm Durumlar",
+              "allApproved":"Tüm Onaylananlar",
+              "pendingReview":"Tüm Bekleyenler",
+             
+              "hasRejectedDocuments":"Reddedilen Belgeleri Olan Ürünler",
+              "noDocuments":"Belgeleri Olmayan Ürünler",
+              "filterByStatus":"Duruma Göre Filtrele",
+
+              "category":"Kategori",
+              "description":"Ürün Açıklaması",
+              "status":{
+                
+                "approved":"Onaylandı",
+                "rejected":"Reddedildi",
+                "pending":"Beklemede",
+                "NEW":"Yeni",
+                "DRAFT":"Taslak",
+                "ARCHIVED":"Arşivde",
+                "draft":"Taslak",
+                "new":"Yeni",
+                "archived":"Arşivde"
+                
+
+              },
+              "list":{
+                "empty":{
+                  "description":"Ürünler Bulunamadı"
+                }
+              }
+            },
+            "documents":{
+              "title":"Belgeler",
+               "uploadedAt":"Yüklendi",
+              "status":{
+                "PENDING":"Beklemede",
+                "APPROVED":"Onaylandı",
+                "REJECTED":"Reddedildi"
+              },
+              "list":{
+                "empty":{
+                  "description":"Belgeler Bulunamadı"
+                }
+              }
+            },
+            "verification":{
+              "title":"Doğrulama Durumu",
+              "document":"Belge Doğrulama",
+              "taxId":"Vergi No Doğrulama",
+              "address":"Adres Doğrulama",
+              "contact":"İletişim Doğrulama",
+              "status":{
+                "inProgress":"İşlemde",
+                "verified":"Doğrulandı",
+                "pending":"Beklemede"
+              }
+            },
+            "companyInfo":{
+            "title":"Firma Bilgileri",
+            "address":"Adres",
+            "taxId":"Vergi No",
+            "registrationDate":"Kayıt Tarihi"
+          },
+            "status":{
+              "pending":"Beklemede",
+              "approved":"Onaylandı",
+              "rejected":"Reddedildi"
+            },
+            "actions":{
+              "approve":"Onayla",
+              "reject":"Reddet"
+            }
+          }
+        },
+
+        "recentApprovals": {
+          "title": "Son Onaylananlar",
+          "description": "Son onaylananları görüntüleyin",
+          "products":{
+            "uncategorized":"Kategorize Edilmemiş"
+          },
+
+          "pagination":{
+            "previous":"Önceki",
+            "next":"Sonraki"
+          },
+          
+          "status":{
+            "approved":"Onaylandı",
+            "rejected":"Reddedildi",
+            "pending":"Bekleniyor"
+          }
+
+        },
+       
       "pendingApprovals": {
         "title": "Bekleyen Onaylar",
-        "description": "Dikkat gerektiren son onay istekleri"
+        "description": "Dikkat gerektiren son onay istekleri",
+        "products":{
+          "uncategorized":"Kategorize Edilmemiş"
+        },
+        "status":{
+          "pending":"Bekleniyor",
+          "review":"İnceleme Bekliyor"
+        }
       },
       "systemAlerts": {
         "title": "Sistem Uyarıları",
@@ -3466,23 +3616,32 @@
       "devices": "Elektrikli cihazları kapatın ve uzaklaştırın."
     }
   },
-  "addProduct": {
-    "form": {
-      "fields": {
-        "manufacturer": {
-          "companyName": "Firma Adı *",
-          "taxId": "Vergi Numarası *",
-          "contactPerson": "İletişim Kişisi *",
-          "contactEmail": "İletişim E-posta *",
-          "cancel": "İptal",
-          "create": "Üretici Oluştur"
-        }
+ "addProduct": {
+  "form": {
+    "fields": {
+      "manufacturer": {
+        "companyName": "Firma Adı *",
+        "taxId": "Vergi Numarası *",
+        "contactPerson": "İletişim Kişisi *",
+        "contactEmail": "İletişim E-posta *",
+        "cancel": "İptal",
+        "create": "Üretici Oluştur"
       }
     }
-  },
+  }
+},
   "documents": {
     "title": "Döküman Yönetimi",
     "description": "Şirket dökümanlarınızı yönetin",
+    "upload":{
+      "title":"Döküman Yükle",
+      "description":"Döküman yüklemek için tıklayın",
+      "typeLabel":"Döküman Tipi",
+      "typePlaceholder":"Döküman tipini seçin",
+      "fileLabel":"Dosya Seçin",
+      "filePlaceholder":"Dosyayı seçin",
+      "submit":"Yükle"
+    },
     "filters": {
       "all": "Tümü",
       "upload": "Yükle"
@@ -3552,9 +3711,12 @@
       "createdAt": "Oluşturulma Tarihi",
       "updatedAt": "Güncellenme Tarihi",
       "view": "Görüntüle",
-      "download": "İndir"
+      "download": "İndir",
+      "backToList": "Listeye Dön"
+      
     }
   }
 } 
+
 
 

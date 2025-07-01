@@ -14,7 +14,7 @@ import type { NewProduct } from "@/lib/types/product";
 
 import { BasicInfoStep } from "./steps/BasicInfoStep";
 import { DocumentUploadStep } from "./steps/DocumentUploadStep";
-import { EsprComplianceStep } from "./steps/EsprComplianceStep";
+// import { EsprComplianceStep } from "./steps/EsprComplianceStep";
 import { ManufacturerSelect } from "./steps/manufacturerSelect/ManufacturerSelect";
 
 const documentSchema = z.object({
@@ -83,7 +83,7 @@ interface ProductFormProps {
 }
 
 // ✅ Toplam Adım Sabitlendi
-const TOTAL_STEPS = 4;
+const TOTAL_STEPS = 3; // ESPR compliance adımı geçici olarak kaldırıldı
 
 export function ProductForm({
   onSubmit,
@@ -156,8 +156,8 @@ export function ProductForm({
         {/* ✅ Adım 3 */}
         {step === 3 && <ManufacturerSelect form={form} />}
 
-        {/* ✅ Adım 4 - ESPR Uyumluluğu */}
-        {step === 4 && <EsprComplianceStep form={form as any} />}
+        {/* ✅ Adım 4 - ESPR Uyumluluğu (Geçici olarak kaldırıldı) */}
+        {/* {step === 4 && <EsprComplianceStep form={form as any} />} */}
 
         {/* ✅ Butonlar */}
         <div className="flex justify-end gap-4">
