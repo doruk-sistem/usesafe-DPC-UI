@@ -49,7 +49,7 @@ const productSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   description: z.string().min(5, "Product description is required"),
   product_type: z.string().min(1, "Product type is required"),
-  product_subcategory: z.string().min(1, "Product subcategory is required"),
+  product_subcategory: z.string().optional(),
   model: z.string().min(1, "Product model is required"),
   images: z
     .array(
@@ -99,6 +99,7 @@ export function ProductForm({
       name: "",
       description: "",
       product_type: "",
+      product_subcategory: "",
       model: "",
       images: [],
       key_features: [],
@@ -144,11 +145,15 @@ export function ProductForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">        
         {/* ✅ İlerleme Durumu */}
         <Progress value={progress} className="mb-8" />
         {/* ✅ Adım 1 */}
-        {step === 1 && <BasicInfoStep form={form as any} />} 
+        {step === 1 && (
+          <div>
+            <BasicInfoStep form={form as any} />
+          </div>
+        )} 
 
         {/* ✅ Adım 2 */}
         {step === 2 && <DocumentUploadStep form={form as any} />}
