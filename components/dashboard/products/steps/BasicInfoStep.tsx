@@ -23,6 +23,7 @@ import type { KeyFeature, NewProduct } from "@/lib/types/product";
 import type { Json } from "@/lib/types/supabase";
 import { productCategoriesService, type ProductCategory } from "@/lib/services/product-categories";
 import { supabase } from "@/lib/supabase/client";
+import { useProductTypesByCategory } from "@/lib/services/product-types";
 
 interface BasicInfoStepProps {
   form: UseFormReturn<NewProduct>;
@@ -61,6 +62,11 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
 
   const productType = form.watch("product_type");
 
+  // Yeni hook ile subcategory'leri çek
+  const { data: subcategories, isLoading: subLoading } = useProductTypesByCategory({
+    categoryId: Number(productType) || 0
+  });
+
   useEffect(() => {
     const test = async () => {
       const { data, error } = await supabase
@@ -76,6 +82,11 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
     label: category.name
   }));
 
+  const subcategoryOptions = subcategories?.map(sub => ({
+    value: sub.id.toString(),
+    label: sub.product
+  })) || [];
+  
   return (
     <div className="space-y-8">
       <Card className="p-4">
@@ -211,10 +222,20 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
             <FormItem>
               <FormLabel>{t("subcategory.label")}</FormLabel>
               <FormControl>
-                <Input
+                <Select
+                  options={subcategoryOptions}
+                  value={subcategoryOptions.find(
+                    (option) => option.value === field.value
+                  )}
+                  onChange={(selectedOption: OptionType | null) => {
+                    const newValue = selectedOption?.value || "";
+                    field.onChange(newValue);
+                  }}
                   placeholder={t("subcategory.placeholder")}
-                  value={field.value || ""}
-                  onChange={field.onChange}
+                  classNames={selectClassNames}
+                  isLoading={subLoading}
+                  isDisabled={!productType || subLoading}
+                  noOptionsMessage={() => "Alt kategori bulunamadı"}
                 />
               </FormControl>
               <FormMessage />
