@@ -227,33 +227,28 @@ export function ProductDocuments({
 
   if (!product) {
     return (
-      <div className="flex flex-col items-center justify-center py-12">
-        <FileText className="h-12 w-12 text-muted-foreground mb-4" />
-        <h2 className="text-xl font-semibold mb-2">{t("productNotFound")}</h2>
-        <p className="text-muted-foreground">{t("productNotFoundDescription")}</p>
-      </div>
+      <Card>
+        <CardContent className="flex flex-col items-center justify-center py-12">
+          <FileText className="h-12 w-12 text-muted-foreground mb-4" />
+          <h2 className="text-xl font-semibold mb-2">{t("productNotFound")}</h2>
+          <p className="text-muted-foreground">
+            {t("productNotFoundDescription")}
+          </p>
+        </CardContent>
+      </Card>
     );
   }
 
   return (
-    <div className="max-h-[calc(100vh-120px)] overflow-y-auto flex justify-center">
-      <Card className="shadow-lg rounded-xl border border-gray-200 max-w-[900px] w-full">
-        <CardHeader className="pb-2">
-          <div className="flex flex-row items-center justify-between">
-            <div>
-              <CardTitle className="text-lg font-semibold mb-1">{t("productDocuments")}</CardTitle>
-              <div className="flex items-center gap-2 mt-1">
-                <span className="text-base font-medium">{product.name}</span>
-                <Badge variant={getStatusVariant(product.status || "")} className="text-xs px-2 py-1 rounded-md">
-                  {getStatusVariant(product.status || "").toLowerCase()}
-                </Badge>
-              </div>
-            </div>
+    <div className="max-h-[calc(100vh-200px)] overflow-y-auto">
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between">
+        <CardTitle>{t("productDocuments")}</CardTitle>
+        <div className="flex gap-2">
             <Button
               onClick={() => setShowUploadForm(!showUploadForm)}
               size="sm"
-              className="flex items-center gap-2 px-3 py-1 text-sm"
-              variant={showUploadForm ? "outline" : "default"}
+                 className="flex items-center gap-2"
             >
               {showUploadForm ? (
                 <>
@@ -269,21 +264,27 @@ export function ProductDocuments({
             </Button>
           </div>
         </CardHeader>
-        <CardContent className="pt-0 pb-4 px-6 sm:px-2">
+        <CardContent>
+          <div className="mb-6">
+            <h3 className="text-lg font-medium mb-2">{product.name}</h3>
+            <div className="flex items-center gap-2">
+              <Badge variant={getStatusVariant(product.status || "")}>
+                {getStatusVariant(product.status || "").toLowerCase()}
+              </Badge>
+            </div>
+          </div>
+
           {showUploadForm && (
-            <div className="mb-6 bg-white rounded-xl shadow-md border p-6">
-              <div className="flex items-center gap-2 mb-6">
-                <Plus className="h-5 w-5 text-primary" />
-                <h3 className="text-xl font-semibold text-gray-900">{t("uploadNewDocument")}</h3>
-              </div>
-              <form className="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
-                <div className="flex flex-col gap-2">
-                  <Label htmlFor="documentType" className="text-sm font-medium text-gray-700 flex items-center gap-1">
-                    {t("documentType")} <span className="text-red-500">*</span>
+              <div className="mb-6 p-4 border rounded-md bg-muted/30">
+              <h3 className="text-lg font-medium mb-4">{t("uploadNewDocument")}</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="documentType" className="flex items-center">
+                    {t("documentType")} <span className="text-red-500 ml-1">*</span>
                   </Label>
                   <select
                     id="documentType"
-                    className="w-full h-11 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-sm bg-white"
+                    className="w-full p-2 border rounded"
                     value={documentType}
                     onChange={(e) => setDocumentType(e.target.value)}
                   >
@@ -295,65 +296,134 @@ export function ProductDocuments({
                     <option value="compliance_docs">{t("complianceDocuments")}</option>
                   </select>
                 </div>
-                <div className="flex flex-col gap-2">
-                  <Label htmlFor="file" className="text-sm font-medium text-gray-700 flex items-center gap-1">
-                    {t("file")} <span className="text-red-500">*</span>
+                <div className="space-y-2">
+                  <Label htmlFor="file" className="flex items-center">
+                    {t("file")} <span className="text-red-500 ml-1">*</span>
                   </Label>
-                  <div className="flex items-center gap-2">
-                    <label htmlFor="file" className="inline-flex items-center h-11 px-4 bg-primary text-white rounded-lg cursor-pointer hover:bg-primary/90 transition text-sm font-medium border border-primary shadow-sm">
-                      <input
-                        id="file"
-                        type="file"
-                        onChange={handleFileChange}
-                        accept=".pdf,.doc,.docx,.xls,.xlsx"
-                        className="hidden"
-                      />
-                      Dosya Seç
-                    </label>
-                    {selectedFile && (
-                      <span className="inline-flex items-center bg-gray-100 text-gray-700 rounded px-3 py-1 text-xs font-medium border border-gray-300 truncate max-w-[140px] h-8">
-                        {selectedFile.name}
-                      </span>
-                    )}
-                  </div>
+                  <input
+                    id="file"
+                    type="file"
+                    onChange={handleFileChange}
+                    accept=".pdf,.doc,.docx,.xls,.xlsx"
+                    className="w-full p-2 border rounded"
+                  />
+                  {selectedFile && (
+                    <p className="text-sm text-muted-foreground mt-1">
+                      {t("selectedFile")}: {selectedFile.name}
+                    </p>
+                  )}
                 </div>
-                <div className="col-span-1 md:col-span-2 flex justify-end gap-3 mt-2">
+
+                <div className="col-span-1 md:col-span-2">
                   <Button
-                    className="h-10 px-6 text-sm"
+                    variant="ghost"
+                    className="flex items-center justify-between w-full p-2"
+                    onClick={() =>
+                      setShowAdditionalFields(!showAdditionalFields)
+                    }
+                  >
+                    <span>{t("additionalInfo")}</span>
+                    {showAdditionalFields ? (
+                      <ChevronUp className="h-4 w-4" />
+                    ) : (
+                      <ChevronDown className="h-4 w-4" />
+                    )}
+                     </Button>
+
+{showAdditionalFields && (
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2 p-2 border rounded-md">
+    <div className="space-y-2">
+      <Label htmlFor="version">{t("version")}</Label>
+      <input
+        id="version"
+        type="text"
+        value={documentVersion}
+        onChange={(e) => setDocumentVersion(e.target.value)}
+        placeholder="1.0"
+        className="w-full p-2 border rounded"
+      />
+    </div>
+
+    <div className="space-y-2">
+      <Label htmlFor="validUntil">
+        {t("validUntil")} ({t("validUntilOptional")})
+      </Label>
+      <input
+        id="validUntil"
+        type="date"
+        value={validUntil}
+        onChange={(e) => setValidUntil(e.target.value)}
+        className="w-full p-2 border rounded"
+      />
+    </div>
+
+    <div className="col-span-1 md:col-span-2 space-y-2">
+      <Label htmlFor="notes">{t("notes")} ({t("notesOptional")})</Label>
+      <Textarea
+        id="notes"
+        value={notes}
+        onChange={(e) => setNotes(e.target.value)}
+        placeholder={t("documentNotesPlaceholder")}
+        className="min-h-[100px]"
+      />
+    </div>
+  </div>
+)}
+                </div>
+                <div className="col-span-1 md:col-span-2 flex justify-end gap-2 mt-4">
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setShowUploadForm(false);
+                      setSelectedFile(null);
+                      setDocumentType("");
+                      setDocumentVersion("1.0");
+                      setValidUntil("");
+                      setNotes("");
+                      setShowAdditionalFields(false);
+                    }}
+                  >
+                    {t("cancel")}
+                  </Button>
+                  <Button
                     onClick={handleUpload}
                     disabled={isUploading || !selectedFile || !documentType}
                   >
-                    {isUploading ? t("uploading") : "Yükle"}
-                  </Button>
+                    {isUploading ? t("uploading") : t("uploadDocument")}
+                    </Button>
                 </div>
-              </form>
+              </div>
             </div>
           )}
 
           {documents.length === 0 ? (
             <div className="text-center py-8">
               <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-base font-medium mb-2">{t("noDocumentsFound")}</h3>
-              <p className="text-muted-foreground text-sm">{t("noDocumentsDescription")}</p>
+              <h3 className="text-lg font-medium mb-2">{t("noDocumentsFound")}</h3>
+              <p className="text-muted-foreground">
+                {t("noDocumentsDescription")}
+              </p>
             </div>
           ) : (
-            <div className="overflow-x-auto w-full max-w-full">
-              <Table className="w-full max-w-full">
+            <div className="overflow-x-auto">
+              <Table>
                 <TableHeader>
-                  <TableRow className="bg-muted/40">
-                    <TableHead className="text-xs font-semibold text-gray-600 text-left px-2">{t("documentName")}</TableHead>
-                    <TableHead className="text-xs font-semibold text-gray-600 text-left px-2">{t("type")}</TableHead>
-                    <TableHead className="text-xs font-semibold text-gray-600 text-left px-2">{t("status")}</TableHead>
-                    <TableHead className="text-xs font-semibold text-gray-600 text-left px-2">{t("validUntil")}</TableHead>
-                    <TableHead className="text-xs font-semibold text-gray-600 text-left px-2">{t("version")}</TableHead>
-                    <TableHead className="text-xs font-semibold text-gray-600 text-left px-2">{t("notes")}</TableHead>
-                    <TableHead className="text-xs font-semibold text-gray-600 text-right px-2">{t("actions")}</TableHead>
+                <TableRow>
+                    <TableHead className="w-[25%]">{t("documentName")}</TableHead>
+                    <TableHead className="w-[15%]">{t("type")}</TableHead>
+                    <TableHead className="w-[15%]">{t("status")}</TableHead>
+                    <TableHead className="w-[15%]">{t("validUntil")}</TableHead>
+                    <TableHead className="w-[10%]">{t("version")}</TableHead>
+                    <TableHead className="w-[10%]">{t("notes")}</TableHead>
+                    <TableHead className="w-[10%] text-right">
+                      {t("actions")}
+                    </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {documents.map((document, index) => (
-                    <TableRow key={index} className="align-middle border-b hover:bg-gray-50 transition-colors">
-                      <TableCell className="truncate text-xs py-3 px-2 align-middle break-all max-w-[250px]">
+                    <TableRow key={index}>
+                      <TableCell className="max-w-[200px] truncate">
                         <div className="flex items-center gap-2">
                           <FileText className="h-4 w-4 text-muted-foreground flex-shrink-0" />
                           <div className="min-w-0">
@@ -361,7 +431,7 @@ export function ProductDocuments({
                               <Tooltip>
                                 <TooltipTrigger asChild>
                                   <p
-                                    className="font-medium truncate cursor-pointer hover:text-primary text-xs break-all max-w-[220px]"
+                                    className="font-medium truncate cursor-pointer hover:text-primary"
                                     onClick={() => {
                                       setSelectedDocument(document);
                                       setShowDocumentDetails(true);
@@ -371,33 +441,54 @@ export function ProductDocuments({
                                   </p>
                                 </TooltipTrigger>
                                 <TooltipContent side="top" align="start">
-                                  <p className="max-w-[300px] break-words text-xs">{document.name}</p>
-                                </TooltipContent>
+                                <p className="max-w-[300px] break-words text-xs">
+                                    {document.name}
+                                  </p>                                
+                                  </TooltipContent>
                               </Tooltip>
                             </TooltipProvider>
-                            <p className="text-xs text-muted-foreground truncate">{document.fileSize}</p>
-                          </div>
+                            <p className="text-xs text-muted-foreground truncate">
+                              {document.fileSize}
+                            </p>                          
+                            </div>
                         </div>
                       </TableCell>
-                      <TableCell className="text-xs py-3 px-2 align-middle">{documentTypeLabels[document.type] || document.type}</TableCell>
-                      <TableCell className="text-xs py-3 px-2 align-middle">
-                        <span className="flex items-center justify-center">
-                          <Badge variant={getStatusVariant(document.status)} className="flex w-fit items-center gap-1 whitespace-nowrap text-xs py-1 px-2 rounded-md">
-                            {getStatusIcon(document.status)}
-                            {document.status.toLowerCase()}
-                          </Badge>
-                        </span>
+                      <TableCell>
+                        <Badge
+                          variant="secondary"
+                          className="whitespace-nowrap"
+                        >
+                          {documentTypeLabels[document.type] || document.type}
+                        </Badge>
                       </TableCell>
-                      <TableCell className="whitespace-nowrap text-xs py-3 px-2 align-middle">
-                        {document.validUntil ? new Date(document.validUntil).toLocaleDateString() : t("notAvailable")}
+                      <TableCell>
+                        <Badge
+                          variant={getStatusVariant(document.status)}
+                          className="flex w-fit items-center gap-1 whitespace-nowrap"
+                        >
+                          {getStatusIcon(document.status)}
+                          {document.status.toLowerCase()}
+                        </Badge>
                       </TableCell>
-                      <TableCell className="whitespace-nowrap text-xs py-3 px-2 align-middle">v{document.version}</TableCell>
-                      <TableCell className="truncate text-xs py-3 px-2 align-middle">{document.notes || t("noNotes")}</TableCell>
-                      <TableCell className="text-right py-3 px-2 align-middle">
+                      <TableCell className="whitespace-nowrap">
+                        {document.validUntil
+                          ? new Date(document.validUntil).toLocaleDateString()
+                          : t("notAvailable")}
+                      </TableCell>
+                      <TableCell className="whitespace-nowrap">
+                      v{document.version}
+                      </TableCell>
+                      <TableCell className="max-w-[150px] truncate">
+                        {document.notes || t("noNotes")}
+                      </TableCell>
+                      <TableCell className="text-right">
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon" className="h-7 w-7 p-0 hover:bg-gray-100 rounded transition">
-                              <FileText className="h-4 w-4" />
+                          <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8"
+                            >                              <FileText className="h-4 w-4" />
                               <span className="sr-only">{t("openMenu")}</span>
                             </Button>
                           </DropdownMenuTrigger>
@@ -448,13 +539,25 @@ export function ProductDocuments({
                   <p>v{selectedDocument?.version}</p>
                 </div>
                 <div>
-                  <span className="text-muted-foreground">{t("uploadDate")}:</span>
-                  <p>{selectedDocument?.uploadedAt ? new Date(selectedDocument.uploadedAt).toLocaleDateString() : ""}</p>
+                <span className="text-muted-foreground">
+                    {t("uploadDate")}:
+                  </span>
+                  <p>
+                    {new Date(
+                      selectedDocument?.uploadedAt || ""
+                    ).toLocaleDateString()}
+                  </p>
                 </div>
                 {selectedDocument?.validUntil && (
                   <div>
-                    <span className="text-muted-foreground">{t("validUntil")}:</span>
-                    <p>{new Date(selectedDocument.validUntil).toLocaleDateString()}</p>
+                      <span className="text-muted-foreground">
+                      {t("validUntil")}:
+                    </span>
+                    <p>
+                      {new Date(
+                        selectedDocument.validUntil
+                      ).toLocaleDateString()}
+                    </p>
                   </div>
                 )}
               </div>
@@ -462,14 +565,17 @@ export function ProductDocuments({
             {selectedDocument?.notes && (
               <div>
                 <h4 className="font-medium mb-2">{t("notes")}</h4>
-                <p className="text-sm text-muted-foreground">{selectedDocument.notes}</p>
-              </div>
+                <p className="text-sm text-muted-foreground">
+                  {selectedDocument.notes}
+                </p>              </div>
             )}
             {selectedDocument?.rejection_reason && (
               <div>
                 <h4 className="font-medium mb-2">{t("rejectionReason")}</h4>
-                <p className="text-sm text-red-500">{selectedDocument.rejection_reason}</p>
-              </div>
+                <p className="text-sm text-red-500">
+                  {selectedDocument.rejection_reason}
+                </p>              
+                </div>
             )}
           </div>
         </DialogContent>

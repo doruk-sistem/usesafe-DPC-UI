@@ -178,13 +178,108 @@ export const productService = createService({
   }): Promise<ProductResponse> => {
     const { manufacturer_id, ...productData } = product;
     
+    // Önce mevcut ürünü al
+    const { data: existingProduct, error: fetchError } = await supabase
+      .from("products")
+      .select("status, status_history, manufacturer_id")
+      .eq("id", id)
+      .single();
+
+    if (fetchError) {
+      return {
+        error: {
+          message: "Failed to fetch existing product",
+          field: fetchError.details,
+        },
+      };
+    }
+
+    // Eğer ürün DELETED statüsündeyse, NEW'e çevir
+    let updatedStatus = productData.status;
+    let updatedStatusHistory = existingProduct?.status_history || [];
+
+    if (existingProduct?.status === "DELETED") {
+      updatedStatus = "NEW";
+      updatedStatusHistory = [
+        ...updatedStatusHistory,
+        {
+          from: "DELETED",
+          to: "NEW",
+          timestamp: new Date().toISOString(),
+          userId: (await supabase.auth.getUser()).data.user?.id,
+          reason: "Product updated after rejection",
+        },
+      ];
+    } else {
+      // Eğer statü belirtilmemişse, mevcut statüyü koru
+      updatedStatus = updatedStatus || existingProduct?.status;
+      
+      // Belgelerde rejected statüsü varsa, ürün statüsünü PENDING'e çevir
+      if (productData.documents) {
+        const flattenedDocs = Array.isArray(productData.documents)
+          ? productData.documents
+          : Object.values(productData.documents).flat();
+        
+        const hasRejectedDocuments = flattenedDocs.some(
+          (doc: any) => doc.status === "rejected"
+        );
+        
+        if (hasRejectedDocuments && existingProduct?.status !== "PENDING") {
+          updatedStatus = "PENDING";
+          updatedStatusHistory = [
+            ...updatedStatusHistory,
+            {
+              from: existingProduct?.status,
+              to: "PENDING",
+              timestamp: new Date().toISOString(),
+              userId: (await supabase.auth.getUser()).data.user?.id,
+              reason: "Product has rejected documents",
+            },
+          ];
+          
+          // Dökümanların statüsünü de pending yap
+          if (productData.documents) {
+            const docs = productData.documents as any;
+            if (Array.isArray(docs)) {
+              productData.documents = docs.map((doc: any) => ({
+                ...doc,
+                status: "pending",
+              }));
+            } else {
+              Object.keys(docs).forEach((docType) => {
+                if (Array.isArray(docs[docType])) {
+                  docs[docType] = docs[docType].map((doc: any) => ({
+                    ...doc,
+                    status: "pending",
+                  }));
+                }
+              });
+            }
+          }
+        }
+      }
+    }
+    
+    // Sadece gerekli alanları güncelle, status'u ayrı işle
+    const updateData = {
+      ...productData,
+      manufacturer_id: manufacturer_id || existingProduct?.manufacturer_id,
+      updated_at: new Date().toISOString(),
+    };
+
+    // Eğer statü değişiyorsa güncelle, değişmiyorsa sadece diğer alanları güncelle
+    const finalUpdateData = updatedStatus !== existingProduct?.status 
+      ? {
+          ...updateData,
+          status: updatedStatus,
+          status_history: updatedStatusHistory,
+        }
+      : updateData;
+
+    // Status'u ayrı bir update ile güncelle
     const { data, error } = await supabase
       .from("products")
-      .update({
-        ...productData,
-        manufacturer_id: manufacturer_id || null, // Set to null if empty
-        updated_at: new Date().toISOString(),
-      })
+      .update(finalUpdateData)
       .eq("id", id)
       .select()
       .single();
@@ -275,7 +370,7 @@ export const productService = createService({
             updatedDocuments[docType] = updatedDocuments[docType].map(
               (doc: any) => ({
                 ...doc,
-                status: "rejected",
+                status: "DELETED",
                 rejection_reason: reason,
               })
             );
@@ -284,7 +379,7 @@ export const productService = createService({
       } else if (Array.isArray(product.documents)) {
         updatedDocuments = product.documents.map((doc: any) => ({
           ...doc,
-          status: "rejected",
+          status: "DELETED",
           rejection_reason: reason,
         }));
       } else {
@@ -293,7 +388,7 @@ export const productService = createService({
             id: `rejected-${product.id}-${Date.now()}`,
             name: "Product Rejection",
             type: "rejection",
-            status: "rejected",
+            status: "DELETED",
             rejection_reason: reason,
           },
         ];
@@ -303,15 +398,15 @@ export const productService = createService({
         .from("products")
         .update({
           documents: updatedDocuments,
-          status: "REJECTED",
+          status: "DELETED",
           status_history: [
             ...(product.status_history || []),
             {
               from: product.status,
-              to: "REJECTED",
+              to: "DELETED",
               timestamp: new Date().toISOString(),
               userId: (await supabase.auth.getUser()).data.user?.id,
-              reason,
+              reason: `Rejected: ${reason}`,
             },
           ],
         })
@@ -330,31 +425,142 @@ export const productService = createService({
   },
   getPendingProducts: async ({ pageIndex, pageSize }: { pageIndex: number; pageSize: number }) => {
     try {
-      const { data, error } = await supabase
+      // Get current user's session to access company_id
+      const {
+        data: { session },
+        error: sessionError,
+      } = await supabase.auth.getSession();
+      if (sessionError) {
+        throw new Error("Failed to get user session");
+      }
+      if (!session) {
+        throw new Error("No active session found");
+      }
+      const userMetadata = session.user.user_metadata;
+      const companyId = userMetadata?.company_id;
+      if (!companyId) {
+        return {
+          items: [],
+          totalPages: 0,
+          currentPage: pageIndex,
+          totalItems: 0,
+        };
+      }
+
+      // Fetch products by manufacturer_id with status NEW, DRAFT, or DELETED
+      const { data, error, count } = await supabase
         .from("products")
-        .select(`
-          *,
-          manufacturer:manufacturer_id (
-            id,
-            name
-          )
-        `)
-        .in("status", [ "PENDING"])
-        .order("created_at", { ascending: false })
-        .range(pageIndex * pageSize, (pageIndex + 1) * pageSize - 1);
+        .select("*, manufacturer:manufacturer_id (name)", { count: "exact" })
+        .eq("manufacturer_id", companyId)
+        .in("status", ["NEW", "DRAFT", "DELETED"])
+        .range(pageIndex * pageSize, (pageIndex + 1) * pageSize - 1)
+        .order("created_at", { ascending: false });
 
       if (error) {
         throw new Error("Failed to fetch pending products");
       }
 
+      // Filter out NEW products if they have a DRAFT version, but always show DELETED products
+      const filteredData = data?.filter((product) => {
+        if (product.status === "DRAFT" || product.status === "DELETED") {
+          return true; // Always show DRAFT and DELETED products
+        }
+        
+        // For NEW products, check if there's a DRAFT version with the same name and model
+        if (product.status === "NEW") {
+          const hasDraftVersion = data?.some((otherProduct) => 
+            otherProduct.status === "DRAFT" && 
+            otherProduct.name === product.name && 
+            otherProduct.model === product.model
+          );
+          return !hasDraftVersion; // Only show NEW if no DRAFT version exists
+        }
+        
+        return false;
+      }) || [];
+
       return {
-        items: data || [],
-        total: data?.length || 0,
-        pageIndex,
-        pageSize,
+        items: filteredData,
+        totalPages: Math.ceil((filteredData.length) / pageSize),
+        currentPage: pageIndex,
+        totalItems: filteredData.length,
       };
     } catch (error) {
       console.error("Error in getPendingProducts:", error);
+      throw error;
+    }
+  },
+  approveProduct: async ({ productId }: { productId: string }) => {
+    try {
+      // 1. Get the product
+      const { data: product, error: fetchError } = await supabase
+        .from("products")
+        .select("*")
+        .eq("id", productId)
+        .single();
+
+      if (fetchError) {
+        throw new Error(`Failed to fetch product: ${fetchError.message}`);
+      }
+
+      if (!product) {
+        throw new Error(`No product found with ID ${productId}`);
+      }
+
+      // 2. Update the original product status to ARCHIVED
+      const { error: updateError } = await supabase
+        .from("products")
+        .update({
+          status: "ARCHIVED",
+          status_history: [
+            ...(product.status_history || []),
+            {
+              from: product.status,
+              to: "ARCHIVED",
+              timestamp: new Date().toISOString(),
+              userId: (await supabase.auth.getUser()).data.user?.id,
+              reason: "Approved and moved to draft",
+            },
+          ],
+        })
+        .eq("id", productId);
+
+      if (updateError) {
+        throw new Error(`Failed to update original product: ${updateError.message}`);
+      }
+
+      // 3. Create a new product for the manufacturer
+      const newProduct = {
+        ...product,
+        id: crypto.randomUUID(),
+        company_id: product.manufacturer_id,
+        status: "DRAFT",
+        status_history: [
+          {
+            from: null,
+            to: "DRAFT",
+            timestamp: new Date().toISOString(),
+            userId: (await supabase.auth.getUser()).data.user?.id,
+          },
+        ],
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+
+      // 4. Insert the new product
+      const { error: createError } = await supabase
+        .from("products")
+        .insert([newProduct])
+        .select()
+        .single();
+
+      if (createError) {
+        throw new Error(`Failed to create new product: ${createError.message}`);
+      }
+
+      return { success: true };
+    } catch (error) {
+      console.error("Error in product approval:", error);
       throw error;
     }
   },

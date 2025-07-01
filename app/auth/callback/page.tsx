@@ -112,9 +112,7 @@ function CallbackContent() {
           const { data, error } = await supabase.auth.getUser();
           
           if (error) {
-            // Kullanıcı henüz doğrulanmamış, bu normal
-            console.log("Kullanıcı henüz doğrulanmamış:", error);
-            return;
+           return;
           }
           
           if (data?.user?.user_metadata) {
@@ -127,7 +125,7 @@ function CallbackContent() {
     };
     
     fetchUserInfo();
-  }, [hashParams.tokenHash, hashParams.type, supabase]);
+  }, [hashParams.tokenHash, hashParams.type, supabase, router]);
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
