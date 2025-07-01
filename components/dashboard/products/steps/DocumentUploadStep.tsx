@@ -1,6 +1,6 @@
 "use client";
 
-import { Plus, X } from "lucide-react";
+import { Plus, X, CheckCircle, Info } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useCallback, useState, useEffect } from "react";
 import { UseFormReturn } from "react-hook-form";
@@ -52,10 +52,19 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
   const productType = form.watch("product_type");
   const subcategory = form.watch("product_subcategory");
 
-  // ChatGPT guidance hook
+  // Get real labels from localStorage (set in BasicInfoStep)
+  const getCategoryLabel = (categoryId: string): string => {
+    return localStorage.getItem('selectedCategoryLabel') || categoryId;
+  };
+
+  const getSubcategoryLabel = (subcategoryId: string): string => {
+    return localStorage.getItem('selectedSubcategoryLabel') || subcategoryId;
+  };
+
+  // ChatGPT guidance hook - Send real labels to AI
   const { guidance, isLoading: guidanceLoading, error: guidanceError, refreshGuidance } = useChatGPTGuidance({
-    productType,
-    subcategory,
+    productType: getCategoryLabel(productType),
+    subcategory: getSubcategoryLabel(subcategory),
     enabled: !!productType && !!subcategory,
   });
 
@@ -206,112 +215,219 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
           isLoading={guidanceLoading}
           error={guidanceError}
           onRefresh={refreshGuidance}
+          productTypeLabel={getCategoryLabel(productType)}
+          subcategoryLabel={getSubcategoryLabel(subcategory)}
         />
       )}
 
       <Card className="p-6 space-y-6">
         <div>
           <h3 className="text-lg font-semibold">
-            {t("admin.product.steps.documentUpload.productDocuments")}
+            Ürün Belgeleri
           </h3>
           <p className="text-sm text-muted-foreground">
-            {t("admin.product.steps.documentUpload.uploadDocuments")}
+            AI rehberliğine göre gerekli belgeleri yükleyin
           </p>
         </div>
 
       {/* ✅ ChatGPT rehberliğine göre belge türleri için alan oluştur */}
       {guidance ? (
-        // ChatGPT rehberliği varsa, onu kullan
-        [...guidance.requiredDocuments, ...guidance.optionalDocuments].map((docReq) => {
-          const docType = DOCUMENT_TYPES.find(dt => dt.id === docReq.type);
-          if (!docType) return null;
+        <>
+          {/* Zorunlu Belgeler */}
+          {guidance.requiredDocuments.length > 0 && (
+            <div className="space-y-4">
+              <h4 className="font-semibold text-green-800 flex items-center gap-2">
+                <CheckCircle className="h-4 w-4" />
+                Zorunlu Belgeler
+              </h4>
+              <div className="space-y-4">
+                {guidance.requiredDocuments.map((docReq) => {
+                  const docType = {
+                    id: docReq.type,
+                    label: docReq.label,
+                    description: docReq.description
+                  };
 
-          return (
-            <FormField
-              key={docReq.type}
-              control={form.control}
-              name={`documents.${docReq.type}`}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center gap-2">
-                    {docType.label}
-                    {docReq.required && (
-                      <span className="text-red-500 text-xs">*</span>
-                    )}
-                    <span className={`text-xs px-2 py-1 rounded ${
-                      docReq.required 
-                        ? 'bg-red-100 text-red-800' 
-                        : 'bg-blue-100 text-blue-800'
-                    }`}>
-                      {docReq.required ? 'Zorunlu' : 'Opsiyonel'}
-                    </span>
-                  </FormLabel>
-                  <div className="text-sm text-gray-600 mb-3">
-                    {docReq.description}
-                  </div>
-                  <FormControl>
-                    <div className="space-y-2">
-                      {/* ✅ Yüklenen dosyaları göster */}
-                      {field.value?.map((file: any, index: number) => (
-                        <div key={index} className="flex items-center gap-2">
-                          <Input
-                            type="text"
-                            value={file.name}
-                            readOnly
-                            className="flex-1"
-                          />
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => {
-                              const newFiles = field.value.filter(
-                                (_: any, i: number) => i !== index
-                              );
-                              field.onChange(newFiles);
-                              form.setValue(`documents.${docReq.type}`, newFiles);
-                            }}
-                          >
-                            <X className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      ))}
+                  return (
+                    <FormField
+                      key={docReq.type}
+                      control={form.control}
+                      name={`documents.${docReq.type}`}
+                      render={({ field }) => (
+                        <FormItem className="bg-green-50 p-4 rounded-lg border border-green-200">
+                          <FormLabel className="flex items-center gap-2 text-green-800">
+                            {docType.label}
+                            <span className="text-red-500 text-xs">*</span>
+                            <span className="text-xs px-2 py-1 rounded bg-red-100 text-red-800">
+                              Zorunlu
+                            </span>
+                          </FormLabel>
+                          <div className="text-sm text-gray-600 mb-3">
+                            {docReq.description}
+                          </div>
+                          <FormControl>
+                            <div className="space-y-2">
+                              {/* Yüklenen dosyaları göster */}
+                              {field.value?.map((file: any, index: number) => (
+                                <div key={index} className="flex items-center gap-2">
+                                  <Input
+                                    type="text"
+                                    value={file.name}
+                                    readOnly
+                                    className="flex-1"
+                                  />
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => {
+                                      const newFiles = field.value.filter(
+                                        (_: any, i: number) => i !== index
+                                      );
+                                      field.onChange(newFiles);
+                                      form.setValue(`documents.${docReq.type}`, newFiles);
+                                    }}
+                                  >
+                                    <X className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                              ))}
 
-                      {/* ✅ Dosya yükleme alanı */}
-                      <div className="flex items-center gap-2">
-                        {/* Gizli input */}
-                        <Input
-                          type="file"
-                          id={`file-upload-${docReq.type}`}
-                          className="hidden"
-                          onChange={(e) => handleFileChange(e, field, docReq.type)}
-                          accept={ACCEPTED_DOCUMENT_FORMATS.map(
-                            (format) => `.${format}`
-                          ).join(",")}
-                          multiple
-                        />
-                        <Button
-                          type="button"
-                          variant="outline"
-                          onClick={() => {
-                            const input = document.getElementById(
-                              `file-upload-${docReq.type}`
-                            ) as HTMLInputElement;
-                            input?.click();
-                          }}
-                        >
-                          <Plus className="h-4 w-4 mr-2" />
-                          {t("admin.product.steps.documentUpload.addDocument")}
-                        </Button>
-                      </div>
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          );
-        })
+                              {/* Dosya yükleme alanı */}
+                              <div className="flex items-center gap-2">
+                                <Input
+                                  type="file"
+                                  id={`file-upload-${docReq.type}`}
+                                  className="hidden"
+                                  onChange={(e) => handleFileChange(e, field, docReq.type)}
+                                  accept={ACCEPTED_DOCUMENT_FORMATS.map(
+                                    (format) => `.${format}`
+                                  ).join(",")}
+                                  multiple
+                                />
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  onClick={() => {
+                                    const input = document.getElementById(
+                                      `file-upload-${docReq.type}`
+                                    ) as HTMLInputElement;
+                                    input?.click();
+                                  }}
+                                >
+                                  <Plus className="h-4 w-4 mr-2" />
+                                  Belge Yükle
+                                </Button>
+                              </div>
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Opsiyonel Belgeler */}
+          {guidance.optionalDocuments.length > 0 && (
+            <div className="space-y-4">
+              <h4 className="font-semibold text-blue-800 flex items-center gap-2">
+                <Info className="h-4 w-4" />
+                Opsiyonel Belgeler
+              </h4>
+              <div className="space-y-4">
+                {guidance.optionalDocuments.map((docReq) => {
+                  const docType = {
+                    id: docReq.type,
+                    label: docReq.label,
+                    description: docReq.description
+                  };
+
+                  return (
+                    <FormField
+                      key={docReq.type}
+                      control={form.control}
+                      name={`documents.${docReq.type}`}
+                      render={({ field }) => (
+                        <FormItem className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                          <FormLabel className="flex items-center gap-2 text-blue-800">
+                            {docType.label}
+                            <span className="text-xs px-2 py-1 rounded bg-blue-100 text-blue-800">
+                              Opsiyonel
+                            </span>
+                          </FormLabel>
+                          <div className="text-sm text-gray-600 mb-3">
+                            {docReq.description}
+                          </div>
+                          <FormControl>
+                            <div className="space-y-2">
+                              {/* Yüklenen dosyaları göster */}
+                              {field.value?.map((file: any, index: number) => (
+                                <div key={index} className="flex items-center gap-2">
+                                  <Input
+                                    type="text"
+                                    value={file.name}
+                                    readOnly
+                                    className="flex-1"
+                                  />
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => {
+                                      const newFiles = field.value.filter(
+                                        (_: any, i: number) => i !== index
+                                      );
+                                      field.onChange(newFiles);
+                                      form.setValue(`documents.${docReq.type}`, newFiles);
+                                    }}
+                                  >
+                                    <X className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                              ))}
+
+                              {/* Dosya yükleme alanı */}
+                              <div className="flex items-center gap-2">
+                                <Input
+                                  type="file"
+                                  id={`file-upload-${docReq.type}`}
+                                  className="hidden"
+                                  onChange={(e) => handleFileChange(e, field, docReq.type)}
+                                  accept={ACCEPTED_DOCUMENT_FORMATS.map(
+                                    (format) => `.${format}`
+                                  ).join(",")}
+                                  multiple
+                                />
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  onClick={() => {
+                                    const input = document.getElementById(
+                                      `file-upload-${docReq.type}`
+                                    ) as HTMLInputElement;
+                                    input?.click();
+                                  }}
+                                >
+                                  <Plus className="h-4 w-4 mr-2" />
+                                  Belge Yükle
+                                </Button>
+                              </div>
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </>
       ) : (
         // ChatGPT rehberliği yoksa, varsayılan belge türlerini göster
         DOCUMENT_TYPES.map((docType) => (
@@ -386,8 +502,8 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
         ))
       )}
 
-      {/* Doküman doğrulama checkbox'ı */}
-      <div className="flex items-start space-x-3 space-y-0 rounded-md border p-4 mt-6">
+      {/* Belgeleri Doğrula */}
+      <div className="flex items-start space-x-3 space-y-0 rounded-md border p-4 mt-6 bg-yellow-50 border-yellow-200">
         <Checkbox
           id="documents-verification"
           checked={isVerified}
@@ -398,12 +514,10 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
             htmlFor="documents-verification"
             className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
           >
-            {t("admin.product.steps.documentUpload.verifyDocuments")}
+            Belgeleri Doğrula
           </label>
           <p className="text-sm text-muted-foreground">
-            {t(
-              "admin.product.steps.documentUpload.verifyDocumentsDescription"
-            )}
+            Tüm yüklenen belgelerin doğruluğunu doğrulayın
           </p>
         </div>
       </div>

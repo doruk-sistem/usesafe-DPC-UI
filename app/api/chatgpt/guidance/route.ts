@@ -39,45 +39,47 @@ export async function POST(request: NextRequest) {
     }
 
     const prompt = `
-Aşağıdaki ürün tipi ve alt kategorisi için Türkiye'de satış için gerekli belgeleri belirle:
+Determine all necessary documents for sales in Turkey for the following product type and subcategory:
 
-Ürün Tipi: ${productType}
-Alt Kategori: ${subcategory}
+Product Type: ${productType}
+Subcategory: ${subcategory}
 
-Lütfen aşağıdaki JSON formatında yanıt ver:
+IMPORTANT: Use the actual product type "${productType}" and subcategory "${subcategory}" names in your descriptions. Do not use any numbers or codes.
+
+Which documents are required and which are optional for this product? Please respond in the following JSON format:
 
 {
   "requiredDocuments": [
     {
-      "type": "test_reports",
-      "label": "Test Raporları",
+      "type": "your_determined_type",
+      "label": "Document Turkish Name",
       "required": true,
-      "description": "Ürünün güvenlik ve kalite testlerini gösteren raporlar",
-      "examples": ["CE test raporu", "Güvenlik test raporu"]
+      "description": "Description of what this document is and why it's required",
+      "examples": ["Example document names"]
     }
   ],
   "optionalDocuments": [
     {
-      "type": "quality_cert",
-      "label": "Kalite Sertifikaları", 
+      "type": "your_determined_type",
+      "label": "Document Turkish Name", 
       "required": false,
-      "description": "Kalite yönetim sistemi sertifikaları",
-      "examples": ["ISO 9001", "ISO 14001"]
+      "description": "Description of what this document is and why it's beneficial",
+      "examples": ["Example document names"]
     }
   ],
-  "generalNotes": "Genel notlar ve öneriler",
-  "complianceNotes": "Uyumluluk gereksinimleri hakkında notlar"
+  "generalNotes": "General document requirements and recommendations for this product",
+  "complianceNotes": "Documents required for compliance with Turkish regulations and ESPR scope"
 }
 
-Belge tipleri:
-- test_reports: Test Raporları
-- technical_docs: Teknik Dokümantasyon  
-- compliance_docs: Uygunluk Belgeleri
-- quality_cert: Kalite Sertifikaları
-- safety_cert: Güvenlik Sertifikaları
-
-Sadece JSON formatında yanıt ver, başka açıklama ekleme.
-    `;
+CRITICAL RULES:
+- NEVER use numbers, indexes, or expressions like "5 - 2343" or "2 - 49" anywhere in your response
+- NEVER include any numbering, bullet points, or lists outside the JSON
+- NEVER add any text before or after the JSON
+- Respond ONLY with the JSON object, nothing else
+- Do not include any explanations, titles, or additional text
+- The response must start with { and end with }
+- Use the actual product type and subcategory names in your descriptions, not numbers
+`;
 
     const response = await fetch(API_URL, {
       method: 'POST',
@@ -89,7 +91,25 @@ Sadece JSON formatında yanıt ver, başka açıklama ekleme.
         messages: [
           {
             role: 'system',
-            content: 'Sen bir ürün belge gereksinimleri uzmanısın. Türkiye\'de ürün satışı için gerekli belgeleri belirlemekte uzmanlaşmışsın.'
+            content: `You are a product document requirements expert. You are specialized in determining all necessary documents for product sales in Turkey.
+
+Your task:
+- Determine required documents based on product type and category
+- Consider ESPR (Ecodesign for Sustainable Products Regulation) scope
+- Evaluate compliance requirements for Turkish regulations
+- Provide clear and understandable document guidance to users
+- Determine document types completely on your own, don't use any examples
+- Always use the actual product type and subcategory names provided, never use numbers or codes
+
+CRITICAL RESPONSE RULES:
+- Respond ONLY with a JSON object, nothing else
+- NEVER use numbers, indexes, or expressions like "5 - 2343" or "2 - 49"
+- NEVER include any text before or after the JSON
+- NEVER add titles, explanations, or additional formatting
+- The response must start with { and end with }
+- Use English for document types, Turkish for labels
+- Specify both required and optional documents
+- Always reference the actual product type and subcategory names in descriptions`
           },
           {
             role: 'user',
@@ -116,6 +136,22 @@ Sadece JSON formatında yanıt ver, başka açıklama ekleme.
     const jsonMatch = content.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
       throw new Error('No JSON found in response');
+    }
+
+    // Sıkı kontrol: Yanıtta index/sıra numarası var mı?
+    if (/\d+\s*-\s*\d+/.test(content)) {
+      throw new Error('Response contains sequence numbers or indexes.');
+    }
+
+    // Ekstra kontrol: JSON dışında metin var mı?
+    const cleanContent = content.trim();
+    if (!cleanContent.startsWith('{') || !cleanContent.endsWith('}')) {
+      throw new Error('Response contains text outside JSON format.');
+    }
+
+    // Kontrol: AI category isimlerini kullanıyor mu?
+    if (!content.includes(productType) && !content.includes(subcategory)) {
+      console.warn('AI response does not reference the provided product type or subcategory names');
     }
 
     const parsed = JSON.parse(jsonMatch[0]);

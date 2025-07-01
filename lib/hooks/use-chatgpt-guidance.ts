@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { ChatGPTService, type ProductDocumentGuidance } from '@/lib/services/chatgpt';
 
 interface UseChatGPTGuidanceProps {
-  productType: string;
-  subcategory: string;
+  productType: string; // LABEL (isim) olarak gelmeli
+  subcategory: string; // LABEL (isim) olarak gelmeli
   enabled?: boolean;
 }
 
@@ -27,6 +27,7 @@ export function useChatGPTGuidance({
       setError(null);
 
       try {
+        // Artık doğrudan label (isim) gönderiyoruz
         const result = await ChatGPTService.getDocumentGuidance(productType, subcategory);
         setGuidance(result);
       } catch (err) {
@@ -50,6 +51,7 @@ export function useChatGPTGuidance({
     setError(null);
 
     try {
+      // Artık doğrudan label (isim) gönderiyoruz
       const result = await ChatGPTService.getDocumentGuidance(productType, subcategory);
       setGuidance(result);
     } catch (err) {

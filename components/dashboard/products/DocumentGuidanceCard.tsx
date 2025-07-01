@@ -16,6 +16,8 @@ interface DocumentGuidanceCardProps {
   isLoading: boolean;
   error: string | null;
   onRefresh: () => void;
+  productTypeLabel?: string; // Gerçek category ismi
+  subcategoryLabel?: string; // Gerçek subcategory ismi
 }
 
 export function DocumentGuidanceCard({
@@ -23,6 +25,8 @@ export function DocumentGuidanceCard({
   isLoading,
   error,
   onRefresh,
+  productTypeLabel,
+  subcategoryLabel,
 }: DocumentGuidanceCardProps) {
   const t = useTranslations();
 
@@ -94,7 +98,7 @@ export function DocumentGuidanceCard({
           </Button>
         </div>
         <CardDescription className="text-blue-700">
-          {guidance.productType} - {guidance.subcategory} için önerilen belgeler
+          {productTypeLabel || guidance.productType} - {subcategoryLabel || guidance.subcategory} için önerilen belgeler
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
