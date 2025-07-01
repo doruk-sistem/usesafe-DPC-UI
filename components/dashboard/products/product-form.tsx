@@ -211,35 +211,14 @@ export function ProductForm({
             </Button>
           )}
           {step < TOTAL_STEPS ? (
-            <>
-              <Button
-                type="button"
-                onClick={handleNextStep}
-                disabled={isSubmitting}
-              >
-                {t("common.buttons.next")}
-                <ArrowRight className="h-4 w-4 ml-2" />
-              </Button>
-              
-              {/* AI belgeleri varsa submit butonunu da göster */}
-              {(() => {
-                const documents = form.getValues('documents');
-                const hasAIDocuments = documents && Object.keys(documents).some(key => 
-                  !['test_reports', 'technical_docs', 'compliance_docs', 'quality_cert', 'safety_cert'].includes(key) &&
-                  Array.isArray(documents[key]) && documents[key].length > 0
-                );
-                
-                if (hasAIDocuments) {
-                  return (
-                    <Button type="submit" disabled={isSubmitting}>
-                      {isSubmitting && <span className="mr-2">{t("common.buttons.saving")}</span>}
-                      {defaultValues ? t("common.buttons.updateProduct") : t("common.buttons.createProduct")}
-                    </Button>
-                  );
-                }
-                return null;
-              })()}
-            </>
+            <Button
+              type="button"
+              onClick={handleNextStep}
+              disabled={isSubmitting}
+            >
+              {t("common.buttons.next")}
+              <ArrowRight className="h-4 w-4 ml-2" />
+            </Button>
           ) : (
             <Button type="submit" disabled={isSubmitting}>
               {isSubmitting && <span className="mr-2">{t("common.buttons.saving")}</span>}

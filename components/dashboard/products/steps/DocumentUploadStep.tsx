@@ -74,14 +74,30 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
 
     // Override the trigger method
     form.trigger = async (name?: string | string[]) => {
-      // AI belgeleri varsa verification'ı bypass et
+      // Zorunlu belgelerin yüklenip yüklenmediğini kontrol et
       const documents = form.getValues('documents');
-      const hasAIDocuments = documents && Object.keys(documents).some(key => 
-        !['test_reports', 'technical_docs', 'compliance_docs', 'quality_cert', 'safety_cert'].includes(key) &&
-        Array.isArray(documents[key]) && documents[key].length > 0
-      );
       
-      if (!isVerified && !hasAIDocuments) {
+      // AI rehberliği varsa zorunlu belgeleri kontrol et
+      if (guidance && guidance.requiredDocuments && guidance.requiredDocuments.length > 0) {
+        const requiredDocs = guidance.requiredDocuments;
+        const missingRequiredDocs = requiredDocs.filter((doc: any) => {
+          const docType = doc.type;
+          const uploadedDocs = documents?.[docType];
+          return !uploadedDocs || uploadedDocs.length === 0;
+        });
+        
+        if (missingRequiredDocs.length > 0) {
+          toast({
+            title: "Required Documents Missing",
+            description: `Please upload the following required documents: ${missingRequiredDocs.map((doc: any) => doc.label).join(', ')}`,
+            variant: "destructive",
+          });
+          return false;
+        }
+      }
+      
+      // Belgeleri doğrula checkbox'ı kontrol et
+      if (!isVerified) {
         toast({
           title: t("admin.product.steps.documentUpload.verificationRequired"),
           description: t(
@@ -91,6 +107,7 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
         });
         return false;
       }
+      
       return originalTrigger(name);
     };
 
@@ -218,10 +235,10 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
       <Card className="p-6 space-y-6">
         <div>
           <h3 className="text-lg font-semibold">
-            Ürün Belgeleri
+            Product Documents
           </h3>
           <p className="text-sm text-muted-foreground">
-            AI rehberliğine göre gerekli belgeleri yükleyin
+            Upload the required documents according to AI guidance
           </p>
         </div>
 
@@ -233,7 +250,7 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
             <div className="space-y-4">
               <h4 className="font-semibold text-green-800 flex items-center gap-2">
                 <CheckCircle className="h-4 w-4" />
-                Zorunlu Belgeler
+                Required Documents
               </h4>
               <div className="space-y-4">
                 {guidance.requiredDocuments.map((docReq) => {
@@ -254,7 +271,7 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
                             {docType.label}
                             <span className="text-red-500 text-xs">*</span>
                             <span className="text-xs px-2 py-1 rounded bg-red-100 text-red-800">
-                              Zorunlu
+                              Required
                             </span>
                           </FormLabel>
                           <div className="text-sm text-gray-600 mb-3">
@@ -311,7 +328,7 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
                                   }}
                                 >
                                   <Plus className="h-4 w-4 mr-2" />
-                                  Belge Yükle
+                                  Upload Document
                                 </Button>
                               </div>
                             </div>
@@ -331,7 +348,7 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
             <div className="space-y-4">
               <h4 className="font-semibold text-blue-800 flex items-center gap-2">
                 <Info className="h-4 w-4" />
-                Opsiyonel Belgeler
+                Optional Documents
               </h4>
               <div className="space-y-4">
                 {guidance.optionalDocuments.map((docReq) => {
@@ -351,7 +368,7 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
                           <FormLabel className="flex items-center gap-2 text-blue-800">
                             {docType.label}
                             <span className="text-xs px-2 py-1 rounded bg-blue-100 text-blue-800">
-                              Opsiyonel
+                              Optional
                             </span>
                           </FormLabel>
                           <div className="text-sm text-gray-600 mb-3">
@@ -408,7 +425,7 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
                                   }}
                                 >
                                   <Plus className="h-4 w-4 mr-2" />
-                                  Belge Yükle
+                                  Upload Document
                                 </Button>
                               </div>
                             </div>
@@ -424,77 +441,13 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
           )}
         </>
       ) : (
-        // ChatGPT rehberliği yoksa, varsayılan belge türlerini göster
-        DOCUMENT_TYPES.map((docType) => (
-          <FormField
-            key={docType.id}
-            control={form.control}
-            name={`documents.${docType.id}`}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{docType.label}</FormLabel>
-                <FormControl>
-                  <div className="space-y-2">
-                    {/* ✅ Yüklenen dosyaları göster */}
-                    {field.value?.map((file: any, index: number) => (
-                      <div key={index} className="flex items-center gap-2">
-                        <Input
-                          type="text"
-                          value={file.name}
-                          readOnly
-                          className="flex-1"
-                        />
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => {
-                            const newFiles = field.value.filter(
-                              (_: any, i: number) => i !== index
-                            );
-                            field.onChange(newFiles);
-                            form.setValue(`documents.${docType.id}`, newFiles);
-                          }}
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    ))}
-
-                    {/* ✅ Dosya yükleme alanı */}
-                    <div className="flex items-center gap-2">
-                      {/* Gizli input */}
-                      <Input
-                        type="file"
-                        id={`file-upload-${docType.id}`}
-                        className="hidden"
-                        onChange={(e) => handleFileChange(e, field, docType.id)}
-                        accept={ACCEPTED_DOCUMENT_FORMATS.map(
-                          (format) => `.${format}`
-                        ).join(",")}
-                        multiple
-                      />
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => {
-                          const input = document.getElementById(
-                            `file-upload-${docType.id}`
-                          ) as HTMLInputElement;
-                          input?.click();
-                        }}
-                      >
-                        <Plus className="h-4 w-4 mr-2" />
-                        {t("admin.product.steps.documentUpload.addDocument")}
-                      </Button>
-                    </div>
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        ))
+        // ChatGPT rehberliği yüklenene kadar loading göster
+        <div className="flex items-center justify-center py-8">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">AI document guidance is loading...</p>
+          </div>
+        </div>
       )}
 
       {/* Belgeleri Doğrula */}
@@ -509,10 +462,10 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
             htmlFor="documents-verification"
             className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
           >
-            Belgeleri Doğrula
+            Verify Documents
           </label>
           <p className="text-sm text-muted-foreground">
-            Tüm yüklenen belgelerin doğruluğunu doğrulayın
+            Verify the accuracy of all uploaded documents
           </p>
         </div>
       </div>

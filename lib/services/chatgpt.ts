@@ -92,37 +92,37 @@ export class ChatGPTService {
       requiredDocuments: [
         {
           type: 'test_reports',
-          label: 'Test Raporları',
+          label: 'Test Reports',
           required: true,
-          description: 'Ürünün güvenlik ve kalite testlerini gösteren raporlar',
-          examples: ['CE test raporu', 'Güvenlik test raporu']
+          description: 'Product safety and quality test reports',
+          examples: ['CE test report', 'Safety test report']
         },
         {
           type: 'technical_docs',
-          label: 'Teknik Dokümantasyon',
+          label: 'Technical Documentation',
           required: true,
-          description: 'Ürünün teknik özelliklerini ve kullanım talimatlarını içeren dokümanlar',
-          examples: ['Teknik şartname', 'Kullanım kılavuzu']
+          description: 'Technical specifications and user manuals for the product',
+          examples: ['Technical specification', 'User manual']
         }
       ],
       optionalDocuments: [
         {
           type: 'quality_cert',
-          label: 'Kalite Sertifikaları',
+          label: 'Quality Certificates',
           required: false,
-          description: 'Kalite yönetim sistemi sertifikaları',
+          description: 'Quality management system certificates',
           examples: ['ISO 9001', 'ISO 14001']
         },
         {
           type: 'safety_cert',
-          label: 'Güvenlik Sertifikaları',
+          label: 'Safety Certificates',
           required: false,
-          description: 'Güvenlik standartlarına uygunluk sertifikaları',
-          examples: ['CE sertifikası', 'Güvenlik belgesi']
+          description: 'Safety standards compliance certificates',
+          examples: ['CE certificate', 'Safety document']
         }
       ],
-      generalNotes: 'Bu ürün için temel belgeler yeterlidir. Ek belgeler ürünün özelliklerine göre gerekebilir.',
-      complianceNotes: 'Türkiye\'de satış için CE işareti ve ilgili test raporları gereklidir.'
+      generalNotes: 'Basic documents are sufficient for this product. Additional documents may be required based on product characteristics.',
+      complianceNotes: 'CE marking and related test reports are required for sale in Turkey.'
     };
   }
 } 
