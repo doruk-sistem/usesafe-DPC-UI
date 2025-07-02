@@ -17,6 +17,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
 import { productService } from "@/lib/services/product";
+import { STANDARD_TO_AI_MAPPING, DOCUMENT_TYPE_CONFIG } from "@/lib/constants/documents";
 import { BaseProduct } from "@/lib/types/product";
 
 interface ProductEditProps {
@@ -44,6 +45,17 @@ const documentTypeLabels: Record<string, string> = {
   compliance_docs: "Compliance Documents",
   certificates: "Certificates",
   other: "Other"
+};
+
+// Belge türünü gösterme fonksiyonu - AI türlerini destekler
+const getDocumentTypeLabel = (doc: any) => {
+  // Eğer originalType varsa (AI'dan gelen), onu göster
+  if (doc.originalType) {
+    return doc.originalType;
+  }
+  
+  // Standart türler için label kullan
+  return documentTypeLabels[doc.type] || doc.type;
 };
 
 export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps) {
@@ -806,7 +818,7 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
                     </div>
                     <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground">
                       <div key={`doc-type-${doc.id || doc.name}`}>
-                        <span className="font-medium">Type:</span> {documentTypeLabels[doc.type] || doc.type}
+                        <span className="font-medium">Type:</span> {getDocumentTypeLabel(doc)}
                       </div>
                       <div key={`doc-version-${doc.id || doc.name}`}>
                         <span className="font-medium">Version:</span> {doc.version || "1.0"}

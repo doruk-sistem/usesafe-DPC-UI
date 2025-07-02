@@ -1,4 +1,4 @@
-export const ACCEPTED_DOCUMENT_FORMATS = ["pdf", "doc", "docx"] as const;
+export const ACCEPTED_DOCUMENT_FORMATS = ["pdf", "doc", "docx", "jpg", "jpeg", "png", "gif", "bmp", "tiff", "webp"] as const;
 
 export const DOCUMENT_TYPES = [
   {
@@ -192,27 +192,65 @@ export const REQUIRED_DOCUMENTS: RequiredDocuments = {
 
 // Her doküman tipi için konfigürasyon ayarları
 export const DOCUMENT_TYPE_CONFIG = {
-  quality_cert: {
-    maxSize: 5 * 1024 * 1024, // 5MB
-    acceptedFormats: ACCEPTED_DOCUMENT_FORMATS,
-  },
-  safety_cert: {
-    maxSize: 5 * 1024 * 1024, // 5MB
-    acceptedFormats: ACCEPTED_DOCUMENT_FORMATS,
-  },
   test_reports: {
+    label: "Test Reports",
     maxSize: 10 * 1024 * 1024, // 10MB
-    acceptedFormats: ACCEPTED_DOCUMENT_FORMATS,
+    required: false,
   },
   technical_docs: {
-    maxSize: 10 * 1024 * 1024, // 10MB
-    acceptedFormats: ACCEPTED_DOCUMENT_FORMATS,
+    label: "Technical Documentation",
+    maxSize: 10 * 1024 * 1024,
+    required: false,
   },
   compliance_docs: {
-    maxSize: 5 * 1024 * 1024, // 5MB
-    acceptedFormats: ACCEPTED_DOCUMENT_FORMATS,
+    label: "Compliance Documents",
+    maxSize: 10 * 1024 * 1024,
+    required: false,
+  },
+  quality_cert: {
+    label: "Quality Certificates",
+    maxSize: 10 * 1024 * 1024,
+    required: false,
+  },
+  safety_cert: {
+    label: "Safety Certificates",
+    maxSize: 10 * 1024 * 1024,
+    required: false,
   },
 } as const;
+
+// AI'dan gelen belge türlerini standart türlere mapping
+export const AI_TO_STANDARD_MAPPING: Record<string, keyof typeof DOCUMENT_TYPE_CONFIG> = {
+  "CE Declaration of Conformity": "compliance_docs",
+  "CE Marking": "compliance_docs",
+  "Energy Label": "compliance_docs",
+  "RoHS Compliance Certificate": "compliance_docs",
+  "REACH Compliance": "compliance_docs",
+  "WEEE Compliance": "compliance_docs",
+  "Type Approval Certificate": "quality_cert",
+  "Quality Certificate": "quality_cert",
+  "ISO Certificate": "quality_cert",
+  "Warranty Certificate": "quality_cert",
+  "Technical Data Sheet": "technical_docs",
+  "Technical Documentation": "technical_docs",
+  "User Manual": "technical_docs",
+  "Installation Guide": "technical_docs",
+  "Maintenance Manual": "technical_docs",
+  "Test Reports": "test_reports",
+  "Test Certificate": "test_reports",
+  "Safety Certificate": "safety_cert",
+  "Safety Data Sheet": "safety_cert",
+  "Material Safety Data Sheet": "safety_cert",
+};
+
+// Standart türden AI türüne reverse mapping
+export const STANDARD_TO_AI_MAPPING: Record<keyof typeof DOCUMENT_TYPE_CONFIG, string[]> = {
+  compliance_docs: ["CE Declaration of Conformity", "CE Marking", "Energy Label", "RoHS Compliance Certificate", "REACH Compliance", "WEEE Compliance"],
+  quality_cert: ["Type Approval Certificate", "Quality Certificate", "ISO Certificate", "Warranty Certificate"],
+  technical_docs: ["Technical Data Sheet", "Technical Documentation", "User Manual", "Installation Guide", "Maintenance Manual"],
+  test_reports: ["Test Reports", "Test Certificate"],
+  safety_cert: ["Safety Certificate", "Safety Data Sheet", "Material Safety Data Sheet"],
+};
 
 // Doküman boyutu için sabitler
 export const FILE_SIZE = {

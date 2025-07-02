@@ -15,12 +15,14 @@ import {
 } from "@/components/ui/card";
 import { EnhancedCard } from "@/components/ui/enhanced-card";
 import { useAuth } from "@/lib/hooks/use-auth";
+import { useProductCategories } from "@/lib/hooks/use-product-categories";
 import { useProducts } from "@/lib/hooks/use-products";
 import { BaseProduct } from "@/lib/types/product";
 
 export function ProductList() {
   const t = useTranslations("products.list");
   const { user, isLoading: authLoading } = useAuth();
+  const { getCategoryName } = useProductCategories();
 
   const { products, isLoading } = useProducts(undefined, true);
 
@@ -77,10 +79,18 @@ export function ProductList() {
   };
 
   const getCategory = (product: BaseProduct) => {
-    const category = product.key_features?.find(
+    // Önce key_features içinde Category var mı diye kontrol et
+    const categoryFromFeatures = product.key_features?.find(
       (f) => f.name === "Category"
     )?.value;
-    return typeof category === "string" ? category : product.product_type;
+    
+    // Eğer key_features içinde Category varsa onu kullan
+    if (typeof categoryFromFeatures === "string") {
+      return categoryFromFeatures;
+    }
+    
+    // Yoksa product_type'ı kategori ID'si olarak kullan ve kategori adını getir
+    return getCategoryName(product.product_type);
   };
 
   const getSustainabilityIcon = (score: number) => {
@@ -183,7 +193,7 @@ export function ProductList() {
                     <CardTitle className="text-lg flex items-center justify-between">
                       {product.name}
                       <Badge variant="secondary" className="ml-2">
-                        {t(`categories.${category.toLowerCase()}`)}
+                        {category}
                       </Badge>
                     </CardTitle>
                     <CardDescription className="flex items-center">
