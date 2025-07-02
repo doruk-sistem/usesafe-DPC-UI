@@ -203,6 +203,12 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
                   onChange={(selectedOption: OptionType | null) => {
                     const newValue = selectedOption?.value || "";
                     field.onChange(newValue);
+                    
+                    // Category seçildiğinde localStorage'a kaydet
+                    if (selectedOption) {
+                      localStorage.setItem('selectedCategoryLabel', selectedOption.label);
+                      localStorage.setItem('selectedCategoryId', selectedOption.value);
+                    }
                   }}
                   placeholder={t("type.placeholder")}
                   classNames={selectClassNames}
@@ -230,6 +236,12 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
                   onChange={(selectedOption: OptionType | null) => {
                     const newValue = selectedOption?.value || "";
                     field.onChange(newValue);
+                    
+                    // Subcategory seçildiğinde localStorage'a kaydet
+                    if (selectedOption) {
+                      localStorage.setItem('selectedSubcategoryLabel', selectedOption.label);
+                      localStorage.setItem('selectedSubcategoryId', selectedOption.value);
+                    }
                   }}
                   placeholder={t("subcategory.placeholder")}
                   classNames={selectClassNames}

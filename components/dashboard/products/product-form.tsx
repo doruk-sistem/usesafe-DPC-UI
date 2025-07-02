@@ -17,33 +17,20 @@ import { DocumentUploadStep } from "./steps/DocumentUploadStep";
 // import { EsprComplianceStep } from "./steps/EsprComplianceStep";
 import { ManufacturerSelect } from "./steps/manufacturerSelect/ManufacturerSelect";
 
-const documentSchema = z.object({
-  quality_cert: z.array(z.object({
-    name: z.string(),
-    url: z.string(),
-    type: z.string()
-  })).optional(),
-  safety_cert: z.array(z.object({
-    name: z.string(),
-    url: z.string(),
-    type: z.string()
-  })).optional(),
-  test_reports: z.array(z.object({
-    name: z.string(),
-    url: z.string(),
-    type: z.string()
-  })).optional(),
-  technical_docs: z.array(z.object({
-    name: z.string(),
-    url: z.string(),
-    type: z.string()
-  })).optional(),
-  compliance_docs: z.array(z.object({
-    name: z.string(),
-    url: z.string(),
-    type: z.string()
-  })).optional(),
-});
+const documentSchema = z.record(z.string(), z.array(z.object({
+  name: z.string(),
+  url: z.string(),
+  type: z.string(),
+  id: z.string().optional(),
+  manufacturer: z.string().optional(),
+  manufacturerId: z.string().optional(),
+  status: z.string().optional(),
+  uploadedAt: z.string().optional(),
+  fileSize: z.string().optional(),
+  version: z.string().optional(),
+  file: z.any().optional(),
+  originalType: z.string().optional(),
+})).optional()).optional();
 
 const productSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -113,6 +100,51 @@ export function ProductForm({
   const handleSubmit = async (data: FormData) => {
     try {
       setIsSubmitting(true);
+      
+      // Belgeleri işle - File objelerini ayır
+      const processedDocuments: any = {};
+      const documentFiles: any = {};
+      
+      if (data.documents) {
+        // Tüm belge türlerini işle (hem standart hem AI türleri)
+        Object.entries(data.documents).forEach(([docType, docs]) => {
+          if (Array.isArray(docs) && docs.length > 0) {
+            processedDocuments[docType] = docs.map((doc: any) => {
+              // File objesini ayır, sadece belge bilgilerini gönder
+              const { file, ...documentInfo } = doc;
+              return documentInfo;
+            });
+            
+            // File objelerini ayrı sakla
+            documentFiles[docType] = docs;
+          }
+        });
+      }
+      
+      // AI belgelerini de dahil et (eğer varsa)
+      const aiDocumentTypes = Object.keys(data.documents || {}).filter(key => 
+        !['test_reports', 'technical_docs', 'compliance_docs', 'quality_cert', 'safety_cert'].includes(key)
+      );
+      
+      // AI belgelerini documentFiles'a ekle
+      aiDocumentTypes.forEach(aiDocType => {
+        const docs = data.documents?.[aiDocType];
+        if (Array.isArray(docs) && docs.length > 0) {
+          documentFiles[aiDocType] = docs;
+        }
+      });
+      
+      // AI belgelerini de dahil et
+      const finalDocumentFiles = {
+        ...documentFiles,
+        // AI belgelerini de ekle
+        ...Object.fromEntries(
+          aiDocumentTypes
+            .filter(aiDocType => data.documents?.[aiDocType])
+            .map(aiDocType => [aiDocType, data.documents![aiDocType]])
+        )
+      };
+      
       await onSubmit({
         ...data,
         company_id: "",
@@ -127,7 +159,9 @@ export function ProductForm({
           value: feature.value || "",
           unit: feature.unit,
         })),
-        documents: data.documents,
+        documents: processedDocuments,
+        // File objelerini ayrı gönder
+        documentFiles: finalDocumentFiles,
       });
     } finally {
       setIsSubmitting(false);

@@ -12,12 +12,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 interface AddressStepProps {
   form: UseFormReturn<any>;
 }
 
 export function AddressStep({ form }: AddressStepProps) {
+  const t = useTranslations("registration.steps.address");
   return (
     <div className="space-y-4">
       <FormField
@@ -25,7 +27,7 @@ export function AddressStep({ form }: AddressStepProps) {
         name="address"
         render={({ field, fieldState }) => (
           <FormItem>
-            <FormLabel>Headquarters Address *</FormLabel>
+            <FormLabel>{t("headquarters")}</FormLabel>
             <FormControl>
               <Textarea
                 {...field}
@@ -46,7 +48,7 @@ export function AddressStep({ form }: AddressStepProps) {
           name="city"
           render={({ field, fieldState }) => (
             <FormItem>
-              <FormLabel>City *</FormLabel>
+              <FormLabel>{t("city")}</FormLabel>
               <FormControl>
                 <Input
                   {...field}
@@ -66,7 +68,7 @@ export function AddressStep({ form }: AddressStepProps) {
           name="district"
           render={({ field, fieldState }) => (
             <FormItem>
-              <FormLabel>District *</FormLabel>
+              <FormLabel>{t("district")}</FormLabel>
               <FormControl>
                 <Input
                   {...field}
@@ -87,7 +89,7 @@ export function AddressStep({ form }: AddressStepProps) {
         name="postalCode"
         render={({ field, fieldState }) => (
           <FormItem>
-            <FormLabel>Postal Code</FormLabel>
+            <FormLabel>{t("postalCode")}</FormLabel>
             <FormControl>
               <Input
                 {...field}
