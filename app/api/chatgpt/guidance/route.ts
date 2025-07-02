@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
     }
 
     const prompt = `
-Determine all necessary documents for sales in Turkey for the following product type and subcategory:
+Determine all necessary documents for sales in EU for the following product type and subcategory:
 
 Product Type: ${productType}
 Subcategory: ${subcategory}
@@ -68,7 +68,7 @@ Which documents are required and which are optional for this product? Please res
     }
   ],
   "generalNotes": "General document requirements and recommendations for this product",
-  "complianceNotes": "Documents required for compliance with Turkish regulations and ESPR scope"
+  "complianceNotes": "Documents required for compliance with EU regulations and ESPR scope"
 }
 
 CRITICAL RULES:
@@ -91,12 +91,12 @@ CRITICAL RULES:
         messages: [
           {
             role: 'system',
-            content: `You are a product document requirements expert. You are specialized in determining all necessary documents for product sales in Turkey.
+            content: `You are a product document requirements expert. You are specialized in determining all necessary documents for product sales in EU.
 
 Your task:
 - Determine required documents based on product type and category
 - Consider ESPR (Ecodesign for Sustainable Products Regulation) scope
-- Evaluate compliance requirements for Turkish regulations
+- Evaluate compliance requirements for EU regulations
 - Provide clear and understandable document guidance to users
 - Determine document types completely on your own, don't use any examples
 - Always use the actual product type and subcategory names provided, never use numbers or codes
@@ -206,7 +206,7 @@ CRITICAL RESPONSE RULES:
         }
       ],
       generalNotes: 'Basic documents are sufficient for this product. Additional documents may be required based on product characteristics.',
-      complianceNotes: 'CE marking and related test reports are required for sale in Turkey.'
+      complianceNotes: 'CE marking and related test reports are required for sale in EU.'
     };
 
     return NextResponse.json(defaultGuidance);

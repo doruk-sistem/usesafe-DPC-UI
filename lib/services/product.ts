@@ -9,6 +9,19 @@ import { validateAndMapDocuments } from "@/lib/utils/document-mapper";
 import { createService } from "../api-client";
 
 export const productService = createService({
+  getProductCategories: async ({}: {}) => {
+    try {
+      const { data, error } = await supabase
+        .from("product_categories")
+        .select("*")
+        .order("id", { ascending: true });
+
+      if (error) throw error;
+      return data || [];
+    } catch (error) {
+      throw error;
+    }
+  },
   getProducts: async ({ companyId, manufacturerId }: { companyId?: string; manufacturerId?: string }) => {
     try {
       let query = supabase

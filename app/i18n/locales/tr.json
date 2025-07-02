@@ -5,10 +5,44 @@
     "verifyProducts": "Ürün Doğrula",
     "signIn": "Giriş Yap"
   },
+  "registration":{
+    "steps":{
+      "documents":{
+        "signatureCircular":"İmza Sirküleri *",
+        "tradeRegistry":"Ticaret Sicil Gazetesi *",
+        "taxPlate":"Vergi Levhası *",
+        "activityCertificate":"Faaliyet Belgesi *"
+      },
+      "address":{
+        "headquarters":"Genel Merkez Adresi *",
+        "city":"Şehir *",
+        "district":"İlçe *",
+        "postalCode":"Posta Kodu "
+      },
+      "companyInfo":{
+        "taxIdPlaceholder":"10 haneli vergi numarası giriniz",
+        "companyName":"Şirket Adı *",
+        "taxId":"Vergi Numarası *",
+        "taxIdDescription":"Tam olarak 10 haneli olmalı",
+        "tradeRegisterNumber":"Ticaret Sicil Numarası",
+        "mersisNumber":"MERSIS Numarası",
+        "nationalId":"Kimlik Numarası *",
+        "countryCode":"Ülke Kodu *",
+        "phone":"Telefon Numarası *",
+        "phonePlaceholder":"Telefon numarası giriniz",
+        "phoneDescription":"Tam olarak 10 haneli olmalı",
+        "countryCodePlaceholder":"Ülke kodu seçiniz"
+
+      }
+    }
+  },
   "list":{
     "title": "Liste",
     "description": "Ürün listesi",
     "empty":{
+      "title":"Ürün bulunamadı",
+      "description":"Bu şirket için ürün bulunamadı",
+      "addButton":"Ürün Ekle",
       "manufacturer": "Bu şirket için ürün bulunamadı"
     }
   },
@@ -799,6 +833,7 @@
     "applications": {
       "title": "Bekleyen Başvurular",
       "submitted": "Gönderildi",
+      "empty": "Bekleyen başvurular bulunamadı",
       "status": {
         "pending": "İncelemede",
         "review": "İnceleme Bekleniyor",
@@ -2927,7 +2962,8 @@
       "goToDashboard": "Panele Git",
       "saving": "Kaydediliyor...",
       "updateProduct": "Ürünü Güncelle",
-      "createProduct": "Ürün Oluştur"
+      "createProduct": "Ürün Oluştur",
+      "save": "Kaydet"
     },
     "delete": {
       "title": "Delete",
@@ -3197,6 +3233,14 @@
   "errorFetching": "Hata: Bilgiler alınamadı.",
   "auth": {
     "success":{
+      "updateUser":{
+        "title": "Kullanıcı Güncellendi",
+        "description": "Kullanıcı başarıyla güncellendi."
+      },
+      "signUp":{
+        "title": "Hesap Oluştur",
+        "description": "Yeni bir hesap oluşturun"
+      },
       "updatePassword":{
         "title": "Şifre Güncellendi",
         "description": "Şifreniz başarıyla güncellendi."
