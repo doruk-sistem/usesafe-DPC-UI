@@ -1,6 +1,7 @@
 "use client";
 
 import type { UseFormReturn } from "react-hook-form";
+import { useTranslations } from "next-intl";
 
 import {
   FormControl,
@@ -18,6 +19,7 @@ interface CompanyInfoStepProps {
 }
 
 export function CompanyInfoStep({ form }: CompanyInfoStepProps) {
+  const t = useTranslations("registration.steps.companyInfo");
   return (
     <div className="space-y-4">
       <FormField
@@ -25,7 +27,7 @@ export function CompanyInfoStep({ form }: CompanyInfoStepProps) {
         name="companyName"
         render={({ field, fieldState }) => (
           <FormItem>
-            <FormLabel>Company Name *</FormLabel>
+            <FormLabel>{t("companyName")}</FormLabel>
             <FormControl>
               <Input
                 {...field}
@@ -45,21 +47,21 @@ export function CompanyInfoStep({ form }: CompanyInfoStepProps) {
         name="taxId"
         render={({ field, fieldState }) => (
           <FormItem>
-            <FormLabel>Tax ID *</FormLabel>
+            <FormLabel>{t("taxId")}</FormLabel>
             <FormControl>
               <Input
                 {...field}
                 maxLength={10}
                 pattern="\d*"
                 inputMode="numeric"
-                placeholder="Enter 10-digit Tax ID"
+                placeholder={t("taxIdPlaceholder")}
                 className={cn(
                   fieldState.error &&
                     "border-red-500 focus-visible:ring-red-500"
                 )}
               />
             </FormControl>
-            <FormDescription>Must be exactly 10 digits</FormDescription>
+            <FormDescription>{t("taxIdDescription")}</FormDescription>
             <FormMessage className="text-red-500" />
           </FormItem>
         )}
@@ -70,7 +72,7 @@ export function CompanyInfoStep({ form }: CompanyInfoStepProps) {
         name="tradeRegisterNumber"
         render={({ field, fieldState }) => (
           <FormItem>
-            <FormLabel>Trade Register Number</FormLabel>
+            <FormLabel>{t("tradeRegisterNumber")}</FormLabel>
             <FormControl>
               <Input
                 {...field}
@@ -90,7 +92,7 @@ export function CompanyInfoStep({ form }: CompanyInfoStepProps) {
         name="mersisNumber"
         render={({ field, fieldState }) => (
           <FormItem>
-            <FormLabel>MERSIS Number</FormLabel>
+            <FormLabel>{t("mersisNumber")}</FormLabel>
             <FormControl>
               <Input
                 {...field}
