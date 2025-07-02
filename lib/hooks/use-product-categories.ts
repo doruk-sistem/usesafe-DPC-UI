@@ -67,6 +67,13 @@ export function useProductCategories() {
 
   // Kategori ID'sine göre kategori adını bul (string veya number olabilir)
   const getCategoryName = (categoryId: string | number): string => {
+    // Eğer categoryId bir çeviri anahtarı formatındaysa (products.list.categories.XXX)
+    if (typeof categoryId === 'string' && categoryId.startsWith('products.list.categories.')) {
+      // Çeviri anahtarından kategori adını çıkar (son kısmı al)
+      return categoryId.replace('products.list.categories.', '');
+    }
+    
+    // Normal durumda ID'ye göre kategori adını bul
     const numericId = typeof categoryId === 'string' ? Number(categoryId) : categoryId;
     const category = categories.find(cat => cat.id === numericId);
     return category?.name || String(categoryId);
