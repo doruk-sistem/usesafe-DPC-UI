@@ -19,12 +19,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  PRODUCT_TYPE_OPTIONS,
-  type SubcategoryOption,
-} from "@/lib/constants/product-types";
 import type { KeyFeature, NewProduct } from "@/lib/types/product";
 import type { Json } from "@/lib/types/supabase";
+import { productCategoriesService, type ProductCategory } from "@/lib/services/product-categories";
+import { supabase } from "@/lib/supabase/client";
+import { useProductTypesByCategory } from "@/lib/services/product-types";
 
 interface BasicInfoStepProps {
   form: UseFormReturn<NewProduct>;
@@ -58,45 +57,36 @@ const selectClassNames = {
 
 export function BasicInfoStep({ form }: BasicInfoStepProps) {
   const t = useTranslations("productManagement.form");
-  const [subcategories, setSubcategories] = useState<SubcategoryOption[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const productType = form.watch("product_type");
 
+  // Yeni hook ile subcategory'leri çek
+  const { data: subcategories, isLoading: subLoading } = useProductTypesByCategory({
+    categoryId: Number(productType) || 0
+  });
+
   useEffect(() => {
-    // Find the selected product type and get its subcategories
-    const selectedProductType = PRODUCT_TYPE_OPTIONS.find(
-      (option) => option.value === productType
-    );
+    const test = async () => {
+      const { data, error } = await supabase
+        .from("product_categories")
+        .select("*");
+      setCategories(data || []);
+    };
+    test();
+  }, []);
 
-    if (selectedProductType) {
-      setSubcategories(selectedProductType.subcategories);
+  const categoryOptions = categories.map(category => ({
+    value: category.id.toString(),
+    label: category.name
+  }));
 
-      // Clear subcategory selection if the product type changes and there's no matching subcategory
-      const currentSubcategory = form.getValues("product_subcategory");
-      const subcategoryExists = selectedProductType.subcategories.some(
-        (sub) => sub.value === currentSubcategory
-      );
-
-      if (!subcategoryExists && currentSubcategory) {
-        form.setValue("product_subcategory", "");
-      }
-    } else {
-      setSubcategories([]);
-    }
-  }, [productType, form]);
-
-  const convertToKeyFeature = (json: Json): KeyFeature => {
-    if (typeof json === "object" && json !== null && !Array.isArray(json)) {
-      const obj = json as Record<string, Json>;
-      return {
-        name: typeof obj.name === "string" ? obj.name : "",
-        value: typeof obj.value === "string" ? obj.value : "",
-        unit: typeof obj.unit === "string" ? obj.unit : undefined,
-      };
-    }
-    return { name: "", value: "", unit: undefined };
-  };
-
+  const subcategoryOptions = subcategories?.map(sub => ({
+    value: sub.id.toString(),
+    label: sub.product
+  })) || [];
+  
   return (
     <div className="space-y-8">
       <Card className="p-4">
@@ -206,18 +196,24 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
               <FormLabel>{t("type.label")}</FormLabel>
               <FormControl>
                 <Select
-                  options={PRODUCT_TYPE_OPTIONS}
-                  value={PRODUCT_TYPE_OPTIONS.find(
+                  options={categoryOptions}
+                  value={categoryOptions.find(
                     (option) => option.value === field.value
                   )}
                   onChange={(selectedOption: OptionType | null) => {
                     const newValue = selectedOption?.value || "";
                     field.onChange(newValue);
-
-                    form.setValue("product_subcategory", "");
+                    
+                    // Category seçildiğinde localStorage'a kaydet
+                    if (selectedOption) {
+                      localStorage.setItem('selectedCategoryLabel', selectedOption.label);
+                      localStorage.setItem('selectedCategoryId', selectedOption.value);
+                    }
                   }}
                   placeholder={t("type.placeholder")}
                   classNames={selectClassNames}
+                  isLoading={false}
+                  isDisabled={false}
                 />
               </FormControl>
               <FormMessage />
@@ -233,17 +229,25 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
               <FormLabel>{t("subcategory.label")}</FormLabel>
               <FormControl>
                 <Select
-                  options={subcategories}
-                  value={subcategories.find(
+                  options={subcategoryOptions}
+                  value={subcategoryOptions.find(
                     (option) => option.value === field.value
                   )}
                   onChange={(selectedOption: OptionType | null) => {
-                    field.onChange(selectedOption?.value || "");
+                    const newValue = selectedOption?.value || "";
+                    field.onChange(newValue);
+                    
+                    // Subcategory seçildiğinde localStorage'a kaydet
+                    if (selectedOption) {
+                      localStorage.setItem('selectedSubcategoryLabel', selectedOption.label);
+                      localStorage.setItem('selectedSubcategoryId', selectedOption.value);
+                    }
                   }}
                   placeholder={t("subcategory.placeholder")}
-                  className="w-full"
                   classNames={selectClassNames}
-                  isDisabled={subcategories.length === 0}
+                  isLoading={subLoading}
+                  isDisabled={!productType || subLoading}
+                  noOptionsMessage={() => "Alt kategori bulunamadı"}
                 />
               </FormControl>
               <FormMessage />
@@ -261,16 +265,15 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
                 <Textarea
                   placeholder={t("description.placeholder")}
                   className="min-h-[100px]"
-                  {...field}
-                  value={field.value || ''}
+                  value={field.value || ""}
+                  onChange={field.onChange}
                 />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-
-        <Card className="p-4 col-span-2">
+       <Card className="p-4 col-span-2">
           <FormField
             control={form.control}
             name="key_features"

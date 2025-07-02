@@ -14,6 +14,7 @@ import { registerSchema } from "@/lib/schemas/auth";
 import { CompanyDocumentService } from "@/lib/services/companyDocument";
 import { ManufacturerService } from "@/lib/services/manufacturer";
 import { prepareRegistrationData } from "@/lib/utils/registration-mapper";
+import { useTranslations } from "next-intl";
 
 import { AddressStep } from "./steps/address";
 import { CompanyInfoStep } from "./steps/company-info";
@@ -35,6 +36,7 @@ export function ComplateRegistrationForm() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const { updateUser } = useAuth();
   const { toast } = useToast();
+  const t = useTranslations("common.buttons");
 
   const form = useForm<FormData>({
     resolver: zodResolver(registerSchema),
@@ -194,7 +196,7 @@ export function ComplateRegistrationForm() {
           <div className="flex justify-between">
             {currentStep > 0 && (
               <Button type="button" variant="outline" onClick={prevStep}>
-                Geri
+                {t("back")}
               </Button>
             )}
             <Button 
@@ -202,10 +204,10 @@ export function ComplateRegistrationForm() {
               disabled={isSubmitting}
             >
               {isSubmitting
-                ? "Kaydediliyor..."
+                ? t("saving")
                 : isLastStep
-                ? "Kaydet"
-                : "İleri"}
+                ? t("save")
+                : t("next")}
             </Button>
           </div>
         </form>

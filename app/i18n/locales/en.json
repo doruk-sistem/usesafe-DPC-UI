@@ -9,6 +9,36 @@
     "verifyProducts": "Verify Products",
     "signIn": "Sign In"
   },
+  "registration":{
+    "steps":{
+      "documents":{
+        "signatureCircular":"Signature Circular *",
+        "tradeRegistry":"Trade Registry Gazette *",
+        "taxPlate":"Tax Plate *",
+        "activityCertificate":"Activity Certificate *"
+      },
+      "address":{
+        "headquarters":"Headquarters Address *",
+        "city":"City *",
+        "district":"District *",
+        "postalCode":"Postal Code "
+      },
+      "companyInfo":{
+        "taxIdPlaceholder":"Enter 10-digit Tax ID",
+        "companyName":"Company Name *",
+        "taxId":"Tax ID *",
+        "taxIdDescription":"Must be exactly 10 digits",
+        "tradeRegisterNumber":"Trade Register Number",
+        "mersisNumber":"MERSIS Number",
+        "nationalId":"National ID *",
+        "countryCode":"Country Code *",
+        "phone":"Phone *",
+        "phonePlaceholder":"Enter phone number",
+        "phoneDescription":"Must be exactly 10 digits",
+        "countryCodePlaceholder":"Select country code"
+    }
+    }
+  },
   "admin": {
     "sidebar": {
       "dashboard": "Dashboard",
@@ -171,6 +201,9 @@
     "title": "List",
     "description": "List of products",
     "empty":{
+      "title":"No products found",
+      "description":"No products found for your company",
+      "addButton":"Add Product",
       "manufacturer": "No products found for your company"
     }
   },
@@ -361,6 +394,7 @@
     "applications": {
       "title": "Pending Applications",
       "submitted": "Submitted",
+      "empty":"No pending applications",
       "status": {
         "pending": "Pending",
         "review": "Pending Review",
@@ -1989,7 +2023,9 @@
       "next": "Next",
       "saving": "Saving...",
       "updateProduct": "Update Product",
-      "createProduct": "Create Product"
+      "createProduct": "Create Product",
+      "save": "Save"
+      
     },
     "delete": {
       "title": "Delete",
@@ -2868,6 +2904,14 @@
   },
   "auth": {
     "success":{
+      "updateUser":{
+        "title": "User Updated",
+        "description": "Your user has been updated successfully."
+      },
+      "signUp":{
+        "title": "Sign Up",
+        "description": "Create a new account"
+      },
      "updatePassword":{
       "title": "Password Updated",
       "description": "Your password has been updated successfully."
