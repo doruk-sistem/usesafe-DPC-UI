@@ -20,7 +20,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import {
   AlertDialog,
@@ -52,6 +52,7 @@ import {
 } from "@/components/ui/table";
 import { useToast } from "@/components/ui/use-toast";
 import { useProduct } from "@/lib/hooks/use-product";
+import { useProductCategories } from "@/lib/hooks/use-product-categories";
 import { productsApiHooks } from "@/lib/hooks/use-products";
 import { BaseProduct } from "@/lib/types/product";
 import { StorageHelper } from "@/lib/utils/storage";
@@ -73,6 +74,7 @@ export function ProductList({ products, isLoading, isViewingManufacturer }: Prod
   const [productToDelete, setProductToDelete] = useState<BaseProduct | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const { determineProductStatus } = useProduct("");
+  const { getCategoryName } = useProductCategories();
 
   const { mutate: deleteProduct } = productsApiHooks.useDeleteProductMutation({
     onSuccess: () => {
@@ -189,7 +191,7 @@ export function ProductList({ products, isLoading, isViewingManufacturer }: Prod
             <TableBody>
               {products.map((product) => {
                 const status = determineProductStatus(product);
-
+                
                 return (
                   <TableRow key={product.id}>
                     <TableCell>
@@ -219,9 +221,7 @@ export function ProductList({ products, isLoading, isViewingManufacturer }: Prod
                     </TableCell>
                     <TableCell>
                       <Badge variant="secondary">
-                        {t(
-                          `products.list.categories.${product.product_type.toLowerCase()}`
-                        )}
+                        {getCategoryName(product.product_type)}
                       </Badge>
                     </TableCell>
                     <TableCell>
@@ -255,10 +255,14 @@ export function ProductList({ products, isLoading, isViewingManufacturer }: Prod
                             ? "warning"
                             : status === "REJECTED"
                             ? "destructive"
+                            : status === "ARCHIVED"
+                            ? "secondary"
+                            : status === "DELETED"
+                            ? "destructive"
                             : "secondary"
                         }
                       >
-                        {status || "PENDING"}
+                        {status === "DELETED" ? "REDDEDİLDİ" : status === "NEW" ? "PENDING" : status === "REJECTED" ? "REJECTED" : status || "PENDING"}
                       </Badge>
                     </TableCell>
                     <TableCell>

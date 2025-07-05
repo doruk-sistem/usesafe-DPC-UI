@@ -1,4 +1,5 @@
 import { UseFormReturn } from "react-hook-form";
+import { useTranslations } from "next-intl";
 
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -9,6 +10,7 @@ interface DocumentsStepProps {
 }
 
 export function DocumentsStep({ form }: DocumentsStepProps) {
+  const t = useTranslations("registration.steps.documents");
   const handleFileChange = (field: string, file: File | null) => {
     if (file) {
       form.setValue(field, { file, type: field as DocumentType });
@@ -24,7 +26,7 @@ export function DocumentsStep({ form }: DocumentsStepProps) {
         name="signatureCircular"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>İmza Sirküleri</FormLabel>
+            <FormLabel>{t("signatureCircular")}</FormLabel>
             <FormControl>
               <Input
                 type="file"
@@ -45,7 +47,7 @@ export function DocumentsStep({ form }: DocumentsStepProps) {
         name="tradeRegistry"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Ticaret Sicil Gazetesi</FormLabel>
+            <FormLabel>{t("tradeRegistry")}</FormLabel>
             <FormControl>
               <Input
                 type="file"
@@ -66,7 +68,7 @@ export function DocumentsStep({ form }: DocumentsStepProps) {
         name="taxPlate"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Vergi Levhası</FormLabel>
+            <FormLabel>{t("taxPlate")}</FormLabel>
             <FormControl>
               <Input
                 type="file"
@@ -87,7 +89,7 @@ export function DocumentsStep({ form }: DocumentsStepProps) {
         name="activityCertificate"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Faaliyet Belgesi</FormLabel>
+            <FormLabel>{t("activityCertificate")}</FormLabel>
             <FormControl>
               <Input
                 type="file"

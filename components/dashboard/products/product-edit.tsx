@@ -16,7 +16,9 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
-import { Product } from "@/lib/types/product";
+import { productService } from "@/lib/services/product";
+import { STANDARD_TO_AI_MAPPING, DOCUMENT_TYPE_CONFIG } from "@/lib/constants/documents";
+import { BaseProduct } from "@/lib/types/product";
 
 interface ProductEditProps {
   productId: string;
@@ -45,8 +47,19 @@ const documentTypeLabels: Record<string, string> = {
   other: "Other"
 };
 
+// Belge türünü gösterme fonksiyonu - AI türlerini destekler
+const getDocumentTypeLabel = (doc: any) => {
+  // Eğer originalType varsa (AI'dan gelen), onu göster
+  if (doc.originalType) {
+    return doc.originalType;
+  }
+  
+  // Standart türler için label kullan
+  return documentTypeLabels[doc.type] || doc.type;
+};
+
 export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps) {
-  const [product, setProduct] = useState<Product | null>(null);
+  const [product, setProduct] = useState<BaseProduct | null>(null);
   const [rejectedDocument, setRejectedDocument] = useState<Document | null>(null);
   const [allDocuments, setAllDocuments] = useState<Document[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -358,10 +371,10 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
     setIsSaving(true);
     
     try {
-      // Update product information
-      const { error } = await supabase
-        .from("products")
-        .update({
+      // Update product information using productService
+      const { data, error } = await productService.updateProduct({
+        id: productId,
+        product: {
           name: formData.name,
           model: formData.model,
           product_type: formData.product_type,
@@ -371,9 +384,9 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
             }
             acc[doc.type].push(doc);
             return acc;
-          }, {} as Record<string, any[]>),
-        })
-        .eq("id", productId);
+          }, {} as any),
+        },
+      });
       
       if (error) throw error;
       
@@ -569,6 +582,28 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
       </CardHeader>
       <CardContent>
         <div className="space-y-6">
+          {/* Ürün reddedilme sebebi */}
+          {product?.status === "DELETED" && product?.status_history && product.status_history.length > 0 && (
+            (() => {
+              const lastHistory = product.status_history[product.status_history.length - 1];
+              if (lastHistory.reason && lastHistory.reason.startsWith("Rejected:")) {
+                return (
+                  <Alert variant="destructive">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertTitle>Product Rejected</AlertTitle>
+                    <AlertDescription>
+                      <div className="mt-2">
+                        <p><strong>Rejection Reason:</strong> {lastHistory.reason.replace("Rejected: ", "")}</p>
+                        <p><strong>Rejection Date:</strong> {new Date(lastHistory.timestamp).toLocaleDateString()}</p>
+                      </div>
+                    </AlertDescription>
+                  </Alert>
+                );
+              }
+              return null;
+            })()
+          )}
+
           {rejectedDocument && (
             <Alert variant="destructive" key="rejected-document-alert">
               <AlertCircle className="h-4 w-4" />
@@ -783,7 +818,7 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
                     </div>
                     <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground">
                       <div key={`doc-type-${doc.id || doc.name}`}>
-                        <span className="font-medium">Type:</span> {documentTypeLabels[doc.type] || doc.type}
+                        <span className="font-medium">Type:</span> {getDocumentTypeLabel(doc)}
                       </div>
                       <div key={`doc-version-${doc.id || doc.name}`}>
                         <span className="font-medium">Version:</span> {doc.version || "1.0"}

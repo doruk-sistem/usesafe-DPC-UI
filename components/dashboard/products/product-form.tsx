@@ -14,42 +14,29 @@ import type { NewProduct } from "@/lib/types/product";
 
 import { BasicInfoStep } from "./steps/BasicInfoStep";
 import { DocumentUploadStep } from "./steps/DocumentUploadStep";
-import { EsprComplianceStep } from "./steps/EsprComplianceStep";
+// import { EsprComplianceStep } from "./steps/EsprComplianceStep";
 import { ManufacturerSelect } from "./steps/manufacturerSelect/ManufacturerSelect";
 
-const documentSchema = z.object({
-  quality_cert: z.array(z.object({
-    name: z.string(),
-    url: z.string(),
-    type: z.string()
-  })).optional(),
-  safety_cert: z.array(z.object({
-    name: z.string(),
-    url: z.string(),
-    type: z.string()
-  })).optional(),
-  test_reports: z.array(z.object({
-    name: z.string(),
-    url: z.string(),
-    type: z.string()
-  })).optional(),
-  technical_docs: z.array(z.object({
-    name: z.string(),
-    url: z.string(),
-    type: z.string()
-  })).optional(),
-  compliance_docs: z.array(z.object({
-    name: z.string(),
-    url: z.string(),
-    type: z.string()
-  })).optional(),
-});
+const documentSchema = z.record(z.string(), z.array(z.object({
+  name: z.string(),
+  url: z.string(),
+  type: z.string(),
+  id: z.string().optional(),
+  manufacturer: z.string().optional(),
+  manufacturerId: z.string().optional(),
+  status: z.string().optional(),
+  uploadedAt: z.string().optional(),
+  fileSize: z.string().optional(),
+  version: z.string().optional(),
+  file: z.any().optional(),
+  originalType: z.string().optional(),
+})).optional()).optional();
 
 const productSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   description: z.string().min(5, "Product description is required"),
   product_type: z.string().min(1, "Product type is required"),
-  product_subcategory: z.string().min(1, "Product subcategory is required"),
+  product_subcategory: z.string().optional(),
   model: z.string().min(1, "Product model is required"),
   images: z
     .array(
@@ -83,7 +70,7 @@ interface ProductFormProps {
 }
 
 // ✅ Toplam Adım Sabitlendi
-const TOTAL_STEPS = 4;
+const TOTAL_STEPS = 3; // ESPR compliance adımı geçici olarak kaldırıldı
 
 export function ProductForm({
   onSubmit,
@@ -99,6 +86,7 @@ export function ProductForm({
       name: "",
       description: "",
       product_type: "",
+      product_subcategory: "",
       model: "",
       images: [],
       key_features: [],
@@ -112,6 +100,51 @@ export function ProductForm({
   const handleSubmit = async (data: FormData) => {
     try {
       setIsSubmitting(true);
+      
+      // Belgeleri işle - File objelerini ayır
+      const processedDocuments: any = {};
+      const documentFiles: any = {};
+      
+      if (data.documents) {
+        // Tüm belge türlerini işle (hem standart hem AI türleri)
+        Object.entries(data.documents).forEach(([docType, docs]) => {
+          if (Array.isArray(docs) && docs.length > 0) {
+            processedDocuments[docType] = docs.map((doc: any) => {
+              // File objesini ayır, sadece belge bilgilerini gönder
+              const { file, ...documentInfo } = doc;
+              return documentInfo;
+            });
+            
+            // File objelerini ayrı sakla
+            documentFiles[docType] = docs;
+          }
+        });
+      }
+      
+      // AI belgelerini de dahil et (eğer varsa)
+      const aiDocumentTypes = Object.keys(data.documents || {}).filter(key => 
+        !['test_reports', 'technical_docs', 'compliance_docs', 'quality_cert', 'safety_cert'].includes(key)
+      );
+      
+      // AI belgelerini documentFiles'a ekle
+      aiDocumentTypes.forEach(aiDocType => {
+        const docs = data.documents?.[aiDocType];
+        if (Array.isArray(docs) && docs.length > 0) {
+          documentFiles[aiDocType] = docs;
+        }
+      });
+      
+      // AI belgelerini de dahil et
+      const finalDocumentFiles = {
+        ...documentFiles,
+        // AI belgelerini de ekle
+        ...Object.fromEntries(
+          aiDocumentTypes
+            .filter(aiDocType => data.documents?.[aiDocType])
+            .map(aiDocType => [aiDocType, data.documents![aiDocType]])
+        )
+      };
+      
       await onSubmit({
         ...data,
         company_id: "",
@@ -126,7 +159,9 @@ export function ProductForm({
           value: feature.value || "",
           unit: feature.unit,
         })),
-        documents: data.documents,
+        documents: processedDocuments,
+        // File objelerini ayrı gönder
+        documentFiles: finalDocumentFiles,
       });
     } finally {
       setIsSubmitting(false);
@@ -144,11 +179,15 @@ export function ProductForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">        
         {/* ✅ İlerleme Durumu */}
         <Progress value={progress} className="mb-8" />
         {/* ✅ Adım 1 */}
-        {step === 1 && <BasicInfoStep form={form as any} />} 
+        {step === 1 && (
+          <div>
+            <BasicInfoStep form={form as any} />
+          </div>
+        )} 
 
         {/* ✅ Adım 2 */}
         {step === 2 && <DocumentUploadStep form={form as any} />}
@@ -156,8 +195,8 @@ export function ProductForm({
         {/* ✅ Adım 3 */}
         {step === 3 && <ManufacturerSelect form={form} />}
 
-        {/* ✅ Adım 4 - ESPR Uyumluluğu */}
-        {step === 4 && <EsprComplianceStep form={form as any} />}
+        {/* ✅ Adım 4 - ESPR Uyumluluğu (Geçici olarak kaldırıldı) */}
+        {/* {step === 4 && <EsprComplianceStep form={form as any} />} */}
 
         {/* ✅ Butonlar */}
         <div className="flex justify-end gap-4">

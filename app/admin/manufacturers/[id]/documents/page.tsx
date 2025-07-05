@@ -1,15 +1,25 @@
 "use client";
 
+import { FileText, Download, ChevronLeft, ChevronRight, ArrowLeft } from "lucide-react";
+import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { DocumentService } from "@/lib/services/document";
 import { useState, useEffect, use, useMemo } from "react";
-import { Document } from "@/lib/types/document";
-import { Loading } from "@/components/ui/loading";
-import { Error } from "@/components/ui/error";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+import { ProductDocuments } from "@/components/dashboard/products/product-documents";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { FileText, Download, ChevronLeft, ChevronRight, ArrowLeft } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Error } from "@/components/ui/error";
+import { Label } from "@/components/ui/label";
+import { Loading } from "@/components/ui/loading";
 import {
   Select,
   SelectContent,
@@ -25,28 +35,19 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { getStatusIcon } from "@/lib/utils/document-utils";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { ProductDocuments } from "@/components/dashboard/products/product-documents";
-import { supabase } from "@/lib/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { CompanyDocumentService } from "@/lib/services/companyDocument";
-import Link from "next/link";
+import { DocumentService } from "@/lib/services/document";
+import { supabase } from "@/lib/supabase/client";
+import { Document } from "@/lib/types/document";
+import { getStatusIcon } from "@/lib/utils/document-utils";
 
 function getPaginationRange(current: number, total: number): (number | string)[] {
   if (total <= 1) return [1];

@@ -18,6 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 interface OwnerInfoStepProps {
   form: UseFormReturn<any>;
@@ -39,6 +40,7 @@ const countryCodes = [
 ];
 
 export function OwnerInfoStep({ form }: OwnerInfoStepProps) {
+  const t = useTranslations("registration.steps.companyInfo");
   return (
     <div className="space-y-4">
       <FormField
@@ -46,7 +48,7 @@ export function OwnerInfoStep({ form }: OwnerInfoStepProps) {
         name="nationalId"
         render={({ field, fieldState }) => (
           <FormItem>
-            <FormLabel>National ID *</FormLabel>
+            <FormLabel>{t("nationalId")}</FormLabel>
             <FormControl>
               <Input
                 {...field}
@@ -68,11 +70,11 @@ export function OwnerInfoStep({ form }: OwnerInfoStepProps) {
           name="countryCode"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Country Code *</FormLabel>
+              <FormLabel>{t("countryCode")}</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select">
+                    <SelectValue placeholder={t("countryCodePlaceholder")}>
                       {field.value &&
                         countryCodes.find((c) => c.value === field.value) && (
                           <span className="flex items-center gap-2">
@@ -112,13 +114,13 @@ export function OwnerInfoStep({ form }: OwnerInfoStepProps) {
           name="phone"
           render={({ field, fieldState }) => (
             <FormItem className="col-span-2">
-              <FormLabel>Phone Number *</FormLabel>
+              <FormLabel>{t("phone")}</FormLabel>
               <FormControl>
                 <Input
                   type="tel"
                   {...field}
                   maxLength={10}
-                  placeholder="5XX XXX XXXX"
+                  placeholder={t("phonePlaceholder")}
                   className={cn(
                     fieldState.error &&
                       "border-red-500 focus-visible:ring-red-500"
@@ -126,7 +128,7 @@ export function OwnerInfoStep({ form }: OwnerInfoStepProps) {
                 />
               </FormControl>
               <FormDescription>
-                Enter 10 digits without leading zero
+                {t("phoneDescription")}
               </FormDescription>
               <FormMessage className="text-red-500" />
             </FormItem>

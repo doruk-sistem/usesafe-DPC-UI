@@ -5,10 +5,44 @@
     "verifyProducts": "Ürün Doğrula",
     "signIn": "Giriş Yap"
   },
+  "registration":{
+    "steps":{
+      "documents":{
+        "signatureCircular":"İmza Sirküleri *",
+        "tradeRegistry":"Ticaret Sicil Gazetesi *",
+        "taxPlate":"Vergi Levhası *",
+        "activityCertificate":"Faaliyet Belgesi *"
+      },
+      "address":{
+        "headquarters":"Genel Merkez Adresi *",
+        "city":"Şehir *",
+        "district":"İlçe *",
+        "postalCode":"Posta Kodu "
+      },
+      "companyInfo":{
+        "taxIdPlaceholder":"10 haneli vergi numarası giriniz",
+        "companyName":"Şirket Adı *",
+        "taxId":"Vergi Numarası *",
+        "taxIdDescription":"Tam olarak 10 haneli olmalı",
+        "tradeRegisterNumber":"Ticaret Sicil Numarası",
+        "mersisNumber":"MERSIS Numarası",
+        "nationalId":"Kimlik Numarası *",
+        "countryCode":"Ülke Kodu *",
+        "phone":"Telefon Numarası *",
+        "phonePlaceholder":"Telefon numarası giriniz",
+        "phoneDescription":"Tam olarak 10 haneli olmalı",
+        "countryCodePlaceholder":"Ülke kodu seçiniz"
+
+      }
+    }
+  },
   "list":{
     "title": "Liste",
     "description": "Ürün listesi",
     "empty":{
+      "title":"Ürün bulunamadı",
+      "description":"Bu şirket için ürün bulunamadı",
+      "addButton":"Ürün Ekle",
       "manufacturer": "Bu şirket için ürün bulunamadı"
     }
   },
@@ -806,6 +840,7 @@
     "applications": {
       "title": "Bekleyen Başvurular",
       "submitted": "Gönderildi",
+      "empty": "Bekleyen başvurular bulunamadı",
       "status": {
         "pending": "İncelemede",
         "review": "İnceleme Bekleniyor",
@@ -821,7 +856,8 @@
         "DRAFT": "Taslak",
         "DELETED": "Silindi",
         "draft": "Taslak",
-        "new": "Yeni"
+        "new": "Yeni",
+        "archived": "Arşivlendi"
       }
     },
     "time": {
@@ -2702,7 +2738,8 @@
         "draft": "Taslak",
         "APPROVED": "Onaylandı",
         "REJECTED": "Reddedildi",
-        "PENDING": "Pending"
+        "PENDING": "Pending",
+        "archived": "Arşivlendi"
       },
       "category": {
         "label": "Kategori",
@@ -2932,7 +2969,8 @@
       "goToDashboard": "Panele Git",
       "saving": "Kaydediliyor...",
       "updateProduct": "Ürünü Güncelle",
-      "createProduct": "Ürün Oluştur"
+      "createProduct": "Ürün Oluştur",
+      "save": "Kaydet"
     },
     "delete": {
       "title": "Delete",
@@ -3148,10 +3186,37 @@
             }
           }
         },
+
+        "recentApprovals": {
+          "title": "Son Onaylananlar",
+          "description": "Son onaylananları görüntüleyin",
+          "products":{
+            "uncategorized":"Kategorize Edilmemiş"
+          },
+
+          "pagination":{
+            "previous":"Önceki",
+            "next":"Sonraki"
+          },
+          
+          "status":{
+            "approved":"Onaylandı",
+            "rejected":"Reddedildi",
+            "pending":"Bekleniyor"
+          }
+
+        },
        
       "pendingApprovals": {
         "title": "Bekleyen Onaylar",
-        "description": "Dikkat gerektiren son onay istekleri"
+        "description": "Dikkat gerektiren son onay istekleri",
+        "products":{
+          "uncategorized":"Kategorize Edilmemiş"
+        },
+        "status":{
+          "pending":"Bekleniyor",
+          "review":"İnceleme Bekliyor"
+        }
       },
       "systemAlerts": {
         "title": "Sistem Uyarıları",
@@ -3178,6 +3243,14 @@
   "errorFetching": "Hata: Bilgiler alınamadı.",
   "auth": {
     "success":{
+      "updateUser":{
+        "title": "Kullanıcı Güncellendi",
+        "description": "Kullanıcı başarıyla güncellendi."
+      },
+      "signUp":{
+        "title": "Hesap Oluştur",
+        "description": "Yeni bir hesap oluşturun"
+      },
       "updatePassword":{
         "title": "Şifre Güncellendi",
         "description": "Şifreniz başarıyla güncellendi."

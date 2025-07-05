@@ -1,20 +1,23 @@
 import { ProductEdit } from "@/components/dashboard/products/product-edit";
 
 interface ProductEditPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
-  searchParams: {
+  }>;
+  searchParams: Promise<{
     reupload?: string;
-  };
+  }>;
 }
 
-export default function ProductEditPage({ params, searchParams }: ProductEditPageProps) {
+export default async function ProductEditPage({ params, searchParams }: ProductEditPageProps) {
+  const resolvedParams = await params;
+  const resolvedSearchParams = await searchParams;
+  
   return (
     <div className="container mx-auto py-6">
       <ProductEdit 
-        productId={params.id} 
-        reuploadDocumentId={searchParams.reupload}
+        productId={resolvedParams.id} 
+        reuploadDocumentId={resolvedSearchParams.reupload}
       />
     </div>
   );
