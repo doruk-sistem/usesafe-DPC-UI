@@ -12,12 +12,12 @@ import {
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { supabase } from "@/lib/supabase/client";
-import { useProducts } from "@/lib/hooks/use-products";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { ProductDetails } from "@/components/products/product-details";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { useProduct } from "@/lib/hooks/use-product";
+import { useProducts } from "@/lib/hooks/use-products";
+import { supabase } from "@/lib/supabase/client";
 
 interface RecentApproval {
   id: string;

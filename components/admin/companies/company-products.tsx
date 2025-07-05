@@ -4,6 +4,7 @@ import { Box, ExternalLink, ChevronLeft, ChevronRight } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
+import { ProductDetails } from "@/components/products/product-details";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -12,10 +13,9 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import { useProduct } from "@/lib/hooks/use-product";
-import { ProductDetails } from "@/components/products/product-details";
 import { useProducts } from "@/lib/hooks/use-products";
 
 interface CompanyProductsProps {

@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 import type { UseFormReturn } from "react-hook-form";
 
 import {
@@ -18,7 +19,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { useTranslations } from "next-intl";
 
 interface OwnerInfoStepProps {
   form: UseFormReturn<any>;

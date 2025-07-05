@@ -4,11 +4,12 @@ import { Box, ExternalLink, ChevronLeft, ChevronRight, ArrowLeft } from "lucide-
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
-import { productService } from "@/lib/services/product";
 
+import { ProductDetails } from "@/components/products/product-details";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import {
   Select,
   SelectContent,
@@ -16,9 +17,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { useProduct as useProductOriginal } from "@/lib/hooks/use-product";
-import { ProductDetails } from "@/components/products/product-details";
+import { productService } from "@/lib/services/product";
 
 interface ManufacturerProductsProps {
   manufacturerId: string;

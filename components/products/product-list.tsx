@@ -216,7 +216,7 @@ export function ProductList() {
                       <CardTitle className="text-lg flex items-center justify-between">
                         {product.name}
                         <Badge variant="secondary" className="ml-2">
-                          {t(`categories.${category.toLowerCase()}`)}
+                          {category}
                         </Badge>
                       </CardTitle>
                       <CardDescription className="flex items-center">
