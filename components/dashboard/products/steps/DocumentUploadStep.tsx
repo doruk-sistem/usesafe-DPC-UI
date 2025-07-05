@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { useCallback, useState, useEffect } from "react";
 import { UseFormReturn } from "react-hook-form";
 
+import { DocumentGuidanceCard } from "@/components/dashboard/products/DocumentGuidanceCard";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -27,7 +28,6 @@ import { useAuth } from "@/lib/hooks/use-auth";
 import { useChatGPTGuidance } from "@/lib/hooks/use-chatgpt-guidance";
 import { DocumentService } from "@/lib/services/document";
 import type { Document } from "@/lib/types/document";
-import { DocumentGuidanceCard } from "@/components/dashboard/products/DocumentGuidanceCard";
 
 type HandleUploadResult = {
   success: boolean;

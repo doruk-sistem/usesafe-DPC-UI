@@ -1,158 +1,204 @@
 "use client";
 
-import { MoreHorizontal, Plus, File, CheckCircle, XCircle, Clock } from "lucide-react";
+import { Download, FileText, ChevronLeft, ChevronRight } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
-import { Badge } from "@/components/ui/badge";
+
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { documentsApiHooks } from "@/lib/hooks/use-documents";
-const { useGetDocuments } = documentsApiHooks;
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { supabase } from "@/lib/supabase/client";
 
 interface CompanyDocumentsProps {
   companyId: string;
 }
 
+// Document type translation keys
+const documentTypeLabels: Record<string, string> = {
+  tax_plate: "tax_plate",
+  export_certificate: "export_certificate",
+  quality_certificate: "quality_certificate",
+  production_permit: "production_permit",
+  iso_certificate: "iso_certificate",
+  signature_circular: "signature_circular",
+  trade_registry_gazette: "trade_registry_gazette",
+  activity_certificate: "activity_certificate",
+  // Other types can be added
+};
+
 export function CompanyDocuments({ companyId }: CompanyDocumentsProps) {
-  const t = useTranslations("admin.companies.documents");
-  const { data: documents, isLoading } = useGetDocuments();
+  const t = useTranslations("adminDashboard.companies.details");
+  const tDocTypes = useTranslations("documents.types");
+  const [documents, setDocuments] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const ITEMS_PER_PAGE = 10;
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = Math.ceil(documents.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedDocuments = documents.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
-  // Sadece bu şirkete ait belgeleri filtrele
-  const companyDocuments = documents?.filter(doc => doc.manufacturerId === companyId) || [];
+  function getPaginationRange(current: number, total: number): (number | string)[] {
+    const delta = 2;
+    const range: (number | string)[] = [];
+    for (let i = Math.max(2, current - delta); i <= Math.min(total - 1, current + delta); i++) {
+      range.push(i);
+    }
+    if (current - delta > 2) {
+      range.unshift('...');
+    }
+    if (current + delta < total - 1) {
+      range.push('...');
+    }
+    range.unshift(1);
+    if (total > 1) range.push(total);
+    return range;
+  }
 
+  useEffect(() => {
+    async function fetchDocuments() {
+      setLoading(true);
+      if (!companyId) {
+        setDocuments([]);
+        setLoading(false);
+        return;
+      }
+      try {
+        const { data: companyDocs, error } = await supabase
+          .from("company_documents")
+          .select("*")
+          .eq("companyId", companyId);
+
+        if (error) {
+          console.error("Error fetching documents:", error);
+          setDocuments([]);
+          return;
+        }
+
+        const filteredDocs = (companyDocs || []).filter(doc => {
+          if (!doc) return false;
+          if (!doc.filePath) return false;
+          return (
+            !doc.productId ||
+            doc.productId === null ||
+            doc.productId === undefined ||
+            doc.productId === "" ||
+            doc.productId === "null" ||
+            doc.productId === "undefined" ||
+            doc.productId === 0 ||
+            doc.productId === false ||
+            (typeof doc.productId === "number" && isNaN(doc.productId))
+          );
+        }).map(doc => ({
+          ...doc,
+          name: doc.name || 'Unnamed Document',
+          type: doc.type || 'Unknown',
+          status: doc.status || 'pending',
+          filePath: doc.filePath || '',
+          uploadedAt: doc.uploadedAt || new Date().toISOString()
+        }));
+
+        setDocuments(filteredDocs);
+      } catch (err) {
+        console.error("Error in fetchDocuments:", err);
+        setDocuments([]);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchDocuments();
+  }, [companyId]);
+
+  if (loading) return <div>Yükleniyor...</div>;
   return (
     <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
-        <div>
-          <CardTitle>{t("title")}</CardTitle>
-          <CardDescription>{t("description")}</CardDescription>
-        </div>
-        <Button size="sm" className="flex items-center gap-1">
-          <Plus className="h-4 w-4" />
-          {t("actions.add")}
-        </Button>
+      <CardHeader>
+        <CardTitle>Belgeler</CardTitle>
       </CardHeader>
       <CardContent>
-        {isLoading ? (
-          <div>{t("loading")}</div>
-        ) : companyDocuments.length === 0 ? (
-          <div className="flex h-[200px] items-center justify-center rounded-lg border border-dashed">
-            <div className="text-center">
-              <p className="text-sm text-muted-foreground">
-                {t("empty.description")}
-              </p>
-              <Button variant="outline" className="mt-2">
-                <Plus className="mr-2 h-4 w-4" />
-                {t("empty.uploadFirst")}
-              </Button>
-            </div>
-          </div>
-        ) : (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>{t("columns.id")}</TableHead>
-                <TableHead>{t("columns.name")}</TableHead>
-                <TableHead>{t("columns.type")}</TableHead>
-                <TableHead>{t("columns.status")}</TableHead>
-                <TableHead>{t("columns.uploadDate")}</TableHead>
-                <TableHead>{t("columns.actions")}</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {companyDocuments.map((document) => (
-                <TableRow key={document.id}>
-                  <TableCell className="font-medium">{document.id}</TableCell>
-                  <TableCell className="flex items-center gap-2">
-                    <File className="h-4 w-4" />
-                    {document.name}
-                  </TableCell>
-                  <TableCell>
-                    {t(`types.${document.type}`, { defaultValue: document.type })}
-                  </TableCell>
-                  <TableCell>
-                    <Badge
-                      variant={
-                        document.status === "approved"
-                          ? "success"
-                          : document.status === "rejected"
-                          ? "destructive"
-                          : "warning"
+        <div className="space-y-4">
+          {documents.length === 0 && <div>{t("documents.list.empty.description")}</div>}
+          {paginatedDocuments.map((doc, idx) => (
+            <div
+              key={doc.id ? doc.id + '-' + idx : idx}
+              className="flex items-center justify-between rounded-lg border p-4"
+            >
+              <div className="flex items-start gap-4">
+                <FileText className="h-8 w-8 text-muted-foreground" />
+                <div>
+                  <p className="font-medium">
+                    {tDocTypes(documentTypeLabels[doc.type]) || doc.name}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  disabled={!doc.filePath}
+                  onClick={async () => {
+                    if (!doc.filePath) return;
+                    try {
+                      const { data: { publicUrl } } = supabase.storage
+                        .from("company-documents")
+                        .getPublicUrl(doc.filePath);
+
+                      if (!publicUrl) {
+                        console.error("No public URL available for document");
+                        return;
                       }
-                      className="flex w-fit items-center gap-1"
+
+                      // Belgeyi yeni sekmede aç
+                      window.open(publicUrl, '_blank');
+                    } catch (error) {
+                      console.error("Error opening document:", error);
+                    }
+                  }}
+                >
+                  <Download className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          ))}
+          {/* Pagination UI */}
+          {totalPages > 1 && (
+            <nav className="flex justify-center items-center gap-1 mt-6 select-none" aria-label="Pagination">
+              <button
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+                className={`w-9 h-9 flex items-center justify-center rounded-lg border transition-colors duration-150 text-lg
+                  ${currentPage === 1 ? 'bg-muted text-muted-foreground border-muted cursor-not-allowed' : 'bg-white hover:bg-muted/70 border-muted text-muted-foreground'}`}
+                aria-label="Previous Page"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              {getPaginationRange(currentPage, totalPages).map((page, idx) =>
+                typeof page === 'string'
+                  ? <span key={"ellipsis-"+idx} className="w-9 h-9 flex items-center justify-center text-muted-foreground text-sm">...</span>
+                  : <button
+                      key={page}
+                      onClick={() => setCurrentPage(Number(page))}
+                      className={`w-9 h-9 flex items-center justify-center rounded-lg border transition-colors duration-150 font-medium
+                        ${currentPage === page
+                          ? 'bg-primary/10 text-primary border-primary font-semibold'
+                          : 'bg-white text-muted-foreground border-muted hover:bg-muted/70'}
+                      `}
+                      aria-current={currentPage === page ? 'page' : undefined}
                     >
-                      {document.status === "approved" ? (
-                        <CheckCircle className="h-3 w-3" />
-                      ) : document.status === "rejected" ? (
-                        <XCircle className="h-3 w-3" />
-                      ) : (
-                        <Clock className="h-3 w-3" />
-                      )}
-                      {t(`status.${document.status}`)}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    {document.uploadedAt ? new Date(document.uploadedAt).toLocaleDateString() : '-'}
-                  </TableCell>
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                          <MoreHorizontal className="h-4 w-4" />
-                          <span className="sr-only">{t("actions.title")}</span>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>{t("actions.title")}</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>{t("actions.view")}</DropdownMenuItem>
-                        <DropdownMenuItem>{t("actions.download")}</DropdownMenuItem>
-                        {document.status === "pending" && (
-                          <>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem className="text-green-600">
-                              {t("actions.approve")}
-                            </DropdownMenuItem>
-                            <DropdownMenuItem className="text-red-600">
-                              {t("actions.reject")}
-                            </DropdownMenuItem>
-                          </>
-                        )}
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem className="text-red-600">
-                          {t("actions.delete")}
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        )}
+                      {page}
+                    </button>
+              )}
+              <button
+                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                disabled={currentPage === totalPages}
+                className={`w-9 h-9 flex items-center justify-center rounded-lg border transition-colors duration-150 text-lg
+                  ${currentPage === totalPages ? 'bg-muted text-muted-foreground border-muted cursor-not-allowed' : 'bg-white hover:bg-muted/70 border-muted text-muted-foreground'}`}
+                aria-label="Next Page"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </nav>
+          )}
+        </div>
       </CardContent>
     </Card>
   );

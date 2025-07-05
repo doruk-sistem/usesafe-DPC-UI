@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslations } from "next-intl";
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
@@ -14,7 +15,6 @@ import { registerSchema } from "@/lib/schemas/auth";
 import { CompanyDocumentService } from "@/lib/services/companyDocument";
 import { ManufacturerService } from "@/lib/services/manufacturer";
 import { prepareRegistrationData } from "@/lib/utils/registration-mapper";
-import { useTranslations } from "next-intl";
 
 import { AddressStep } from "./steps/address";
 import { CompanyInfoStep } from "./steps/company-info";

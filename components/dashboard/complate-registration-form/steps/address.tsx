@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import type { UseFormReturn } from "react-hook-form";
 
 import {
@@ -12,7 +13,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
-import { useTranslations } from "next-intl";
 
 interface AddressStepProps {
   form: UseFormReturn<any>;

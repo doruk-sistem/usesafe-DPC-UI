@@ -6,13 +6,13 @@ import { useTranslations } from "next-intl";
 import { ProductForm } from "@/components/dashboard/products/product-form";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
+import { AI_TO_STANDARD_MAPPING } from "@/lib/constants/documents";
 import { useAuth } from "@/lib/hooks/use-auth";
+import { DocumentService } from "@/lib/services/document";
 import { productService } from "@/lib/services/product";
 import { productBlockchainService } from "@/lib/services/product-blockchain";
 import { ProductStatusService } from "@/lib/services/product-status";
 import { StorageService } from "@/lib/services/storage";
-import { DocumentService } from "@/lib/services/document";
-import { AI_TO_STANDARD_MAPPING } from "@/lib/constants/documents";
 import type { NewProduct, ProductImage } from "@/lib/types/product";
 
 export default function NewProductPageClient() {

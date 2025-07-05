@@ -1,10 +1,10 @@
 "use client";
 
-import { Building2, Package, MoreHorizontal } from "lucide-react";
+import { Building2, MoreHorizontal, ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { useState } from "react";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -24,26 +24,33 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useCompanies } from "@/lib/hooks/use-company";
-import { Company, CompanyStatus } from "@/lib/types/company";
-
-
-
-const getStatusBadgeVariant = (status: CompanyStatus) => {
-  switch (status) {
-    case CompanyStatus.ACTIVE:
-      return "success";
-    case CompanyStatus.INACTIVE:
-      return "secondary";
-    case CompanyStatus.PENDING:
-      return "warning";
-    default:
-      return "secondary";
-  }
-};
+import { Company } from "@/lib/types/company";
 
 export function CompanyList() {
   const { companies, isLoading, error } = useCompanies();
   const t = useTranslations("admin.companies");
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 10;
+  const totalPages = Math.ceil(companies.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedCompanies = companies.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+  function getPaginationRange(current: number, total: number): (number | string)[] {
+    const delta = 2;
+    const range: (number | string)[] = [];
+    for (let i = Math.max(2, current - delta); i <= Math.min(total - 1, current + delta); i++) {
+      range.push(i);
+    }
+    if (current - delta > 2) {
+      range.unshift('...');
+    }
+    if (current + delta < total - 1) {
+      range.push('...');
+    }
+    range.unshift(1);
+    if (total > 1) range.push(total);
+    return range;
+  }
 
   if (error) {
     return (
@@ -88,16 +95,12 @@ export function CompanyList() {
             <TableRow>
               <TableHead>{t("list.columns.name")}</TableHead>
               <TableHead>{t("list.columns.type")}</TableHead>
-              <TableHead>{t("list.columns.email")}</TableHead>
-              <TableHead>{t("list.columns.phone")}</TableHead>
               <TableHead>{t("list.columns.taxNumber")}</TableHead>
-              <TableHead>{t("list.columns.status")}</TableHead>
-              <TableHead>{t("list.columns.products")}</TableHead>
               <TableHead className="text-right">{t("list.columns.actions")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {companies.map((company: Company) => (
+            {paginatedCompanies.map((company: Company) => (
               <TableRow key={company.id}>
                 <TableCell>
                   <div className="flex items-center gap-2">
@@ -106,23 +109,7 @@ export function CompanyList() {
                   </div>
                 </TableCell>
                 <TableCell>{t(`types.${company.companyType.toLowerCase()}`)}</TableCell>
-                <TableCell>{company.email || "-"}</TableCell>
-                <TableCell>{company.phone || "-"}</TableCell>
                 <TableCell>{company.taxInfo.taxNumber}</TableCell>
-                <TableCell>
-                  <Badge variant={getStatusBadgeVariant(company.status)}>
-                    {t(`status.${company.status}`)}
-                  </Badge>
-                </TableCell>
-                <TableCell>
-                  <Link
-                    href={`/admin/companies/${company.id}?tab=products`}
-                    className="flex items-center gap-2 text-primary hover:underline"
-                  >
-                    <Package className="h-4 w-4" />
-                    <span>{t("list.actions.viewProducts")}</span>
-                  </Link>
-                </TableCell>
                 <TableCell className="text-right">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -139,16 +126,6 @@ export function CompanyList() {
                           {t("list.actions.viewDetails")}
                         </Link>
                       </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link href={`/admin/companies/${company.id}?tab=products`}>
-                          {t("list.actions.viewProducts")}
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link href={`/admin/companies/${company.id}?tab=documents`}>
-                          {t("list.actions.viewDocuments")}
-                        </Link>
-                      </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>
@@ -156,6 +133,46 @@ export function CompanyList() {
             ))}
           </TableBody>
         </Table>
+
+        {/* Pagination UI */}
+        {totalPages > 1 && (
+          <nav className="flex justify-center items-center gap-1 mt-6 select-none" aria-label="Pagination">
+            <button
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+              className={`w-9 h-9 flex items-center justify-center rounded-lg border transition-colors duration-150 text-lg
+                ${currentPage === 1 ? 'bg-muted text-muted-foreground border-muted cursor-not-allowed' : 'bg-white hover:bg-muted/70 border-muted text-muted-foreground'}`}
+              aria-label="Previous Page"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+            {getPaginationRange(currentPage, totalPages).map((page, idx) =>
+              typeof page === 'string'
+                ? <span key={"ellipsis-"+idx} className="w-9 h-9 flex items-center justify-center text-muted-foreground text-sm">...</span>
+                : <button
+                    key={page}
+                    onClick={() => setCurrentPage(Number(page))}
+                    className={`w-9 h-9 flex items-center justify-center rounded-lg border transition-colors duration-150 font-medium
+                      ${currentPage === page
+                        ? 'bg-primary/10 text-primary border-primary font-semibold'
+                        : 'bg-white text-muted-foreground border-muted hover:bg-muted/70'}
+                    `}
+                    aria-current={currentPage === page ? 'page' : undefined}
+                  >
+                    {page}
+                  </button>
+            )}
+            <button
+              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+              disabled={currentPage === totalPages}
+              className={`w-9 h-9 flex items-center justify-center rounded-lg border transition-colors duration-150 text-lg
+                ${currentPage === totalPages ? 'bg-muted text-muted-foreground border-muted cursor-not-allowed' : 'bg-white hover:bg-muted/70 border-muted text-muted-foreground'}`}
+              aria-label="Next Page"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </nav>
+        )}
       </CardContent>
     </Card>
   );

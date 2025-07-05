@@ -19,11 +19,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { productCategoriesService, type ProductCategory } from "@/lib/services/product-categories";
+import { useProductTypesByCategory } from "@/lib/services/product-types";
+import { supabase } from "@/lib/supabase/client";
 import type { KeyFeature, NewProduct } from "@/lib/types/product";
 import type { Json } from "@/lib/types/supabase";
-import { productCategoriesService, type ProductCategory } from "@/lib/services/product-categories";
-import { supabase } from "@/lib/supabase/client";
-import { useProductTypesByCategory } from "@/lib/services/product-types";
 
 interface BasicInfoStepProps {
   form: UseFormReturn<NewProduct>;
