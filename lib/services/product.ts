@@ -31,6 +31,14 @@ export const productService = createService({
           manufacturer:manufacturer_id (
             id,
             name
+          ),
+          key_features:product_key_features (
+            id,
+            name,
+            value,
+            unit,
+            created_at,
+            updated_at
           )
         `);
 
@@ -86,6 +94,14 @@ export const productService = createService({
             taxInfo,
             companyType,
             status
+          ),
+          key_features:product_key_features (
+            id,
+            name,
+            value,
+            unit,
+            created_at,
+            updated_at
           )
         `)
         .eq("id", id)
@@ -132,8 +148,8 @@ export const productService = createService({
   },
   createProduct: async (product: NewProduct): Promise<ProductResponse> => {
     try {
-      // Extract documents if they exist, otherwise use empty object
-      const { documents = {}, manufacturer_id, ...productData } = product;
+      // Extract documents and key_features if they exist, otherwise use empty object
+      const { documents = {}, manufacturer_id, key_features = [], ...productData } = product;
 
       // Validate and map documents with type assertion to fix lint error
       const validatedDocuments = validateAndMapDocuments(
@@ -154,12 +170,10 @@ export const productService = createService({
           },
         ])
         .select(`*,
-          
           manufacturer:manufacturer_id (
-          id,
-          name
+            id,
+            name
           )`
-          
         )
         .single();
 
@@ -172,7 +186,31 @@ export const productService = createService({
         };
       }
 
-      return { data };
+      // Create key features if they exist
+      if (data && key_features.length > 0) {
+        try {
+          const { productKeyFeaturesService } = await import("./product-key-features");
+          await productKeyFeaturesService.create(data.id, key_features);
+        } catch (keyFeaturesError) {
+          console.error("Error creating key features:", keyFeaturesError);
+          // Key features oluşturulamazsa ürünü sil
+          await supabase.from("products").delete().eq("id", data.id);
+          return {
+            error: {
+              message: "Failed to create product key features",
+              field: "key_features",
+            },
+          };
+        }
+      }
+
+      // Get the complete product with key features
+      const completeProduct = await productService.getProduct({
+        id: data.id,
+        companyId: data.company_id,
+      });
+
+      return completeProduct;
     } catch (error) {
       return {
         error: {
@@ -189,7 +227,7 @@ export const productService = createService({
     id: string;
     product: UpdateProduct;
   }): Promise<ProductResponse> => {
-    const { manufacturer_id, ...productData } = product;
+    const { manufacturer_id, key_features, ...productData } = product;
     
     // Önce mevcut ürünü al
     const { data: existingProduct, error: fetchError } = await supabase
@@ -306,7 +344,29 @@ export const productService = createService({
       };
     }
 
-    return { data };
+    // Update key features if they exist
+    if (data && key_features) {
+      try {
+        const { productKeyFeaturesService } = await import("./product-key-features");
+        await productKeyFeaturesService.update(id, key_features);
+      } catch (keyFeaturesError) {
+        console.error("Error updating key features:", keyFeaturesError);
+        return {
+          error: {
+            message: "Failed to update product key features",
+            field: "key_features",
+          },
+        };
+      }
+    }
+
+    // Get the complete product with key features
+    const completeProduct = await productService.getProduct({
+      id: data.id,
+      companyId: data.company_id,
+    });
+
+    return completeProduct;
   },
   deleteProduct: async ({ id }: { id: string }): Promise<boolean> => {
     try {
@@ -333,6 +393,15 @@ export const productService = createService({
             await StorageService.deleteProductImage(image.url);
           }
         }
+      }
+
+      // Delete key features first (CASCADE will handle this automatically, but explicit for clarity)
+      try {
+        const { productKeyFeaturesService } = await import("./product-key-features");
+        await productKeyFeaturesService.delete(id);
+      } catch (keyFeaturesError) {
+        console.error("Error deleting key features:", keyFeaturesError);
+        // Continue with product deletion even if key features deletion fails
       }
 
       // Now delete the product from the database

@@ -56,6 +56,7 @@ export type BaseProduct = Database["public"]["Tables"]["products"]["Row"] & {
     id: string;
     name: string;
   };
+  key_features?: ProductKeyFeature[]; // Yeni ilişkisel key_features
   dpp_config?: {
     sections: Array<{
       id: string;
@@ -135,10 +136,22 @@ export type ProductImageJson = {
   [K in keyof ProductImage]: ProductImage[K];
 };
 
+// Eski KeyFeature interface'i (form için kullanılacak)
 export interface KeyFeature {
   name: string;
   value: string;
   unit?: string;
+}
+
+// Yeni ProductKeyFeature interface'i (veritabanı için)
+export interface ProductKeyFeature {
+  id: string;
+  product_id: string;
+  name: string;
+  value: string;
+  unit?: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface ProductError {
