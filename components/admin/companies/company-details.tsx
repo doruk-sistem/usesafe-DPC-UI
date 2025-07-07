@@ -1,6 +1,6 @@
 "use client";
 
-import { Package, CheckCircle, Clock, Building2, Mail, Phone , AlertCircle } from "lucide-react";
+import { Package, CheckCircle, Clock, Building2, Mail, Phone, AlertCircle, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 
@@ -92,6 +92,16 @@ export function CompanyDetails({ companyId }: CompanyDetailsProps) {
 
   return (
     <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <Link href="/admin/companies">
+            <Button variant="ghost" size="sm">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              {t("backToList")}
+            </Button>
+          </Link>
+        </div>
+      </div>
       <Card>
         <CardHeader>
           <CardTitle>{company.name}</CardTitle>
@@ -99,7 +109,7 @@ export function CompanyDetails({ companyId }: CompanyDetailsProps) {
             <Badge variant={company.status === "active" ? "default" : "secondary"}>
               {company.status}
             </Badge>
-            <Badge variant="outline">{company.companyType}</Badge>
+            <Badge variant="outline">{t(`types.${company.companyType.toLowerCase()}`)}</Badge>
           </div>
         </CardHeader>
         <CardContent>

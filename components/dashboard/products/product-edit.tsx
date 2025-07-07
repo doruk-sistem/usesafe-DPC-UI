@@ -16,8 +16,8 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
-import { productService } from "@/lib/services/product";
 import { STANDARD_TO_AI_MAPPING, DOCUMENT_TYPE_CONFIG } from "@/lib/constants/documents";
+import { productService } from "@/lib/services/product";
 import { BaseProduct } from "@/lib/types/product";
 
 interface ProductEditProps {
