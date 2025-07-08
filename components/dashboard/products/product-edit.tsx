@@ -17,24 +17,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
 import { productService } from "@/lib/services/product";
+import { getDocuments, uploadDocument } from "@/lib/services/documents";
 import { STANDARD_TO_AI_MAPPING, DOCUMENT_TYPE_CONFIG } from "@/lib/constants/documents";
 import { BaseProduct } from "@/lib/types/product";
+import { Document } from "@/lib/types/document";
 
 interface ProductEditProps {
   productId: string;
   reuploadDocumentId?: string;
-}
-
-interface Document {
-  id: string;
-  name: string;
-  type: string;
-  status: string;
-  rejection_reason?: string;
-  rejection_date?: string;
-  file_url?: string;
-  upload_date?: string;
-  version?: string;
 }
 
 const documentTypeLabels: Record<string, string> = {
@@ -93,44 +83,28 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
   useEffect(() => {
     async function fetchProduct() {
       try {
-        const { data, error } = await supabase
-          .from("products")
-          .select("*")
-          .eq("id", productId)
-          .single();
-
-        if (error) throw error;
-        setProduct(data);
+        // Yeni sistem: getDocuments servisini kullan
+        const { documents, product: fetchedProduct } = await getDocuments(productId);
+        
+        setProduct(fetchedProduct);
+        setAllDocuments(documents);
         
         // Initialize form data
         setFormData({
-          name: data.name,
-          model: data.model,
-          product_type: data.product_type,
+          name: fetchedProduct.name ?? "",
+          model: fetchedProduct.model ?? "",
+          product_type: fetchedProduct.product_type ?? "",
         });
-
-        // Extract all documents from the product and add IDs if missing
-        if (data.documents) {
-          const docs = Object.entries(data.documents).flatMap(([type, documents]: [string, any[]]) => {
-            return documents.map((doc: any, index: number) => {
-              // Add an ID if it doesn't exist
-              if (!doc.id) {
-                doc.id = `doc-${type}-${index}-${Date.now()}`;
-              }
-              return doc;
-            });
-          });
-          setAllDocuments(docs);
-          
-          // If we have a reuploadDocumentId, find the rejected document
-          if (reuploadDocumentId) {
-            const doc = docs.find((doc: any) => doc.id === reuploadDocumentId);
-            if (doc) {
-              setRejectedDocument(doc);
-            }
+        
+        // If we have a reuploadDocumentId, find the rejected document
+        if (reuploadDocumentId) {
+          const doc = documents.find((doc: Document) => doc.id === reuploadDocumentId);
+          if (doc) {
+            setRejectedDocument(doc);
           }
         }
       } catch (error) {
+        console.error("Error fetching product:", error);
         toast({
           title: "Error",
           description: "Failed to load product details",
@@ -142,7 +116,7 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
     }
 
     fetchProduct();
-  }, [productId, reuploadDocumentId, toast, supabase]);
+  }, [productId, reuploadDocumentId, toast]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
@@ -177,37 +151,25 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
     try {
       setIsUploading(true);
       
-      // In a real app, this would upload to Supabase Storage
-      // For now, we'll simulate the upload process
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Yeni sistem: uploadDocument servisini kullan
+      await uploadDocument(productId, file, newDocument.type, {
+        version: "1.0",
+        notes: "Re-uploaded document"
+      });
       
-      // Update the document in the state
-      if (documentId) {
-        const updatedDocuments = allDocuments.map(doc => {
-          if (doc.id === documentId) {
-            return {
-              ...doc,
-              name: file.name,
-              file_url: URL.createObjectURL(file),
-              upload_date: new Date().toISOString(),
-              status: "pending",
-            };
-          }
-          return doc;
-        });
-        setAllDocuments(updatedDocuments);
-      }
+      // Refresh documents
+      const { documents } = await getDocuments(productId);
+      setAllDocuments(documents);
       
       toast({
         title: "Success",
-        description: documentId 
-          ? "Document updated successfully" 
-          : "New document uploaded successfully",
+        description: "Document uploaded successfully",
       });
     } catch (error) {
+      console.error("Error uploading document:", error);
       toast({
         title: "Error",
-        description: "Failed to upload file",
+        description: "Failed to upload document",
         variant: "destructive",
       });
     } finally {
@@ -216,95 +178,30 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
   };
 
   const handleDeleteDocument = async (documentId: string, documentName?: string, documentType?: string) => {
+    if (!confirm(`Are you sure you want to delete "${documentName || 'this document'}"?`)) {
+      return;
+    }
+
     try {
-      // Check if documentId is valid
-      if (!documentId) {
-        toast({
-          title: "Error",
-          description: "Cannot delete document: Invalid document ID",
-          variant: "destructive",
-        });
-        return;
-      }
-      
       setIsDeleting(documentId);
       
-      // In a real app, this would delete from Supabase
-      // For now, we'll simulate the delete process
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      // First, update the allDocuments state to remove the document
-      const updatedAllDocuments = allDocuments.filter(doc => {
-        // If the document has an ID, use it for comparison
-        if (doc.id) {
-          return doc.id !== documentId;
-        }
-        // If the document doesn't have an ID, use name and type for comparison
-        return !(doc.name === documentName && doc.type === documentType);
+      // Delete from documents table
+      const { error } = await supabase
+        .from("documents")
+        .delete()
+        .eq("id", documentId);
+
+      if (error) throw error;
+
+      // Update local state
+      setAllDocuments(prev => prev.filter(doc => doc.id !== documentId));
+
+      toast({
+        title: "Success",
+        description: "Document deleted successfully",
       });
-      
-      setAllDocuments(updatedAllDocuments);
-      
-      // Then, update the product state if it exists
-      if (product) {
-        const productCopy = JSON.parse(JSON.stringify(product));
-        
-        // Find and remove the document from the appropriate category
-        let documentFound = false;
-        
-        // If we know the document type, we can directly target that category
-        if (documentType && productCopy.documents[documentType]) {
-          const categoryDocs = productCopy.documents[documentType];
-          const updatedCategoryDocs = categoryDocs.filter((doc: any) => {
-            // If the document has an ID, use it for comparison
-            if (doc.id) {
-              return doc.id !== documentId;
-            }
-            // If the document doesn't have an ID, use name for comparison
-            return doc.name !== documentName;
-          });
-          
-          if (updatedCategoryDocs.length !== categoryDocs.length) {
-            productCopy.documents[documentType] = updatedCategoryDocs;
-            documentFound = true;
-          }
-        } else {
-          // If we don't know the document type, check all categories
-          for (const category in productCopy.documents) {
-            const categoryDocs = productCopy.documents[category];
-            const updatedCategoryDocs = categoryDocs.filter((doc: any) => {
-              // If the document has an ID, use it for comparison
-              if (doc.id) {
-                return doc.id !== documentId;
-              }
-              // If the document doesn't have an ID, use name for comparison
-              return doc.name !== documentName;
-            });
-            
-            if (updatedCategoryDocs.length !== categoryDocs.length) {
-              productCopy.documents[category] = updatedCategoryDocs;
-              documentFound = true;
-              break;
-            }
-          }
-        }
-        
-        if (documentFound) {
-          // Update the product state with the modified documents
-          setProduct(productCopy);
-          
-          toast({
-            title: "Success",
-            description: "Document deleted successfully",
-          });
-        } else {
-          toast({
-            title: "Success",
-            description: "Document removed from the list",
-          });
-        }
-      }
     } catch (error) {
+      console.error("Error deleting document:", error);
       toast({
         title: "Error",
         description: "Failed to delete document",
@@ -316,45 +213,35 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
   };
 
   const handleAddNewDocument = async () => {
-    if (!newDocument.file) {
-      toast({
-        title: "Error",
-        description: "Please select a file to upload",
-        variant: "destructive",
-      });
-      return;
-    }
+    if (!newDocument.file) return;
 
     try {
       setIsUploading(true);
       
-      // In a real app, this would upload to Supabase Storage
-      // For now, we'll simulate the upload process
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Yeni sistem: uploadDocument servisini kullan
+      await uploadDocument(productId, newDocument.file, newDocument.type, {
+        version: "1.0",
+        notes: "Added via edit page"
+      });
       
-      // Add the new document to the state
-      const newDoc: Document = {
-        id: `doc-${Date.now()}`,
-        name: newDocument.name,
-        type: newDocument.type,
-        status: "pending",
-        file_url: URL.createObjectURL(newDocument.file),
-        upload_date: new Date().toISOString(),
-      };
+      // Refresh documents
+      const { documents } = await getDocuments(productId);
+      setAllDocuments(documents);
       
-      setAllDocuments(prev => [...prev, newDoc]);
+      // Reset form
       setNewDocument({
         file: null,
         name: "",
         type: "technical_docs",
       });
       setShowAddDialog(false);
-      
+
       toast({
         title: "Success",
-        description: "New document added successfully",
+        description: "Document added successfully",
       });
     } catch (error) {
+      console.error("Error adding document:", error);
       toast({
         title: "Error",
         description: "Failed to add document",
@@ -367,40 +254,32 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
 
   const handleSaveChanges = async () => {
     if (!product) return;
-    
-    setIsSaving(true);
-    
+
     try {
-      // Update product information using productService
-      const { data, error } = await productService.updateProduct({
-        id: productId,
-        product: {
+      setIsSaving(true);
+      
+      const { error } = await supabase
+        .from("products")
+        .update({
           name: formData.name,
           model: formData.model,
           product_type: formData.product_type,
-          documents: allDocuments.reduce((acc, doc) => {
-            if (!acc[doc.type]) {
-              acc[doc.type] = [];
-            }
-            acc[doc.type].push(doc);
-            return acc;
-          }, {} as any),
-        },
-      });
-      
+        })
+        .eq("id", productId);
+
       if (error) throw error;
-      
+
       toast({
         title: "Success",
-        description: "Product information updated successfully",
+        description: "Product updated successfully",
       });
-      
-      // Redirect back to products page
+
       router.push("/dashboard/products");
     } catch (error) {
+      console.error("Error updating product:", error);
       toast({
         title: "Error",
-        description: "Failed to save changes",
+        description: "Failed to update product",
         variant: "destructive",
       });
     } finally {
@@ -409,76 +288,51 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
   };
 
   const getStatusBadge = (status: string | undefined | null) => {
-    if (!status) return <Badge className="bg-gray-500">Pending</Badge>;
+    if (!status) return null;
     
-    switch (status.toLowerCase()) {
-      case "approved":
-        return <Badge className="bg-green-500">Approved</Badge>;
-      case "pending":
-        return <Badge className="bg-yellow-500">Pending</Badge>;
-      case "rejected":
-        return <Badge className="bg-red-500">Rejected</Badge>;
-      default:
-        return <Badge className="bg-gray-500">Pending</Badge>;
-    }
+    const statusConfig = {
+      pending: { variant: "secondary" as const, text: "Pending" },
+      approved: { variant: "default" as const, text: "Approved" },
+      rejected: { variant: "destructive" as const, text: "Rejected" },
+    };
+
+    const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.pending;
+    
+    return (
+      <Badge variant={config.variant} className="text-xs">
+        {config.text}
+      </Badge>
+    );
   };
 
   const handleImageUpload = async (file: File) => {
-    if (!product) return;
-    
-    setIsUploadingImage(true);
     try {
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${productId}-${Date.now()}.${fileExt}`;
-      const filePath = `products/${fileName}`;
-
+      setIsUploadingImage(true);
+      
+      // Upload to Supabase Storage
+      const fileExt = file.name.split('.').pop() || 'jpg';
+      const fileName = `${Date.now()}.${fileExt}`;
+      const filePath = `products/${productId}/images/${fileName}`;
+      
       const { error: uploadError } = await supabase.storage
-        .from(process.env.NEXT_PUBLIC_PRODUCT_IMAGES_BUCKET || '')
+        .from('product-images')
         .upload(filePath, file);
 
       if (uploadError) throw uploadError;
 
+      // Get public URL
       const { data: { publicUrl } } = supabase.storage
-        .from(process.env.NEXT_PUBLIC_PRODUCT_IMAGES_BUCKET || '')
+        .from('product-images')
         .getPublicUrl(filePath);
 
-      const newImageData = {
+      // Update product images
+      const newImage = {
         url: publicUrl,
         alt: file.name,
-        is_primary: !product.images?.length,
+        is_primary: !product?.images || product.images.length === 0
       };
 
-      const updatedImages = [...(product.images || []), newImageData];
-
-      const { error: updateError } = await supabase
-        .from('products')
-        .update({ images: updatedImages })
-        .eq('id', productId);
-
-      if (updateError) throw updateError;
-
-      setProduct(prev => prev ? { ...prev, images: updatedImages } : null);
-      toast({
-        title: "Success",
-        description: "Image uploaded successfully",
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to upload image",
-        variant: "destructive",
-      });
-    } finally {
-      setIsUploadingImage(false);
-      setNewImage(null);
-    }
-  };
-
-  const handleDeleteImage = async (imageUrl: string) => {
-    if (!product) return;
-
-    try {
-      const updatedImages = product.images?.filter(img => img.url !== imageUrl) || [];
+      const updatedImages = [...(product?.images || []), newImage];
       
       const { error: updateError } = await supabase
         .from('products')
@@ -488,11 +342,43 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
       if (updateError) throw updateError;
 
       setProduct(prev => prev ? { ...prev, images: updatedImages } : null);
+      setNewImage(null);
+
+      toast({
+        title: "Success",
+        description: "Image uploaded successfully",
+      });
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      toast({
+        title: "Error",
+        description: "Failed to upload image",
+        variant: "destructive",
+      });
+    } finally {
+      setIsUploadingImage(false);
+    }
+  };
+
+  const handleDeleteImage = async (imageUrl: string) => {
+    try {
+      const updatedImages = product?.images?.filter(img => img.url !== imageUrl) || [];
+      
+      const { error } = await supabase
+        .from('products')
+        .update({ images: updatedImages })
+        .eq('id', productId);
+
+      if (error) throw error;
+
+      setProduct(prev => prev ? { ...prev, images: updatedImages } : null);
+
       toast({
         title: "Success",
         description: "Image deleted successfully",
       });
     } catch (error) {
+      console.error("Error deleting image:", error);
       toast({
         title: "Error",
         description: "Failed to delete image",
@@ -611,9 +497,9 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
               <AlertDescription>
                 <div className="mt-2">
                   <p key="doc-name"><strong>Document:</strong> {rejectedDocument.name}</p>
-                  <p key="doc-type"><strong>Type:</strong> {rejectedDocument.type}</p>
+                  <p key="doc-type"><strong>Type:</strong> {getDocumentTypeLabel(rejectedDocument)}</p>
                   <p key="doc-reason"><strong>Rejection Reason:</strong> {rejectedDocument.rejection_reason}</p>
-                  <p key="doc-date"><strong>Rejection Date:</strong> {new Date(rejectedDocument.rejection_date || "").toLocaleDateString()}</p>
+                  <p key="doc-date"><strong>Rejection Date:</strong> {rejectedDocument.uploadedAt ? new Date(rejectedDocument.uploadedAt).toLocaleDateString() : "N/A"}</p>
                 </div>
               </AlertDescription>
             </Alert>
@@ -783,7 +669,7 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
             ) : (
               <div className="space-y-4">
                 {allDocuments.map((doc) => (
-                  <div key={doc.id || `doc-${doc.name}-${doc.type}`} className="border rounded-md p-4">
+                  <div key={doc.id} className="border rounded-md p-4">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center space-x-2">
                         <FileText className="h-5 w-5 text-muted-foreground" />
@@ -792,7 +678,7 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
                       </div>
                       <div className="flex items-center space-x-2">
                         <Button variant="ghost" size="sm" asChild>
-                          <Link href={doc.file_url || "#"}>
+                          <Link href={doc.url || "#"}>
                             <Download className="h-4 w-4 mr-1" />
                             Download
                           </Link>
@@ -800,34 +686,26 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
                         <Button 
                           variant="ghost" 
                           size="sm" 
-                          onClick={() => {
-                            if (doc.id) {
-                              handleDeleteDocument(doc.id, doc.name, doc.type);
-                            } else {
-                              // Generate a temporary ID if none exists
-                              const tempId = `doc-${doc.name}-${doc.type}-${Date.now()}`;
-                              handleDeleteDocument(tempId, doc.name, doc.type);
-                            }
-                          }}
-                          disabled={isDeleting === (doc.id || `doc-${doc.name}-${doc.type}`)}
+                          onClick={() => handleDeleteDocument(doc.id, doc.name, doc.type)}
+                          disabled={isDeleting === doc.id}
                         >
                           <Trash2 className="h-4 w-4 mr-1" />
-                          {isDeleting === (doc.id || `doc-${doc.name}-${doc.type}`) ? "Deleting..." : "Delete"}
+                          {isDeleting === doc.id ? "Deleting..." : "Delete"}
                         </Button>
                       </div>
                     </div>
                     <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground">
-                      <div key={`doc-type-${doc.id || doc.name}`}>
+                      <div key={`doc-type-${doc.id}`}>
                         <span className="font-medium">Type:</span> {getDocumentTypeLabel(doc)}
                       </div>
-                      <div key={`doc-version-${doc.id || doc.name}`}>
+                      <div key={`doc-version-${doc.id}`}>
                         <span className="font-medium">Version:</span> {doc.version || "1.0"}
                       </div>
-                      <div key={`doc-upload-date-${doc.id || doc.name}`}>
-                        <span className="font-medium">Upload Date:</span> {doc.upload_date ? new Date(doc.upload_date).toLocaleDateString() : new Date().toLocaleDateString()}
+                      <div key={`doc-upload-date-${doc.id}`}>
+                        <span className="font-medium">Upload Date:</span> {doc.uploadedAt ? new Date(doc.uploadedAt).toLocaleDateString() : "N/A"}
                       </div>
                       {doc.rejection_reason && (
-                        <div key={`doc-rejection-reason-${doc.id || doc.name}`}>
+                        <div key={`doc-rejection-reason-${doc.id}`}>
                           <span className="font-medium">Rejection Reason:</span> {doc.rejection_reason}
                         </div>
                       )}
@@ -835,10 +713,10 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
                     
                     {doc.id === reuploadDocumentId && (
                       <div className="mt-4 pt-4 border-t">
-                        <Label htmlFor={`document-${doc.id || doc.name}`} className="text-sm font-medium">Re-upload Document</Label>
+                        <Label htmlFor={`document-${doc.id}`} className="text-sm font-medium">Re-upload Document</Label>
                         <div className="flex items-center space-x-2 mt-2">
                           <Input
-                            id={`document-${doc.id || doc.name}`}
+                            id={`document-${doc.id}`}
                             type="file"
                             onChange={(e) => handleFileUpload(e, doc.id)}
                             className="flex-1"
