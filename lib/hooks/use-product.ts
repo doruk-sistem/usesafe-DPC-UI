@@ -27,27 +27,14 @@ export function useProduct(id: string) {
     enabled: !!id && (!!company?.id || isAdmin),
   });
 
-  // Process documents
+  // Process documents from documents table
   const processDocuments = (productData: any) => {
     let documentCount = 0;
     const allDocuments: Document[] = [];
 
-    if (productData?.documents) {
-      if (Array.isArray(productData.documents)) {
-        allDocuments.push(...(productData.documents as Document[]));
-      } else if (typeof productData.documents === "object") {
-        Object.entries(productData.documents).forEach(([docType, docList]) => {
-          if (Array.isArray(docList)) {
-            const typedDocs = (docList as Document[]).map((doc) => ({
-              ...doc,
-              type: docType,
-            }));
-            allDocuments.push(...typedDocs);
-          }
-        });
-      }
-      documentCount = allDocuments.length;
-    }
+    // For now, return empty documents since they're in separate table
+    // TODO: Implement proper document fetching from documents table
+    // This would require a separate query or restructuring the hook
 
     return {
       documentCount,
@@ -69,32 +56,8 @@ export function useProduct(id: string) {
     if (product.document_status === "Pending Review") return "PENDING";
     if (product.document_status === "No Documents") return "PENDING";
 
-    // Belge durumu yoksa, belgeleri kontrol et
-    if (product.documents) {
-      // Belgeleri düzleştir
-      const flattenedDocs = Array.isArray(product.documents)
-        ? product.documents
-        : Object.values(product.documents).flat();
-
-      if (flattenedDocs.length > 0) {
-        // Belgelerde reddedilmiş olan var mı kontrol et
-        const hasRejectedDocuments = flattenedDocs.some(
-          (doc: any) => doc.status === "rejected"
-        );
-
-        if (hasRejectedDocuments) return "REJECTED";
-
-        // Tüm belgeler onaylanmış mı kontrol et
-        const allApproved = flattenedDocs.every(
-          (doc: any) => doc.status === "approved"
-        );
-
-        if (allApproved) return "APPROVED";
-
-        // Diğer durumlar için pending
-        return "PENDING";
-      }
-    }
+    // Documents are now in separate table, so we can't check them here
+    // TODO: Implement document status checking from documents table
 
     // Varsayılan durum - ürünün kendi statüsünü kullan
     if (product.status === "ARCHIVED") return "PENDING";
@@ -107,8 +70,11 @@ export function useProduct(id: string) {
   const updateProduct = async (updates: Partial<BaseProduct>) => {
     if (!product) return;
 
+    // Remove documents from updates since they're now in separate table
+    const { documents, ...updatesWithoutDocs } = updates;
+
     const updateData = {
-      ...updates,
+      ...updatesWithoutDocs,
       company_id: company?.id,
       images: updates.images?.map((img) => ({
         url: img.url,
