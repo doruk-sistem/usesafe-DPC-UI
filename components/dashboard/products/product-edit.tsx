@@ -6,6 +6,16 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -66,6 +76,8 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
     type: "technical_docs",
   });
   const [showAddDialog, setShowAddDialog] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [documentToDelete, setDocumentToDelete] = useState<{ id: string; name: string; type: string } | null>(null);
   const { toast } = useToast();
   const router = useRouter();
   const supabase = createClientComponentClient();
@@ -178,23 +190,26 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
   };
 
   const handleDeleteDocument = async (documentId: string, documentName?: string, documentType?: string) => {
-    if (!confirm(`Are you sure you want to delete "${documentName || 'this document'}"?`)) {
-      return;
-    }
+    setDocumentToDelete({ id: documentId, name: documentName || 'this document', type: documentType || '' });
+    setShowDeleteDialog(true);
+  };
+
+  const confirmDeleteDocument = async () => {
+    if (!documentToDelete) return;
 
     try {
-      setIsDeleting(documentId);
+      setIsDeleting(documentToDelete.id);
       
       // Delete from documents table
       const { error } = await supabase
         .from("documents")
         .delete()
-        .eq("id", documentId);
+        .eq("id", documentToDelete.id);
 
       if (error) throw error;
 
       // Update local state
-      setAllDocuments(prev => prev.filter(doc => doc.id !== documentId));
+      setAllDocuments(prev => prev.filter(doc => doc.id !== documentToDelete.id));
 
       toast({
         title: "Success",
@@ -209,6 +224,8 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
       });
     } finally {
       setIsDeleting(null);
+      setShowDeleteDialog(false);
+      setDocumentToDelete(null);
     }
   };
 
@@ -454,20 +471,21 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
   }
 
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
-        <div className="flex items-center space-x-2">
-          <Button variant="ghost" size="icon" asChild>
-            <Link href="/dashboard/products">
-              <ArrowLeft className="h-4 w-4" />
-              <span className="sr-only">Back</span>
-            </Link>
-          </Button>
-          <CardTitle>Edit Product</CardTitle>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-6">
+    <>
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <Button variant="ghost" size="icon" asChild>
+              <Link href="/dashboard/products">
+                <ArrowLeft className="h-4 w-4" />
+                <span className="sr-only">Back</span>
+              </Link>
+            </Button>
+            <CardTitle>Edit Product</CardTitle>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-6">
           {/* Ürün reddedilme sebebi */}
           {product?.status === "DELETED" && product?.status_history && product.status_history.length > 0 && (
             (() => {
@@ -745,5 +763,27 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
         </div>
       </CardContent>
     </Card>
+
+    {/* Delete Document Confirmation Dialog */}
+    <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Delete Document</AlertDialogTitle>
+          <AlertDialogDescription>
+            Are you sure you want to delete "{documentToDelete?.name}"? This action cannot be undone.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            onClick={confirmDeleteDocument}
+            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+          >
+            Delete
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+    </>
   );
 }
