@@ -239,6 +239,25 @@ export function ProductDocuments({
     );
   }
 
+  // Mapping fonksiyonu
+  const getDocumentTypeLabel = (doc: Document) => {
+    if (doc.originalType) return doc.originalType;
+    switch (doc.type) {
+      case "technical_docs":
+        return "Teknik Dokümantasyon";
+      case "quality_cert":
+        return "Kalite Sertifikası";
+      case "safety_cert":
+        return "Güvenlik Sertifikası";
+      case "test_reports":
+        return "Test Raporu";
+      case "compliance_docs":
+        return "Uyumluluk Dokümanı";
+      default:
+        return doc.type || "Bilinmeyen";
+    }
+  };
+
   return (
     <div className="max-h-[calc(100vh-200px)] overflow-y-auto">
     <Card>
@@ -421,97 +440,101 @@ export function ProductDocuments({
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {documents.map((document, index) => (
-                    <TableRow key={index}>
-                      <TableCell className="max-w-[200px] truncate">
-                        <div className="flex items-center gap-2">
-                          <FileText className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-                          <div className="min-w-0">
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <p
-                                    className="font-medium truncate cursor-pointer hover:text-primary"
-                                    onClick={() => {
-                                      setSelectedDocument(document);
-                                      setShowDocumentDetails(true);
-                                    }}
-                                  >
-                                    {document.name}
-                                  </p>
-                                </TooltipTrigger>
-                                <TooltipContent side="top" align="start">
-                                <p className="max-w-[300px] break-words text-xs">
-                                    {document.name}
-                                  </p>                                
+                  {documents.map((doc) => {
+                    const label = getDocumentTypeLabel(doc);
+                    console.log('Belge Türü:', label, 'Doc:', doc);
+                    return (
+                      <TableRow key={doc.id}>
+                        <TableCell className="max-w-[200px] truncate">
+                          <div className="flex items-center gap-2">
+                            <FileText className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                            <div className="min-w-0">
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <p
+                                      className="font-medium truncate cursor-pointer hover:text-primary"
+                                      onClick={() => {
+                                        setSelectedDocument(doc);
+                                        setShowDocumentDetails(true);
+                                      }}
+                                    >
+                                      {doc.name}
+                                    </p>
+                                  </TooltipTrigger>
+                                  <TooltipContent side="top" align="start">
+                                  <p className="max-w-[300px] break-words text-xs">
+                                      {doc.name}
+                                    </p>                                
                                   </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                            <p className="text-xs text-muted-foreground truncate">
-                              {document.fileSize}
-                            </p>                          
+                                </Tooltip>
+                              </TooltipProvider>
+                              <p className="text-xs text-muted-foreground truncate">
+                                {doc.fileSize}
+                              </p>                          
                             </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge
-                          variant="secondary"
-                          className="whitespace-nowrap"
-                        >
-                          {documentTypeLabels[document.type] || document.type}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <Badge
-                          variant={getStatusVariant(document.status)}
-                          className="flex w-fit items-center gap-1 whitespace-nowrap"
-                        >
-                          {getStatusIcon(document.status)}
-                          {document.status.toLowerCase()}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="whitespace-nowrap">
-                        {document.validUntil
-                          ? new Date(document.validUntil).toLocaleDateString()
-                          : t("notAvailable")}
-                      </TableCell>
-                      <TableCell className="whitespace-nowrap">
-                      v{document.version}
-                      </TableCell>
-                      <TableCell className="max-w-[150px] truncate">
-                        {document.notes || t("noNotes")}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                          <Button
-                              variant="ghost"
-                              size="icon"
-                              className="h-8 w-8"
-                            >                              <FileText className="h-4 w-4" />
-                              <span className="sr-only">{t("openMenu")}</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>{t("actions")}</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem onClick={() => handleDownload(document)}>
-                              <Download className="h-4 w-4 mr-2" />
-                              {t("download")}
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => handleView(document)}>
-                              <Eye className="h-4 w-4 mr-2" />
-                              {t("view")}
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => handleViewHistory(document)}>
-                              <History className="h-4 w-4 mr-2" />
-                              {t("viewHistory")}
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge
+                            variant="secondary"
+                            className="whitespace-nowrap"
+                          >
+                            {label}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <Badge
+                            variant={getStatusVariant(doc.status)}
+                            className="flex w-fit items-center gap-1 whitespace-nowrap"
+                          >
+                            {getStatusIcon(doc.status)}
+                            {doc.status.toLowerCase()}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="whitespace-nowrap">
+                          {doc.validUntil
+                            ? new Date(doc.validUntil).toLocaleDateString()
+                            : t("notAvailable")}
+                        </TableCell>
+                        <TableCell className="whitespace-nowrap">
+                        v{doc.version}
+                        </TableCell>
+                        <TableCell className="max-w-[150px] truncate">
+                          {doc.notes || t("noNotes")}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8"
+                              >                              <FileText className="h-4 w-4" />
+                                <span className="sr-only">{t("openMenu")}</span>
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuLabel>{t("actions")}</DropdownMenuLabel>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem onClick={() => handleDownload(doc)}>
+                                <Download className="h-4 w-4 mr-2" />
+                                {t("download")}
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => handleView(doc)}>
+                                <Eye className="h-4 w-4 mr-2" />
+                                {t("view")}
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => handleViewHistory(doc)}>
+                                <History className="h-4 w-4 mr-2" />
+                                {t("viewHistory")}
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
                 </TableBody>
               </Table>
             </div>
