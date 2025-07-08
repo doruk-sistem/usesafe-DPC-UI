@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+
 import { ChatGPTService, type ProductDocumentGuidance } from '@/lib/services/chatgpt';
 
 interface UseChatGPTGuidanceProps {

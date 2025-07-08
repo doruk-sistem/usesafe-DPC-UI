@@ -1,10 +1,10 @@
 "use client";
 
-import { Plus, Search, MoreHorizontal } from "lucide-react";
+import { Box, ExternalLink, ChevronLeft, ChevronRight } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
-import { Badge } from "@/components/ui/badge";
+import { ProductDetails } from "@/components/products/product-details";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -13,30 +13,9 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { useProduct } from "@/lib/hooks/use-product";
 import { useProducts } from "@/lib/hooks/use-products";
 
 interface CompanyProductsProps {
@@ -46,8 +25,31 @@ interface CompanyProductsProps {
 export function CompanyProducts({ companyId }: CompanyProductsProps) {
   const t = useTranslations("admin.products");
   const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState("all");
   const { products, isLoading, error } = useProducts(companyId);
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
+  const { product: selectedProduct, isLoading: isProductLoading, error: productError } = useProduct(selectedProductId || "");
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 10;
+  const totalPages = Math.ceil(products.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedProducts = products.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+  function getPaginationRange(current: number, total: number): (number | string)[] {
+    const delta = 2;
+    const range: (number | string)[] = [];
+    for (let i = Math.max(2, current - delta); i <= Math.min(total - 1, current + delta); i++) {
+      range.push(i);
+    }
+    if (current - delta > 2) {
+      range.unshift('...');
+    }
+    if (current + delta < total - 1) {
+      range.push('...');
+    }
+    range.unshift(1);
+    if (total > 1) range.push(total);
+    return range;
+  }
 
   if (error) {
     return (
@@ -71,92 +73,103 @@ export function CompanyProducts({ companyId }: CompanyProductsProps) {
     );
   }
 
-  const filteredProducts = products.filter((product) => {
-    const matchesSearch =
-      product.name?.toLowerCase().includes(search.toLowerCase())
-
-    if (filter === "all") return matchesSearch;
-    return matchesSearch && product.status === filter;
-  });
+  const filteredProducts = products.filter((product) =>
+    product.name?.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <Card>
       <CardHeader>
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle>{t("list.title")}</CardTitle>
-            <CardDescription>{t("list.description")}</CardDescription>
-          </div>
-          <div className="flex items-center gap-2">
-            <Input
-              placeholder={t("list.search.placeholder")}
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-[200px]"
-            />
-            <Select value={filter} onValueChange={setFilter}>
-              <SelectTrigger className="w-[150px]">
-                <SelectValue placeholder={t("list.filter.placeholder")} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{t("list.filter.all")}</SelectItem>
-                <SelectItem value="active">{t("list.filter.active")}</SelectItem>
-                <SelectItem value="inactive">{t("list.filter.inactive")}</SelectItem>
-                <SelectItem value="pending">{t("list.filter.pending")}</SelectItem>
-              </SelectContent>
-            </Select>
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              {t("list.actions.add")}
-            </Button>
-          </div>
-        </div>
+        <CardTitle>{t("title")}</CardTitle>
       </CardHeader>
       <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>{t("list.columns.name")}</TableHead>
-              <TableHead>{t("list.columns.status")}</TableHead>
-              <TableHead>{t("list.columns.actions")}</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredProducts.map((product) => (
-              <TableRow key={product.id}>
-                <TableCell>{product.name}</TableCell>
-                <TableCell>
-                  <Badge variant={product.status === "APPROVED" ? "default" : "secondary"}>
-                    {product.status}
-                  </Badge>
-                </TableCell>
-                <TableCell>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon">
-                        <MoreHorizontal className="h-4 w-4" />
-                        <span className="sr-only">{t("list.actions.title")}</span>
+        <div className="space-y-4">
+          {filteredProducts.length === 0 ? (
+            <div className="text-center py-8">
+              <p className="text-muted-foreground">{t("list.empty.description")}</p>
+            </div>
+          ) : (
+            <>
+              <div className="grid gap-4">
+                {paginatedProducts.map((product) => (
+                  <div
+                    key={product.id}
+                    className="flex items-center justify-between rounded-lg border p-4"
+                  >
+                    <div className="flex items-start gap-4">
+                      <Box className="h-8 w-8 text-muted-foreground" />
+                      <div>
+                        <p className="font-medium">{product.name}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {product.description}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setSelectedProductId(product.id)}
+                      >
+                        <ExternalLink className="h-4 w-4" />
                       </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>{t("list.actions.title")}</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem>
-                        {t("list.actions.view")}
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        {t("list.actions.edit")}
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        {t("list.actions.delete")}
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Pagination UI */}
+              {totalPages > 1 && (
+                <nav className="flex justify-center items-center gap-1 mt-6 select-none" aria-label="Pagination">
+                  <button
+                    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                    disabled={currentPage === 1}
+                    className={`w-9 h-9 flex items-center justify-center rounded-lg border transition-colors duration-150 text-lg
+                      ${currentPage === 1 ? 'bg-muted text-muted-foreground border-muted cursor-not-allowed' : 'bg-white hover:bg-muted/70 border-muted text-muted-foreground'}`}
+                    aria-label="Previous Page"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+                  {getPaginationRange(currentPage, totalPages).map((page, idx) =>
+                    typeof page === 'string'
+                      ? <span key={"ellipsis-"+idx} className="w-9 h-9 flex items-center justify-center text-muted-foreground text-sm">...</span>
+                      : <button
+                          key={page}
+                          onClick={() => setCurrentPage(Number(page))}
+                          className={`w-9 h-9 flex items-center justify-center rounded-lg border transition-colors duration-150 font-medium
+                            ${currentPage === page
+                              ? 'bg-primary/10 text-primary border-primary font-semibold'
+                              : 'bg-white text-muted-foreground border-muted hover:bg-muted/70'}
+                          `}
+                          aria-current={currentPage === page ? 'page' : undefined}
+                        >
+                          {page}
+                        </button>
+                  )}
+                  <button
+                    onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                    disabled={currentPage === totalPages}
+                    className={`w-9 h-9 flex items-center justify-center rounded-lg border transition-colors duration-150 text-lg
+                      ${currentPage === totalPages ? 'bg-muted text-muted-foreground border-muted cursor-not-allowed' : 'bg-white hover:bg-muted/70 border-muted text-muted-foreground'}`}
+                    aria-label="Next Page"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </nav>
+              )}
+            </>
+          )}
+        </div>
+
+        <Dialog open={!!selectedProductId} onOpenChange={() => setSelectedProductId(null)}>
+          <DialogContent className="max-w-5xl w-full h-[90vh] overflow-y-auto p-0 bg-background">
+            <DialogHeader>
+              <DialogTitle>{t("details.title")}</DialogTitle>
+              <DialogDescription>{t("details.description")}</DialogDescription>
+            </DialogHeader>
+            {selectedProduct && <ProductDetails product={selectedProduct} />}
+          </DialogContent>
+        </Dialog>
       </CardContent>
     </Card>
   );
