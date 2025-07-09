@@ -411,7 +411,8 @@
         "DELETED": "Deleted",
         "draft": "Draft",
         "new": "New",
-        "archived": "Archived"
+        "archived": "Archived",
+        "deleted": "Deleted"
       }
     },
     "menu": {

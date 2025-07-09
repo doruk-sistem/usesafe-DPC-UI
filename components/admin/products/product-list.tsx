@@ -333,7 +333,9 @@ export function ProductList() {
                           <span className="text-sm font-medium">
                             {t("documentCount", { 
                               count: product.documents 
-                                ? Object.values(product.documents).flat().length 
+                                ? Array.isArray(product.documents) 
+                                  ? product.documents.length 
+                                  : Object.values(product.documents).flat().length 
                                 : 0 
                             })}
                           </span>

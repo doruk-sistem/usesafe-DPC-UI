@@ -850,7 +850,8 @@
         "DELETED": "Silindi",
         "draft": "Taslak",
         "new": "Yeni",
-        "archived": "Arşivlendi"
+        "archived": "Arşivlendi",
+        "deleted": "Silindi"
       }
     },
     "time": {

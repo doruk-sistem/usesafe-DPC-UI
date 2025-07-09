@@ -3,6 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { productService } from "@/lib/services/product";
 import { Document } from "@/lib/types/document";
 import { BaseProduct, ProductStatus } from "@/lib/types/product";
+import { supabase } from "@/lib/supabase/client";
 
 import { useAuth } from "./use-auth";
 import { productsApiHooks } from "./use-products";
@@ -27,20 +28,51 @@ export function useProduct(id: string) {
     enabled: !!id && (!!company?.id || isAdmin),
   });
 
-  // Process documents from documents table
-  const processDocuments = (productData: any) => {
-    let documentCount = 0;
-    const allDocuments: Document[] = [];
+  // Fetch documents for this product
+  const {
+    data: documents = [],
+    isLoading: isLoadingDocuments,
+    error: documentsError,
+  } = useQuery({
+    queryKey: ["product-documents", id],
+    queryFn: async () => {
+      if (!id) return [];
+      
+      const { data: documents, error } = await supabase
+        .from("documents")
+        .select("*")
+        .contains("documentInfo", { productId: id });
 
-    // For now, return empty documents since they're in separate table
-    // TODO: Implement proper document fetching from documents table
-    // This would require a separate query or restructuring the hook
+      if (error) {
+        console.error("Error fetching documents:", error);
+        return [];
+      }
 
-    return {
-      documentCount,
-      allDocuments
-    };
-  };
+      // Map documents to the expected format
+      return (documents || []).map((doc: any) => ({
+        id: doc.id,
+        name: doc.documentInfo?.name || "Unnamed Document",
+        type: doc.documentInfo?.type || "unknown",
+        category: doc.documentInfo?.type || "unknown",
+        url: doc.documentInfo?.url || "",
+        status: (doc.status || "pending").toLowerCase(),
+        productId: doc.documentInfo?.productId || "",
+        manufacturer: doc.documentInfo?.manufacturer || "",
+        manufacturerId: doc.companyId || "",
+        fileSize: doc.documentInfo?.fileSize || "",
+        version: doc.documentInfo?.version || "1.0",
+        validUntil: doc.documentInfo?.validUntil || null,
+        rejection_reason: doc.documentInfo?.rejection_reason || null,
+        created_at: doc.createdAt || new Date().toISOString(),
+        updated_at: doc.updatedAt || new Date().toISOString(),
+        uploadedAt: doc.createdAt || new Date().toISOString(),
+        size: doc.documentInfo?.size || 0,
+        notes: doc.documentInfo?.notes || "",
+        originalType: doc.documentInfo?.originalType || ""
+      } as Document));
+    },
+    enabled: !!id && (!!company?.id || isAdmin),
+  });
 
   const determineProductStatus = (
     product: BaseProduct | null
@@ -98,12 +130,13 @@ export function useProduct(id: string) {
   };
 
   const productData = product?.data || null;
-  const { documentCount, allDocuments } = processDocuments(productData);
+  const documentCount = documents.length;
+  const allDocuments = documents;
 
   return {
     product: productData,
-    error: error || product?.error,
-    isLoading,
+    error: error || product?.error || documentsError,
+    isLoading: isLoading || isLoadingDocuments,
     determineProductStatus,
     updateProduct,
     documentCount,

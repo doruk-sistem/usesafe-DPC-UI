@@ -1,4 +1,5 @@
 import { Database } from "./supabase";
+import { Document } from "./document";
 
 export type DPPFieldType =
   | "text"
@@ -57,6 +58,7 @@ export type BaseProduct = Database["public"]["Tables"]["products"]["Row"] & {
     name: string;
   };
   key_features?: ProductKeyFeature[]; // Yeni ilişkisel key_features
+  documents?: Document[]; // Documents array for the product
   dpp_config?: {
     sections: Array<{
       id: string;

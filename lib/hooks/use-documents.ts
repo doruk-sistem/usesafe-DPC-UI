@@ -141,4 +141,35 @@ export const documentsApiHooks = {
       },
     });
   },
+
+  useUpdateDocumentStatusDirect: () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+      mutationFn: async ({
+        document,
+        status,
+      }: {
+        document: Document;
+        status: DocumentStatus;
+      }) => {
+        try {
+          // Update document status in documents table
+          const { error } = await supabase
+            .from("documents")
+            .update({ status })
+            .eq("id", document.id);
+
+          if (error) {
+            throw new Error(`Failed to update document status: ${error.message}`);
+          }
+        } catch (error) {
+          console.error("Error updating document status:", error);
+          throw error;
+        }
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["documents"] });
+      },
+    });
+  },
 };
