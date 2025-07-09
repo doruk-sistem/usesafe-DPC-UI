@@ -2166,6 +2166,9 @@
   "adminDashboard": {
     "title": "Admin Dashboard",
     "description": "Monitor and manage system-wide operations",
+    "companies" : {
+      "details":"Details"
+    },
     "period": {
       "select": "Select period",
       "today": "Today",
@@ -2253,6 +2256,15 @@
           "approved": "Approved",
           "rejected": "Rejected",
           "pending": "Pending"
+        },
+        "companies" : {
+           "details" : {
+            "title" : "Company Details",
+            "description" : "View and manage company details",
+            "columns" : {
+              
+            }
+           }
         },
         "companyInfo": {
           "title": "Company Information",
@@ -2573,7 +2585,12 @@
     "companies": {
       "title": "Companies",
       "description": "Manage and review all companies in the system",
-      "details":"Details",
+      "details":{
+        "backToList": "Back to List",
+        "types":{
+          "manufacturer": "Manufacturer"
+        }
+      },
       "documents":{
         "title": "Documents",
         "description": "Manage and review all documents in the system",
@@ -2599,7 +2616,8 @@
          "total": "Total: {count} Company",
          "loading":{
           "title": "Loading",
-          "description": "Loading companies..."
+          "description": "Loading companies...",
+          "companies": "Companies"
          },
           "columns":{
             "name": "Name",
@@ -2667,6 +2685,7 @@
       "loading": "Loading products...",
       "searchPlaceholder": "Search products...",
       "filterByManufacturer": "Filter by manufacturer",
+      "products":"Products",
       "filterByStatus": "Filter by status",
       "allManufacturers": "All Manufacturers",
       "allStatus": "All Status",
@@ -2688,6 +2707,8 @@
       "documentCount_plural": "{count} documents",
       "unknownManufacturer": "Unknown Manufacturer",
       "details": {
+        "title": "Product Details",
+        "description": "View and manage product details",
         "backButton": "Back to Products",
         "viewDocuments": "View Documents",
         "productInfo": {
@@ -2733,6 +2754,9 @@
       "list":{
         "title": "Products",
         "description": "Manage and review all products in the system",
+        "empty":{
+          "description": "Add a product to get started"
+        },
         "search":{
           "placeholder": "Search products..."
         },
