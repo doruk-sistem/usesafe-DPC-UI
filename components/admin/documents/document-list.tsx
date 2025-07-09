@@ -94,6 +94,27 @@ export function DocumentList({ initialDocuments = [], filters, manufacturerId }:
   const [selectedDocumentId, setSelectedDocumentId] = useState<string>("");
   const [localDocuments, setLocalDocuments] = useState<Document[]>(initialDocuments);
 
+  const documentTypeLabels: Record<string, string> = {
+    quality_cert: "Quality Certificate",
+    safety_cert: "Safety Certificate",
+    test_reports: "Test Reports",
+    technical_docs: "Technical Documentation",
+    compliance_docs: "Compliance Documents",
+    certificates: "Certificates",
+    other: "Other"
+  };
+
+  // Helper function to get document type label
+  const getDocumentTypeLabel = (doc: Document) => {
+    // Eğer originalType varsa (AI'dan gelen), onu göster
+    if (doc.originalType) {
+      return doc.originalType;
+    }
+    
+    // Standart türler için label kullan
+    return documentTypeLabels[doc.type] || doc.type;
+  };
+
   const {
     data: documents = [],
     isLoading,
@@ -468,7 +489,7 @@ export function DocumentList({ initialDocuments = [], filters, manufacturerId }:
                                     </div>
                                   </div>
                                 </TableCell>
-                                <TableCell>{doc.type}</TableCell>
+                                <TableCell>{getDocumentTypeLabel(doc)}</TableCell>
                                 <TableCell>
                                   <Badge
                                     variant={getStatusVariant(doc.status)}
