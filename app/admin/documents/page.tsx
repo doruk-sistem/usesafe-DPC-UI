@@ -69,13 +69,13 @@ export default function DocumentsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold">
-            {t("documentManagement.title")}
+            {/* {t("documentManagement.title")} */}
           </h1>{" "}
-          <p className="text-muted-foreground">
+          {/* <p className="text-muted-foreground">
             {manufacturerId
               ? t("documentManagement.repository.description.forManufacturer")
               : t("documentManagement.repository.description")}
-          </p>
+          </p> */}
         </div>
       </div>
       <DocumentHeader onFilterChange={handleFilterChange} filters={filters} />

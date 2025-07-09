@@ -127,7 +127,7 @@ export function DocumentList({ initialDocuments = [], filters, manufacturerId }:
       filters?.status === "all-status" ? true : doc.status === filters?.status
     );
 
-  // Group documents by product
+  // Group documents by product from documents table
   const documentsByProduct = filteredDocuments.reduce<
     Record<string, Document[]>
   >((acc, doc) => {
@@ -215,7 +215,7 @@ export function DocumentList({ initialDocuments = [], filters, manufacturerId }:
       }
 
       await rejectDocument({
-        document,
+        documentId: selectedDocumentId,
         reason: documentRejectReason,
       });
 
@@ -327,8 +327,8 @@ export function DocumentList({ initialDocuments = [], filters, manufacturerId }:
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle>{t("title")}</CardTitle>
-            <CardDescription>{t("description")}</CardDescription>
+            {/* <CardTitle>{t("title")}</CardTitle>
+            <CardDescription>{t("description")}</CardDescription> */}
           </div>
           <div className="flex items-center gap-2">
             <Select value={statusFilter} onValueChange={setStatusFilter}>
