@@ -69,4 +69,21 @@ export const useProductTypesByCategory = (params: ProductTypesByCategoryRequest)
     queryFn: () => productTypesService.getProductTypesByCategory(params),
     enabled: !!params.categoryId, // categoryId varsa çalışır
   });
+};
+
+// Fetch all product types
+export const getAllProductTypes = async (): Promise<ProductType[]> => {
+  const { data, error } = await supabase
+    .from("product_types")
+    .select("*")
+    .order("product");
+  if (error) throw error;
+  return data || [];
+};
+
+export const useAllProductTypes = () => {
+  return useQuery({
+    queryKey: ["all-product-types"],
+    queryFn: getAllProductTypes,
+  });
 }; 

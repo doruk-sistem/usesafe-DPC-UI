@@ -29,6 +29,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { productService } from "@/lib/services/product";
 import { getDocuments, uploadDocument } from "@/lib/services/documents";
 import { STANDARD_TO_AI_MAPPING, DOCUMENT_TYPE_CONFIG } from "@/lib/constants/documents";
+import { useAllProductTypes } from "@/lib/services/product-types";
 import { BaseProduct } from "@/lib/types/product";
 import { Document } from "@/lib/types/document";
 
@@ -81,6 +82,41 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
   const { toast } = useToast();
   const router = useRouter();
   const supabase = createClientComponentClient();
+  const { data: allProductTypes } = useAllProductTypes();
+
+  // Helper to get product type name by id
+  const getProductTypeName = (typeId: number | string | undefined) => {
+    if (!typeId || !allProductTypes) return "Unknown";
+    
+    // First try to find by id (if typeId is numeric)
+    const numericId = typeof typeId === 'string' ? parseInt(typeId, 10) : typeId;
+    if (!isNaN(numericId)) {
+      const foundById = allProductTypes.find(pt => pt.id === numericId);
+      if (foundById) return foundById.product;
+    }
+    
+    // If not found by id, try to find by product name/value
+    const foundByName = allProductTypes.find(
+      pt => pt.product.toLowerCase() === String(typeId).toLowerCase()
+    );
+    if (foundByName) return foundByName.product;
+    
+    // If still not found, return the original value or "Unknown"
+    return String(typeId) || "Unknown";
+  };
+
+  // Helper to get full product type display (category + subcategory)
+  const getFullProductTypeDisplay = () => {
+    const subcategory = product?.product_subcategory;
+    
+    if (subcategory) {
+      return subcategory;
+    }
+    
+    // Fallback to category if no subcategory
+    const category = getProductTypeName(product?.product_type);
+    return category || "Unknown";
+  };
 
   // Form state
   const [formData, setFormData] = useState({
@@ -543,7 +579,7 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
             <Label htmlFor="type">Product Type</Label>
             <Input 
               id="product_type" 
-              value={formData.product_type} 
+              value={getFullProductTypeDisplay()} 
               onChange={handleInputChange}
             />
           </div>

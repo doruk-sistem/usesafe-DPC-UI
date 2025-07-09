@@ -63,8 +63,12 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
   const productType = form.watch("product_type");
 
   // Yeni hook ile subcategory'leri çek
+  // Find category id from category name
+  const selectedCategory = categories.find(cat => cat.name === productType);
+  const categoryId = selectedCategory?.id || 0;
+  
   const { data: subcategories, isLoading: subLoading } = useProductTypesByCategory({
-    categoryId: Number(productType) || 0
+    categoryId: categoryId
   });
 
   useEffect(() => {
@@ -198,10 +202,10 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
                 <Select
                   options={categoryOptions}
                   value={categoryOptions.find(
-                    (option) => option.value === field.value
+                    (option) => option.label === field.value
                   )}
                   onChange={(selectedOption: OptionType | null) => {
-                    const newValue = selectedOption?.value || "";
+                    const newValue = selectedOption?.label || "";
                     field.onChange(newValue);
                     
                     // Category seçildiğinde localStorage'a kaydet
@@ -231,10 +235,10 @@ export function BasicInfoStep({ form }: BasicInfoStepProps) {
                 <Select
                   options={subcategoryOptions}
                   value={subcategoryOptions.find(
-                    (option) => option.value === field.value
+                    (option) => option.label === field.value
                   )}
                   onChange={(selectedOption: OptionType | null) => {
-                    const newValue = selectedOption?.value || "";
+                    const newValue = selectedOption?.label || "";
                     field.onChange(newValue);
                     
                     // Subcategory seçildiğinde localStorage'a kaydet
