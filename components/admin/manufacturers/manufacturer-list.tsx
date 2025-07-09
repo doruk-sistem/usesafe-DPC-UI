@@ -30,9 +30,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { Company } from "@/lib/types/company";
 import { productService } from "@/lib/services/product";
 import { supabase } from "@/lib/supabase/client";
+import type { Company } from "@/lib/types/company";
 
 export function ManufacturerList() {
   const t = useTranslations("adminDashboard.manufacturers");

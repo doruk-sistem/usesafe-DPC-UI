@@ -1,9 +1,10 @@
 import { createApiHooks } from "../create-api-hooks";
 import { productService } from "../services/product";
 import { BaseProduct } from "../types/product";
-import { documentsApiHooks } from "./use-documents";
 
 import { useAuth } from "./use-auth";
+import { documentsApiHooks } from "./use-documents";
+
 
 export const productsApiHooks = createApiHooks(productService);
 

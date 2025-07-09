@@ -1,9 +1,9 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { productService } from "@/lib/services/product";
+import { supabase } from "@/lib/supabase/client";
 import { Document } from "@/lib/types/document";
 import { BaseProduct, ProductStatus } from "@/lib/types/product";
-import { supabase } from "@/lib/supabase/client";
 
 import { useAuth } from "./use-auth";
 import { productsApiHooks } from "./use-products";

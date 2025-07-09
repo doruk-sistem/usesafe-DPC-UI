@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,7 +17,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -26,12 +26,12 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
-import { productService } from "@/lib/services/product";
-import { getDocuments, uploadDocument } from "@/lib/services/documents";
 import { STANDARD_TO_AI_MAPPING, DOCUMENT_TYPE_CONFIG } from "@/lib/constants/documents";
+import { getDocuments, uploadDocument } from "@/lib/services/documents";
+import { productService } from "@/lib/services/product";
 import { useAllProductTypes } from "@/lib/services/product-types";
-import { BaseProduct } from "@/lib/types/product";
 import { Document } from "@/lib/types/document";
+import { BaseProduct } from "@/lib/types/product";
 
 interface ProductEditProps {
   productId: string;
@@ -806,7 +806,7 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
         <AlertDialogHeader>
           <AlertDialogTitle>Delete Document</AlertDialogTitle>
           <AlertDialogDescription>
-            Are you sure you want to delete "{documentToDelete?.name}"? This action cannot be undone.
+            Are you sure you want to delete &quot;{documentToDelete?.name}&quot;? This action cannot be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
