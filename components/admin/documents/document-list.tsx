@@ -94,6 +94,27 @@ export function DocumentList({ initialDocuments = [], filters, manufacturerId }:
   const [selectedDocumentId, setSelectedDocumentId] = useState<string>("");
   const [localDocuments, setLocalDocuments] = useState<Document[]>(initialDocuments);
 
+  const documentTypeLabels: Record<string, string> = {
+    quality_cert: "Quality Certificate",
+    safety_cert: "Safety Certificate",
+    test_reports: "Test Reports",
+    technical_docs: "Technical Documentation",
+    compliance_docs: "Compliance Documents",
+    certificates: "Certificates",
+    other: "Other"
+  };
+
+  // Helper function to get document type label
+  const getDocumentTypeLabel = (doc: Document) => {
+    // Eğer originalType varsa (AI'dan gelen), onu göster
+    if (doc.originalType) {
+      return doc.originalType;
+    }
+    
+    // Standart türler için label kullan
+    return documentTypeLabels[doc.type] || doc.type;
+  };
+
   const {
     data: documents = [],
     isLoading,
@@ -127,7 +148,7 @@ export function DocumentList({ initialDocuments = [], filters, manufacturerId }:
       filters?.status === "all-status" ? true : doc.status === filters?.status
     );
 
-  // Group documents by product
+  // Group documents by product from documents table
   const documentsByProduct = filteredDocuments.reduce<
     Record<string, Document[]>
   >((acc, doc) => {
@@ -215,7 +236,7 @@ export function DocumentList({ initialDocuments = [], filters, manufacturerId }:
       }
 
       await rejectDocument({
-        document,
+        documentId: selectedDocumentId,
         reason: documentRejectReason,
       });
 
@@ -327,8 +348,8 @@ export function DocumentList({ initialDocuments = [], filters, manufacturerId }:
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle>{t("title")}</CardTitle>
-            <CardDescription>{t("description")}</CardDescription>
+            {/* <CardTitle>{t("title")}</CardTitle>
+            <CardDescription>{t("description")}</CardDescription> */}
           </div>
           <div className="flex items-center gap-2">
             <Select value={statusFilter} onValueChange={setStatusFilter}>
@@ -468,7 +489,7 @@ export function DocumentList({ initialDocuments = [], filters, manufacturerId }:
                                     </div>
                                   </div>
                                 </TableCell>
-                                <TableCell>{doc.type}</TableCell>
+                                <TableCell>{getDocumentTypeLabel(doc)}</TableCell>
                                 <TableCell>
                                   <Badge
                                     variant={getStatusVariant(doc.status)}

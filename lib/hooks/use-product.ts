@@ -1,6 +1,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { productService } from "@/lib/services/product";
+import { supabase } from "@/lib/supabase/client";
 import { Document } from "@/lib/types/document";
 import { BaseProduct, ProductStatus } from "@/lib/types/product";
 
@@ -27,33 +28,51 @@ export function useProduct(id: string) {
     enabled: !!id && (!!company?.id || isAdmin),
   });
 
-  // Process documents
-  const processDocuments = (productData: any) => {
-    let documentCount = 0;
-    const allDocuments: Document[] = [];
+  // Fetch documents for this product
+  const {
+    data: documents = [],
+    isLoading: isLoadingDocuments,
+    error: documentsError,
+  } = useQuery({
+    queryKey: ["product-documents", id],
+    queryFn: async () => {
+      if (!id) return [];
+      
+      const { data: documents, error } = await supabase
+        .from("documents")
+        .select("*")
+        .contains("documentInfo", { productId: id });
 
-    if (productData?.documents) {
-      if (Array.isArray(productData.documents)) {
-        allDocuments.push(...(productData.documents as Document[]));
-      } else if (typeof productData.documents === "object") {
-        Object.entries(productData.documents).forEach(([docType, docList]) => {
-          if (Array.isArray(docList)) {
-            const typedDocs = (docList as Document[]).map((doc) => ({
-              ...doc,
-              type: docType,
-            }));
-            allDocuments.push(...typedDocs);
-          }
-        });
+      if (error) {
+        console.error("Error fetching documents:", error);
+        return [];
       }
-      documentCount = allDocuments.length;
-    }
 
-    return {
-      documentCount,
-      allDocuments
-    };
-  };
+      // Map documents to the expected format
+      return (documents || []).map((doc: any) => ({
+        id: doc.id,
+        name: doc.documentInfo?.name || "Unnamed Document",
+        type: doc.documentInfo?.type || "unknown",
+        category: doc.documentInfo?.type || "unknown",
+        url: doc.documentInfo?.url || "",
+        status: (doc.status || "pending").toLowerCase(),
+        productId: doc.documentInfo?.productId || "",
+        manufacturer: doc.documentInfo?.manufacturer || "",
+        manufacturerId: doc.companyId || "",
+        fileSize: doc.documentInfo?.fileSize || "",
+        version: doc.documentInfo?.version || "1.0",
+        validUntil: doc.documentInfo?.validUntil || null,
+        rejection_reason: doc.documentInfo?.rejection_reason || null,
+        created_at: doc.createdAt || new Date().toISOString(),
+        updated_at: doc.updatedAt || new Date().toISOString(),
+        uploadedAt: doc.createdAt || new Date().toISOString(),
+        size: doc.documentInfo?.size || 0,
+        notes: doc.documentInfo?.notes || "",
+        originalType: doc.documentInfo?.originalType || ""
+      } as Document));
+    },
+    enabled: !!id && (!!company?.id || isAdmin),
+  });
 
   const determineProductStatus = (
     product: BaseProduct | null
@@ -69,32 +88,8 @@ export function useProduct(id: string) {
     if (product.document_status === "Pending Review") return "PENDING";
     if (product.document_status === "No Documents") return "PENDING";
 
-    // Belge durumu yoksa, belgeleri kontrol et
-    if (product.documents) {
-      // Belgeleri düzleştir
-      const flattenedDocs = Array.isArray(product.documents)
-        ? product.documents
-        : Object.values(product.documents).flat();
-
-      if (flattenedDocs.length > 0) {
-        // Belgelerde reddedilmiş olan var mı kontrol et
-        const hasRejectedDocuments = flattenedDocs.some(
-          (doc: any) => doc.status === "rejected"
-        );
-
-        if (hasRejectedDocuments) return "REJECTED";
-
-        // Tüm belgeler onaylanmış mı kontrol et
-        const allApproved = flattenedDocs.every(
-          (doc: any) => doc.status === "approved"
-        );
-
-        if (allApproved) return "APPROVED";
-
-        // Diğer durumlar için pending
-        return "PENDING";
-      }
-    }
+    // Documents are now in separate table, so we can't check them here
+    // TODO: Implement document status checking from documents table
 
     // Varsayılan durum - ürünün kendi statüsünü kullan
     if (product.status === "ARCHIVED") return "PENDING";
@@ -107,8 +102,11 @@ export function useProduct(id: string) {
   const updateProduct = async (updates: Partial<BaseProduct>) => {
     if (!product) return;
 
+    // Remove documents from updates since they're now in separate table
+    const { documents, ...updatesWithoutDocs } = updates;
+
     const updateData = {
-      ...updates,
+      ...updatesWithoutDocs,
       company_id: company?.id,
       images: updates.images?.map((img) => ({
         url: img.url,
@@ -132,12 +130,13 @@ export function useProduct(id: string) {
   };
 
   const productData = product?.data || null;
-  const { documentCount, allDocuments } = processDocuments(productData);
+  const documentCount = documents.length;
+  const allDocuments = documents;
 
   return {
     product: productData,
-    error: error || product?.error,
-    isLoading,
+    error: error || product?.error || documentsError,
+    isLoading: isLoading || isLoadingDocuments,
     determineProductStatus,
     updateProduct,
     documentCount,

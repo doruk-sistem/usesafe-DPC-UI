@@ -857,7 +857,8 @@
         "DELETED": "Silindi",
         "draft": "Taslak",
         "new": "Yeni",
-        "archived": "Arşivlendi"
+        "archived": "Arşivlendi",
+        "deleted": "Silindi"
       }
     },
     "time": {
@@ -2912,9 +2913,7 @@
         "cancel": "İptal",
         "confirm": "Reddet"
       },
-      "description":{
-        "forManufacturer":"Üretici belgelerini görüntüleyin ve yönetin"
-      },
+      "description": "Üretici belgelerini görüntüleyin ve yönetin",
       "categories": {
         "testReports": "Test Raporları",
         "qualityManagement": "Kalite Yönetimi",

@@ -411,7 +411,8 @@
         "DELETED": "Deleted",
         "draft": "Draft",
         "new": "New",
-        "archived": "Archived"
+        "archived": "Archived",
+        "deleted": "Deleted"
       }
     },
     "menu": {
@@ -2132,9 +2133,7 @@
         "confirm": "Reject"
 
       },
-      "description":{
-        "forManufacturer":"View and manage your company documents and certificates"
-      },
+   "description": "View and manage your company documents and certificates",
       "columns": {
         "document": "Document",
         "type": "Type",

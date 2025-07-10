@@ -66,7 +66,7 @@ export default function NewProductPageClient() {
         return;
       }
 
-      // 2. Belgeleri product-documents bucket'a yükle
+      // 2. Belgeleri documents tablosuna kaydet
       const uploadedDocuments: any = {};
       
       if (data.documentFiles) {
@@ -85,15 +85,25 @@ export default function NewProductPageClient() {
                 docs.map(async (doc: any) => {
                   if (doc.file) {
                     try {
-                      // Dosyayı bucket'a yükle
-                      const url = await DocumentService.uploadDocument(doc.file, {
+                      // Dosyayı yükle ve documents tablosuna kaydet
+                      const result = await DocumentService.uploadDocument(doc.file, {
                         companyId: company.id,
                         bucketName: process.env.NEXT_PUBLIC_PRODUCT_DOCUMENTS_BUCKET || "product-documents",
+                      }, {
+                        name: doc.name,
+                        type: standardDocType,
+                        originalType: aiDocType,
+                        fileSize: doc.fileSize,
+                        version: doc.version,
+                        validUntil: doc.validUntil,
+                        notes: doc.notes,
+                        productId: data.id // Ürün ID'si henüz yok, sonra güncellenecek
                       });
 
                       return {
                         ...doc,
-                        url: url || "",
+                        url: result?.url || "",
+                        documentId: result?.documentId || "",
                         file: undefined, // File objesini kaldır
                         type: standardDocType, // Hepsi technical_docs
                         originalType: aiDocType // Orijinal AI türünü sakla
@@ -103,6 +113,7 @@ export default function NewProductPageClient() {
                       return {
                         ...doc,
                         url: "",
+                        documentId: "",
                         file: undefined,
                         type: standardDocType,
                         originalType: aiDocType
@@ -124,13 +135,12 @@ export default function NewProductPageClient() {
         );
       }
 
-      // 3. Ürünü oluştur - documentFiles alanını kaldır
+      // 3. Ürünü oluştur - documents artık ayrı tabloda saklanıyor
       const { documentFiles, ...productData } = data;
       
       const response = await productService.createProduct({
         ...productData,
         images: validImages,
-        documents: uploadedDocuments, // Yüklenmiş belgeleri kullan
         company_id: company.id,
         status: "DRAFT",
         status_history: [
@@ -142,6 +152,21 @@ export default function NewProductPageClient() {
           },
         ],
       });
+
+      // 4. Belgelerin productId'sini güncelle
+      if (response.data?.id && uploadedDocuments.technical_docs) {
+        await Promise.all(
+          uploadedDocuments.technical_docs
+            .filter((doc: any) => doc.documentId)
+            .map(async (doc: any) => {
+              try {
+                await DocumentService.updateDocumentProductId(doc.documentId, response.data!.id);
+              } catch (error) {
+                console.error(`Error updating document ${doc.documentId} with productId:`, error);
+              }
+            })
+        );
+      }
 
       if (response.error) {
         toast({

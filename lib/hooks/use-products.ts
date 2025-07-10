@@ -3,6 +3,8 @@ import { productService } from "../services/product";
 import { BaseProduct } from "../types/product";
 
 import { useAuth } from "./use-auth";
+import { documentsApiHooks } from "./use-documents";
+
 
 export const productsApiHooks = createApiHooks(productService);
 
@@ -18,23 +20,30 @@ export function useProducts(companyId?: string, fetchAll: boolean = false) {
     }
   );
 
-  // Process products to include document counts and status
+  // Get all documents to calculate document counts and status for products
+  const { data: allDocuments = [], isLoading: isLoadingDocuments } = documentsApiHooks.useGetDocuments();
+
+  // Process products to include document counts and status from documents table
   const processedProducts: BaseProduct[] = products.map((product) => {
-    const documentCount = product.documents
-      ? Object.values(product.documents).flat().length
-      : 0;
-
+    // Filter documents for this product
+    const productDocuments = allDocuments.filter(doc => doc.productId === product.id);
+    
+    // Calculate document count
+    const documentCount = productDocuments.length;
+    
+    // Calculate document status based on document statuses
     let documentStatus: BaseProduct["document_status"] = "No Documents";
+    
     if (documentCount > 0) {
-      const allDocs = Object.values(product.documents).flat() as {
-        status: "approved" | "rejected" | "pending";
-      }[];
-      const hasRejected = allDocs.some((doc) => doc.status === "rejected");
-      const allApproved = allDocs.every((doc) => doc.status === "approved");
-
-      if (hasRejected) {
+      const approvedDocs = productDocuments.filter(doc => doc.status === 'approved').length;
+      const rejectedDocs = productDocuments.filter(doc => doc.status === 'rejected').length;
+      const pendingDocs = productDocuments.filter(doc => doc.status === 'pending').length;
+      
+      if (rejectedDocs > 0) {
         documentStatus = "Has Rejected Documents";
-      } else if (allApproved) {
+      } else if (pendingDocs > 0) {
+        documentStatus = "Pending Review";
+      } else if (approvedDocs === documentCount) {
         documentStatus = "All Approved";
       } else {
         documentStatus = "Pending Review";
@@ -43,6 +52,7 @@ export function useProducts(companyId?: string, fetchAll: boolean = false) {
 
     return {
       ...product,
+      documents: productDocuments, // Add documents array for the product
       document_status: documentStatus,
     };
   });
@@ -51,7 +61,7 @@ export function useProducts(companyId?: string, fetchAll: boolean = false) {
 
   return { 
     products: processedProducts, 
-    isLoading, 
+    isLoading: isLoading || isLoadingDocuments, 
     error,
     companyId: targetCompanyId,
     rejectProduct
