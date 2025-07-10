@@ -156,8 +156,7 @@ export const productService = createService({
         .insert([
           {
             ...productData,
-            manufacturer_id: manufacturer_id || null, // Set to null if empty
-            documents: null, // Documents are now stored in separate documents table
+            manufacturer_id: manufacturer_id || null // Set to null if empty
           },
         ])
         .select(`*,
