@@ -549,7 +549,27 @@ export const productService = createService({
         throw new Error(`No product found with ID ${productId}`);
       }
 
-      // 2. Update the original product status to ARCHIVED
+      // 2. Get key_features for the original product
+      const { data: keyFeatures, error: keyFeaturesError } = await supabase
+        .from("product_key_features")
+        .select("*")
+        .eq("product_id", productId);
+
+      if (keyFeaturesError) {
+        console.error("Error fetching key features:", keyFeaturesError);
+      }
+
+      // 3. Get documents for the original product
+      const { data: documents, error: docsError } = await supabase
+        .from("documents")
+        .select("*")
+        .eq("companyId", product.company_id);
+
+      if (docsError) {
+        console.error("Error fetching documents:", docsError);
+      }
+
+      // 4. Update the original product status to ARCHIVED
       const { error: updateError } = await supabase
         .from("products")
         .update({
@@ -571,10 +591,11 @@ export const productService = createService({
         throw new Error(`Failed to update original product: ${updateError.message}`);
       }
 
-      // 3. Create a new product for the manufacturer
+      // 5. Create a new product for the manufacturer
+      const newProductId = crypto.randomUUID();
       const newProduct = {
         ...product,
-        id: crypto.randomUUID(),
+        id: newProductId,
         company_id: product.manufacturer_id,
         status: "DRAFT",
         status_history: [
@@ -589,7 +610,7 @@ export const productService = createService({
         updated_at: new Date().toISOString(),
       };
 
-      // 4. Insert the new product
+      // 6. Insert the new product
       const { error: createError } = await supabase
         .from("products")
         .insert([newProduct])
@@ -598,6 +619,69 @@ export const productService = createService({
 
       if (createError) {
         throw new Error(`Failed to create new product: ${createError.message}`);
+      }
+
+      // 7. Copy key_features to the new product
+      if (keyFeatures && keyFeatures.length > 0) {
+        try {
+          const { productKeyFeaturesService } = await import("./product-key-features");
+          
+          // Prepare key features data for the new product
+          const keyFeaturesData = keyFeatures.map((feature: any) => ({
+            name: feature.name,
+            value: feature.value,
+            unit: feature.unit,
+          }));
+
+          // Create key features for the new product
+          await productKeyFeaturesService.create(newProductId, keyFeaturesData);
+        } catch (keyFeaturesError) {
+          console.error("Error copying key features:", keyFeaturesError);
+          // Don't throw error here, continue with the process
+        }
+      }
+
+      // 8. Copy documents to the new product
+      if (documents && documents.length > 0) {
+        try {
+          // Filter documents that belong to the original product
+          const productDocuments = documents.filter((doc: any) => 
+            doc.documentInfo?.productId === productId
+          );
+
+          if (productDocuments.length > 0) {
+            // Create new documents for the new product
+            const newDocuments = productDocuments.map((doc: any) => ({
+              ...doc,
+              id: crypto.randomUUID(),
+              documentInfo: {
+                ...doc.documentInfo,
+                productId: newProductId, // Update product ID reference
+              },
+              createdAt: new Date().toISOString(),
+              updatedAt: new Date().toISOString(),
+            }));
+
+            // Insert new documents
+            const { error: docsInsertError } = await supabase
+              .from("documents")
+              .insert(newDocuments);
+
+            if (docsInsertError) {
+              console.error("Error copying documents:", {
+                message: docsInsertError.message,
+                details: docsInsertError.details,
+                hint: docsInsertError.hint
+              });
+            }
+          }
+        } catch (docsCopyError) {
+          console.error("Error copying documents:", {
+            message: docsCopyError instanceof Error ? docsCopyError.message : 'Unknown error',
+            error: docsCopyError
+          });
+          // Don't throw error here, continue with the process
+        }
       }
 
       return { success: true };
