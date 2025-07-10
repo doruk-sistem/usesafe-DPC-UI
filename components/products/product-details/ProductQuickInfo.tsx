@@ -36,7 +36,7 @@ export function ProductQuickInfo({ title, model, manufacturer }: ProductQuickInf
           <Barcode className="w-5 h-5 text-primary" />
           <div>
             <p className="text-sm text-muted-foreground">{t("model")}</p>
-            <p className="font-medium">{tCategories(model)}</p>
+            <p className="font-medium">{(model)}</p>
           </div>
         </Card>
       </motion.div>
