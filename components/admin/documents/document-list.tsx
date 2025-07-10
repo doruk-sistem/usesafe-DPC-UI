@@ -380,221 +380,222 @@ export function DocumentList({ initialDocuments = [], filters, manufacturerId }:
           </div>
         ) : (
           <div className="space-y-4">
-            {Object.entries(documentsByProduct).map(
-              ([productId, productDocs]) => {
-                const isExpanded = expandedProducts[productId] || false;
-                const productName =
-                  productNameMap[productId] || "Unknown Product";
-                const documentCount = productDocs.length;
+            {Object.entries(documentsByProduct)
+              .filter(([productId, productDocs]) => productNameMap[productId] && productNameMap[productId] !== "Unknown Product")
+              .map(
+                ([productId, productDocs]) => {
+                  const isExpanded = expandedProducts[productId] || false;
+                  const productName = productNameMap[productId] || "Unknown Product";
+                  const documentCount = productDocs.length;
 
-                return (
-                  <div
-                    key={productId}
-                    className="border rounded-lg overflow-hidden"
-                  >
+                  return (
                     <div
-                      className="flex items-center justify-between p-4 bg-muted/50 cursor-pointer"
-                      onClick={() => toggleProductExpansion(productId)}
+                      key={productId}
+                      className="border rounded-lg overflow-hidden"
                     >
-                      <div className="flex items-center gap-2">
-                        {isExpanded ? (
-                          <ChevronDown className="h-4 w-4" />
-                        ) : (
-                          <ChevronRight className="h-4 w-4" />
-                        )}
-                        <h3 className="font-medium">{productName}</h3>
-                        <Badge variant="outline">
-                          {documentCount}{" "}
-                          {documentCount === 1 ? "document" : "documents"}
-                        </Badge>
-                      </div>
-                      <div className="flex gap-2">
-                        {productDocs.length > 0 ? (
-                          <>
-                            {productDocs.some(
-                              (doc) => doc.status === "pending"
-                            ) && (
-                              <Badge variant="warning">Pending Review</Badge>
-                            )}
-                            {productDocs.every(
-                              (doc) => doc.status === "approved"
-                            ) && <Badge variant="success">All Approved</Badge>}
-                            {productDocs.some(
-                              (doc) => doc.status === "rejected"
-                            ) && (
-                              <Badge variant="destructive">
-                                Has Rejected Documents
-                              </Badge>
-                            )}
-                            {!productDocs.some(
-                              (doc) => doc.status === "pending"
-                            ) &&
-                              !productDocs.every(
+                      <div
+                        className="flex items-center justify-between p-4 bg-muted/50 cursor-pointer"
+                        onClick={() => toggleProductExpansion(productId)}
+                      >
+                        <div className="flex items-center gap-2">
+                          {isExpanded ? (
+                            <ChevronDown className="h-4 w-4" />
+                          ) : (
+                            <ChevronRight className="h-4 w-4" />
+                          )}
+                          <h3 className="font-medium">{productName}</h3>
+                          <Badge variant="outline">
+                            {documentCount}{" "}
+                            {documentCount === 1 ? "document" : "documents"}
+                          </Badge>
+                        </div>
+                        <div className="flex gap-2">
+                          {productDocs.length > 0 ? (
+                            <>
+                              {productDocs.some(
+                                (doc) => doc.status === "pending"
+                              ) && (
+                                <Badge variant="warning">Pending Review</Badge>
+                              )}
+                              {productDocs.every(
                                 (doc) => doc.status === "approved"
-                              ) &&
-                              !productDocs.some(
+                              ) && <Badge variant="success">All Approved</Badge>}
+                              {productDocs.some(
                                 (doc) => doc.status === "rejected"
                               ) && (
-                                <Badge variant="outline">Other Status</Badge>
+                                <Badge variant="destructive">
+                                  Has Rejected Documents
+                                </Badge>
                               )}
-                          </>
-                        ) : (
-                          <Badge variant="outline">No Documents</Badge>
-                        )}
-                      </div>
-                    </div>
-
-                    {isExpanded &&
-                      (productDocs.length > 0 ? (
-                        <Table>
-                          <TableHeader>
-                            <TableRow>
-                              <TableHead>Document</TableHead>
-                              <TableHead>Type</TableHead>
-                              <TableHead>Status</TableHead>
-                              <TableHead>Valid Until</TableHead>
-                              <TableHead>Version</TableHead>
-                              <TableHead></TableHead>
-                            </TableRow>
-                          </TableHeader>
-                          <TableBody>
-                            {productDocs.map((doc) => (
-                              <TableRow key={`${doc.id}-${doc.type}`}>
-                                <TableCell>
-                                  <div className="flex items-center gap-2">
-                                    <FileText className="h-4 w-4 text-muted-foreground" />
-                                    <div>
-                                      <TooltipProvider>
-                                        <Tooltip>
-                                          <TooltipTrigger asChild>
-                                            <p className="font-medium truncate max-w-[200px]">
-                                              {doc.name.length > 25
-                                                ? `${doc.name.slice(0, 25)}...`
-                                                : doc.name}
-                                            </p>
-                                          </TooltipTrigger>
-                                          <TooltipContent
-                                            side="top"
-                                            align="start"
-                                          >
-                                            <p className="max-w-[300px] break-words text-xs">
-                                              {doc.name}
-                                            </p>
-                                          </TooltipContent>
-                                        </Tooltip>
-                                      </TooltipProvider>
-                                      <p className="text-sm text-muted-foreground">
-                                        {doc.id} · {doc.fileSize}
-                                      </p>
-                                    </div>
-                                  </div>
-                                </TableCell>
-                                <TableCell>{getDocumentTypeLabel(doc)}</TableCell>
-                                <TableCell>
-                                  <Badge
-                                    variant={getStatusVariant(doc.status)}
-                                    className="flex w-fit items-center gap-1"
-                                  >
-                                    {getStatusIcon(doc.status)}
-                                    {(() => {
-                                      switch (doc.status) {
-                                        case "rejected":
-                                          return "REJECTED";
-                                        case "pending":
-                                          return "PENDING";
-                                        case "approved":
-                                          return "APPROVED";
-                                        case "expired":
-                                          return "EXPIRED";
-                                        default:
-                                          return String(
-                                            doc.status
-                                          ).toUpperCase();
-                                      }
-                                    })()}
-                                  </Badge>
-                                  {doc.status === "rejected" &&
-                                    doc.rejection_reason && (
-                                      <div className="mt-1 text-xs text-red-500">
-                                        Reason: {doc.rejection_reason}
-                                      </div>
-                                    )}
-                                </TableCell>
-                                <TableCell>
-                                  {doc.validUntil
-                                    ? new Date(
-                                        doc.validUntil
-                                      ).toLocaleDateString()
-                                    : "N/A"}
-                                </TableCell>
-                                <TableCell>v{doc.version}</TableCell>
-                                <TableCell>
-                                  <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                      <Button variant="ghost" size="icon">
-                                        <MoreHorizontal className="h-4 w-4" />
-                                        <span className="sr-only">
-                                          Open menu
-                                        </span>
-                                      </Button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent align="end">
-                                      <DropdownMenuLabel>
-                                        Actions
-                                      </DropdownMenuLabel>
-                                      <DropdownMenuSeparator />
-                                      <DropdownMenuItem asChild>
-                                        <Link
-                                          href={`/admin/documents/${doc.id}`}
-                                        >
-                                          <Eye className="h-4 w-4 mr-2" />
-                                          View Details
-                                        </Link>
-                                      </DropdownMenuItem>
-                                      <DropdownMenuItem
-                                        onClick={() => handleDownload(doc)}
-                                      >
-                                        <Download className="mr-2 h-4 w-4" />
-                                        Download
-                                      </DropdownMenuItem>
-                                      <DropdownMenuItem>
-                                        View History
-                                      </DropdownMenuItem>
-                                      <DropdownMenuSeparator />
-                                      {doc.status === "pending" && (
-                                        <>
-                                          <DropdownMenuItem
-                                            onClick={() =>
-                                              handleApprove(doc.id)
-                                            }
-                                          >
-                                            <CheckCircle className="mr-2 h-4 w-4 text-green-500" />
-                                            Approve
-                                          </DropdownMenuItem>
-                                          <DropdownMenuItem
-                                            onClick={() => handleReject(doc.id)}
-                                          >
-                                            <XCircle className="mr-2 h-4 w-4 text-red-500" />
-                                            Reject
-                                          </DropdownMenuItem>
-                                        </>
-                                      )}
-                                    </DropdownMenuContent>
-                                  </DropdownMenu>
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
-                      ) : (
-                        <div className="p-4 text-center text-muted-foreground">
-                          No documents available for this product
+                              {!productDocs.some(
+                                (doc) => doc.status === "pending"
+                              ) &&
+                                !productDocs.every(
+                                  (doc) => doc.status === "approved"
+                                ) &&
+                                !productDocs.some(
+                                  (doc) => doc.status === "rejected"
+                                ) && (
+                                  <Badge variant="outline">Other Status</Badge>
+                                )}
+                            </>
+                          ) : (
+                            <Badge variant="outline">No Documents</Badge>
+                          )}
                         </div>
-                      ))}
-                  </div>
-                );
-              }
-            )}
+                      </div>
+
+                      {isExpanded &&
+                        (productDocs.length > 0 ? (
+                          <Table>
+                            <TableHeader>
+                              <TableRow>
+                                <TableHead>Document</TableHead>
+                                <TableHead>Type</TableHead>
+                                <TableHead>Status</TableHead>
+                                <TableHead>Valid Until</TableHead>
+                                <TableHead>Version</TableHead>
+                                <TableHead></TableHead>
+                              </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                              {productDocs.map((doc) => (
+                                <TableRow key={`${doc.id}-${doc.type}`}>
+                                  <TableCell>
+                                    <div className="flex items-center gap-2">
+                                      <FileText className="h-4 w-4 text-muted-foreground" />
+                                      <div>
+                                        <TooltipProvider>
+                                          <Tooltip>
+                                            <TooltipTrigger asChild>
+                                              <p className="font-medium truncate max-w-[200px]">
+                                                {doc.name.length > 25
+                                                  ? `${doc.name.slice(0, 25)}...`
+                                                  : doc.name}
+                                              </p>
+                                            </TooltipTrigger>
+                                            <TooltipContent
+                                              side="top"
+                                              align="start"
+                                            >
+                                              <p className="max-w-[300px] break-words text-xs">
+                                                {doc.name}
+                                              </p>
+                                            </TooltipContent>
+                                          </Tooltip>
+                                        </TooltipProvider>
+                                        <p className="text-sm text-muted-foreground">
+                                          {doc.id} · {doc.fileSize}
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </TableCell>
+                                  <TableCell>{getDocumentTypeLabel(doc)}</TableCell>
+                                  <TableCell>
+                                    <Badge
+                                      variant={getStatusVariant(doc.status)}
+                                      className="flex w-fit items-center gap-1"
+                                    >
+                                      {getStatusIcon(doc.status)}
+                                      {(() => {
+                                        switch (doc.status) {
+                                          case "rejected":
+                                            return "REJECTED";
+                                          case "pending":
+                                            return "PENDING";
+                                          case "approved":
+                                            return "APPROVED";
+                                          case "expired":
+                                            return "EXPIRED";
+                                          default:
+                                            return String(
+                                              doc.status
+                                            ).toUpperCase();
+                                        }
+                                      })()}
+                                    </Badge>
+                                    {doc.status === "rejected" &&
+                                      doc.rejection_reason && (
+                                        <div className="mt-1 text-xs text-red-500">
+                                          Reason: {doc.rejection_reason}
+                                        </div>
+                                      )}
+                                  </TableCell>
+                                  <TableCell>
+                                    {doc.validUntil
+                                      ? new Date(
+                                          doc.validUntil
+                                        ).toLocaleDateString()
+                                      : "N/A"}
+                                  </TableCell>
+                                  <TableCell>v{doc.version}</TableCell>
+                                  <TableCell>
+                                    <DropdownMenu>
+                                      <DropdownMenuTrigger asChild>
+                                        <Button variant="ghost" size="icon">
+                                          <MoreHorizontal className="h-4 w-4" />
+                                          <span className="sr-only">
+                                            Open menu
+                                          </span>
+                                        </Button>
+                                      </DropdownMenuTrigger>
+                                      <DropdownMenuContent align="end">
+                                        <DropdownMenuLabel>
+                                          Actions
+                                        </DropdownMenuLabel>
+                                        <DropdownMenuSeparator />
+                                        <DropdownMenuItem asChild>
+                                          <Link
+                                            href={`/admin/documents/${doc.id}`}
+                                          >
+                                            <Eye className="h-4 w-4 mr-2" />
+                                            View Details
+                                          </Link>
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem
+                                          onClick={() => handleDownload(doc)}
+                                        >
+                                          <Download className="mr-2 h-4 w-4" />
+                                          Download
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem>
+                                          View History
+                                        </DropdownMenuItem>
+                                        <DropdownMenuSeparator />
+                                        {doc.status === "pending" && (
+                                          <>
+                                            <DropdownMenuItem
+                                              onClick={() =>
+                                                handleApprove(doc.id)
+                                              }
+                                            >
+                                              <CheckCircle className="mr-2 h-4 w-4 text-green-500" />
+                                              Approve
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem
+                                              onClick={() => handleReject(doc.id)}
+                                            >
+                                              <XCircle className="mr-2 h-4 w-4 text-red-500" />
+                                              Reject
+                                            </DropdownMenuItem>
+                                          </>
+                                        )}
+                                      </DropdownMenuContent>
+                                    </DropdownMenu>
+                                  </TableCell>
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>
+                        ) : (
+                          <div className="p-4 text-center text-muted-foreground">
+                            No documents available for this product
+                          </div>
+                        ))}
+                    </div>
+                  );
+                }
+              )}
           </div>
         )}
       </CardContent>
