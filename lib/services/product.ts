@@ -4,7 +4,6 @@ import type {
   ProductResponse,
   UpdateProduct,
 } from "@/lib/types/product";
-import { validateAndMapDocuments } from "@/lib/utils/document-mapper";
 
 import { createService } from "../api-client";
 
@@ -151,22 +150,13 @@ export const productService = createService({
       // Extract documents and key_features if they exist, otherwise use empty object
       const { documents = {}, manufacturer_id, key_features = [], ...productData } = product;
 
-      // Validate and map documents with type assertion to fix lint error
-      const validatedDocuments = validateAndMapDocuments(
-        documents as Record<string, any[]>
-      );
-
-      // Create the product with document URLs
+      // Create the product WITHOUT documents in JSONB - documents are now stored in separate table
       const { data, error } = await supabase
         .from("products")
         .insert([
           {
             ...productData,
-            manufacturer_id: manufacturer_id || null, // Set to null if empty
-            documents:
-              Object.keys(validatedDocuments).length > 0
-                ? validatedDocuments
-                : null,
+            manufacturer_id: manufacturer_id || null // Set to null if empty
           },
         ])
         .select(`*,
@@ -232,7 +222,7 @@ export const productService = createService({
     // Önce mevcut ürünü al
     const { data: existingProduct, error: fetchError } = await supabase
       .from("products")
-      .select("status, status_history, manufacturer_id")
+      .select("status, status_history, manufacturer_id, company_id")
       .eq("id", id)
       .single();
 
@@ -266,12 +256,15 @@ export const productService = createService({
       updatedStatus = updatedStatus || existingProduct?.status;
       
       // Belgelerde rejected statüsü varsa, ürün statüsünü PENDING'e çevir
-      if (productData.documents) {
-        const flattenedDocs = Array.isArray(productData.documents)
-          ? productData.documents
-          : Object.values(productData.documents).flat();
-        
-        const hasRejectedDocuments = flattenedDocs.some(
+      // Artık documents tablosundan kontrol ediyoruz
+      const { data: documents, error: docsError } = await supabase
+        .from("documents")
+        .select("*")
+        .eq("companyId", existingProduct?.company_id || "")
+        .eq("documentInfo->productId", id);
+
+      if (!docsError && documents) {
+        const hasRejectedDocuments = documents.some(
           (doc: any) => doc.status === "rejected"
         );
         
@@ -287,33 +280,15 @@ export const productService = createService({
               reason: "Product has rejected documents",
             },
           ];
-          
-          // Dökümanların statüsünü de pending yap
-          if (productData.documents) {
-            const docs = productData.documents as any;
-            if (Array.isArray(docs)) {
-              productData.documents = docs.map((doc: any) => ({
-                ...doc,
-                status: "pending",
-              }));
-            } else {
-              Object.keys(docs).forEach((docType) => {
-                if (Array.isArray(docs[docType])) {
-                  docs[docType] = docs[docType].map((doc: any) => ({
-                    ...doc,
-                    status: "pending",
-                  }));
-                }
-              });
-            }
-          }
         }
       }
     }
     
-    // Sadece gerekli alanları güncelle, status'u ayrı işle
+    // Sadece gerekli alanları güncelle, documents alanını kaldır
+    const { documents, ...productDataWithoutDocs } = productData;
+    
     const updateData = {
-      ...productData,
+      ...productDataWithoutDocs,
       manufacturer_id: manufacturer_id || existingProduct?.manufacturer_id,
       updated_at: new Date().toISOString(),
     };
@@ -438,48 +413,33 @@ export const productService = createService({
         throw new Error(`No product found with ID ${productId}`);
       }
 
-      let updatedDocuments;
+      // Update documents in the documents table instead of JSONB
+      const { DocumentService } = await import("./document");
+      
+      // Get all documents for this product
+      const { data: documents, error: docsError } = await supabase
+        .from("documents")
+        .select("*")
+        .eq("companyId", product.company_id);
 
-      if (
-        product.documents &&
-        typeof product.documents === "object" &&
-        !Array.isArray(product.documents)
-      ) {
-        updatedDocuments = JSON.parse(JSON.stringify(product.documents));
-
-        for (const docType in updatedDocuments) {
-          if (Array.isArray(updatedDocuments[docType])) {
-            updatedDocuments[docType] = updatedDocuments[docType].map(
-              (doc: any) => ({
-                ...doc,
-                status: "DELETED",
-                rejection_reason: reason,
-              })
-            );
-          }
-        }
-      } else if (Array.isArray(product.documents)) {
-        updatedDocuments = product.documents.map((doc: any) => ({
-          ...doc,
-          status: "DELETED",
-          rejection_reason: reason,
-        }));
-      } else {
-        updatedDocuments = [
-          {
-            id: `rejected-${product.id}-${Date.now()}`,
-            name: "Product Rejection",
-            type: "rejection",
-            status: "DELETED",
-            rejection_reason: reason,
-          },
-        ];
+      if (!docsError && documents) {
+        // Update each document's status to rejected
+        await Promise.all(
+          documents
+            .filter((doc: any) => doc.documentInfo?.productId === productId)
+            .map(async (doc: any) => {
+              try {
+                await DocumentService.rejectDocument(doc.id, reason);
+              } catch (error) {
+                console.error(`Error rejecting document ${doc.id}:`, error);
+              }
+            })
+        );
       }
 
       const { error: updateError } = await supabase
         .from("products")
         .update({
-          documents: updatedDocuments,
           status: "DELETED",
           status_history: [
             ...(product.status_history || []),
@@ -496,7 +456,7 @@ export const productService = createService({
 
       if (updateError) {
         throw new Error(
-          `Failed to update product documents: ${updateError.message}`
+          `Failed to update product status: ${updateError.message}`
         );
       }
 
@@ -589,7 +549,27 @@ export const productService = createService({
         throw new Error(`No product found with ID ${productId}`);
       }
 
-      // 2. Update the original product status to ARCHIVED
+      // 2. Get key_features for the original product
+      const { data: keyFeatures, error: keyFeaturesError } = await supabase
+        .from("product_key_features")
+        .select("*")
+        .eq("product_id", productId);
+
+      if (keyFeaturesError) {
+        console.error("Error fetching key features:", keyFeaturesError);
+      }
+
+      // 3. Get documents for the original product
+      const { data: documents, error: docsError } = await supabase
+        .from("documents")
+        .select("*")
+        .eq("companyId", product.company_id);
+
+      if (docsError) {
+        console.error("Error fetching documents:", docsError);
+      }
+
+      // 4. Update the original product status to ARCHIVED
       const { error: updateError } = await supabase
         .from("products")
         .update({
@@ -611,10 +591,11 @@ export const productService = createService({
         throw new Error(`Failed to update original product: ${updateError.message}`);
       }
 
-      // 3. Create a new product for the manufacturer
+      // 5. Create a new product for the manufacturer
+      const newProductId = crypto.randomUUID();
       const newProduct = {
         ...product,
-        id: crypto.randomUUID(),
+        id: newProductId,
         company_id: product.manufacturer_id,
         status: "DRAFT",
         status_history: [
@@ -629,7 +610,7 @@ export const productService = createService({
         updated_at: new Date().toISOString(),
       };
 
-      // 4. Insert the new product
+      // 6. Insert the new product
       const { error: createError } = await supabase
         .from("products")
         .insert([newProduct])
@@ -638,6 +619,69 @@ export const productService = createService({
 
       if (createError) {
         throw new Error(`Failed to create new product: ${createError.message}`);
+      }
+
+      // 7. Copy key_features to the new product
+      if (keyFeatures && keyFeatures.length > 0) {
+        try {
+          const { productKeyFeaturesService } = await import("./product-key-features");
+          
+          // Prepare key features data for the new product
+          const keyFeaturesData = keyFeatures.map((feature: any) => ({
+            name: feature.name,
+            value: feature.value,
+            unit: feature.unit,
+          }));
+
+          // Create key features for the new product
+          await productKeyFeaturesService.create(newProductId, keyFeaturesData);
+        } catch (keyFeaturesError) {
+          console.error("Error copying key features:", keyFeaturesError);
+          // Don't throw error here, continue with the process
+        }
+      }
+
+      // 8. Copy documents to the new product
+      if (documents && documents.length > 0) {
+        try {
+          // Filter documents that belong to the original product
+          const productDocuments = documents.filter((doc: any) => 
+            doc.documentInfo?.productId === productId
+          );
+
+          if (productDocuments.length > 0) {
+            // Create new documents for the new product
+            const newDocuments = productDocuments.map((doc: any) => ({
+              ...doc,
+              id: crypto.randomUUID(),
+              documentInfo: {
+                ...doc.documentInfo,
+                productId: newProductId, // Update product ID reference
+              },
+              createdAt: new Date().toISOString(),
+              updatedAt: new Date().toISOString(),
+            }));
+
+            // Insert new documents
+            const { error: docsInsertError } = await supabase
+              .from("documents")
+              .insert(newDocuments);
+
+            if (docsInsertError) {
+              console.error("Error copying documents:", {
+                message: docsInsertError.message,
+                details: docsInsertError.details,
+                hint: docsInsertError.hint
+              });
+            }
+          }
+        } catch (docsCopyError) {
+          console.error("Error copying documents:", {
+            message: docsCopyError instanceof Error ? docsCopyError.message : 'Unknown error',
+            error: docsCopyError
+          });
+          // Don't throw error here, continue with the process
+        }
       }
 
       return { success: true };

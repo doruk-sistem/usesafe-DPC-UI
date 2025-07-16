@@ -42,7 +42,7 @@ export function BasicInformationCard({
             </div>
             <div className="flex items-start gap-2">
               <span className="font-medium">{t("category")}:</span>
-              <span className="text-muted-foreground">{tCategories(category)}</span>
+              <span className="text-muted-foreground">{category}</span>
             </div>
             {seller && (
               <div className="space-y-3 border-t pt-3 mt-3">

@@ -16,29 +16,33 @@ export async function getDocuments(productId: string): Promise<{ documents: Docu
     if (error) throw error;
     if (!product) throw new Error("Product not found");
 
-    // Flatten all document arrays into a single array
-    const allDocuments: Document[] = [];
-    if (product.documents) {
-      Object.entries(product.documents).forEach(([type, docs]) => {
-        if (Array.isArray(docs)) {
-          docs.forEach((doc) => {
-            allDocuments.push({
-              id: doc.id || `doc-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-              name: doc.name,
-              url: doc.url,
-              type: type,
-              status: doc.status || "pending",
-              validUntil: doc.validUntil,
-              version: doc.version || "1.0",
-              uploadedAt: doc.uploadedAt || new Date().toISOString(),
-              fileSize: doc.fileSize || "N/A",
-              rejection_reason: doc.rejection_reason,
-              notes: doc.notes,
-            });
-          });
-        }
-      });
+    // Sadece documents tablosundan çek
+    const { data: documents, error: docsError } = await supabase
+      .from("documents")
+      .select("*")
+      .contains("documentInfo", { productId })
+      .order("createdAt", { ascending: false });
+
+    if (docsError) {
+      console.error("Error fetching documents from documents table:", docsError);
+      return { documents: [], product: product as BaseProduct };
     }
+
+    // Map documents to the expected format
+    const allDocuments: Document[] = (documents || []).map((doc: any) => ({
+      id: doc.id,
+      name: doc.documentInfo?.name || 'Unnamed Document',
+      url: doc.documentInfo?.url || '',
+      type: doc.documentInfo?.type || 'unknown',
+      status: doc.status || 'pending',
+      validUntil: doc.documentInfo?.validUntil,
+      version: doc.documentInfo?.version || '1.0',
+      uploadedAt: doc.createdAt || new Date().toISOString(),
+      fileSize: doc.documentInfo?.fileSize || 'N/A',
+      rejection_reason: doc.documentInfo?.rejection_reason,
+      notes: doc.documentInfo?.notes,
+      originalType: doc.documentInfo?.originalType
+    }));
 
     return { documents: allDocuments, product: product as BaseProduct };
   } catch (error) {
@@ -49,42 +53,32 @@ export async function getDocuments(productId: string): Promise<{ documents: Docu
 
 export async function getDocumentById(productId: string, documentId: string): Promise<Document> {
   try {
-    const { data: product, error } = await supabase
-      .from("products")
-      .select("documents")
-      .eq("id", productId)
+    // Get document directly from documents table
+    const { data: document, error } = await supabase
+      .from("documents")
+      .select("*")
+      .eq("id", documentId)
+      .contains("documentInfo", { productId })
       .single();
 
     if (error) throw error;
-    if (!product) throw new Error("Product not found");
+    if (!document) throw new Error("Document not found");
 
-    // Find the document in the product's documents
-    let foundDocument: Document | null = null;
-
-    Object.entries(product.documents || {}).forEach(([type, docs]) => {
-      if (Array.isArray(docs)) {
-        const doc = docs.find(d => d.id === documentId);
-        if (doc) {
-          foundDocument = {
-            id: doc.id,
-            name: doc.name,
-            url: doc.url,
-            type: type,
-            status: doc.status || "pending",
-            validUntil: doc.validUntil,
-            version: doc.version || "1.0",
-            uploadedAt: doc.uploadedAt || new Date().toISOString(),
-            fileSize: doc.fileSize || "N/A",
-            rejection_reason: doc.rejection_reason,
-            notes: doc.notes,
-          };
-        }
-      }
-    });
-
-    if (!foundDocument) {
-      throw new Error("Document not found");
-    }
+    // Map to Document format
+    const foundDocument: Document = {
+      id: document.id,
+      name: document.documentInfo?.name || 'Unnamed Document',
+      url: document.documentInfo?.url || '',
+      type: document.documentInfo?.type || 'unknown',
+      status: document.status || 'pending',
+      validUntil: document.documentInfo?.validUntil,
+      version: document.documentInfo?.version || '1.0',
+      uploadedAt: document.createdAt || new Date().toISOString(),
+      fileSize: document.documentInfo?.fileSize || 'N/A',
+      rejection_reason: document.documentInfo?.rejection_reason,
+      notes: document.documentInfo?.notes,
+      originalType: document.documentInfo?.originalType
+    };
 
     return foundDocument;
   } catch (error) {
@@ -95,50 +89,9 @@ export async function getDocumentById(productId: string, documentId: string): Pr
 
 export async function approveDocument(productId: string, documentId: string): Promise<void> {
   try {
-    // 1. Get the product and its documents
-    const { data: product, error: productError } = await supabase
-      .from("products")
-      .select("documents")
-      .eq("id", productId)
-      .single();
-
-    if (productError) throw productError;
-    if (!product) throw new Error("Product not found");
-
-    // 2. Find and update the document in the product's documents
-    const updatedDocuments = { ...product.documents };
-    let documentFound = false;
-
-    Object.keys(updatedDocuments).forEach((type) => {
-      const documents = updatedDocuments[type];
-      if (Array.isArray(documents)) {
-        const updatedTypeDocuments = documents.map((doc) => {
-          if (doc.id === documentId) {
-            documentFound = true;
-            return {
-              ...doc,
-              status: "approved"
-            };
-          }
-          return doc;
-        });
-        updatedDocuments[type] = updatedTypeDocuments;
-      }
-    });
-
-    if (!documentFound) {
-      throw new Error("Document not found");
-    }
-
-    // 3. Update the product with the modified documents
-    const { error: updateError } = await supabase
-      .from("products")
-      .update({
-        documents: updatedDocuments
-      })
-      .eq("id", productId);
-
-    if (updateError) throw updateError;
+    // Use DocumentService to approve document
+    const { DocumentService } = await import("./document");
+    await DocumentService.approveDocument(documentId);
   } catch (error) {
     console.error("Error approving document:", error);
     throw error;
@@ -147,51 +100,9 @@ export async function approveDocument(productId: string, documentId: string): Pr
 
 export async function rejectDocument(productId: string, documentId: string, reason: string): Promise<void> {
   try {
-    // 1. Get the product and its documents
-    const { data: product, error: productError } = await supabase
-      .from("products")
-      .select("documents")
-      .eq("id", productId)
-      .single();
-
-    if (productError) throw productError;
-    if (!product) throw new Error("Product not found");
-
-    // 2. Find and update the document in the product's documents
-    const updatedDocuments = { ...product.documents };
-    let documentFound = false;
-
-    Object.keys(updatedDocuments).forEach((type) => {
-      const documents = updatedDocuments[type];
-      if (Array.isArray(documents)) {
-        const updatedTypeDocuments = documents.map((doc) => {
-          if (doc.id === documentId) {
-            documentFound = true;
-            return {
-              ...doc,
-              status: "rejected",
-              rejection_reason: reason
-            };
-          }
-          return doc;
-        });
-        updatedDocuments[type] = updatedTypeDocuments;
-      }
-    });
-
-    if (!documentFound) {
-      throw new Error("Document not found");
-    }
-
-    // 3. Update the product with the modified documents
-    const { error: updateError } = await supabase
-      .from("products")
-      .update({
-        documents: updatedDocuments
-      })
-      .eq("id", productId);
-
-    if (updateError) throw updateError;
+    // Use DocumentService to reject document
+    const { DocumentService } = await import("./document");
+    await DocumentService.rejectDocument(documentId, reason);
   } catch (error) {
     console.error("Error rejecting document:", error);
     throw error;
@@ -209,63 +120,32 @@ export async function uploadDocument(
   }
 ): Promise<void> {
   try {
-    // 1. Get the product and its documents
+    // 1. Get the product to get company_id
     const { data: product, error: productError } = await supabase
       .from("products")
-      .select("documents")
+      .select("company_id")
       .eq("id", productId)
       .single();
 
     if (productError) throw productError;
     if (!product) throw new Error("Product not found");
 
-    // 2. Upload the file
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${Math.random()}.${fileExt}`;
-    const filePath = `${productId}/${fileName}`;
-
-    const { error: uploadError } = await supabase.storage
-      .from('product-documents')
-      .upload(filePath, file);
-
-    if (uploadError) throw uploadError;
-
-    const { data: { publicUrl } } = supabase.storage
-      .from('product-documents')
-      .getPublicUrl(filePath);
-
-    // 3. Create the new document object
-    const newDocument = {
-      id: fileName,
+    // 2. Use DocumentService to upload document
+    const { DocumentService } = await import("./document");
+    
+    await DocumentService.uploadDocument(file, {
+      companyId: product.company_id,
+      bucketName: process.env.NEXT_PUBLIC_PRODUCT_DOCUMENTS_BUCKET || "product-documents",
+      productId: productId
+    }, {
       name: file.name,
-      url: publicUrl,
       type: documentType,
-      status: "pending",
-      version: metadata.version || "1.0",
-      uploadedAt: new Date().toISOString(),
       fileSize: `${(file.size / 1024 / 1024).toFixed(2)} MB`,
+      version: metadata.version || "1.0",
       validUntil: metadata.validUntil,
       notes: metadata.notes,
-    };
-
-    // 4. Update the product's documents
-    const currentDocuments = product.documents || {};
-    const currentTypeDocuments = currentDocuments[documentType] || [];
-    
-    const updatedDocuments = {
-      ...currentDocuments,
-      [documentType]: [...currentTypeDocuments, newDocument],
-    };
-
-    // 5. Save the updated documents
-    const { error: updateError } = await supabase
-      .from('products')
-      .update({
-        documents: updatedDocuments,
-      })
-      .eq('id', productId);
-
-    if (updateError) throw updateError;
+      productId: productId
+    });
   } catch (error) {
     console.error("Error uploading document:", error);
     throw error;
@@ -282,50 +162,40 @@ export async function updateDocument(
   }
 ): Promise<void> {
   try {
-    // 1. Önce mevcut ürünü ve dokümanları al
-    const { data: product, error: productError } = await supabase
-      .from("products")
-      .select("documents")
-      .eq("id", productId)
+    // Get the document from documents table
+    const { data: document, error: fetchError } = await supabase
+      .from("documents")
+      .select("documentInfo")
+      .eq("id", documentId)
+      .contains("documentInfo", { productId })
       .single();
 
-    if (productError) throw productError;
-    if (!product) throw new Error("Product not found");
+    if (fetchError) {
+      throw new Error(`Failed to fetch document: ${fetchError.message}`);
+    }
 
-    // 2. Tüm doküman tiplerini kontrol et
-    const updatedDocuments = { ...product.documents };
-    let documentFound = false;
-
-    Object.keys(updatedDocuments).forEach((type) => {
-      const documents = updatedDocuments[type];
-      if (Array.isArray(documents)) {
-        const updatedTypeDocuments = documents.map((doc) => {
-          if (doc.id === documentId) {
-            documentFound = true;
-            return {
-              ...doc,
-              ...updates,
-            };
-          }
-          return doc;
-        });
-        updatedDocuments[type] = updatedTypeDocuments;
-      }
-    });
-
-    if (!documentFound) {
+    if (!document) {
       throw new Error("Document not found");
     }
 
-    // 3. Güncellenmiş dokümanları kaydet
-    const { error: updateError } = await supabase
-      .from("products")
-      .update({
-        documents: updatedDocuments,
-      })
-      .eq("id", productId);
+    // Update documentInfo with new values
+    const updatedDocumentInfo = {
+      ...document.documentInfo,
+      ...updates
+    };
 
-    if (updateError) throw updateError;
+    // Update the document
+    const { error: updateError } = await supabase
+      .from("documents")
+      .update({
+        documentInfo: updatedDocumentInfo,
+        ...(updates.status && { status: updates.status })
+      })
+      .eq("id", documentId);
+
+    if (updateError) {
+      throw new Error(`Failed to update document: ${updateError.message}`);
+    }
   } catch (error) {
     console.error("Error updating document:", error);
     throw error;

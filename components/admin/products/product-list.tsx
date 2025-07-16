@@ -49,6 +49,7 @@ import {
 } from "@/components/ui/select";
 import { useImageUrl } from "@/lib/hooks/use-image-url";
 import { useProducts } from "@/lib/hooks/use-products";
+import { useAllProductTypes } from "@/lib/services/product-types";
 import { BaseProduct, ProductStatus } from "@/lib/types/product";
 
 export function ProductList() {
@@ -61,6 +62,41 @@ export function ProductList() {
   const { getImageUrl } = useImageUrl();
 
   const { products, isLoading, error } = useProducts();
+  const { data: allProductTypes } = useAllProductTypes();
+
+  // Helper to get product type name by id
+  const getProductTypeName = (typeId: number | string | undefined) => {
+    if (!typeId || !allProductTypes) return t("uncategorized");
+    
+    // First try to find by id (if typeId is numeric)
+    const numericId = typeof typeId === 'string' ? parseInt(typeId, 10) : typeId;
+    if (!isNaN(numericId)) {
+      const foundById = allProductTypes.find(pt => pt.id === numericId);
+      if (foundById) return foundById.product;
+    }
+    
+    // If not found by id, try to find by product name/value
+    const foundByName = allProductTypes.find(
+      pt => pt.product.toLowerCase() === String(typeId).toLowerCase()
+    );
+    if (foundByName) return foundByName.product;
+    
+    // If still not found, return the original value or "Unknown"
+    return String(typeId) || t("unknownType");
+  };
+
+  // Helper to get full product type display (category + subcategory)
+  const getFullProductTypeDisplay = (product: BaseProduct) => {
+    const subcategory = product.product_subcategory;
+    
+    if (subcategory) {
+      return subcategory;
+    }
+    
+    // Fallback to category if no subcategory
+    const category = getProductTypeName(product.product_type);
+    return category || t("uncategorized");
+  };
 
   const filteredProducts = products.filter((product) => {
     // Filter by search query
@@ -320,8 +356,7 @@ export function ProductList() {
                           {t("category")}
                         </span>
                         <Badge variant="outline" className="font-normal">
-                          {product.product_type ||
-                            t("uncategorized")}
+                          {getFullProductTypeDisplay(product)}
                         </Badge>
                       </div>
                       <div className="flex items-center justify-between">
@@ -333,7 +368,9 @@ export function ProductList() {
                           <span className="text-sm font-medium">
                             {t("documentCount", { 
                               count: product.documents 
-                                ? Object.values(product.documents).flat().length 
+                                ? Array.isArray(product.documents) 
+                                  ? product.documents.length 
+                                  : Object.values(product.documents).flat().length 
                                 : 0 
                             })}
                           </span>
