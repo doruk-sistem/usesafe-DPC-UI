@@ -197,6 +197,7 @@ export function MaterialsStep({ form }: MaterialsStepProps) {
         <CardContent className="space-y-4">
           <div className="flex items-center gap-4">
             <Button
+              type="button"
               variant="outline"
               onClick={downloadExcelTemplate}
               className="flex items-center gap-2"
