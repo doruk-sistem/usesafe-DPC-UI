@@ -178,7 +178,6 @@ export default function NewProductPageClient() {
             userId: user.id,
           },
         ],
-        // Sürdürülebilirlik metriklerini DPP config'e ekle
         dpp_config: sustainabilityMetrics ? {
           sections: [
             {
@@ -193,22 +192,10 @@ export default function NewProductPageClient() {
                 { id: "chemical-reduction", name: "Chemical Reduction", value: sustainabilityMetrics.chemical_reduction },
                 { id: "biodegradability", name: "Biodegradability", value: sustainabilityMetrics.biodegradability },
               ]
-            },
-            {
-              id: "materials",
-              title: "Materials",
-              fields: (materials || []).map((mat: any) => ({
-                id: mat.id,
-                name: mat.name,
-                value: {
-                  percentage: mat.percentage,
-                  recyclable: mat.recyclable,
-                  description: mat.description
-                }
-              }))
             }
           ]
         } : undefined,
+        materials,
       });
 
       // 4. Belgelerin productId'sini güncelle
