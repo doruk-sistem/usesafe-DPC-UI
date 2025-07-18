@@ -144,6 +144,7 @@ export default function NewProductPageClient() {
         try {
           sustainabilityMetrics = await SustainabilityCalculatorService.calculateFromProductType(
             data.product_type,
+            data.product_subcategory,
             data.materials
           );
           
