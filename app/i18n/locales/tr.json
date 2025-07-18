@@ -2684,6 +2684,51 @@
     "noProducts": "Ürün bulunamadı",
     "editProduct": "Ürünü Düzenle",
     "deleteProduct": "Ürünü Sil",
+    "materials": {
+      "title": "Materyaller",
+      "description": "Materyallerinizi yönetin ve takip edin",
+      "success":{
+        "title":"Başarılı",
+        "excelUploaded":"Excel dosyası başarıyla yüklendi"
+      },
+      "error":{
+        "title":"Hata",
+        "totalPercentageExceeded":"Toplam yüzde 100'ü aşamaz",
+        "invalidFileType":"Geçersiz dosya türü"
+      },
+      "list":{
+        "title":"Materyaller",
+        "totalMaterials":"Toplam Materyal",
+        "noMaterials":"Henüz hiç materyal yüklenmedi",
+        "totalPercentage":"Toplam Yüzde",
+        "table":{
+          "material":"Materyal",
+          "percentage":"Yüzde",
+          "recyclable":"Yeniden Kullanılabilir",
+          "description":"Açıklama",
+          "actions":"İşlemler",
+          "no":"Hayır",
+          "yes":"Evet"
+        }
+      },
+      "manualAdd":{
+        "title":"Manuel Ekle",
+        "materialName":"Materyal Adı",
+        "percentage":"Yüzde",
+        "recyclable":"Yeniden Kullanılabilir",
+        "description":"Açıklama",
+        "materialNamePlaceholder":"Materyal adı giriniz",
+        "yes":"Evet",
+        "no":"Hayır",
+        "descriptionPlaceholder":"Açıklama giriniz",
+        "addButton":"Ekle"
+      },
+      "excelUpload":{
+        "title":"Excel Yükle",
+        "downloadTemplate":"Şablonu İndir",
+        "instructions":"Excel dosyanızı yükleyin ve materyallerinizi yönetin"
+      }
+    },
     "search": {
       "placeholder": "Ürün ara..."
     },
@@ -2786,9 +2831,13 @@
     "addProduct": {
       "title": "Yeni Ürün Ekle",
       "description": "Yeni bir ürün eklemek için formu doldurun",
+      "error":{
+        "title":"Hata"
+      },
       "success": {
         "title": "Ürün Başarıyla Eklendi",
-        "description": "Ürün başarıyla eklendi. Artık ürün listesinde görüntüleyebilirsiniz."
+        "description": "Ürün başarıyla eklendi. Artık ürün listesinde görüntüleyebilirsiniz.",
+        "blockchain": "Blockchain"
       },
       "form": {
         "steps": {

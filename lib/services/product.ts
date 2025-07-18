@@ -135,6 +135,15 @@ export const productService = createService({
         }
       }
 
+      // Fetch materials for this product
+      const { data: materials, error: materialsError } = await supabase
+        .from("product_materials")
+        .select("id, name, percentage, recyclable, description")
+        .eq("product_id", id);
+      if (!materialsError && materials) {
+        productData.materials = materials;
+      }
+
       return { data: productData };
     } catch (error) {
       return {
@@ -145,10 +154,10 @@ export const productService = createService({
       };
     }
   },
-  createProduct: async (product: NewProduct): Promise<ProductResponse> => {
+  createProduct: async (product: NewProduct & { materials?: any[] }): Promise<ProductResponse> => {
     try {
-      // Extract documents and key_features if they exist, otherwise use empty object
-      const { documents = {}, manufacturer_id, key_features = [], ...productData } = product;
+      // Extract documents, key_features, and materials if they exist
+      const { documents = {}, manufacturer_id, key_features = [], materials = [], ...productData } = product;
 
       // Create the product WITHOUT documents in JSONB - documents are now stored in separate table
       const { data, error } = await supabase
@@ -194,7 +203,23 @@ export const productService = createService({
         }
       }
 
-      // Get the complete product with key features
+      // Insert materials if provided
+      if (data && materials && materials.length > 0) {
+        const materialRows = materials.map((mat: any) => ({
+          product_id: data.id,
+          name: mat.name,
+          percentage: mat.percentage,
+          recyclable: mat.recyclable,
+          description: mat.description || null,
+        }));
+        const { error: materialsError } = await supabase.from("product_materials").insert(materialRows);
+        if (materialsError) {
+          console.error("Error inserting materials:", materialsError);
+          // Not blocking product creation, just log error
+        }
+      }
+
+      // Get the complete product with key features and materials
       const completeProduct = await productService.getProduct({
         id: data.id,
         companyId: data.company_id,
@@ -215,9 +240,9 @@ export const productService = createService({
     product,
   }: {
     id: string;
-    product: UpdateProduct;
+    product: UpdateProduct & { materials?: any[] };
   }): Promise<ProductResponse> => {
-    const { manufacturer_id, key_features, ...productData } = product;
+    const { manufacturer_id, key_features, materials = [], ...productData } = product;
     
     // Önce mevcut ürünü al
     const { data: existingProduct, error: fetchError } = await supabase
@@ -335,7 +360,28 @@ export const productService = createService({
       }
     }
 
-    // Get the complete product with key features
+    // Update materials: delete old, insert new
+    if (data) {
+      // Delete old materials
+      await supabase.from("product_materials").delete().eq("product_id", id);
+      // Insert new materials if any
+      if (materials && materials.length > 0) {
+        const materialRows = materials.map((mat: any) => ({
+          product_id: id,
+          name: mat.name,
+          percentage: mat.percentage,
+          recyclable: mat.recyclable,
+          description: mat.description || null,
+        }));
+        const { error: materialsError } = await supabase.from("product_materials").insert(materialRows);
+        if (materialsError) {
+          console.error("Error updating materials:", materialsError);
+          // Not blocking product update, just log error
+        }
+      }
+    }
+
+    // Get the complete product with key features and materials
     const completeProduct = await productService.getProduct({
       id: data.id,
       companyId: data.company_id,

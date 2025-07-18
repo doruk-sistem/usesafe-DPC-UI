@@ -74,6 +74,7 @@ export type BaseProduct = Database["public"]["Tables"]["products"]["Row"] & {
 };
 
 export type NewProduct = Database["public"]["Tables"]["products"]["Insert"] & {
+  dpp_config?: any;
   // espr_compliance?: {
   //   directives: Array<{
   //     directive_number: string;
@@ -84,7 +85,7 @@ export type NewProduct = Database["public"]["Tables"]["products"]["Insert"] & {
   //     environmental_impact: string;
   //     circular_economy_criteria: string;
   //     product_lifecycle_assessment: string;
-  //   }>;
+  //  }>;
   //   regulations: Array<{
   //     regulation_number: string;
   //     regulation_name: string;
@@ -94,7 +95,7 @@ export type NewProduct = Database["public"]["Tables"]["products"]["Insert"] & {
   //     circular_economy_requirements: string;
   //     environmental_impact_assessment: string;
   //     resource_efficiency_requirements: string;
-  //   }>;
+  //  }>;
   //   standards: Array<{
   //     ref_no: string;
   //     title: string;
@@ -103,7 +104,7 @@ export type NewProduct = Database["public"]["Tables"]["products"]["Insert"] & {
   //     environmental_standards: string;
   //     circular_economy_standards: string;
   //     lifecycle_assessment_methodology: string;
-  //   }>;
+  //  }>;
   // };
 };
 

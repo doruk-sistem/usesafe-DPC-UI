@@ -29,8 +29,8 @@ export function CategoryDetails({ product }: CategoryDetailsProps) {
     const sections = product.dpp_config?.sections || [];
     
     return sections.map((section) => {
-      // Temel bilgiler, sertifikalar gibi ortak bölümleri atla
-      if (["basic-info", "certifications", "environmental"].includes(section.id)) {
+      // Temel bilgiler, sertifikalar, çevresel metrikler ve materyaller gibi ortak bölümleri atla
+      if (["basic-info", "certifications", "environmental", "materials"].includes(section.id)) {
         return null;
       }
 

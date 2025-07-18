@@ -72,6 +72,40 @@ export class ChatGPTService {
     }
   }
 
+  static async getGuidance(prompt: string): Promise<string> {
+    // Rate limiting
+    const now = Date.now();
+    const timeSinceLastRequest = now - this.lastRequestTime;
+    if (timeSinceLastRequest < this.RATE_LIMIT_DELAY) {
+      await new Promise(resolve => 
+        setTimeout(resolve, this.RATE_LIMIT_DELAY - timeSinceLastRequest)
+      );
+    }
+    this.lastRequestTime = Date.now();
+
+    try {
+      const response = await fetch('/api/chatgpt/guidance', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          prompt,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status}`);
+      }
+
+      const result = await response.json();
+      return result.response || result.message || JSON.stringify(result);
+    } catch (error) {
+      console.error('API error:', error);
+      throw error;
+    }
+  }
+
   // Clear cache method
   static clearCache(): void {
     this.cache.clear();

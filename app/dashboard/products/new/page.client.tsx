@@ -13,6 +13,7 @@ import { productService } from "@/lib/services/product";
 import { productBlockchainService } from "@/lib/services/product-blockchain";
 import { ProductStatusService } from "@/lib/services/product-status";
 import { StorageService } from "@/lib/services/storage";
+import { SustainabilityCalculatorService, SustainabilityMetrics } from "@/lib/services/sustainability-calculator";
 import type { NewProduct, ProductImage } from "@/lib/types/product";
 
 export default function NewProductPageClient() {
@@ -21,7 +22,9 @@ export default function NewProductPageClient() {
   const router = useRouter();
   const t = useTranslations("productManagement.addProduct");
 
-  const handleSubmit = async (data: NewProduct & { documentFiles?: Record<string, any[]> }) => {
+  const handleSubmit = async (
+    data: (NewProduct & { materials?: any[]; documentFiles?: Record<string, any[]> })
+  ) => {
     if (!user?.id || !company?.id) return;
 
     try {
@@ -135,8 +138,32 @@ export default function NewProductPageClient() {
         );
       }
 
-      // 3. Ürünü oluştur - documents artık ayrı tabloda saklanıyor
-      const { documentFiles, ...productData } = data;
+      // 3. Sürdürülebilirlik metriklerini hesapla (eğer materyal verileri varsa)
+      let sustainabilityMetrics: SustainabilityMetrics | null = null;
+      if (data.materials && data.materials.length > 0) {
+        try {
+          sustainabilityMetrics = await SustainabilityCalculatorService.calculateFromProductType(
+            data.product_type,
+            data.product_subcategory,
+            data.materials
+          );
+          
+          toast({
+            title: "Sustainability Calculation",
+            description: "Sustainability metrics calculated successfully using AI",
+          });
+        } catch (error) {
+          console.error("Error calculating sustainability metrics:", error);
+          toast({
+            title: "Warning",
+            description: "Product created but sustainability calculation failed",
+            variant: "destructive",
+          });
+        }
+      }
+
+      // 4. Ürünü oluştur - materials alanını products tablosuna göndermeden ayır
+      const { documentFiles, materials, ...productData } = data;
       
       const response = await productService.createProduct({
         ...productData,
@@ -151,6 +178,24 @@ export default function NewProductPageClient() {
             userId: user.id,
           },
         ],
+        dpp_config: sustainabilityMetrics ? {
+          sections: [
+            {
+              id: "environmental",
+              title: "Environmental Metrics",
+              fields: [
+                { id: "sustainability-score", name: "Sustainability Score", value: sustainabilityMetrics.sustainability_score },
+                { id: "carbon-footprint", name: "Carbon Footprint", value: sustainabilityMetrics.carbon_footprint },
+                { id: "water-usage", name: "Water Usage", value: sustainabilityMetrics.water_usage },
+                { id: "energy-consumption", name: "Energy Consumption", value: sustainabilityMetrics.energy_consumption },
+                { id: "recycled-materials", name: "Recycled Materials", value: sustainabilityMetrics.recycled_materials },
+                { id: "chemical-reduction", name: "Chemical Reduction", value: sustainabilityMetrics.chemical_reduction },
+                { id: "biodegradability", name: "Biodegradability", value: sustainabilityMetrics.biodegradability },
+              ]
+            }
+          ]
+        } : undefined,
+        materials,
       });
 
       // 4. Belgelerin productId'sini güncelle
