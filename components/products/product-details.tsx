@@ -62,14 +62,24 @@ export function ProductDetails({ product, additionalComponents }: ProductDetails
     documentUrl: (field.value as any).documentUrl
   }));
 
-  // Çevresel metrikleri al
+  // Çevresel metrikleri al (mock veri ile dolu)
   const environmentalFields = product.dpp_config?.sections
     .find(s => s.id === "environmental")
     ?.fields.map(field => ({
       id: field.id,
       name: field.name,
       value: field.value
-    })) || [];
+    })) || [
+      { id: "sustainability-score", name: "Sustainability Score", value: 85 },
+      { id: "carbon-footprint", name: "Carbon Footprint", value: "2.5 kg CO2e" },
+      { id: "water-usage", name: "Water Usage", value: "1.2k liters" },
+      { id: "energy-consumption", name: "Energy Consumption", value: "4.8 kWh per unit" },
+      { id: "recycled-materials", name: "Recycled Materials", value: "30% of total materials" },
+      { id: "chemical-reduction", name: "Chemical Reduction", value: "45% less than conventional" },
+      { id: "biodegradability", name: "Biodegradability", value: "80% biodegradable materials" },
+    ];
+
+
 
   return (
     <div className="container mx-auto space-y-16 px-4 py-12 max-w-7xl">

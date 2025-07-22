@@ -1770,6 +1770,51 @@
   "productManagement": {
     "title": "Product Management",
     "description": "Manage and track all your products",
+    "materials": {
+      "title": "Materials",
+      "description": "Manage and track all your materials",
+      "success":{
+        "title":"Success",
+        "excelUploaded":"Excel file uploaded successfully"
+      },
+      "error":{
+        "title":"Error",
+        "totalPercentageExceeded":"Total percentage cannot exceed 100%",
+        "invalidFileType":"Invalid file type"
+      },
+      "list":{
+        "title":"Materials",
+        "totalMaterials":"Total Materials",
+        "noMaterials":"No materials loaded yet",
+        "totalPercentage":"Total Percentage",
+        "table":{
+          "material":"Material",
+          "percentage":"Percentage",
+          "recyclable":"Recyclable",
+          "description":"Description",
+          "actions":"Actions",
+          "no":"No",
+          "yes":"Yes"
+        }
+      },
+      "manualAdd":{
+        "title":"Manual Add",
+        "materialName":"Material Name",
+        "percentage":"Percentage",
+        "recyclable":"Recyclable",
+        "description":"Description",
+        "materialNamePlaceholder":"Enter material name",
+        "yes":"Yes",
+        "no":"No",
+        "descriptionPlaceholder":"Enter description",
+        "addButton":"Add"
+      },
+      "excelUpload":{
+        "title":"Excel Upload",
+        "downloadTemplate":"Download Template",
+        "instructions":"Upload your Excel file to manage your materials"
+      }
+    },
     "search": {
       "placeholder": "Search products..."
     },
@@ -1862,9 +1907,13 @@
     "addProduct": {
       "title": "Add New Product",
       "description": "Fill in the form to add a new product",
+      "error":{
+        "title":"Error"
+      },
       "success": {
         "title": "Product Added Successfully",
-        "description": "The product has been added successfully. You can now view it in the product list."
+        "description": "The product has been added successfully. You can now view it in the product list.",
+        "blockchain": "Blockchain"
       },
       "form": {
         "steps": {

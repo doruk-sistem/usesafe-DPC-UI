@@ -14,6 +14,7 @@ import type { NewProduct } from "@/lib/types/product";
 
 import { BasicInfoStep } from "./steps/BasicInfoStep";
 import { DocumentUploadStep } from "./steps/DocumentUploadStep";
+import { MaterialsStep } from "./steps/MaterialsStep";
 // import { EsprComplianceStep } from "./steps/EsprComplianceStep";
 import { ManufacturerSelect } from "./steps/manufacturerSelect/ManufacturerSelect";
 
@@ -57,6 +58,17 @@ const productSchema = z.object({
       })
     )
     .default([]),
+  materials: z
+    .array(
+      z.object({
+        id: z.string(),
+        name: z.string(),
+        percentage: z.number(),
+        recyclable: z.boolean(),
+        description: z.string(),
+      })
+    )
+    .default([]),
   documents: documentSchema.optional(),
   manufacturer_id: z.string().optional(),
 });
@@ -70,7 +82,7 @@ interface ProductFormProps {
 }
 
 // ✅ Toplam Adım Sabitlendi
-const TOTAL_STEPS = 3; // ESPR compliance adımı geçici olarak kaldırıldı
+const TOTAL_STEPS = 4; // Materials step eklendi
 
 export function ProductForm({
   onSubmit,
@@ -90,6 +102,7 @@ export function ProductForm({
       model: "",
       images: [],
       key_features: [],
+      materials: [],
       documents: undefined,
       manufacturer_id: "",
     },
@@ -193,7 +206,10 @@ export function ProductForm({
         {step === 2 && <DocumentUploadStep form={form as any} />}
 
         {/* ✅ Adım 3 */}
-        {step === 3 && <ManufacturerSelect form={form} />}
+        {step === 3 && <MaterialsStep form={form} />}
+
+        {/* ✅ Adım 4 */}
+        {step === 4 && <ManufacturerSelect form={form} />}
 
         {/* ✅ Adım 4 - ESPR Uyumluluğu (Geçici olarak kaldırıldı) */}
         {/* {step === 4 && <EsprComplianceStep form={form as any} />} */}
