@@ -44,8 +44,8 @@ export async function GET(request: Request) {
       );
     }
 
-    // Kullanıcının şirket ID'sini al
-    const companyId = session.user.user_metadata.company_id;
+    // Kullanıcının şirket ID'sini al - useAuth hook'undaki mantığı kullan
+    const companyId = session.user.user_metadata?.data?.company_id || session.user.user_metadata?.company_id;
     if (!companyId) {
       return NextResponse.json(
         { error: 'Company ID not found' },

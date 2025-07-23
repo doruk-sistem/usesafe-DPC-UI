@@ -25,14 +25,23 @@ interface CompanyProductsProps {
 export function CompanyProducts({ companyId }: CompanyProductsProps) {
   const t = useTranslations("admin.products");
   const [search, setSearch] = useState("");
-  const { products, isLoading, error } = useProducts(companyId);
+  // Force fetchAll to false and pass companyId to ensure filtering by specific company
+  const { products, isLoading, error } = useProducts(companyId, false);
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const { product: selectedProduct, isLoading: isProductLoading, error: productError } = useProduct(selectedProductId || "");
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 10;
-  const totalPages = Math.ceil(products.length / ITEMS_PER_PAGE);
+
+  // Filter products by search term and by company_id to ensure we only show this company's products
+  const filteredProducts = products.filter((product) => {
+    const matchesSearch = product.name?.toLowerCase().includes(search.toLowerCase());
+    const belongsToCompany = product.company_id === companyId;
+    return matchesSearch && belongsToCompany;
+  });
+
+  const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const paginatedProducts = products.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  const paginatedProducts = filteredProducts.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   function getPaginationRange(current: number, total: number): (number | string)[] {
     const delta = 2;
@@ -73,20 +82,31 @@ export function CompanyProducts({ companyId }: CompanyProductsProps) {
     );
   }
 
-  const filteredProducts = products.filter((product) =>
-    product.name?.toLowerCase().includes(search.toLowerCase())
-  );
-
   return (
     <Card>
       <CardHeader>
         <CardTitle>{t("title")}</CardTitle>
+        <CardDescription>
+          {filteredProducts.length} {t("list.totalProducts")}
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
+          {/* Search input */}
+          <div className="flex items-center space-x-2">
+            <Input
+              placeholder={t("list.search.placeholder")}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="max-w-sm"
+            />
+          </div>
+
           {filteredProducts.length === 0 ? (
             <div className="text-center py-8">
-              <p className="text-muted-foreground">{t("list.empty.description")}</p>
+              <p className="text-muted-foreground">
+                {search ? t("list.empty.search") : t("list.empty.description")}
+              </p>
             </div>
           ) : (
             <>
@@ -103,6 +123,9 @@ export function CompanyProducts({ companyId }: CompanyProductsProps) {
                         <p className="text-sm text-muted-foreground">
                           {product.description}
                         </p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {t("list.model")}: {product.model || "N/A"}
+                        </p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
@@ -110,6 +133,7 @@ export function CompanyProducts({ companyId }: CompanyProductsProps) {
                         variant="ghost"
                         size="icon"
                         onClick={() => setSelectedProductId(product.id)}
+                        aria-label={t("list.viewDetails")}
                       >
                         <ExternalLink className="h-4 w-4" />
                       </Button>

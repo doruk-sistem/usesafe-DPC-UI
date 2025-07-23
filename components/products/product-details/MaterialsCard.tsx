@@ -1,5 +1,6 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 
@@ -13,8 +14,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { supabase } from "@/lib/supabase/client";
 
 interface Material {
+  id: string;
   name: string;
   percentage: number;
   recyclable: boolean;
@@ -23,14 +26,64 @@ interface Material {
 
 interface MaterialsCardProps {
   title: string;
-  materials: Material[];
+  productId: string;
 }
 
 export function MaterialsCard({ 
   title,
-  materials
+  productId
 }: MaterialsCardProps) {
   const t = useTranslations("products.details.materials");
+
+  // Fetch materials from product_materials table
+  const { data: materials = [], isLoading } = useQuery({
+    queryKey: ["product-materials", productId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("product_materials")
+        .select("id, name, percentage, recyclable, description")
+        .eq("product_id", productId)
+        .order("percentage", { ascending: false });
+
+      if (error) {
+        console.error("Error fetching materials:", error);
+        return [];
+      }
+
+      return data || [];
+    },
+    enabled: !!productId,
+  });
+
+  if (isLoading) {
+    return (
+      <Card className="lg:col-span-2">
+        <CardHeader>
+          <CardTitle>{title}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-8 text-muted-foreground">
+            {t("loading") || "Loading materials..."}
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (!materials || materials.length === 0) {
+    return (
+      <Card className="lg:col-span-2">
+        <CardHeader>
+          <CardTitle>{title}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-8 text-muted-foreground">
+            {t("noMaterials") || "No materials found for this product."}
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="lg:col-span-2">
@@ -53,9 +106,9 @@ export function MaterialsCard({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {materials.map((material, index) => (
-                <TableRow key={index}>
-                  <TableCell>{material.name}</TableCell>
+              {materials.map((material) => (
+                <TableRow key={material.id}>
+                  <TableCell className="font-medium">{material.name}</TableCell>
                   <TableCell>{material.percentage}%</TableCell>
                   <TableCell>
                     <Badge variant={material.recyclable ? "success" : "secondary"}>

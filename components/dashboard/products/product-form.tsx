@@ -14,9 +14,8 @@ import type { NewProduct } from "@/lib/types/product";
 
 import { BasicInfoStep } from "./steps/BasicInfoStep";
 import { DocumentUploadStep } from "./steps/DocumentUploadStep";
-import { MaterialsStep } from "./steps/MaterialsStep";
-// import { EsprComplianceStep } from "./steps/EsprComplianceStep";
 import { ManufacturerSelect } from "./steps/manufacturerSelect/ManufacturerSelect";
+import { MaterialsStep } from "./steps/MaterialsStep";
 
 const documentSchema = z.record(z.string(), z.array(z.object({
   name: z.string(),

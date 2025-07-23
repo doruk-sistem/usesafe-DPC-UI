@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/table";
 import { getDocuments } from "@/lib/services/documents";
 import { Document } from "@/lib/types/document";
+import { formatDocumentType } from "@/lib/utils";
 
 interface CertificationsCardProps {
   title: string;
@@ -118,6 +119,8 @@ export function CertificationsCard({
     );
   }
 
+  console.log(certifications);
+
   return (
     <Card className="lg:col-span-2">
       <CardHeader>
@@ -133,7 +136,7 @@ export function CertificationsCard({
             <TableHeader>
               <TableRow>
                 <TableHead>{t("table.name")}</TableHead>
-                <TableHead>{t("table.issuedBy")}</TableHead>
+                <TableHead>{t("table.documentType")}</TableHead>
                 <TableHead>{t("table.validUntil")}</TableHead>
                 <TableHead>{t("table.status")}</TableHead>
                 <TableHead>{t("table.document")}</TableHead>
@@ -143,7 +146,7 @@ export function CertificationsCard({
               {certifications.map((cert) => (
                 <TableRow key={cert.id}>
                   <TableCell>{cert.name}</TableCell>
-                  <TableCell>{cert.notes || "N/A"}</TableCell>
+                  <TableCell>{formatDocumentType(cert.originalType || '')}</TableCell>
                   <TableCell>
                     {cert.validUntil 
                       ? new Date(cert.validUntil).toLocaleDateString()
