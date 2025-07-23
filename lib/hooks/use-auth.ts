@@ -95,11 +95,8 @@ export function useAuth() {
       });
       if (error) throw error;
 
-      toast({
-        title: t("success.signUp.title"),
-        description: t("success.signUp.description"),
-      });
-
+      // Redirect to verify-email page without showing toast
+      // The verify-email page will show the appropriate message
       router.push("/auth/verify-email");
     } catch (error) {
       toast({

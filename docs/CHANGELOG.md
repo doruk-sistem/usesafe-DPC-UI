@@ -5,9 +5,236 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.1.20] - 2025-01-15
+
+### Enhanced
+- **Admin Product Details Page**: Replaced document redirection with inline document management
+  - Removed "View Documents" button that redirected to separate documents page
+  - Restructured layout with Product Information at top and Documents at bottom for better readability
+  - Changed from 2-column grid to stacked layout for improved information hierarchy
+  - Enhanced Product Information section with responsive 3-column grid layout
+  - Added collapsible documents section with expand/collapse functionality
+  - Integrated document approval and rejection actions directly within product details
+  - Added download functionality for each document with dedicated download button
+  - Enhanced document display with rejection reason visibility for rejected documents
+  - Implemented approval/rejection dialog with reason input for better documentation
+  - Added real-time processing state management for document actions
+  - Improved UX with visual feedback and toast notifications for all document operations
 
 ### Added
+- **Document Management UI Components**: 
+  - Collapsible document list with expand/collapse toggle
+  - Individual action buttons (download, approve, reject) for each document
+  - Rejection reason dialog with textarea input for detailed feedback
+  - Processing state indicators to prevent duplicate actions
+  - Status-based button visibility (approve/reject only for pending documents)
+
+### Fixed
+- **Import Organization**: Fixed ESLint import ordering violations in admin product details page
+
+## [0.1.19] - 2025-01-15
+
+### Fixed
+- **Company Products Filtering**: Fixed admin company products page to correctly filter and display only products belonging to the specific company instead of showing all products in the system
+- **Company Products Hook**: Corrected `useProducts` hook usage by explicitly setting `fetchAll` to `false` and adding client-side company filtering as a backup
+
+### Enhanced
+- **Company Products UI**: Improved the company products page with:
+  - Search functionality to filter products by name
+  - Product count display showing total number of products
+  - Model information display for each product card
+  - Better accessibility with proper aria-labels for interactive elements
+  - Enhanced empty states for both no products and no search results scenarios
+  - Improved pagination interface
+
+### Added
+- **Translation Keys**: Added missing translation keys for company products functionality:
+  - `admin.products.list.totalProducts` for product count display
+  - `admin.products.list.empty.search` for search no results message
+  - `admin.products.list.model` for model label
+  - `admin.products.list.viewDetails` for view details button
+  - `dashboard.menu.documents` for documents tab in admin company page
+  - Added corresponding Turkish translations for all new keys
+
+## [0.1.18] - 2025-01-15
+
+### Added
+- **UseSafe Certification Card**: New certification metrics component on product details page
+  - Displays certification progress based on 4 key metrics with 100% total scoring system
+  - Company documents approval contributes 20% to certification score
+  - Required product documents approval contributes 40% to certification score  
+  - DPP configuration completion contributes 20% to certification score
+  - Extra certifications (ISO 9001, quality certificates) contribute 20% to certification score
+  - Products achieving 60%+ certification score are marked as "UseSafe Certified"
+  - **Partial scoring system**: Progress increases proportionally as documents get approved
+  - Real-time status indicators for each certification component with partial approval tracking
+  - Visual progress bar and achievement badge for certified products
+  - Multilingual support (English/Turkish) for all certification metrics
+
+## [0.1.17] - 2025-07-23
+
+### Added
+- Added product materials display functionality to ProductDetails component
+- Integrated MaterialsCard component to fetch and show material composition from product_materials table
+- Added materials data fetching by product_id with proper loading and empty states
+- Enhanced material information display with proper translations for both English and Turkish languages
+- Added loading states and empty states for materials display
+
+### Changed
+- Updated MaterialsCard to fetch materials directly from product_materials table instead of receiving as props
+- Removed DPP config-based materials extraction in favor of database-driven approach
+- MaterialsCard now accepts productId prop instead of materials array prop
+
+### Fixed
+- Fixed import order for external dependencies in MaterialsCard component
+- Cleaned up duplicate translation keys in English localization file for materials section
+- Resolved materials data source to use proper database table (product_materials) instead of DPP config
+
+## [0.1.16] - 2025-07-23
+
+### Fixed
+- Fixed missing translation keys for `products.details.basicInfo.seller` and `products.details.basicInfo.taxNumber` in English translation file
+- Added "Seller" and "Tax Number" translations to match the Turkish translation structure
+- Resolved translation errors in BasicInformationCard component that prevented proper display of seller and tax number information
+
+### Added
+- Added `formatDocumentType` utility function to convert snake_case document types to Title Case format
+- Enhanced CertificationsCard component to display document types in user-friendly format (e.g., "product_safety_assessment" → "Product Safety Assessment")
+- Improved document type readability in product details certification table
+
+## [0.1.15] - 2025-07-23
+
+### Enhanced GPSR Compliance in Document Guidance API
+- **Improved OpenAI prompt for GPSR compliance**: Updated `/api/chatgpt/guidance` to focus on General Product Safety Regulation (GPSR) instead of ESPR
+- **Added ESPR DPP assessment**: AI now evaluates if Digital Product Passport (DPP) is required under ESPR for the product category
+  - Returns `dppRequired: true/false` boolean value based on clear criteria:
+    * `true`: Products mandatory now OR planned for 2026, 2027, 2028, 2029, or 2030
+    * `false`: Products NOT included in ESPR timeline through 2030
+  - Provides `dppNotes` with explanation of DPP requirement and timeline
+  - Evaluates key categories: Textiles (2026), Electronics/ICT (2026), Batteries (mandatory), Furniture (2027-2030), Iron/steel (2026), Chemicals (2026-2030), Food contact materials (2027-2030), Construction products (2027-2030)
+- **Added CBAM compliance assessment**: AI now evaluates if Carbon Border Adjustment Mechanism (CBAM) compliance is required
+  - Returns `cbamRequired: true/false` boolean value based on CBAM covered sectors:
+    * `true`: Products falling under covered sectors (cement, iron/steel, aluminium, fertilizers, electricity, hydrogen)
+    * `false`: Products NOT covered by CBAM regulation
+  - Provides `cbamNotes` with explanation of CBAM requirement
+  - Includes CBAM-specific documents in mandatory/optional lists:
+    * **Mandatory CBAM documents**: CBAM Declaration, Carbon Content Certificate, Emissions Data Report
+    * **Optional CBAM documents**: Third Country Certificate, CBAM Registry Documentation, Carbon Footprint Assessment
+- **CBAM information display in UI**: Added CBAM requirement cards in DocumentUploadStep and DocumentGuidanceCard
+  - Shows red warning card when CBAM is required with Carbon Compliance badge
+  - Shows gray info card when CBAM is not required
+  - Displays CBAM notes and sector information to users
+  - DocumentGuidanceCard now shows both DPP and CBAM requirements with colored badges
+- **DPP information display in UI**: Added DPP requirement cards in DocumentUploadStep and DocumentGuidanceCard
+  - Shows orange warning card when DPP is required with ESPR compliance badge
+  - Shows gray info card when DPP is not required
+  - Displays DPP notes and timeline information to users
+- **Updated ProductDocumentGuidance interface**: Added `dppRequired`, `dppNotes`, `cbamRequired`, and `cbamNotes` fields in both API route and service files
+- **Comprehensive compliance expertise**: AI now acts as GPSR, ESPR, and CBAM compliance expert
+- **Specific GPSR document lists**: Added predefined lists of mandatory and optional GPSR compliance documents
+  - **Mandatory**: CE Declaration of Conformity, CE Certificate/Certification, Technical Documentation File, Risk Assessment Report, User Instructions and Safety Manual, Test Reports, Product Safety Assessment, Conformity Assessment Documentation, Manufacturing Quality Documentation
+  - **Optional**: Additional Safety Testing Reports, Environmental Impact Assessment, Extended Durability Testing, Quality Management System Certificate, Post-Market Surveillance Plan, Traceability Documentation, Supply Chain Safety Documentation, Incident Response Procedures
+- **Improved fallback responses**: Updated default responses with GPSR-focused documents and both ESPR DPP and CBAM assessments
+
+## [0.1.14] - 2025-07-23
+
+### Added
+- Implemented submenu support in dashboard sidebar navigation
+- Added collapsible menu structure with expand/collapse functionality
+- Added new menu organization: Dashboard, Product Management, Supply Chain Management, and Settings
+- Added Product Management submenu with Products option
+- Added Supply Chain Management submenu with Suppliers and My Products options
+- Added visual indicators (chevron icons) for expandable menu items
+- Added proper state management for submenu open/close states
+
+### Changed
+- Restructured dashboard menu to support hierarchical navigation
+- Moved Products under Product Management submenu
+- Moved Suppliers and Pending Products under Supply Chain Management submenu
+- Renamed "Pending Products" to "My Products" for better clarity
+- Updated translation files to include new menu structure in both English and Turkish
+- Enhanced menu rendering logic to handle submenu visibility and filtering
+- Improved mobile navigation to support submenu structure
+
+### Fixed
+- Fixed import order in dashboard layout component to resolve linter errors
+- Ensured proper TypeScript typing for menu item interface
+- Fixed menu highlighting logic to only highlight active/selected items instead of all items
+- Fixed text overflow issues in menu items by adding proper truncation and flex layout
+- Increased sidebar width from 256px to 288px to accommodate longer menu text
+- Added proper hover states for menu items with subtle background highlighting
+- Fixed parent menu items staying highlighted when clicked by removing background highlighting from submenu headers
+- Added auto-expand functionality for submenus when child items are active
+- Improved submenu state management to combine manual opens with auto-expanded items
+- Refactored dashboard menu logic into a separate custom hook (`useDashboardMenu`) for better code organization
+- Separated menu state management from layout component to improve maintainability and reusability
+- Added icon mapping system to handle dynamic icon rendering in menu items
+- Improved code structure by moving complex menu logic to dedicated hook
+- Created separate `DashboardMenuItem` component to handle individual menu item rendering
+- Extracted menu item rendering logic from layout component for better modularity
+- Improved component reusability and testability by separating concerns
+- Reduced layout component complexity by moving menu item logic to dedicated component
+
+## [0.1.13] - 2025-07-23
+
+### Fixed
+- Fixed CompanyDocumentList component to properly fetch company documents using CompanyDocumentService
+- Updated use-company-documents hook to use CompanyDocumentService instead of DocumentService
+- Fixed document URL generation by properly mapping public URLs from Supabase storage
+- Added missing manufacturer field to document mapping to prevent component errors
+- Improved error handling in company document retrieval
+- Fixed incorrect document view links in CompanyDocumentList component (was pointing to non-existent routes)
+- Fixed document reupload links to point to correct routes
+- Updated document view action to directly open document in new tab instead of navigating to separate page
+- Updated document download action to use direct file download
+
+### Added
+- Created new document reupload page at `/dashboard/documents/[id]/reupload` for rejected documents
+- Added comprehensive reupload functionality with file upload and document type selection
+- Added proper error handling and validation for reupload process
+- Added companyId field to Document type for better document management
+
+### Changed
+- Updated document status update mutation to use CompanyDocumentService.updateDocumentStatus method
+- Enhanced document mapping to include proper public URLs for file access
+- Updated document links to use correct routing structure
+
+## [0.1.12] - 2025-07-23
+
+### Added
+- Created new `/auth/verify-email` page to properly inform users about email verification process
+- Added comprehensive email verification flow with clear next steps
+- Added Turkish and English translations for verify-email page
+- Enhanced user experience by providing clear guidance after registration
+
+### Changed
+- Updated registration flow to redirect to verify-email page instead of showing generic success message
+- Removed redundant success toast from registration process
+- Improved user communication about email verification requirements
+- Updated auth flow to better handle email confirmation process
+- Simplified next steps by removing admin review and approval steps from verify-email page
+
+### Fixed
+- Fixed registration flow to properly inform users about email verification
+- Resolved issue where users were not informed about email confirmation requirements
+- Improved user experience by providing clear next steps after registration
+
+## [0.1.11] - 2025-07-23
+
+### Added
+- Reorganized dashboard sidebar to include Settings as a main menu item
+- Moved Documents and Certifications as tabs within Settings page
+- Added Documents and Certifications tabs to Settings form
+- Added document upload functionality to Documents tab in Settings
+- Updated translation files to support new menu structure
+- Enhanced accessibility by adding aria-label to select elements
+
+### Changed
+- Updated dashboard layout to remove Documents and Certifications as separate sidebar items
+- Restructured Settings page to include Documents and Certifications management
+- Changed default tab in Settings to Documents for better user experience
+- Updated upload page navigation to redirect to Settings after successful upload
+- Improved navigation structure for better user experience
 - Added Supabase email confirmation security page at `/auth/approval` to safely handle confirmation URLs
 - Added enhanced user onboarding flow at `/auth/callback` for invited suppliers to set passwords
 - Added Content Security Policy (CSP) headers to allow Hedera blockchain API connections
@@ -31,6 +258,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhanced ProductBlockchainRecord type to include productType and model properties
 - Added better error messages for blockchain query failures
 - Implemented robust fallback for failed contract queries to prevent UI errors
+- Fixed translation keys in CompanyDocumentList component when moved to Settings tab
+- Added missing table column translations (category, status, validUntil, issuer) to both English and Turkish translation files
+- Updated component to use correct translation keys for table headers
 
 ## [Previous Unreleased Features]
 - Added support for product subcategories based on selected product type

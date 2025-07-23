@@ -13,6 +13,10 @@ export interface ProductDocumentGuidance {
   optionalDocuments: DocumentRequirement[];
   generalNotes: string;
   complianceNotes: string;
+  dppRequired: boolean;
+  dppNotes: string;
+  cbamRequired: boolean;
+  cbamNotes: string;
 }
 
 export class ChatGPTService {
@@ -125,38 +129,49 @@ export class ChatGPTService {
       subcategory,
       requiredDocuments: [
         {
-          type: 'test_reports',
-          label: 'Test Reports',
+          type: 'ce_declaration',
+          label: 'CE Declaration of Conformity',
           required: true,
-          description: 'Product safety and quality test reports',
-          examples: ['CE test report', 'Safety test report']
+          description: 'Declaration that the product meets all applicable EU requirements and bears CE marking',
+          examples: ['CE Declaration', 'EU Conformity Statement', 'Declaration of Conformity']
         },
         {
-          type: 'technical_docs',
-          label: 'Technical Documentation',
+          type: 'technical_documentation',
+          label: 'Technical Documentation File',
           required: true,
-          description: 'Technical specifications and user manuals for the product',
-          examples: ['Technical specification', 'User manual']
+          description: 'Complete technical file proving product design safety and compliance',
+          examples: ['Technical specifications', 'Design drawings', 'Component lists']
+        },
+        {
+          type: 'risk_assessment',
+          label: 'Risk Assessment Report',
+          required: true,
+          description: 'Comprehensive risk analysis identifying and mitigating product hazards',
+          examples: ['Safety risk assessment', 'Hazard analysis', 'Risk mitigation plan']
         }
       ],
       optionalDocuments: [
         {
-          type: 'quality_cert',
-          label: 'Quality Certificates',
+          type: 'additional_testing',
+          label: 'Additional Safety Testing Reports',
           required: false,
-          description: 'Quality management system certificates',
-          examples: ['ISO 9001', 'ISO 14001']
+          description: 'Voluntary testing beyond minimum GPSR requirements to demonstrate enhanced safety',
+          examples: ['Extended durability tests', 'Environmental stress testing', 'Performance validation']
         },
         {
-          type: 'safety_cert',
-          label: 'Safety Certificates',
+          type: 'quality_certificate',
+          label: 'Quality Management System Certificate',
           required: false,
-          description: 'Safety standards compliance certificates',
-          examples: ['CE certificate', 'Safety document']
+          description: 'ISO 9001 or equivalent quality management certification',
+          examples: ['ISO 9001 certificate', 'Quality system documentation', 'Manufacturing process validation']
         }
       ],
-      generalNotes: 'Basic documents are sufficient for this product. Additional documents may be required based on product characteristics.',
-      complianceNotes: 'CE marking and related test reports are required for sale in Turkey.'
+      generalNotes: 'All products placed on EU market must comply with GPSR. CE marking is mandatory for most consumer products. Risk assessment must be proportionate to product risk level.',
+      complianceNotes: 'Manufacturers must maintain technical documentation for 10 years. Economic operators must cooperate with market surveillance authorities. Serious risks must be immediately reported to authorities.',
+      dppRequired: false,
+      dppNotes: 'DPP requirement evaluation: Product category not included in ESPR mandatory timeline through 2030.',
+      cbamRequired: false,
+      cbamNotes: 'CBAM requirement evaluation: Product category not covered by Carbon Border Adjustment Mechanism.'
     };
   }
 } 

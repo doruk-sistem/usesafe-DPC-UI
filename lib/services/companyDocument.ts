@@ -93,23 +93,30 @@ export class CompanyDocumentService {
         return [];
       }
 
-      const mappedDocuments = documents.map((doc: any) => ({
-        id: doc.id,
-        name: doc.filePath?.split('/').pop() || "Unnamed Document",
-        type: doc.type,
-        category: doc.type,
-        url: doc.filePath || "",
-        filePath: doc.filePath || "",
-        status: (doc.status || "pending").toLowerCase(),
-        fileSize: "",
-        version: "1.0",
-        validUntil: undefined,
-        rejection_reason: doc.rejectionReason || undefined,
-        created_at: doc.createdAt || new Date().toISOString(),
-        updated_at: doc.updatedAt || new Date().toISOString(),
-        uploadedAt: doc.createdAt || new Date().toISOString(),
-        size: 0,
-        notes: ""
+      const mappedDocuments = await Promise.all(documents.map(async (doc: any) => {
+        // Get public URL for the document
+        const publicUrl = await this.getPublicUrl(doc.filePath);
+        
+        return {
+          id: doc.id,
+          name: doc.filePath?.split('/').pop() || "Unnamed Document",
+          type: doc.type,
+          category: doc.type,
+          url: publicUrl,
+          filePath: doc.filePath || "",
+          status: (doc.status || "pending").toLowerCase(),
+          fileSize: "",
+          version: "1.0",
+          validUntil: undefined,
+          rejection_reason: doc.rejectionReason || undefined,
+          created_at: doc.createdAt || new Date().toISOString(),
+          updated_at: doc.updatedAt || new Date().toISOString(),
+          uploadedAt: doc.createdAt || new Date().toISOString(),
+          size: 0,
+          notes: "",
+          manufacturer: undefined,
+          companyId: doc.companyId
+        };
       }));
 
       return mappedDocuments;

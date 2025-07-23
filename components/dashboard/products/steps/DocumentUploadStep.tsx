@@ -19,14 +19,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import {
-  DOCUMENT_TYPES,
   ACCEPTED_DOCUMENT_FORMATS,
   DOCUMENT_TYPE_CONFIG,
-  type DocumentType,
 } from "@/lib/constants/documents";
-import { useAuth } from "@/lib/hooks/use-auth";
 import { useChatGPTGuidance } from "@/lib/hooks/use-chatgpt-guidance";
-import { DocumentService } from "@/lib/services/document";
 import type { Document } from "@/lib/types/document";
 
 type HandleUploadResult = {
@@ -40,13 +36,9 @@ interface DocumentUploadStepProps {
 }
 
 export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
-  const { user } = useAuth();
   const { toast } = useToast();
   const [isVerified, setIsVerified] = useState(false);
   const t = useTranslations();
-
-  const companyId =
-    user?.user_metadata?.company_id || "7d26ed35-49ca-4c0d-932e-52254fb0e5b8";
 
   // Get product type and subcategory from form
   const productType = form.watch("product_type");
@@ -230,6 +222,93 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
           productTypeLabel={getCategoryLabel(productType)}
           subcategoryLabel={getSubcategoryLabel(subcategory)}
         />
+      )}
+
+      {/* DPP Requirement Card - Only show if DPP is required */}
+      {guidance && guidance.dppRequired && (
+        <Card className="p-4 border-orange-200 bg-orange-50">
+          <div className="flex items-start gap-3">
+            <div className="flex-shrink-0">
+              <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center">
+                <Info className="h-4 w-4 text-orange-600" />
+              </div>
+            </div>
+            <div className="flex-1">
+              <h4 className="font-semibold text-orange-800 mb-2">
+                Digital Product Passport (DPP) Required
+              </h4>
+              <p className="text-sm text-orange-700 mb-3">
+                {guidance.dppNotes}
+              </p>
+            </div>
+          </div>
+        </Card>
+      )}
+
+      {/* DPP Not Required Info - Only show if explicitly false and guidance is loaded */}
+      {guidance && guidance.dppRequired === false && (
+        <Card className="p-4 border-gray-200 bg-gray-50">
+          <div className="flex items-start gap-3">
+            <div className="flex-shrink-0">
+              <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
+                <CheckCircle className="h-4 w-4 text-gray-600" />
+              </div>
+            </div>
+            <div className="flex-1">
+              <h4 className="font-semibold text-gray-800 mb-2">
+                Digital Product Passport (DPP) Not Required
+              </h4>
+              <p className="text-sm text-gray-700">
+                {guidance.dppNotes}
+              </p>
+            </div>
+          </div>
+        </Card>
+      )}
+
+      {/* CBAM Requirement Card - Only show if CBAM is required */}
+      {guidance && guidance.cbamRequired && (
+        <Card className="p-4 border-red-200 bg-red-50">
+          <div className="flex items-start gap-3">
+            <div className="flex-shrink-0">
+              <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center">
+                <Info className="h-4 w-4 text-red-600" />
+              </div>
+            </div>
+            <div className="flex-1">
+              <h4 className="font-semibold text-red-800 mb-2">
+                CBAM (Carbon Border Adjustment Mechanism) Required
+              </h4>
+              <p className="text-sm text-red-700 mb-3">
+                {guidance.cbamNotes}
+              </p>
+              <div className="text-xs text-red-600 bg-red-100 px-2 py-1 rounded">
+                Carbon Compliance Required
+              </div>
+            </div>
+          </div>
+        </Card>
+      )}
+
+      {/* CBAM Not Required Info - Only show if explicitly false and guidance is loaded */}
+      {guidance && guidance.cbamRequired === false && (
+        <Card className="p-4 border-gray-200 bg-gray-50">
+          <div className="flex items-start gap-3">
+            <div className="flex-shrink-0">
+              <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
+                <CheckCircle className="h-4 w-4 text-gray-600" />
+              </div>
+            </div>
+            <div className="flex-1">
+              <h4 className="font-semibold text-gray-800 mb-2">
+                CBAM (Carbon Border Adjustment Mechanism) Not Required
+              </h4>
+              <p className="text-sm text-gray-700">
+                {guidance.cbamNotes}
+              </p>
+            </div>
+          </div>
+        </Card>
       )}
 
       <Card className="p-6 space-y-6">

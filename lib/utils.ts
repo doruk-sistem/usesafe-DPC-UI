@@ -37,3 +37,18 @@ export function getHashParams(): Record<string, string> {
   
   return parseHashParams(window.location.hash);
 }
+
+/**
+ * Format document type from snake_case to Title Case
+ * Converts strings like "product_safety_assessment" to "Product Safety Assessment"
+ * @param type - The snake_case string to format
+ * @returns Formatted string in Title Case
+ */
+export function formatDocumentType(type: string): string {
+  if (!type) return '';
+  
+  return type
+    .split('_')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
+}

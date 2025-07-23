@@ -39,17 +39,6 @@
     }
     }
   },
-  "admin": {
-    "sidebar": {
-      "dashboard": "Dashboard",
-      "manufacturers": "Manufacturers",
-      "documents": "Documents",
-      "certifications": "Certifications",
-      "dppTemplates": "DPP Templates",
-      "products": "Products",
-      "companies": "Companies"
-    }
-  },
   "settings":{
   "title":"Settings",
   "description":"Manage your account settings and preferences",
@@ -149,7 +138,9 @@
     "company":"Company",
     "contact":"Contact",
     "notifications":"Notifications",
-    "security":"Security"
+    "security":"Security",
+    "documents":"Documents",
+    "certifications":"Certifications"
   },
   "security":{
   "title":"Security",
@@ -290,13 +281,15 @@
        "view":"View"
       },
       "table":{
-        "document":"Document",
-        "type":"Type",
-        "status":"Status",
-        "applicationDate":"Application Date",
-        "updateDate":"Update Date",
-        "actions":"Actions",
-        "view":"View"
+        "document": "Document",
+        "type": "Type",
+        "category": "Category",
+        "status": "Status",
+        "validUntil": "Valid Until",
+        "issuer": "Issuer",
+        "applicationDate": "Application Date",
+        "updateDate": "Update Date",
+        "actions": "Actions"
       }
     },
     "filters":{
@@ -417,14 +410,13 @@
     },
     "menu": {
       "dashboard": "Dashboard",
+      "productManagement": "Product Management",
       "products": "Products",
-      "profile": "Profile",
-      "settings": "Settings",
-      "dpps": "DPPs",
-      "suppliers": "Suppliers",
       "documents": "Documents",
-      "certifications": "Certifications",
-      "pendingProducts": "Pending Products"
+      "supplyChainManagement": "Supply Chain Management",
+      "suppliers": "Suppliers",
+      "myProducts": "My Products",
+      "settings": "Settings"
     },
     "registration": {
       "title": "Registration",
@@ -580,15 +572,17 @@
         "category": "Category",
         "status": "Status",
         "addedDate": "Added Date",
-        "manufacturer": "Manufacturer"
+        "manufacturer": "Manufacturer",
+        "seller": "Seller",
+        "taxNumber": "Tax Number"
       },
       "certifications": {
-        "title": "Certifications",
+        "title": "Documents",
         "loadingCertifications": "Loading certifications...",
         "noCertifications": "No certifications found",
         "table": {
-          "name": "Certificate",
-          "issuedBy": "Issued By",
+          "name": "Document",
+          "documentType": "Document Type",
           "validUntil": "Valid Until",
           "status": "Status",
           "document": "Document"
@@ -598,6 +592,8 @@
           "valid": "Valid",
           "expired": "Expired",
           "pending": "Pending",
+          "approved": "Approved",
+          "rejected": "Rejected",
           "unknown": "Unknown"
         },
         "actions": {
@@ -639,67 +635,51 @@
           "water-saving": "Water Saving"
         }
       },
-      "battery": {
-        "features": {
-          "0": "Advanced lithium-ion technology for optimal performance",
-          "1": "Built-in safety features and protection circuits",
-          "2": "Extended cycle life and reliable power output"
+      "usesafeCertification": {
+        "title": "UseSafe Certification",
+        "description": "View product UseSafe certification status and compliance metrics",
+        "progress": "Certification Progress",
+        "certified": "Certified",
+        "notCertified": "Not Certified",
+        "requirementProgress": "Minimum {required}% required for certification",
+        "certificationAchieved": "🎉 Congratulations! This product is UseSafe Certified",
+        "certificationDescription": "This product meets all UseSafe certification requirements and can be trusted for quality and safety standards.",
+        "company": {
+          "title": "Company Documents",
+          "allApproved": "All company documents approved",
+          "partialApproved": "{approved} of {total} documents approved",
+          "partialWithRejected": "{approved} of {total} approved (some rejected)",
+          "hasPending": "Some company documents pending review",
+          "hasRejected": "Some company documents rejected",
+          "noDocuments": "No company documents uploaded",
+          "incomplete": "Company documents incomplete"
         },
-        "healthAndSafety": {
-          "title": "Health and Safety Measures",
-          "measures": {
-            "0": "Always handle batteries with care",
-            "1": "Keep in upright position at all times",
-            "2": "Charge in a well-ventilated area",
-            "3": "Do not add pure water (Pure water level should be 1.5 cm above plates)",
-            "4": "Always wear protective goggles suitable for working conditions during battery maintenance (adding water, cleaning, charging)",
-            "5": "Wear protective clothing if there is a risk of acid splashing"
-          }
+        "documents": {
+          "title": "Product Documents",
+          "allApproved": "All product documents approved",
+          "partialApproved": "{approved} of {total} documents approved",
+          "partialWithRejected": "{approved} of {total} approved (some rejected)",
+          "hasPending": "Some product documents pending review",
+          "hasRejected": "Some product documents rejected",
+          "noDocuments": "No product documents uploaded",
+          "incomplete": "Product documents incomplete"
         },
-        "storage": {
-          "title": "Storage and Installation Guidelines",
-          "sections": {
-            "general": "General Storage",
-            "chargeLevel": "Charge Level Monitoring",
-            "installation": "Installation Steps",
-            "items": {
-              "general": {
-                "0": "Always store upright in a dry and cool place (10°C - 25°C)",
-                "1": "Place batteries on wooden pallets to avoid direct contact with concrete floor"
-              },
-              "chargeLevel": {
-                "0": "Pre-sale battery charge level should be above 12.6V",
-                "1": "Minimum voltage during storage should be 12.4V",
-                "2": "If voltage is low, open package and charge at 16.1V and 1/20Cn current to prevent permanent damage"
-              },
-              "installation": {
-                "0": "Verify battery compatibility from vehicle manual",
-                "1": "Ensure engine is off",
-                "2": "Remove old battery (negative terminal first)",
-                "3": "Check for short circuits",
-                "4": "Clean battery compartment and terminals",
-                "5": "Install new battery (connect positive cable first)",
-                "6": "Check charging current compatibility"
-              }
-            }
-          }
+        "dpp": {
+          "title": "DPP Configuration",
+          "complete": "DPP configuration complete",
+          "incomplete": "DPP configuration {percentage}% complete",
+          "noConfig": "No DPP configuration found"
         },
-        "emergency": {
-          "title": "Emergency Procedures",
-          "procedures": {
-            "contact": "In case of eye or skin contact, rinse with plenty of water.",
-            "clothing": "Remove contaminated clothing immediately.",
-            "ingestion": "If swallowed: Drink plenty of water and milk. Consult a doctor.",
-            "spill": "Spillage: Wash small spills with water.",
-            "gases": "If gases are released, ventilate the area.",
-            "spark": "Keep away from sparks and flames.",
-            "fire": "In case of fire, use appropriate fire extinguisher.",
-            "devices": "Turn off and remove electrical devices."
-          }
+        "extraCertifications": {
+          "title": "Extra Certifications",
+          "hasApproved": "Quality certifications approved",
+          "partialApproved": "{approved} of {total} certifications approved",
+          "partialWithRejected": "{approved} of {total} approved (some rejected)",
+          "hasPending": "Some certifications pending review", 
+          "hasRejected": "Some certifications rejected",
+          "noCertifications": "No extra certifications uploaded",
+          "incomplete": "Extra certifications incomplete"
         }
-      },
-      "textile": {
-        "careInstructions": "Care Instructions"
       },
       "layoutNotAvailable": "DPP layout not available for product type:",
       "quickInfo": {
@@ -717,14 +697,14 @@
           "material": "Material",
           "percentage": "Percentage",
           "recyclable": "Recyclable",
-          "description": "Description",
-          "yes": "Yes",
-          "no": "No"
+          "description": "Description"
         },
         "recyclable": {
           "yes": "Yes",
           "no": "No"
-        }
+        },
+        "loading": "Loading materials...",
+        "noMaterials": "No materials found for this product."
       },
       "healthAndSafety": {
         "title": "Health and Safety",
@@ -1581,190 +1561,6 @@
           "description": "Authenticated sustainability credentials"
         }
       }
-    },
-    "details": {
-      "backToProducts": "Back to Products",
-      "basicInfo": {
-        "title": "Basic Information",
-        "productCode": "Product Code",
-        "productName": "Product Name",
-        "sku": "SKU",
-        "category": "Category",
-        "status": "Status",
-        "addedDate": "Added Date",
-        "manufacturer": "Manufacturer",
-        "seller": "Seller",
-        "taxNumber": "Tax Number"
-      },
-      "certifications": {
-        "title": "Certifications",
-        "loadingCertifications": "Loading certifications...",
-        "errorLoadingCertifications": "Error loading certifications",
-        "noCertifications": "No certifications found for this product.",
-        "table": {
-          "name": "Certificate",
-          "issuedBy": "Issued By",
-          "validUntil": "Valid Until",
-          "status": "Status",
-          "document": "Document"
-        },
-        "status": {
-          "rejected": "Rejected",
-          "active": "Active",
-          "valid": "Valid",
-          "expired": "Expired",
-          "pending": "Pending",
-          "unknown": "Unknown",
-          "approved": "Approved"
-        },
-        "actions": {
-          "download": "Download",
-          "noDocument": "No documents found"
-        }
-      },
-      "qr": {
-        "title": "Product QR Code",
-        "description": "Scan this QR code to verify product authenticity and access detailed information",
-        "instructions": "Use your smartphone camera or QR code reader app to scan",
-        "downloadButton": "Download QR Code",
-        "imageAlt": "Product Verification QR Code",
-        "productQRCode": "Product QR Code"
-      },
-      "sustainability": {
-        "title": "Sustainability",
-        "description": "View product sustainability metrics",
-        "progress": "Progress",
-        "badge": "{value}% Sustainability",
-        "metrics": {
-          "waterUsage": "Water Usage",
-          "carbonFootprint": "Carbon Footprint",
-          "energyConsumption": "Energy Consumption",
-          "recycledContent": "Recycled Content",
-          "low": "Low",
-          "medium": "Medium",
-          "high": "High",
-          "carbon-footprint": "Carbon Footprint",
-          "water-usage": "Water Usage",
-          "energy-consumption": "Energy Consumption",
-          "recycled-materials": "Recycled Materials",
-          "chemical-reduction": "Chemical Reduction",
-          "biodegradability": "Biodegradability",
-          "packaging": "Packaging",
-          "waste-reduction": "Waste Reduction",
-          "chemical-usage": "Chemical Usage",
-          "renewable-energy": "Renewable Energy",
-          "water-saving": "Water Saving"
-        }
-      },
-      "battery": {
-        "features": {
-          "0": "Advanced lithium-ion technology for optimal performance",
-          "1": "Built-in safety features and protection circuits",
-          "2": "Extended cycle life and reliable power output"
-        },
-        "healthAndSafety": {
-          "title": "Health and Safety Measures",
-          "measures": {
-            "0": "Always handle batteries with care",
-            "1": "Keep in upright position at all times",
-            "2": "Charge in a well-ventilated area",
-            "3": "Do not add pure water (Pure water level should be 1.5 cm above plates)",
-            "4": "Always wear protective goggles suitable for working conditions during battery maintenance (adding water, cleaning, charging)",
-            "5": "Wear protective clothing if there is a risk of acid splashing"
-          }
-        },
-        "storage": {
-          "title": "Storage and Installation Guidelines",
-          "sections": {
-            "general": "General Storage",
-            "chargeLevel": "Charge Level Monitoring",
-            "installation": "Installation Steps",
-            "items": {
-              "general": {
-                "0": "Always store upright in a dry and cool place (10°C - 25°C)",
-                "1": "Place batteries on wooden pallets to avoid direct contact with concrete floor"
-              },
-              "chargeLevel": {
-                "0": "Pre-sale battery charge level should be above 12.6V",
-                "1": "Minimum voltage during storage should be 12.4V",
-                "2": "If voltage is low, open package and charge at 16.1V and 1/20Cn current to prevent permanent damage"
-              },
-              "installation": {
-                "0": "Verify battery compatibility from vehicle manual",
-                "1": "Ensure engine is off",
-                "2": "Remove old battery (negative terminal first)",
-                "3": "Check for short circuits",
-                "4": "Clean battery compartment and terminals",
-                "5": "Install new battery (connect positive cable first)",
-                "6": "Check charging current compatibility"
-              }
-            }
-          }
-        },
-        "emergency": {
-          "title": "Emergency Procedures",
-          "procedures": {
-            "contact": "In case of eye or skin contact, rinse with plenty of water.",
-            "clothing": "Remove contaminated clothing immediately.",
-            "ingestion": "If swallowed: Drink plenty of water and milk. Consult a doctor.",
-            "spill": "Spillage: Wash small spills with water.",
-            "gases": "If gases are released, ventilate the area.",
-            "spark": "Keep away from sparks and flames.",
-            "fire": "In case of fire, use appropriate fire extinguisher.",
-            "devices": "Turn off and remove electrical devices."
-          }
-        }
-      },
-      "textile": {
-        "careInstructions": "Care Instructions"
-      },
-      "layoutNotAvailable": "DPP layout not available for product type:",
-      "quickInfo": {
-        "title": "Quick Information",
-        "model": "Model",
-        "manufacturer": "Manufacturer",
-        "category": "Category"
-      },
-      "keyFeatures": {
-        "title": "Key Features"
-      },
-      "materials": {
-        "title": "Materials",
-        "table": {
-          "material": "Material",
-          "percentage": "Percentage",
-          "recyclable": "Recyclable",
-          "description": "Description",
-          "yes": "Yes",
-          "no": "No"
-        },
-        "recyclable": {
-          "yes": "Yes",
-          "no": "No"
-        }
-      },
-      "healthAndSafety": {
-        "title": "Health and Safety",
-        "measures": {
-          "0": "Always follow proper handling and storage guidelines",
-          "1": "Keep away from extreme temperatures and moisture",
-          "2": "Use appropriate personal protective equipment when handling",
-          "3": "Regular maintenance and inspection required"
-        }
-      },
-      "hazards": {
-        "title": "Hazards",
-        "health": "Health Hazard",
-        "healthDesc": "Battery acid can cause severe irritation to skin and eyes.",
-        "corrosive": "Corrosive",
-        "corrosiveDesc": "Battery acid can corrode metals and tissues.",
-        "warning": "Warning",
-        "warningDesc": "Improper use may cause serious injury.",
-        "explosive": "Explosive",
-        "explosiveDesc": "Battery gas is explosive, keep away from sparks and flames.",
-        "environmental": "Environmental Hazard",
-        "environmentalDesc": "Battery chemicals are harmful to the environment, prevent release into nature."
-      }
     }
   },
   "productManagement": {
@@ -1815,9 +1611,6 @@
         "instructions":"Upload your Excel file to manage your materials"
       }
     },
-    "search": {
-      "placeholder": "Search products..."
-    },
     "form": {
       "images": {
         "title": "Product Images",
@@ -1850,59 +1643,6 @@
         "unit": "Unit (optional)",
         "add": "Add Feature"
       }
-    },
-    "filters": {
-      "type": {
-        "label": "Product Type",
-        "all": "All Types",
-        "agm": "AGM",
-        "efb": "EFB",
-        "standard": "Standard",
-        "marine": "Marine"
-      },
-      "status": {
-        "label": "Status",
-        "all": "All Statuses",
-        "active": "Active",
-        "pending": "Pending",
-        "draft": "Draft"
-      }
-    },
-    "actions": {
-      "download": "Download",
-      "addProduct": "New Product",
-      "menu": "Actions",
-      "viewDetails": "View Details",
-      "editProduct": "Edit Product",
-      "viewDocuments": "View Documents",
-      "deleteProduct": "Delete Product"
-    },
-    "list": {
-      "title": "Product List",
-      "description": "View and manage all your products",
-      "loading": "Loading products...",
-      "empty": {
-        "title": "No Products Found",
-        "description": "You don't have any products yet. Use the 'New Product' button to add one."
-      },
-      "columns": {
-        "product": "Product",
-        "type": "Type",
-        "category": "Category",
-        "status": "Status",
-        "createdAt": "Created At",
-        "actions": "Actions",
-        "basicInfo": "Basic Info",
-        "manufacturer": "Manufacturer"
-      }
-    },
-    "delete": {
-      "confirm": {
-        "title": "Delete Product",
-        "description": "Are you sure you want to delete this product? This action cannot be undone.",
-        "cancel": "Cancel",
-        "confirm": "Delete"
-                 }
     },
     "addProduct": {
       "title": "Add New Product",
@@ -2091,16 +1831,19 @@
     "labels": {
       "notAvailable": "Not Available"
     },
-    "error": {
+    "error": "Error",
+    "success": "Success",
+    "errors": {
       "title": "Error",
       "description": "An error occurred",
       "tryAgain": "Please try again",
       "notFound": "Not Found",
       "unauthorized": "Unauthorized Access",
       "forbidden": "Access Denied",
-      "serverError": "Server Error"
+      "serverError": "Server Error",
+      "unexpectedError": "An unexpected error occurred"
     },
-    "success": {
+    "successes": {
       "title": "Success",
       "saved": "Saved",
       "updated": "Updated",
@@ -2515,14 +2258,18 @@
     "list": {
       "title": "Documents",
       "description": "Manage your company documents",
-    "empty": {
-      "title": "No documents found",
-      "description": "Upload a document to get started"
-    }
+      "empty": {
+        "title": "No documents found",
+        "description": "Upload a document to get started"
+      }
     },
     "table": {
       "document": "Document",
       "type": "Type",
+      "category": "Category",
+      "status": "Status",
+      "validUntil": "Valid Until",
+      "issuer": "Issuer",
       "applicationDate": "Application Date",
       "updateDate": "Update Date",
       "actions": "Actions"
@@ -2803,12 +2550,16 @@
       "list":{
         "title": "Products",
         "description": "Manage and review all products in the system",
+        "totalProducts": "products",
         "empty":{
-          "description": "Add a product to get started"
+          "description": "Add a product to get started",
+          "search": "No products match your search criteria"
         },
         "search":{
           "placeholder": "Search products..."
         },
+        "model": "Model",
+        "viewDetails": "View Details",
         "filter":{
           "all": "All",
           "active": "Active",
@@ -3057,6 +2808,24 @@
       "error": {
         "title": "Error",
         "description": "Failed to create account"
+      }
+    },
+    "verifyEmail": {
+      "title": "Email Verification Required",
+      "description": "Please verify your email address to activate your account",
+      "emailSent": {
+        "title": "Verification Email Sent",
+        "description": "We've sent a verification link to your registered email address"
+      },
+      "nextSteps": {
+        "title": "Next Steps",
+        "verifyEmail": "Verify your email address",
+        "onboarding": "Complete platform onboarding"
+      },
+      "helpText": "Check your email inbox and click the verification link. If you don't see the email, check your spam folder.",
+      "actions": {
+        "login": "Sign In",
+        "backToHome": "Back to Home"
       }
     }
   },

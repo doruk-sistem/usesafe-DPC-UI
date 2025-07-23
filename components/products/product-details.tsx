@@ -4,19 +4,24 @@ import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { companyApiHooks } from "@/lib/hooks/use-company";
+import { getDocuments } from "@/lib/services/documents";
+import { Document } from "@/lib/types/document";
 import { BaseProduct, KeyFeature, ProductImage } from "@/lib/types/product";
 
 import { BasicInformationCard } from "./product-details/BasicInformationCard";
 import { CertificationsCard } from "./product-details/CertificationsCard";
+import { MaterialsCard } from "./product-details/MaterialsCard";
 import { ProductHeader } from "./product-details/ProductHeader";
 import { ProductImageGallery } from "./product-details/ProductImageGallery";
 import { ProductKeyFeatures } from "./product-details/ProductKeyFeatures";
 import { ProductQuickInfo } from "./product-details/ProductQuickInfo";
 import { SustainabilityMetricsCard } from "./product-details/SustainabilityMetricsCard";
+import { UseSafeCertificationCard } from "./product-details/UseSafeCertificationCard";
 import { ProductQR } from "./product-qr";
 
 interface ProductDetailsProps {
@@ -26,12 +31,30 @@ interface ProductDetailsProps {
 
 export function ProductDetails({ product, additionalComponents }: ProductDetailsProps) {
   const t = useTranslations("products.details");
+  const [productDocuments, setProductDocuments] = useState<Document[]>([]);
 
   // Şirket bilgilerini al
   const { data: company } = companyApiHooks.useGetCompanyQuery(
     { id: product.company_id },
     { enabled: !!product.company_id }
   );
+
+  // Product documents'ları fetch et
+  useEffect(() => {
+    const fetchDocuments = async () => {
+      try {
+        if (product.id) {
+          const { documents } = await getDocuments(product.id);
+          setProductDocuments(documents);
+        }
+      } catch (error) {
+        console.error("Error fetching product documents:", error);
+        setProductDocuments([]);
+      }
+    };
+
+    fetchDocuments();
+  }, [product.id]);
 
   // DPP config'den veri çıkarma fonksiyonları
   const getFieldValue = (sectionId: string, fieldId: string) => {
@@ -78,7 +101,6 @@ export function ProductDetails({ product, additionalComponents }: ProductDetails
       { id: "chemical-reduction", name: "Chemical Reduction", value: "45% less than conventional" },
       { id: "biodegradability", name: "Biodegradability", value: "80% biodegradable materials" },
     ];
-
 
 
   return (
@@ -134,6 +156,12 @@ export function ProductDetails({ product, additionalComponents }: ProductDetails
           seller={seller}
         />
 
+        {/* Materials */}
+        <MaterialsCard
+          title={t("materials.title")}
+          productId={product.id}
+        />
+
         {/* Sertifikalar */}
         <CertificationsCard 
           title={t("certifications.title")}
@@ -144,6 +172,13 @@ export function ProductDetails({ product, additionalComponents }: ProductDetails
         <SustainabilityMetricsCard 
           title={t("sustainability.title")}
           metrics={environmentalFields}
+        />
+
+        {/* UseSafe Sertifikasyonu */}
+        <UseSafeCertificationCard 
+          title={t("usesafeCertification.title")}
+          product={product}
+          productDocuments={productDocuments}
         />
 
         {/* Kategoriye Özel Bileşenler */}
