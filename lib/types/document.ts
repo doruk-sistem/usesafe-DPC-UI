@@ -21,6 +21,7 @@ export interface Document {
   filePath?: string;
   file?: File; // File objesi için eklendi
   originalType?: string; // AI'dan gelen orijinal tür
+  companyId?: string; // Company ID for company documents
 }
 
 export interface DocumentWithMetadata extends Document {

@@ -172,10 +172,7 @@ export function CompanyDocumentList() {
             <TableRow>
               <TableHead>{t("documents.table.document")}</TableHead>
               <TableHead>{t("documents.table.type")}</TableHead>
-              <TableHead>{t("documents.table.category")}</TableHead>
               <TableHead>{t("documents.table.status")}</TableHead>
-              <TableHead>{t("documents.table.validUntil")}</TableHead>
-              <TableHead>{t("documents.table.issuer")}</TableHead>
               <TableHead></TableHead>
             </TableRow>
           </TableHeader>
@@ -207,7 +204,6 @@ export function CompanyDocumentList() {
                   </div>
                 </TableCell>
                 <TableCell>{doc.type}</TableCell>
-                <TableCell>{doc.category}</TableCell>
                 <TableCell>
                   <Badge
                     variant={getStatusVariant(doc.status)}
@@ -217,10 +213,6 @@ export function CompanyDocumentList() {
                     {doc.status}
                   </Badge>
                 </TableCell>
-                <TableCell>
-                  {doc.validUntil ? new Date(doc.validUntil).toLocaleDateString() : "N/A"}
-                </TableCell>
-                <TableCell>{doc.manufacturer || "N/A"}</TableCell>
                 <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -233,22 +225,26 @@ export function CompanyDocumentList() {
                       <DropdownMenuLabel>{t("documents.actions.title")}</DropdownMenuLabel>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem asChild>
-                        <Link href={`/dashboard/company/documents/${doc.id}`}>
+                        <a href={doc.url} target="_blank" rel="noopener noreferrer">
                           <FileText className="h-4 w-4 mr-2" />
                           {t("documents.actions.view")}
+                        </a>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <a href={doc.url} download>
+                          <Download className="h-4 w-4 mr-2" />
+                          {t("documents.actions.download")}
+                        </a>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link href={`/dashboard/documents/${doc.id}/history`}>
+                          <History className="h-4 w-4 mr-2" />
+                          {t("documents.actions.history")}
                         </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <Download className="h-4 w-4 mr-2" />
-                        {t("documents.actions.download")}
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <History className="h-4 w-4 mr-2" />
-                        {t("documents.actions.history")}
                       </DropdownMenuItem>
                       {doc.status === "rejected" && (
                         <DropdownMenuItem asChild>
-                          <Link href={`/dashboard/company/documents/${doc.id}/reupload`}>
+                          <Link href={`/dashboard/documents/${doc.id}/reupload`}>
                             <ExternalLink className="h-4 w-4 mr-2" />
                             {t("documents.actions.reupload")}
                           </Link>

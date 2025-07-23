@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.13] - 2025-07-23
+
+### Fixed
+- Fixed CompanyDocumentList component to properly fetch company documents using CompanyDocumentService
+- Updated use-company-documents hook to use CompanyDocumentService instead of DocumentService
+- Fixed document URL generation by properly mapping public URLs from Supabase storage
+- Added missing manufacturer field to document mapping to prevent component errors
+- Improved error handling in company document retrieval
+- Fixed incorrect document view links in CompanyDocumentList component (was pointing to non-existent routes)
+- Fixed document reupload links to point to correct routes
+- Updated document view action to directly open document in new tab instead of navigating to separate page
+- Updated document download action to use direct file download
+
+### Added
+- Created new document reupload page at `/dashboard/documents/[id]/reupload` for rejected documents
+- Added comprehensive reupload functionality with file upload and document type selection
+- Added proper error handling and validation for reupload process
+- Added companyId field to Document type for better document management
+
+### Changed
+- Updated document status update mutation to use CompanyDocumentService.updateDocumentStatus method
+- Enhanced document mapping to include proper public URLs for file access
+- Updated document links to use correct routing structure
+
 ## [0.1.12] - 2025-07-23
 
 ### Added

@@ -298,7 +298,7 @@ export function SettingsForm() {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-        <Tabs defaultValue="documents" className="space-y-4">
+        <Tabs defaultValue="company" className="space-y-4">
           <TabsList>
             <TabsTrigger value="company">{t("tabs.company")}</TabsTrigger>
             <TabsTrigger value="contact">{t("tabs.contact")}</TabsTrigger>

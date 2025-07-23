@@ -2,15 +2,15 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { DocumentService } from "@/lib/services/document";
+import { CompanyDocumentService } from "@/lib/services/companyDocument";
 import { Document } from "@/lib/types/document";
 
 import { useAuth } from "./use-auth";
 
 export const useCompanyDocuments = () => {
-  const { user } = useAuth();
+  const { user, company } = useAuth();
   const queryClient = useQueryClient();
-  const companyId = user?.user_metadata?.data?.company_id;
+  const companyId = company?.id;
 
   const useGetCompanyDocuments = () => {
     return useQuery({
@@ -25,7 +25,7 @@ export const useCompanyDocuments = () => {
         }
 
         try {
-          const documents = await DocumentService.getDocumentsByCompany(companyId);
+          const documents = await CompanyDocumentService.getCompanyDocuments(companyId);
           return documents;
         } catch (error) {
           if (error instanceof Error) {
@@ -53,11 +53,7 @@ export const useCompanyDocuments = () => {
           throw new Error("Şirket bilgisi bulunamadı");
         }
         
-        if (status === 'approved') {
-          await DocumentService.approveDocument(documentId);
-        } else if (status === 'rejected') {
-          await DocumentService.rejectDocument(documentId, reason || '');
-        }
+        await CompanyDocumentService.updateDocumentStatus(documentId, status, reason);
       },
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["companyDocuments"] });
