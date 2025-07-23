@@ -645,6 +645,8 @@
         "company": {
           "title": "Company Documents",
           "allApproved": "All company documents approved",
+          "partialApproved": "{approved} of {total} documents approved",
+          "partialWithRejected": "{approved} of {total} approved (some rejected)",
           "hasPending": "Some company documents pending review",
           "hasRejected": "Some company documents rejected",
           "noDocuments": "No company documents uploaded",
@@ -653,6 +655,8 @@
         "documents": {
           "title": "Product Documents",
           "allApproved": "All product documents approved",
+          "partialApproved": "{approved} of {total} documents approved",
+          "partialWithRejected": "{approved} of {total} approved (some rejected)",
           "hasPending": "Some product documents pending review",
           "hasRejected": "Some product documents rejected",
           "noDocuments": "No product documents uploaded",
@@ -667,6 +671,8 @@
         "extraCertifications": {
           "title": "Extra Certifications",
           "hasApproved": "Quality certifications approved",
+          "partialApproved": "{approved} of {total} certifications approved",
+          "partialWithRejected": "{approved} of {total} approved (some rejected)",
           "hasPending": "Some certifications pending review", 
           "hasRejected": "Some certifications rejected",
           "noCertifications": "No extra certifications uploaded",

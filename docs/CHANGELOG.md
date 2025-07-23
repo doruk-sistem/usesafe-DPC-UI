@@ -39,7 +39,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - DPP configuration completion contributes 20% to certification score
   - Extra certifications (ISO 9001, quality certificates) contribute 20% to certification score
   - Products achieving 60%+ certification score are marked as "UseSafe Certified"
-  - Real-time status indicators for each certification component
+  - **Partial scoring system**: Progress increases proportionally as documents get approved
+  - Real-time status indicators for each certification component with partial approval tracking
   - Visual progress bar and achievement badge for certified products
   - Multilingual support (English/Turkish) for all certification metrics
 

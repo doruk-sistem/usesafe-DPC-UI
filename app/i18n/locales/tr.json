@@ -795,6 +795,8 @@
         "company": {
           "title": "Şirket Belgeleri",
           "allApproved": "Tüm şirket belgeleri onaylandı",
+          "partialApproved": "{total} belgeden {approved} tanesi onaylandı",
+          "partialWithRejected": "{total} belgeden {approved} tanesi onaylandı (bazıları reddedildi)",
           "hasPending": "Bazı şirket belgeleri inceleme bekliyor",
           "hasRejected": "Bazı şirket belgeleri reddedildi",
           "noDocuments": "Hiç şirket belgesi yüklenmedi",
@@ -803,6 +805,8 @@
         "documents": {
           "title": "Ürün Belgeleri",
           "allApproved": "Tüm ürün belgeleri onaylandı",
+          "partialApproved": "{total} belgeden {approved} tanesi onaylandı",
+          "partialWithRejected": "{total} belgeden {approved} tanesi onaylandı (bazıları reddedildi)",
           "hasPending": "Bazı ürün belgeleri inceleme bekliyor",
           "hasRejected": "Bazı ürün belgeleri reddedildi",
           "noDocuments": "Hiç ürün belgesi yüklenmedi",
@@ -817,6 +821,8 @@
         "extraCertifications": {
           "title": "Extra Sertifikalar",
           "hasApproved": "Kalite sertifikaları onaylandı",
+          "partialApproved": "{total} sertifikadan {approved} tanesi onaylandı",
+          "partialWithRejected": "{total} sertifikadan {approved} tanesi onaylandı (bazıları reddedildi)",
           "hasPending": "Bazı sertifikalar inceleme bekliyor",
           "hasRejected": "Bazı sertifikalar reddedildi",
           "noCertifications": "Hiç extra sertifika yüklenmedi",

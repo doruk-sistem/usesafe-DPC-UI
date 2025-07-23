@@ -35,17 +35,29 @@ export function UseSafeCertificationCard({
     const approvedDocs = companyDocuments.filter(doc => doc.status === "approved");
     const rejectedDocs = companyDocuments.filter(doc => doc.status === "rejected");
     const pendingDocs = companyDocuments.filter(doc => doc.status === "pending");
+    const totalDocs = companyDocuments.length;
 
-    if (rejectedDocs.length > 0) {
+    // Kısmi puan hesaplama - onaylanan belge oranı * 20
+    const approvalRatio = approvedDocs.length / totalDocs;
+    const score = Math.round(approvalRatio * 20);
+
+    if (rejectedDocs.length > 0 && approvedDocs.length === 0) {
       return { score: 0, status: "rejected", message: t("company.hasRejected") };
+    }
+
+    if (approvedDocs.length === totalDocs) {
+      return { score: 20, status: "approved", message: t("company.allApproved") };
+    }
+
+    if (approvedDocs.length > 0) {
+      const message = rejectedDocs.length > 0 
+        ? t("company.partialWithRejected", { approved: approvedDocs.length, total: totalDocs })
+        : t("company.partialApproved", { approved: approvedDocs.length, total: totalDocs });
+      return { score, status: "partial", message };
     }
 
     if (pendingDocs.length > 0) {
       return { score: 0, status: "pending", message: t("company.hasPending") };
-    }
-
-    if (approvedDocs.length > 0 && approvedDocs.length === companyDocuments.length) {
-      return { score: 20, status: "approved", message: t("company.allApproved") };
     }
 
     return { score: 0, status: "incomplete", message: t("company.incomplete") };
@@ -60,17 +72,29 @@ export function UseSafeCertificationCard({
     const approvedDocs = productDocuments.filter(doc => doc.status === "approved");
     const rejectedDocs = productDocuments.filter(doc => doc.status === "rejected");
     const pendingDocs = productDocuments.filter(doc => doc.status === "pending");
+    const totalDocs = productDocuments.length;
 
-    if (rejectedDocs.length > 0) {
+    // Kısmi puan hesaplama - onaylanan belge oranı * 40
+    const approvalRatio = approvedDocs.length / totalDocs;
+    const score = Math.round(approvalRatio * 40);
+
+    if (rejectedDocs.length > 0 && approvedDocs.length === 0) {
       return { score: 0, status: "rejected", message: t("documents.hasRejected") };
+    }
+
+    if (approvedDocs.length === totalDocs) {
+      return { score: 40, status: "approved", message: t("documents.allApproved") };
+    }
+
+    if (approvedDocs.length > 0) {
+      const message = rejectedDocs.length > 0 
+        ? t("documents.partialWithRejected", { approved: approvedDocs.length, total: totalDocs })
+        : t("documents.partialApproved", { approved: approvedDocs.length, total: totalDocs });
+      return { score, status: "partial", message };
     }
 
     if (pendingDocs.length > 0) {
       return { score: 0, status: "pending", message: t("documents.hasPending") };
-    }
-
-    if (approvedDocs.length > 0 && approvedDocs.length === productDocuments.length) {
-      return { score: 40, status: "approved", message: t("documents.allApproved") };
     }
 
     return { score: 0, status: "incomplete", message: t("documents.incomplete") };
@@ -126,17 +150,29 @@ export function UseSafeCertificationCard({
     const approvedCerts = extraCertifications.filter(doc => doc.status === "approved");
     const rejectedCerts = extraCertifications.filter(doc => doc.status === "rejected");
     const pendingCerts = extraCertifications.filter(doc => doc.status === "pending");
+    const totalCerts = extraCertifications.length;
 
-    if (rejectedCerts.length > 0) {
+    // Kısmi puan hesaplama - onaylanan sertifika oranı * 20
+    const approvalRatio = approvedCerts.length / totalCerts;
+    const score = Math.round(approvalRatio * 20);
+
+    if (rejectedCerts.length > 0 && approvedCerts.length === 0) {
       return { score: 0, status: "rejected", message: t("extraCertifications.hasRejected") };
+    }
+
+    if (approvedCerts.length === totalCerts) {
+      return { score: 20, status: "approved", message: t("extraCertifications.hasApproved") };
+    }
+
+    if (approvedCerts.length > 0) {
+      const message = rejectedCerts.length > 0 
+        ? t("extraCertifications.partialWithRejected", { approved: approvedCerts.length, total: totalCerts })
+        : t("extraCertifications.partialApproved", { approved: approvedCerts.length, total: totalCerts });
+      return { score, status: "partial", message };
     }
 
     if (pendingCerts.length > 0) {
       return { score: 0, status: "pending", message: t("extraCertifications.hasPending") };
-    }
-
-    if (approvedCerts.length > 0) {
-      return { score: 20, status: "approved", message: t("extraCertifications.hasApproved") };
     }
 
     return { score: 0, status: "incomplete", message: t("extraCertifications.incomplete") };
@@ -155,6 +191,8 @@ export function UseSafeCertificationCard({
       case "approved":
       case "complete":
         return <CheckCircle className="w-4 h-4 text-green-500" />;
+      case "partial":
+        return <CheckCircle className="w-4 h-4 text-blue-500" />;
       case "pending":
       case "incomplete":
         return <Settings className="w-4 h-4 text-yellow-500" />;
@@ -166,9 +204,9 @@ export function UseSafeCertificationCard({
   };
 
   const getScoreColor = (score: number) => {
-    if (score >= 80) return "text-green-500";
-    if (score >= 40) return "text-yellow-500";
-    return "text-red-500";
+    if (score >= 15) return "text-green-500";  // Full points for this metric
+    if (score > 0) return "text-blue-500";     // Partial points
+    return "text-red-500";                     // No points
   };
 
   return (
