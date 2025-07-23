@@ -9,6 +9,7 @@ import {
   ShieldCheck,
   Bell,
   ClipboardCheck,
+  Settings,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -74,14 +75,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       icon: Factory,
     },
     {
-      title: t('menu.documents'),
-      href: "/dashboard/documents",
-      icon: FileText,
-    },
-    {
-      title: t('menu.certifications'),
-      href: "/dashboard/certifications",
-      icon: ShieldCheck,
+      title: t('menu.settings'),
+      href: "/dashboard/settings",
+      icon: Settings,
     },
   ].filter(item => item.show === undefined || item.show === true), [t, company]);
 

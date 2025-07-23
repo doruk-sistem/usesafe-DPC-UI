@@ -149,7 +149,9 @@
     "company":"Company",
     "contact":"Contact",
     "notifications":"Notifications",
-    "security":"Security"
+    "security":"Security",
+    "documents":"Documents",
+    "certifications":"Certifications"
   },
   "security":{
   "title":"Security",
@@ -290,13 +292,15 @@
        "view":"View"
       },
       "table":{
-        "document":"Document",
-        "type":"Type",
-        "status":"Status",
-        "applicationDate":"Application Date",
-        "updateDate":"Update Date",
-        "actions":"Actions",
-        "view":"View"
+        "document": "Document",
+        "type": "Type",
+        "category": "Category",
+        "status": "Status",
+        "validUntil": "Valid Until",
+        "issuer": "Issuer",
+        "applicationDate": "Application Date",
+        "updateDate": "Update Date",
+        "actions": "Actions"
       }
     },
     "filters":{
@@ -1581,190 +1585,6 @@
           "description": "Authenticated sustainability credentials"
         }
       }
-    },
-    "details": {
-      "backToProducts": "Back to Products",
-      "basicInfo": {
-        "title": "Basic Information",
-        "productCode": "Product Code",
-        "productName": "Product Name",
-        "sku": "SKU",
-        "category": "Category",
-        "status": "Status",
-        "addedDate": "Added Date",
-        "manufacturer": "Manufacturer",
-        "seller": "Seller",
-        "taxNumber": "Tax Number"
-      },
-      "certifications": {
-        "title": "Certifications",
-        "loadingCertifications": "Loading certifications...",
-        "errorLoadingCertifications": "Error loading certifications",
-        "noCertifications": "No certifications found for this product.",
-        "table": {
-          "name": "Certificate",
-          "issuedBy": "Issued By",
-          "validUntil": "Valid Until",
-          "status": "Status",
-          "document": "Document"
-        },
-        "status": {
-          "rejected": "Rejected",
-          "active": "Active",
-          "valid": "Valid",
-          "expired": "Expired",
-          "pending": "Pending",
-          "unknown": "Unknown",
-          "approved": "Approved"
-        },
-        "actions": {
-          "download": "Download",
-          "noDocument": "No documents found"
-        }
-      },
-      "qr": {
-        "title": "Product QR Code",
-        "description": "Scan this QR code to verify product authenticity and access detailed information",
-        "instructions": "Use your smartphone camera or QR code reader app to scan",
-        "downloadButton": "Download QR Code",
-        "imageAlt": "Product Verification QR Code",
-        "productQRCode": "Product QR Code"
-      },
-      "sustainability": {
-        "title": "Sustainability",
-        "description": "View product sustainability metrics",
-        "progress": "Progress",
-        "badge": "{value}% Sustainability",
-        "metrics": {
-          "waterUsage": "Water Usage",
-          "carbonFootprint": "Carbon Footprint",
-          "energyConsumption": "Energy Consumption",
-          "recycledContent": "Recycled Content",
-          "low": "Low",
-          "medium": "Medium",
-          "high": "High",
-          "carbon-footprint": "Carbon Footprint",
-          "water-usage": "Water Usage",
-          "energy-consumption": "Energy Consumption",
-          "recycled-materials": "Recycled Materials",
-          "chemical-reduction": "Chemical Reduction",
-          "biodegradability": "Biodegradability",
-          "packaging": "Packaging",
-          "waste-reduction": "Waste Reduction",
-          "chemical-usage": "Chemical Usage",
-          "renewable-energy": "Renewable Energy",
-          "water-saving": "Water Saving"
-        }
-      },
-      "battery": {
-        "features": {
-          "0": "Advanced lithium-ion technology for optimal performance",
-          "1": "Built-in safety features and protection circuits",
-          "2": "Extended cycle life and reliable power output"
-        },
-        "healthAndSafety": {
-          "title": "Health and Safety Measures",
-          "measures": {
-            "0": "Always handle batteries with care",
-            "1": "Keep in upright position at all times",
-            "2": "Charge in a well-ventilated area",
-            "3": "Do not add pure water (Pure water level should be 1.5 cm above plates)",
-            "4": "Always wear protective goggles suitable for working conditions during battery maintenance (adding water, cleaning, charging)",
-            "5": "Wear protective clothing if there is a risk of acid splashing"
-          }
-        },
-        "storage": {
-          "title": "Storage and Installation Guidelines",
-          "sections": {
-            "general": "General Storage",
-            "chargeLevel": "Charge Level Monitoring",
-            "installation": "Installation Steps",
-            "items": {
-              "general": {
-                "0": "Always store upright in a dry and cool place (10°C - 25°C)",
-                "1": "Place batteries on wooden pallets to avoid direct contact with concrete floor"
-              },
-              "chargeLevel": {
-                "0": "Pre-sale battery charge level should be above 12.6V",
-                "1": "Minimum voltage during storage should be 12.4V",
-                "2": "If voltage is low, open package and charge at 16.1V and 1/20Cn current to prevent permanent damage"
-              },
-              "installation": {
-                "0": "Verify battery compatibility from vehicle manual",
-                "1": "Ensure engine is off",
-                "2": "Remove old battery (negative terminal first)",
-                "3": "Check for short circuits",
-                "4": "Clean battery compartment and terminals",
-                "5": "Install new battery (connect positive cable first)",
-                "6": "Check charging current compatibility"
-              }
-            }
-          }
-        },
-        "emergency": {
-          "title": "Emergency Procedures",
-          "procedures": {
-            "contact": "In case of eye or skin contact, rinse with plenty of water.",
-            "clothing": "Remove contaminated clothing immediately.",
-            "ingestion": "If swallowed: Drink plenty of water and milk. Consult a doctor.",
-            "spill": "Spillage: Wash small spills with water.",
-            "gases": "If gases are released, ventilate the area.",
-            "spark": "Keep away from sparks and flames.",
-            "fire": "In case of fire, use appropriate fire extinguisher.",
-            "devices": "Turn off and remove electrical devices."
-          }
-        }
-      },
-      "textile": {
-        "careInstructions": "Care Instructions"
-      },
-      "layoutNotAvailable": "DPP layout not available for product type:",
-      "quickInfo": {
-        "title": "Quick Information",
-        "model": "Model",
-        "manufacturer": "Manufacturer",
-        "category": "Category"
-      },
-      "keyFeatures": {
-        "title": "Key Features"
-      },
-      "materials": {
-        "title": "Materials",
-        "table": {
-          "material": "Material",
-          "percentage": "Percentage",
-          "recyclable": "Recyclable",
-          "description": "Description",
-          "yes": "Yes",
-          "no": "No"
-        },
-        "recyclable": {
-          "yes": "Yes",
-          "no": "No"
-        }
-      },
-      "healthAndSafety": {
-        "title": "Health and Safety",
-        "measures": {
-          "0": "Always follow proper handling and storage guidelines",
-          "1": "Keep away from extreme temperatures and moisture",
-          "2": "Use appropriate personal protective equipment when handling",
-          "3": "Regular maintenance and inspection required"
-        }
-      },
-      "hazards": {
-        "title": "Hazards",
-        "health": "Health Hazard",
-        "healthDesc": "Battery acid can cause severe irritation to skin and eyes.",
-        "corrosive": "Corrosive",
-        "corrosiveDesc": "Battery acid can corrode metals and tissues.",
-        "warning": "Warning",
-        "warningDesc": "Improper use may cause serious injury.",
-        "explosive": "Explosive",
-        "explosiveDesc": "Battery gas is explosive, keep away from sparks and flames.",
-        "environmental": "Environmental Hazard",
-        "environmentalDesc": "Battery chemicals are harmful to the environment, prevent release into nature."
-      }
     }
   },
   "productManagement": {
@@ -2515,14 +2335,18 @@
     "list": {
       "title": "Documents",
       "description": "Manage your company documents",
-    "empty": {
-      "title": "No documents found",
-      "description": "Upload a document to get started"
-    }
+      "empty": {
+        "title": "No documents found",
+        "description": "Upload a document to get started"
+      }
     },
     "table": {
       "document": "Document",
       "type": "Type",
+      "category": "Category",
+      "status": "Status",
+      "validUntil": "Valid Until",
+      "issuer": "Issuer",
       "applicationDate": "Application Date",
       "updateDate": "Update Date",
       "actions": "Actions"

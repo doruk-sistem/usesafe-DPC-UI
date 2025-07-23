@@ -76,7 +76,7 @@ export default function UploadDocumentPage() {
         user.user_metadata.data.company_id,
         values.type
       );
-      router.push("/dashboard/documents");
+      router.push("/dashboard/settings");
       router.refresh();
     } catch (err) {
       setFileError(err instanceof Error ? err.message : "Döküman yüklenirken bir hata oluştu");
@@ -90,7 +90,7 @@ export default function UploadDocumentPage() {
       <Card>
         <CardHeader className="flex flex-row items-center gap-4">
           <Button variant="ghost" size="icon" asChild>
-            <Link href="/dashboard/documents">
+            <Link href="/dashboard/settings">
               <ArrowLeft className="h-5 w-5" />
             </Link>
           </Button>

@@ -6,6 +6,8 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
+import { CertificationList } from "@/components/dashboard/certifications/certification-list";
+import { CompanyDocumentList } from "@/components/dashboard/documents/company-document-list";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -296,10 +298,12 @@ export function SettingsForm() {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-        <Tabs defaultValue="company" className="space-y-4">
+        <Tabs defaultValue="documents" className="space-y-4">
           <TabsList>
             <TabsTrigger value="company">{t("tabs.company")}</TabsTrigger>
             <TabsTrigger value="contact">{t("tabs.contact")}</TabsTrigger>
+            <TabsTrigger value="documents">{t("tabs.documents")}</TabsTrigger>
+            <TabsTrigger value="certifications">{t("tabs.certifications")}</TabsTrigger>
             <TabsTrigger value="notifications">{t("tabs.notifications")}</TabsTrigger>
             <TabsTrigger value="security">{t("tabs.security")}</TabsTrigger>
             {canManageUsers() && (
@@ -561,6 +565,14 @@ export function SettingsForm() {
             </div>
           </TabsContent>
 
+          <TabsContent value="documents">
+              <CompanyDocumentList />
+          </TabsContent>
+
+          <TabsContent value="certifications">
+            <CertificationList filters={{ type: "all", status: "all-status" }} />
+          </TabsContent>
+
           <TabsContent value="security">
             <Card>
               <CardHeader>
@@ -639,7 +651,7 @@ export function SettingsForm() {
               </DialogContent>
             </Dialog>
           </TabsContent>
-          
+
           <TabsContent value="users">
             <Card>
               <CardHeader>
@@ -689,6 +701,7 @@ export function SettingsForm() {
                           <FormLabel className="text-right">{t("users.invites.role")}</FormLabel>
                           <select 
                             id="role"
+                            aria-label={t("users.invites.role")}
                             className="col-span-3 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                             value={inviteFormData.role}
                             onChange={handleInviteFormChange}

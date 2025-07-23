@@ -1,6 +1,6 @@
 "use client";
 
-import { FileText, MoreHorizontal, Download, History, ExternalLink, AlertTriangle } from "lucide-react";
+import { FileText, MoreHorizontal, Download, History, ExternalLink, AlertTriangle, Plus } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 
@@ -62,10 +62,20 @@ export function CompanyDocumentList() {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>{t("companyDocuments.title")}</CardTitle>
-          <CardDescription>
-            {t("companyDocuments.description")}
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>{t("documents.title")}</CardTitle>
+              <CardDescription>
+                {t("documents.description")}
+              </CardDescription>
+            </div>
+            <Button asChild>
+              <Link href="/dashboard/documents/upload">
+                <Plus className="h-4 w-4 mr-2" />
+                {t("documents.filters.upload")}
+              </Link>
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           <Loading />
@@ -78,10 +88,20 @@ export function CompanyDocumentList() {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>{t("companyDocuments.title")}</CardTitle>
-          <CardDescription>
-            {t("companyDocuments.description")}
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>{t("documents.title")}</CardTitle>
+              <CardDescription>
+                {t("documents.description")}
+              </CardDescription>
+            </div>
+            <Button asChild>
+              <Link href="/dashboard/documents/upload">
+                <Plus className="h-4 w-4 mr-2" />
+                {t("documents.filters.upload")}
+              </Link>
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="text-center py-8">
@@ -100,17 +120,27 @@ export function CompanyDocumentList() {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>{t("companyDocuments.title")}</CardTitle>
-          <CardDescription>
-            {t("companyDocuments.description")}
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>{t("documents.title")}</CardTitle>
+              <CardDescription>
+                {t("documents.description")}
+              </CardDescription>
+            </div>
+            <Button asChild>
+              <Link href="/dashboard/documents/upload">
+                <Plus className="h-4 w-4 mr-2" />
+                {t("documents.filters.upload")}
+              </Link>
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="text-center py-8">
             <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-medium mb-2">{t("noDocumentsFound")}</h3>
+            <h3 className="text-lg font-medium mb-2">{t("documents.list.empty.title")}</h3>
             <p className="text-muted-foreground">
-              {t("noDocumentsDescription")}
+              {t("documents.list.empty.description")}
             </p>
           </div>
         </CardContent>
@@ -121,21 +151,31 @@ export function CompanyDocumentList() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{t("companyDocuments.title")}</CardTitle>
-        <CardDescription>
-          {t("companyDocuments.description")}
-        </CardDescription>
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle>{t("documents.title")}</CardTitle>
+            <CardDescription>
+              {t("documents.description")}
+            </CardDescription>
+          </div>
+          <Button asChild>
+            <Link href="/dashboard/documents/upload">
+              <Plus className="h-4 w-4 mr-2" />
+              {t("documents.filters.upload")}
+            </Link>
+          </Button>
+        </div>
       </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>{t("documents.repository.columns.document")}</TableHead>
-              <TableHead>{t("documents.repository.columns.type")}</TableHead>
-              <TableHead>{t("documents.repository.columns.category")}</TableHead>
-              <TableHead>{t("documents.repository.columns.status")}</TableHead>
-              <TableHead>{t("documents.repository.columns.validUntil")}</TableHead>
-              <TableHead>{t("documents.repository.columns.issuer")}</TableHead>
+              <TableHead>{t("documents.table.document")}</TableHead>
+              <TableHead>{t("documents.table.type")}</TableHead>
+              <TableHead>{t("documents.table.category")}</TableHead>
+              <TableHead>{t("documents.table.status")}</TableHead>
+              <TableHead>{t("documents.table.validUntil")}</TableHead>
+              <TableHead>{t("documents.table.issuer")}</TableHead>
               <TableHead></TableHead>
             </TableRow>
           </TableHeader>
@@ -174,7 +214,7 @@ export function CompanyDocumentList() {
                     className="flex w-fit items-center gap-1"
                   >
                     {getStatusIcon(doc.status)}
-                    {t(`documentManagement.status.${doc.status}`)}
+                    {doc.status}
                   </Badge>
                 </TableCell>
                 <TableCell>
@@ -190,33 +230,33 @@ export function CompanyDocumentList() {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>{t("documents.repository.actions.title")}</DropdownMenuLabel>
+                      <DropdownMenuLabel>{t("documents.actions.title")}</DropdownMenuLabel>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem asChild>
                         <Link href={`/dashboard/company/documents/${doc.id}`}>
                           <FileText className="h-4 w-4 mr-2" />
-                          {t("documents.repository.actions.view")}
+                          {t("documents.actions.view")}
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem>
                         <Download className="h-4 w-4 mr-2" />
-                        {t("documents.repository.actions.download")}
+                        {t("documents.actions.download")}
                       </DropdownMenuItem>
                       <DropdownMenuItem>
                         <History className="h-4 w-4 mr-2" />
-                        {t("documents.repository.actions.history")}
+                        {t("documents.actions.history")}
                       </DropdownMenuItem>
                       {doc.status === "rejected" && (
                         <DropdownMenuItem asChild>
                           <Link href={`/dashboard/company/documents/${doc.id}/reupload`}>
                             <ExternalLink className="h-4 w-4 mr-2" />
-                            {t("documents.repository.actions.reupload")}
+                            {t("documents.actions.reupload")}
                           </Link>
                         </DropdownMenuItem>
                       )}
                       <DropdownMenuSeparator />
                       <DropdownMenuItem className="text-red-600">
-                        {t("documents.repository.actions.delete")}
+                        {t("documents.actions.delete")}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>

@@ -2581,7 +2581,9 @@
       "contact": "İletişim",
       "notifications": "Bildirimler",
       "security": "Güvenlik",
-      "users": "Kullanıcılar"
+      "users": "Kullanıcılar",
+      "documents": "Belgeler",
+      "certifications": "Sertifikalar"
     },
     "security":{
       "title":"Güvenlik",
@@ -3759,6 +3761,10 @@
     "table": {
       "document": "Belge",
       "type": "Tür",
+      "category": "Kategori",
+      "status": "Durum",
+      "validUntil": "Geçerlilik Tarihi",
+      "issuer": "Veren",
       "applicationDate": "Başvuru Tarihi",
       "updateDate": "Güncelleme Tarihi",
       "actions": "İşlemler"

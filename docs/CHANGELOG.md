@@ -5,9 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.1.11] - 2025-07-23
 
 ### Added
+- Reorganized dashboard sidebar to include Settings as a main menu item
+- Moved Documents and Certifications as tabs within Settings page
+- Added Documents and Certifications tabs to Settings form
+- Added document upload functionality to Documents tab in Settings
+- Updated translation files to support new menu structure
+- Enhanced accessibility by adding aria-label to select elements
+
+### Changed
+- Updated dashboard layout to remove Documents and Certifications as separate sidebar items
+- Restructured Settings page to include Documents and Certifications management
+- Changed default tab in Settings to Documents for better user experience
+- Updated upload page navigation to redirect to Settings after successful upload
+- Improved navigation structure for better user experience
 - Added Supabase email confirmation security page at `/auth/approval` to safely handle confirmation URLs
 - Added enhanced user onboarding flow at `/auth/callback` for invited suppliers to set passwords
 - Added Content Security Policy (CSP) headers to allow Hedera blockchain API connections
@@ -31,6 +44,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhanced ProductBlockchainRecord type to include productType and model properties
 - Added better error messages for blockchain query failures
 - Implemented robust fallback for failed contract queries to prevent UI errors
+- Fixed translation keys in CompanyDocumentList component when moved to Settings tab
+- Added missing table column translations (category, status, validUntil, issuer) to both English and Turkish translation files
+- Updated component to use correct translation keys for table headers
 
 ## [Previous Unreleased Features]
 - Added support for product subcategories based on selected product type
