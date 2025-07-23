@@ -868,14 +868,12 @@
     },
     "menu": {
       "dashboard": "Panel",
+      "productManagement": "Ürün Yönetimi",
       "products": "Ürünler",
-      "profile": "Profil",
-      "settings": "Ayarlar",
-      "dpps": "DPP'ler",
+      "supplyChainManagement": "Tedarik Zinciri Yönetimi",
       "suppliers": "Tedarikçiler",
-      "documents": "Belgeler",
-      "certifications": "Sertifikalar",
-      "pendingProducts": "Bekleyen Ürünler"
+      "myProducts": "Ürettiğim Ürünler",
+      "settings": "Ayarlar"
     },
     "registration": {
       "title": "Kayıt",

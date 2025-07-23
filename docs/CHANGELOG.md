@@ -5,6 +5,45 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.14] - 2025-07-23
+
+### Added
+- Implemented submenu support in dashboard sidebar navigation
+- Added collapsible menu structure with expand/collapse functionality
+- Added new menu organization: Dashboard, Product Management, Supply Chain Management, and Settings
+- Added Product Management submenu with Products option
+- Added Supply Chain Management submenu with Suppliers and My Products options
+- Added visual indicators (chevron icons) for expandable menu items
+- Added proper state management for submenu open/close states
+
+### Changed
+- Restructured dashboard menu to support hierarchical navigation
+- Moved Products under Product Management submenu
+- Moved Suppliers and Pending Products under Supply Chain Management submenu
+- Renamed "Pending Products" to "My Products" for better clarity
+- Updated translation files to include new menu structure in both English and Turkish
+- Enhanced menu rendering logic to handle submenu visibility and filtering
+- Improved mobile navigation to support submenu structure
+
+### Fixed
+- Fixed import order in dashboard layout component to resolve linter errors
+- Ensured proper TypeScript typing for menu item interface
+- Fixed menu highlighting logic to only highlight active/selected items instead of all items
+- Fixed text overflow issues in menu items by adding proper truncation and flex layout
+- Increased sidebar width from 256px to 288px to accommodate longer menu text
+- Added proper hover states for menu items with subtle background highlighting
+- Fixed parent menu items staying highlighted when clicked by removing background highlighting from submenu headers
+- Added auto-expand functionality for submenus when child items are active
+- Improved submenu state management to combine manual opens with auto-expanded items
+- Refactored dashboard menu logic into a separate custom hook (`useDashboardMenu`) for better code organization
+- Separated menu state management from layout component to improve maintainability and reusability
+- Added icon mapping system to handle dynamic icon rendering in menu items
+- Improved code structure by moving complex menu logic to dedicated hook
+- Created separate `DashboardMenuItem` component to handle individual menu item rendering
+- Extracted menu item rendering logic from layout component for better modularity
+- Improved component reusability and testability by separating concerns
+- Reduced layout component complexity by moving menu item logic to dedicated component
+
 ## [0.1.13] - 2025-07-23
 
 ### Fixed

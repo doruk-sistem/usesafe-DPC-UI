@@ -1,22 +1,15 @@
 "use client";
 
 import {
-  QrCode,
-  Factory,
   LayoutDashboard,
-  Box,
-  FileText,
   ShieldCheck,
   Bell,
-  ClipboardCheck,
-  Settings,
 } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useTranslations } from 'next-intl';
-import { useMemo } from 'react';
 
 import { ComplateRegistrationForm } from "@/components/dashboard/complate-registration-form";
+import { DashboardMenuItem } from "@/components/dashboard/menu-item";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -34,52 +27,16 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { useAuth } from "@/lib/hooks/use-auth";
-import { CompanyType } from "@/lib/types/company";
-import { cn } from "@/lib/utils";
+import { useDashboardMenu } from "@/lib/hooks/use-dashboard-menu";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
 }
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
-  const pathname = usePathname();
   const { company } = useAuth();
   const t = useTranslations('dashboard');
-
-  const sidebarItems = useMemo(() => [
-    {
-      title: t('menu.dashboard'),
-      href: "/dashboard",
-      icon: LayoutDashboard,
-    },
-    {
-      title: t('menu.products'),
-      href: "/dashboard/products",
-      icon: Box,
-    },
-    {
-      title: t('menu.pendingProducts'),
-      href: "/dashboard/pending-products",
-      icon: ClipboardCheck,
-      show: company?.companyType === CompanyType.MANUFACTURER
-    },
-    {
-      title: t('menu.dpps'),
-      href: "/dashboard/dpps",
-      icon: QrCode,
-      show: false,
-    },
-    {
-      title: t('menu.suppliers'),
-      href: "/dashboard/suppliers",
-      icon: Factory,
-    },
-    {
-      title: t('menu.settings'),
-      href: "/dashboard/settings",
-      icon: Settings,
-    },
-  ].filter(item => item.show === undefined || item.show === true), [t, company]);
+  const { visibleItems, handleSubmenuToggle, isSubmenuOpen, isActive } = useDashboardMenu();
 
   return (
     <>
@@ -99,7 +56,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
       <div className="flex min-h-screen">
         {/* Sidebar - Desktop */}
-        <aside className="hidden lg:flex w-64 flex-col border-r bg-muted/40">
+        <aside className="hidden lg:flex w-72 flex-col border-r bg-muted/40">
           <div className="p-6">
             <Link
               href="/dashboard"
@@ -111,23 +68,14 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           </div>
           <ScrollArea className="flex-1 px-3">
             <div className="space-y-1">
-              {sidebarItems.map((item) => (
-                <Button
-                  key={item.href}
-                  variant={pathname === item.href ? "secondary" : "ghost"}
-                  className={cn(
-                    "w-full h-10 px-4 justify-start",
-                    pathname === item.href && "bg-secondary"
-                  )}
-                  asChild
-                >
-                  <Link href={item.href}>
-                    <div className="flex items-center gap-3">
-                      <item.icon className="h-4 w-4 shrink-0" />
-                      <span>{item.title}</span>
-                    </div>
-                  </Link>
-                </Button>
+              {visibleItems.map((item) => (
+                <DashboardMenuItem
+                  key={item.title}
+                  item={item}
+                  isActive={isActive(item.href)}
+                  isSubmenuOpen={isSubmenuOpen(item.title)}
+                  onSubmenuToggle={handleSubmenuToggle}
+                />
               ))}
             </div>
           </ScrollArea>
@@ -140,7 +88,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               <LayoutDashboard className="h-6 w-6" />
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="w-64 p-0">
+          <SheetContent side="left" className="w-72 p-0">
             <SheetHeader className="p-6">
               <SheetTitle className="flex items-center gap-2">
                 <ShieldCheck className="h-6 w-6 shrink-0 text-primary" />
@@ -149,23 +97,14 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             </SheetHeader>
             <ScrollArea className="h-[calc(100vh-5rem)]">
               <div className="space-y-1 p-3">
-                {sidebarItems.map((item) => (
-                  <Button
-                    key={item.href}
-                    variant={pathname === item.href ? "secondary" : "ghost"}
-                    className={cn(
-                      "w-full h-10 px-4 justify-start",
-                      pathname === item.href && "bg-secondary"
-                    )}
-                    asChild
-                  >
-                    <Link href={item.href}>
-                      <div className="flex items-center gap-3">
-                        <item.icon className="h-4 w-4 shrink-0" />
-                        <span>{item.title}</span>
-                      </div>
-                    </Link>
-                  </Button>
+                {visibleItems.map((item) => (
+                  <DashboardMenuItem
+                    key={item.title}
+                    item={item}
+                    isActive={isActive(item.href)}
+                    isSubmenuOpen={isSubmenuOpen(item.title)}
+                    onSubmenuToggle={handleSubmenuToggle}
+                  />
                 ))}
               </div>
             </ScrollArea>

@@ -421,14 +421,12 @@
     },
     "menu": {
       "dashboard": "Dashboard",
+      "productManagement": "Product Management",
       "products": "Products",
-      "profile": "Profile",
-      "settings": "Settings",
-      "dpps": "DPPs",
+      "supplyChainManagement": "Supply Chain Management",
       "suppliers": "Suppliers",
-      "documents": "Documents",
-      "certifications": "Certifications",
-      "pendingProducts": "Pending Products"
+      "myProducts": "My Products",
+      "settings": "Settings"
     },
     "registration": {
       "title": "Registration",
