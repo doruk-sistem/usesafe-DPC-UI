@@ -60,8 +60,6 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
     enabled: !!productType && !!subcategory,
   });
 
-  console.log(guidance);
-
   // Form trigger metodunu sadece bu komponentin yaşam döngüsü boyunca override edelim
   useEffect(() => {
     const originalTrigger = form.trigger;
@@ -242,9 +240,6 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
               <p className="text-sm text-orange-700 mb-3">
                 {guidance.dppNotes}
               </p>
-              <div className="text-xs text-orange-600 bg-orange-100 px-2 py-1 rounded">
-                ESPR Compliance Required
-              </div>
             </div>
           </div>
         </Card>
@@ -265,6 +260,51 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
               </h4>
               <p className="text-sm text-gray-700">
                 {guidance.dppNotes}
+              </p>
+            </div>
+          </div>
+        </Card>
+      )}
+
+      {/* CBAM Requirement Card - Only show if CBAM is required */}
+      {guidance && guidance.cbamRequired && (
+        <Card className="p-4 border-red-200 bg-red-50">
+          <div className="flex items-start gap-3">
+            <div className="flex-shrink-0">
+              <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center">
+                <Info className="h-4 w-4 text-red-600" />
+              </div>
+            </div>
+            <div className="flex-1">
+              <h4 className="font-semibold text-red-800 mb-2">
+                CBAM (Carbon Border Adjustment Mechanism) Required
+              </h4>
+              <p className="text-sm text-red-700 mb-3">
+                {guidance.cbamNotes}
+              </p>
+              <div className="text-xs text-red-600 bg-red-100 px-2 py-1 rounded">
+                Carbon Compliance Required
+              </div>
+            </div>
+          </div>
+        </Card>
+      )}
+
+      {/* CBAM Not Required Info - Only show if explicitly false and guidance is loaded */}
+      {guidance && guidance.cbamRequired === false && (
+        <Card className="p-4 border-gray-200 bg-gray-50">
+          <div className="flex items-start gap-3">
+            <div className="flex-shrink-0">
+              <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
+                <CheckCircle className="h-4 w-4 text-gray-600" />
+              </div>
+            </div>
+            <div className="flex-1">
+              <h4 className="font-semibold text-gray-800 mb-2">
+                CBAM (Carbon Border Adjustment Mechanism) Not Required
+              </h4>
+              <p className="text-sm text-gray-700">
+                {guidance.cbamNotes}
               </p>
             </div>
           </div>

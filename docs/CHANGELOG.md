@@ -15,16 +15,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     * `false`: Products NOT included in ESPR timeline through 2030
   - Provides `dppNotes` with explanation of DPP requirement and timeline
   - Evaluates key categories: Textiles (2026), Electronics/ICT (2026), Batteries (mandatory), Furniture (2027-2030), Iron/steel (2026), Chemicals (2026-2030), Food contact materials (2027-2030), Construction products (2027-2030)
-- **DPP information display in UI**: Added DPP requirement cards in DocumentUploadStep
+- **Added CBAM compliance assessment**: AI now evaluates if Carbon Border Adjustment Mechanism (CBAM) compliance is required
+  - Returns `cbamRequired: true/false` boolean value based on CBAM covered sectors:
+    * `true`: Products falling under covered sectors (cement, iron/steel, aluminium, fertilizers, electricity, hydrogen)
+    * `false`: Products NOT covered by CBAM regulation
+  - Provides `cbamNotes` with explanation of CBAM requirement
+  - Includes CBAM-specific documents in mandatory/optional lists:
+    * **Mandatory CBAM documents**: CBAM Declaration, Carbon Content Certificate, Emissions Data Report
+    * **Optional CBAM documents**: Third Country Certificate, CBAM Registry Documentation, Carbon Footprint Assessment
+- **CBAM information display in UI**: Added CBAM requirement cards in DocumentUploadStep and DocumentGuidanceCard
+  - Shows red warning card when CBAM is required with Carbon Compliance badge
+  - Shows gray info card when CBAM is not required
+  - Displays CBAM notes and sector information to users
+  - DocumentGuidanceCard now shows both DPP and CBAM requirements with colored badges
+- **DPP information display in UI**: Added DPP requirement cards in DocumentUploadStep and DocumentGuidanceCard
   - Shows orange warning card when DPP is required with ESPR compliance badge
   - Shows gray info card when DPP is not required
   - Displays DPP notes and timeline information to users
-- **Updated ProductDocumentGuidance interface**: Added `dppRequired` boolean and `dppNotes` string fields in both API route and service files
+- **Updated ProductDocumentGuidance interface**: Added `dppRequired`, `dppNotes`, `cbamRequired`, and `cbamNotes` fields in both API route and service files
+- **Comprehensive compliance expertise**: AI now acts as GPSR, ESPR, and CBAM compliance expert
 - **Specific GPSR document lists**: Added predefined lists of mandatory and optional GPSR compliance documents
   - **Mandatory**: CE Declaration of Conformity, CE Certificate/Certification, Technical Documentation File, Risk Assessment Report, User Instructions and Safety Manual, Test Reports, Product Safety Assessment, Conformity Assessment Documentation, Manufacturing Quality Documentation
   - **Optional**: Additional Safety Testing Reports, Environmental Impact Assessment, Extended Durability Testing, Quality Management System Certificate, Post-Market Surveillance Plan, Traceability Documentation, Supply Chain Safety Documentation, Incident Response Procedures
-- **Dual compliance expertise**: AI now acts as both GPSR and ESPR compliance expert
-- **Improved fallback responses**: Updated default responses with GPSR-focused documents (CE Declaration, Technical Documentation, Risk Assessment) and ESPR DPP assessment
+- **Improved fallback responses**: Updated default responses with GPSR-focused documents and both ESPR DPP and CBAM assessments
 
 ## [0.1.14] - 2025-07-23
 

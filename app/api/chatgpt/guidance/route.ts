@@ -17,6 +17,8 @@ export interface ProductDocumentGuidance {
   complianceNotes: string;
   dppRequired: boolean;
   dppNotes: string;
+  cbamRequired: boolean;
+  cbamNotes: string;
 }
 
 export async function POST(request: NextRequest) {
@@ -58,6 +60,9 @@ MANDATORY DOCUMENTS (choose relevant ones):
 - Product Safety Assessment
 - Conformity Assessment Documentation
 - Manufacturing Quality Documentation
+- CBAM Declaration (for CBAM covered products)
+- Carbon Content Certificate (for CBAM covered products)
+- Emissions Data Report (for CBAM covered products)
 
 OPTIONAL DOCUMENTS (choose relevant ones):
 - Additional Safety Testing Reports
@@ -68,6 +73,9 @@ OPTIONAL DOCUMENTS (choose relevant ones):
 - Traceability Documentation
 - Supply Chain Safety Documentation
 - Incident Response Procedures
+- Third Country Certificate (for CBAM imports)
+- CBAM Registry Documentation (for CBAM covered products)
+- Carbon Footprint Assessment (for CBAM covered products)
 
 Analyze the specific product "${productType}" in "${subcategory}" category and determine:
 1. Which documents are mandatory vs optional based on:
@@ -89,6 +97,18 @@ Analyze the specific product "${productType}" in "${subcategory}" category and d
      * Chemicals (2026-2030)
      * Food contact materials (2027-2030)
      * Construction products (2027-2030)
+
+3. Whether CBAM (Carbon Border Adjustment Mechanism) compliance is required:
+   - Check if product category falls under CBAM regulation scope
+   - CBAM REQUIRED (true): Products covered by CBAM sectors
+   - CBAM NOT REQUIRED (false): Products NOT covered by CBAM sectors
+   - CBAM covered sectors:
+     * Cement and cement products
+     * Iron and steel products
+     * Aluminium and aluminium products
+     * Fertilizers and fertilizer products
+     * Electricity (for imports)
+     * Hydrogen and hydrogen products
 
 Respond ONLY with this JSON format:
 
@@ -121,19 +141,23 @@ Respond ONLY with this JSON format:
   "generalNotes": "GPSR compliance requirements for this specific product category",
   "complianceNotes": "Mandatory obligations and market surveillance considerations",
   "dppRequired": true,
-  "dppNotes": "DPP will be mandatory for this product category under ESPR timeline (2026-2030)"
+  "dppNotes": "DPP will be mandatory for this product category under ESPR timeline (2026-2030)",
+  "cbamRequired": true,
+  "cbamNotes": "CBAM compliance required for this product category as it falls under covered sectors"
 }
 
 CRITICAL RULES:
 - Select specific documents from the lists above, don't create new ones
-- Focus on actual GPSR compliance documents (CE, risk assessment, etc.)
+- Focus on actual compliance documents (GPSR, CBAM, etc.)
 - DPP Evaluation: Set dppRequired = true if product category is planned for ANY year through 2030
 - DPP Evaluation: Set dppRequired = false ONLY if product category is NOT in ESPR plan through 2030
+- CBAM Evaluation: Set cbamRequired = true if product falls under CBAM covered sectors
+- CBAM Evaluation: Set cbamRequired = false if product is NOT covered by CBAM regulation
 - Consider product-specific requirements for ${productType}
 - NEVER use numbers or indexes in response
 - Respond ONLY with JSON object
 - Use actual product type and subcategory names in descriptions
-- Include both GPSR document requirements AND ESPR DPP assessment
+- Include GPSR documents, ESPR DPP assessment, AND CBAM compliance evaluation
 `;
 
     const response = await fetch(API_URL, {
@@ -146,7 +170,7 @@ CRITICAL RULES:
         messages: [
           {
             role: 'system',
-            content: `You are a dual compliance expert specializing in GPSR (General Product Safety Regulation) and ESPR (Ecodesign for Sustainable Products Regulation).
+            content: `You are a comprehensive EU compliance expert specializing in GPSR, ESPR, and CBAM regulations.
 
 Your expertise covers:
 GPSR COMPLIANCE:
@@ -166,12 +190,22 @@ ESPR & DPP COMPLIANCE:
 - Key DPP categories: Textiles (2026), Electronics/ICT (2026), Batteries (mandatory), Furniture (2027-2030), Iron/steel (2026), Chemicals (2026-2030), Food contact materials (2027-2030), Construction products (2027-2030)
 - Sustainability and ecodesign requirements
 
+CBAM COMPLIANCE:
+- CBAM covered sectors and product categories
+- Carbon Border Adjustment Mechanism requirements
+- CBAM evaluation criteria:
+  * REQUIRED (true): Products falling under covered sectors (cement, iron/steel, aluminium, fertilizers, electricity, hydrogen)
+  * NOT REQUIRED (false): Products NOT covered by CBAM regulation
+- CBAM documentation requirements (declarations, carbon content certificates, emissions data)
+- Third country certificate requirements for imports
+
 Your task:
 - Analyze the specific product type and subcategory provided
 - Determine GPSR compliance requirements based on product risk level
 - Evaluate ESPR DPP requirement: Set true if category is in ESPR plan (now through 2030), false if not planned
-- Identify mandatory vs recommended documentation
-- Consider product-specific safety and sustainability standards
+- Evaluate CBAM requirement: Set true if category is covered by CBAM sectors (cement, iron/steel, aluminium, fertilizers, electricity, hydrogen), false if not covered
+- Identify mandatory vs recommended documentation including CBAM documents for covered products
+- Consider product-specific safety, sustainability, and carbon compliance standards
 - Provide practical compliance guidance for EU market access
 
 RESPONSE REQUIREMENTS:
@@ -237,6 +271,8 @@ RESPONSE REQUIREMENTS:
       complianceNotes: parsed.complianceNotes || '',
       dppRequired: parsed.dppRequired || false,
       dppNotes: parsed.dppNotes || '',
+      cbamRequired: parsed.cbamRequired || false,
+      cbamNotes: parsed.cbamNotes || '',
     };
 
     return NextResponse.json(result);
@@ -310,7 +346,9 @@ RESPONSE REQUIREMENTS:
       generalNotes: 'All products placed on EU market must comply with GPSR. CE marking is mandatory for most consumer products. Risk assessment must be proportionate to product risk level.',
       complianceNotes: 'Manufacturers must maintain technical documentation for 10 years. Economic operators must cooperate with market surveillance authorities. Serious risks must be immediately reported to authorities.',
       dppRequired: false,
-      dppNotes: 'DPP requirement evaluation: Product category not included in ESPR mandatory timeline through 2030.'
+      dppNotes: 'DPP requirement evaluation: Product category not included in ESPR mandatory timeline through 2030.',
+      cbamRequired: false,
+      cbamNotes: 'CBAM requirement evaluation: Product category not covered by Carbon Border Adjustment Mechanism.'
     };
 
     return NextResponse.json(defaultGuidance);

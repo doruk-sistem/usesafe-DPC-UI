@@ -15,6 +15,8 @@ export interface ProductDocumentGuidance {
   complianceNotes: string;
   dppRequired: boolean;
   dppNotes: string;
+  cbamRequired: boolean;
+  cbamNotes: string;
 }
 
 export class ChatGPTService {
@@ -167,7 +169,9 @@ export class ChatGPTService {
       generalNotes: 'All products placed on EU market must comply with GPSR. CE marking is mandatory for most consumer products. Risk assessment must be proportionate to product risk level.',
       complianceNotes: 'Manufacturers must maintain technical documentation for 10 years. Economic operators must cooperate with market surveillance authorities. Serious risks must be immediately reported to authorities.',
       dppRequired: false,
-      dppNotes: 'DPP requirement evaluation: Product category not included in ESPR mandatory timeline through 2030.'
+      dppNotes: 'DPP requirement evaluation: Product category not included in ESPR mandatory timeline through 2030.',
+      cbamRequired: false,
+      cbamNotes: 'CBAM requirement evaluation: Product category not covered by Carbon Border Adjustment Mechanism.'
     };
   }
 } 
