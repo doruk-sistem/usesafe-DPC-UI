@@ -2882,6 +2882,24 @@
         "title": "Error",
         "description": "Failed to create account"
       }
+    },
+    "verifyEmail": {
+      "title": "Email Verification Required",
+      "description": "Please verify your email address to activate your account",
+      "emailSent": {
+        "title": "Verification Email Sent",
+        "description": "We've sent a verification link to your registered email address"
+      },
+      "nextSteps": {
+        "title": "Next Steps",
+        "verifyEmail": "Verify your email address",
+        "onboarding": "Complete platform onboarding"
+      },
+      "helpText": "Check your email inbox and click the verification link. If you don't see the email, check your spam folder.",
+      "actions": {
+        "login": "Sign In",
+        "backToHome": "Back to Home"
+      }
     }
   },
   "verify": {

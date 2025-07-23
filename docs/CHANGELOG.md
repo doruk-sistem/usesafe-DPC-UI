@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.12] - 2025-07-23
+
+### Added
+- Created new `/auth/verify-email` page to properly inform users about email verification process
+- Added comprehensive email verification flow with clear next steps
+- Added Turkish and English translations for verify-email page
+- Enhanced user experience by providing clear guidance after registration
+
+### Changed
+- Updated registration flow to redirect to verify-email page instead of showing generic success message
+- Removed redundant success toast from registration process
+- Improved user communication about email verification requirements
+- Updated auth flow to better handle email confirmation process
+- Simplified next steps by removing admin review and approval steps from verify-email page
+
+### Fixed
+- Fixed registration flow to properly inform users about email verification
+- Resolved issue where users were not informed about email confirmation requirements
+- Improved user experience by providing clear next steps after registration
+
 ## [0.1.11] - 2025-07-23
 
 ### Added

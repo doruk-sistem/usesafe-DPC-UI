@@ -48,12 +48,8 @@ export default function RegisterPage() {
         full_name: values.name
       });
       
-      toast({
-        title: t("success.title"),
-        description: t("success.description"),
-      });
-      
-      router.push("/auth/login");
+      // No need for success toast here as signUp will redirect to verify-email page
+      // The verify-email page will show the appropriate message
     } catch (error) {
       toast({
         title: t("error.title"),

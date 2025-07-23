@@ -26,8 +26,6 @@ export function RegistrationSuccess() {
             <p>Next steps:</p>
             <ol className="list-decimal list-inside text-left mt-2 space-y-2">
               <li>Verify your email address</li>
-              <li>Wait for admin review (typically 1-2 business days)</li>
-              <li>Receive approval notification</li>
               <li>Complete platform onboarding</li>
             </ol>
           </div>

@@ -3445,6 +3445,24 @@
         "title": "Hata",
         "description": "Hesap oluşturulurken bir hata oluştu"
       }
+    },
+    "verifyEmail": {
+      "title": "E-posta Doğrulama Gerekli",
+      "description": "Hesabınızı aktifleştirmek için e-posta adresinizi doğrulayın",
+      "emailSent": {
+        "title": "Doğrulama E-postası Gönderildi",
+        "description": "Kayıtlı e-posta adresinize doğrulama bağlantısı gönderdik"
+      },
+      "nextSteps": {
+        "title": "Sonraki Adımlar",
+        "verifyEmail": "E-posta adresinizi doğrulayın",
+        "onboarding": "Platform oryantasyonunu tamamlayın"
+      },
+      "helpText": "E-posta kutunuzu kontrol edin ve doğrulama bağlantısına tıklayın. E-posta gelmediyse spam klasörünüzü kontrol edin.",
+      "actions": {
+        "login": "Giriş Yap",
+        "backToHome": "Ana Sayfaya Dön"
+      }
     }
   },
   "battery": {
