@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.15] - 2025-07-23
+
+### Enhanced GPSR Compliance in Document Guidance API
+- **Improved OpenAI prompt for GPSR compliance**: Updated `/api/chatgpt/guidance` to focus on General Product Safety Regulation (GPSR) instead of ESPR
+- **Added ESPR DPP assessment**: AI now evaluates if Digital Product Passport (DPP) is required under ESPR for the product category
+  - Returns `dppRequired: true/false` boolean value based on clear criteria:
+    * `true`: Products mandatory now OR planned for 2026, 2027, 2028, 2029, or 2030
+    * `false`: Products NOT included in ESPR timeline through 2030
+  - Provides `dppNotes` with explanation of DPP requirement and timeline
+  - Evaluates key categories: Textiles (2026), Electronics/ICT (2026), Batteries (mandatory), Furniture (2027-2030), Iron/steel (2026), Chemicals (2026-2030), Food contact materials (2027-2030), Construction products (2027-2030)
+- **DPP information display in UI**: Added DPP requirement cards in DocumentUploadStep
+  - Shows orange warning card when DPP is required with ESPR compliance badge
+  - Shows gray info card when DPP is not required
+  - Displays DPP notes and timeline information to users
+- **Updated ProductDocumentGuidance interface**: Added `dppRequired` boolean and `dppNotes` string fields in both API route and service files
+- **Specific GPSR document lists**: Added predefined lists of mandatory and optional GPSR compliance documents
+  - **Mandatory**: CE Declaration of Conformity, CE Certificate/Certification, Technical Documentation File, Risk Assessment Report, User Instructions and Safety Manual, Test Reports, Product Safety Assessment, Conformity Assessment Documentation, Manufacturing Quality Documentation
+  - **Optional**: Additional Safety Testing Reports, Environmental Impact Assessment, Extended Durability Testing, Quality Management System Certificate, Post-Market Surveillance Plan, Traceability Documentation, Supply Chain Safety Documentation, Incident Response Procedures
+- **Dual compliance expertise**: AI now acts as both GPSR and ESPR compliance expert
+- **Improved fallback responses**: Updated default responses with GPSR-focused documents (CE Declaration, Technical Documentation, Risk Assessment) and ESPR DPP assessment
+
 ## [0.1.14] - 2025-07-23
 
 ### Added

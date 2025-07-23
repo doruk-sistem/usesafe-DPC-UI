@@ -15,6 +15,8 @@ export interface ProductDocumentGuidance {
   optionalDocuments: DocumentRequirement[];
   generalNotes: string;
   complianceNotes: string;
+  dppRequired: boolean;
+  dppNotes: string;
 }
 
 export async function POST(request: NextRequest) {
@@ -39,46 +41,99 @@ export async function POST(request: NextRequest) {
     }
 
     const prompt = `
-Determine all necessary documents for sales in EU for the following product type and subcategory:
+Determine all necessary GPSR (General Product Safety Regulation) compliance documents for the following product:
 
 Product Type: ${productType}
 Subcategory: ${subcategory}
 
-IMPORTANT: Use the actual product type "${productType}" and subcategory "${subcategory}" names in your descriptions. Do not use any numbers or codes.
+Select from these specific GPSR compliance documents based on the product category and risk level:
 
-Which documents are required and which are optional for this product? Please respond in the following JSON format:
+MANDATORY DOCUMENTS (choose relevant ones):
+- Declaration of Conformity
+- CE Certificate/Certification
+- Technical Documentation File
+- Risk Assessment Report
+- User Instructions and Safety Manual
+- Test Reports (EN/ISO standards)
+- Product Safety Assessment
+- Conformity Assessment Documentation
+- Manufacturing Quality Documentation
+
+OPTIONAL DOCUMENTS (choose relevant ones):
+- Additional Safety Testing Reports
+- Environmental Impact Assessment
+- Extended Durability Testing
+- Quality Management System Certificate (ISO 9001)
+- Post-Market Surveillance Plan
+- Traceability Documentation
+- Supply Chain Safety Documentation
+- Incident Response Procedures
+
+Analyze the specific product "${productType}" in "${subcategory}" category and determine:
+1. Which documents are mandatory vs optional based on:
+   - Product risk level (consumer use, age groups, potential hazards)
+   - CE marking requirements for this category
+   - Applicable harmonized standards
+   - GPSR obligations for this product type
+
+2. Whether DPP (Digital Product Passport) is required under ESPR:
+   - Check if product category falls under ESPR scope and timeline
+   - DPP REQUIRED (true): Products that are mandatory NOW, in 2026, or in 2030
+   - DPP NOT REQUIRED (false): Products NOT planned in ESPR timeline through 2030
+   - Consider these categories for DPP requirement evaluation:
+     * Textiles (2026)
+     * Electronics and ICT equipment (2026)
+     * Batteries (already mandatory)
+     * Furniture (2027-2030)
+     * Iron and steel products (2026)
+     * Chemicals (2026-2030)
+     * Food contact materials (2027-2030)
+     * Construction products (2027-2030)
+
+Respond ONLY with this JSON format:
 
 {
   "requiredDocuments": [
     {
-      "type": "your_determined_type",
-      "label": "Document English Name",
+      "type": "ce_declaration",
+      "label": "CE Declaration of Conformity",
       "required": true,
-      "description": "Description of what this document is and why it's required",
-      "examples": ["Example document names"]
+      "description": "Declaration that the product meets all applicable EU requirements",
+      "examples": ["CE Declaration", "Conformity Statement"]
+    },
+    {
+      "type": "ce_certificate",
+      "label": "CE Certificate/Certification",
+      "required": true,
+      "description": "Official CE certification document",
+      "examples": ["CE Certificate", "CE Certification"]
     }
   ],
   "optionalDocuments": [
     {
-      "type": "your_determined_type",
-      "label": "Document English Name", 
+      "type": "additional_testing",
+      "label": "Additional Safety Testing",
       "required": false,
-      "description": "Description of what this document is and why it's beneficial",
-      "examples": ["Example document names"]
+      "description": "Voluntary testing beyond minimum requirements",
+      "examples": ["Extended safety tests", "Performance testing"]
     }
   ],
-  "generalNotes": "General document requirements and recommendations for this product",
-  "complianceNotes": "Documents required for compliance with EU regulations and ESPR scope"
+  "generalNotes": "GPSR compliance requirements for this specific product category",
+  "complianceNotes": "Mandatory obligations and market surveillance considerations",
+  "dppRequired": true,
+  "dppNotes": "DPP will be mandatory for this product category under ESPR timeline (2026-2030)"
 }
 
 CRITICAL RULES:
-- NEVER use numbers, indexes, or expressions like "5 - 2343" or "2 - 49" anywhere in your response
-- NEVER include any numbering, bullet points, or lists outside the JSON
-- NEVER add any text before or after the JSON
-- Respond ONLY with the JSON object, nothing else
-- Do not include any explanations, titles, or additional text
-- The response must start with { and end with }
-- Use the actual product type and subcategory names in your descriptions, not numbers
+- Select specific documents from the lists above, don't create new ones
+- Focus on actual GPSR compliance documents (CE, risk assessment, etc.)
+- DPP Evaluation: Set dppRequired = true if product category is planned for ANY year through 2030
+- DPP Evaluation: Set dppRequired = false ONLY if product category is NOT in ESPR plan through 2030
+- Consider product-specific requirements for ${productType}
+- NEVER use numbers or indexes in response
+- Respond ONLY with JSON object
+- Use actual product type and subcategory names in descriptions
+- Include both GPSR document requirements AND ESPR DPP assessment
 `;
 
     const response = await fetch(API_URL, {
@@ -91,32 +146,49 @@ CRITICAL RULES:
         messages: [
           {
             role: 'system',
-            content: `You are a product document requirements expert. You are specialized in determining all necessary documents for product sales in EU.
+            content: `You are a dual compliance expert specializing in GPSR (General Product Safety Regulation) and ESPR (Ecodesign for Sustainable Products Regulation).
+
+Your expertise covers:
+GPSR COMPLIANCE:
+- GPSR mandatory requirements for different product categories
+- Risk assessment and classification of products
+- Technical file requirements and documentation standards
+- CE marking requirements and harmonized standards
+- Market surveillance and product liability considerations
+- Category-specific safety requirements (toys, electronics, textiles, chemicals, etc.)
+
+ESPR & DPP COMPLIANCE:
+- ESPR scope and product categories with specific timeline
+- Digital Product Passport (DPP) requirements and mandatory dates
+- DPP evaluation criteria:
+  * REQUIRED (true): Currently mandatory OR planned for 2026, 2027, 2028, 2029, or 2030
+  * NOT REQUIRED (false): NOT planned in ESPR timeline through 2030
+- Key DPP categories: Textiles (2026), Electronics/ICT (2026), Batteries (mandatory), Furniture (2027-2030), Iron/steel (2026), Chemicals (2026-2030), Food contact materials (2027-2030), Construction products (2027-2030)
+- Sustainability and ecodesign requirements
 
 Your task:
-- Determine required documents based on product type and category
-- Consider ESPR (Ecodesign for Sustainable Products Regulation) scope
-- Evaluate compliance requirements for EU regulations
-- Provide clear and understandable document guidance to users
-- Determine document types completely on your own, don't use any examples
-- Always use the actual product type and subcategory names provided, never use numbers or codes
+- Analyze the specific product type and subcategory provided
+- Determine GPSR compliance requirements based on product risk level
+- Evaluate ESPR DPP requirement: Set true if category is in ESPR plan (now through 2030), false if not planned
+- Identify mandatory vs recommended documentation
+- Consider product-specific safety and sustainability standards
+- Provide practical compliance guidance for EU market access
 
-CRITICAL RESPONSE RULES:
-- Respond ONLY with a JSON object, nothing else
-- NEVER use numbers, indexes, or expressions like "5 - 2343" or "2 - 49"
-- NEVER include any text before or after the JSON
-- NEVER add titles, explanations, or additional formatting
-- The response must start with { and end with }
-- Use English for document types and labels
-- Specify both required and optional documents
-- Always reference the actual product type and subcategory names in descriptions`
+RESPONSE REQUIREMENTS:
+- Respond ONLY with a JSON object, no additional text
+- NEVER use numbers, indexes, or codes like "5 - 2343"
+- Reference actual product names provided, not generic terms
+- Include both GPSR document requirements AND ESPR DPP assessment
+- Classify documents as required (mandatory) or optional (recommended)
+- Provide clear true/false for dppRequired field`
           },
           {
             role: 'user',
             content: prompt
           }
         ],
-        temperature: 0.3,
+        model: "gpt-4.1-mini",
+        temperature: 0.25,
         max_tokens: 2000,
       }),
     });
@@ -138,9 +210,9 @@ CRITICAL RESPONSE RULES:
       throw new Error('No JSON found in response');
     }
 
-    // Sıkı kontrol: Yanıtta index/sıra numarası var mı?
-    if (/\d+\s*-\s*\d+/.test(content)) {
-      throw new Error('Response contains sequence numbers or indexes.');
+    // Kontrol: GPSR odaklı mı?
+    if (!content.toLowerCase().includes('gpsr') && !content.toLowerCase().includes('safety')) {
+      console.warn('AI response may not be focused on GPSR compliance');
     }
 
     // Ekstra kontrol: JSON dışında metin var mı?
@@ -163,50 +235,82 @@ CRITICAL RESPONSE RULES:
       optionalDocuments: parsed.optionalDocuments || [],
       generalNotes: parsed.generalNotes || '',
       complianceNotes: parsed.complianceNotes || '',
+      dppRequired: parsed.dppRequired || false,
+      dppNotes: parsed.dppNotes || '',
     };
 
     return NextResponse.json(result);
   } catch (error) {
     console.error('Azure OpenAI API error:', error);
     
-    // Fallback to default requirements
+    // Fallback to default GPSR requirements
     const defaultGuidance: ProductDocumentGuidance = {
       productType: 'Unknown',
       subcategory: 'Unknown',
       requiredDocuments: [
         {
-          type: 'test_reports',
-          label: 'Test Reports',
+          type: 'ce_declaration',
+          label: 'CE Declaration of Conformity',
           required: true,
-          description: 'Product safety and quality test reports',
-          examples: ['CE test report', 'Safety test report']
+          description: 'Declaration that the product meets all applicable EU requirements and bears CE marking',
+          examples: ['CE Declaration', 'EU Conformity Statement', 'Declaration of Conformity']
         },
         {
-          type: 'technical_docs',
-          label: 'Technical Documentation',
+          type: 'ce_certificate',
+          label: 'CE Certificate/Certification',
           required: true,
-          description: 'Technical specifications and user manuals for the product',
-          examples: ['Technical specification', 'User manual']
+          description: 'Official CE certification document issued by notified body or self-declared',
+          examples: ['CE Certificate', 'CE Certification', 'Notified Body Certificate']
+        },
+        {
+          type: 'technical_documentation',
+          label: 'Technical Documentation File',
+          required: true,
+          description: 'Complete technical file proving product design safety and compliance',
+          examples: ['Technical specifications', 'Design drawings', 'Component lists']
+        },
+        {
+          type: 'risk_assessment',
+          label: 'Risk Assessment Report',
+          required: true,
+          description: 'Comprehensive risk analysis identifying and mitigating product hazards',
+          examples: ['Safety risk assessment', 'Hazard analysis', 'Risk mitigation plan']
+        },
+        {
+          type: 'user_instructions',
+          label: 'User Instructions and Safety Manual',
+          required: true,
+          description: 'Clear instructions for safe use, maintenance, and disposal of the product',
+          examples: ['User manual', 'Safety instructions', 'Installation guide']
         }
       ],
       optionalDocuments: [
         {
-          type: 'quality_cert',
-          label: 'Quality Certificates',
+          type: 'additional_testing',
+          label: 'Additional Safety Testing Reports',
           required: false,
-          description: 'Quality management system certificates',
-          examples: ['ISO 9001', 'ISO 14001']
+          description: 'Voluntary testing beyond minimum GPSR requirements to demonstrate enhanced safety',
+          examples: ['Extended durability tests', 'Environmental stress testing', 'Performance validation']
         },
         {
-          type: 'safety_cert',
-          label: 'Safety Certificates',
+          type: 'quality_certificate',
+          label: 'Quality Management System Certificate',
           required: false,
-          description: 'Safety standards compliance certificates',
-          examples: ['CE certificate', 'Safety document']
+          description: 'ISO 9001 or equivalent quality management certification',
+          examples: ['ISO 9001 certificate', 'Quality system documentation', 'Manufacturing process validation']
+        },
+        {
+          type: 'surveillance_plan',
+          label: 'Post-Market Surveillance Plan',
+          required: false,
+          description: 'Plan for monitoring product safety after market placement',
+          examples: ['Market monitoring plan', 'Customer feedback system', 'Incident tracking procedures']
         }
       ],
-      generalNotes: 'Basic documents are sufficient for this product. Additional documents may be required based on product characteristics.',
-      complianceNotes: 'CE marking and related test reports are required for sale in EU.'
+      generalNotes: 'All products placed on EU market must comply with GPSR. CE marking is mandatory for most consumer products. Risk assessment must be proportionate to product risk level.',
+      complianceNotes: 'Manufacturers must maintain technical documentation for 10 years. Economic operators must cooperate with market surveillance authorities. Serious risks must be immediately reported to authorities.',
+      dppRequired: false,
+      dppNotes: 'DPP requirement evaluation: Product category not included in ESPR mandatory timeline through 2030.'
     };
 
     return NextResponse.json(defaultGuidance);
