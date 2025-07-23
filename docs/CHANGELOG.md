@@ -5,6 +5,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.20] - 2025-01-15
+
+### Enhanced
+- **Admin Product Details Page**: Replaced document redirection with inline document management
+  - Removed "View Documents" button that redirected to separate documents page
+  - Restructured layout with Product Information at top and Documents at bottom for better readability
+  - Changed from 2-column grid to stacked layout for improved information hierarchy
+  - Enhanced Product Information section with responsive 3-column grid layout
+  - Added collapsible documents section with expand/collapse functionality
+  - Integrated document approval and rejection actions directly within product details
+  - Added download functionality for each document with dedicated download button
+  - Enhanced document display with rejection reason visibility for rejected documents
+  - Implemented approval/rejection dialog with reason input for better documentation
+  - Added real-time processing state management for document actions
+  - Improved UX with visual feedback and toast notifications for all document operations
+
+### Added
+- **Document Management UI Components**: 
+  - Collapsible document list with expand/collapse toggle
+  - Individual action buttons (download, approve, reject) for each document
+  - Rejection reason dialog with textarea input for detailed feedback
+  - Processing state indicators to prevent duplicate actions
+  - Status-based button visibility (approve/reject only for pending documents)
+
+### Fixed
+- **Import Organization**: Fixed ESLint import ordering violations in admin product details page
+
 ## [0.1.19] - 2025-01-15
 
 ### Fixed

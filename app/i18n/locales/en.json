@@ -592,6 +592,8 @@
           "valid": "Valid",
           "expired": "Expired",
           "pending": "Pending",
+          "approved": "Approved",
+          "rejected": "Rejected",
           "unknown": "Unknown"
         },
         "actions": {
@@ -1829,16 +1831,19 @@
     "labels": {
       "notAvailable": "Not Available"
     },
-    "error": {
+    "error": "Error",
+    "success": "Success",
+    "errors": {
       "title": "Error",
       "description": "An error occurred",
       "tryAgain": "Please try again",
       "notFound": "Not Found",
       "unauthorized": "Unauthorized Access",
       "forbidden": "Access Denied",
-      "serverError": "Server Error"
+      "serverError": "Server Error",
+      "unexpectedError": "An unexpected error occurred"
     },
-    "success": {
+    "successes": {
       "title": "Success",
       "saved": "Saved",
       "updated": "Updated",

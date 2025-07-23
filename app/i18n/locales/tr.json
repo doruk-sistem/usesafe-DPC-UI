@@ -3074,10 +3074,32 @@
       "save": "Kaydet"
     },
     "delete": {
-      "title": "Delete",
-      "description": "Are you sure you want to delete this item?",
-      "cancel": "Cancel",
-      "confirm": "Delete"
+      "title": "Sil",
+      "description": "Bu öğeyi silmek istediğinizden emin misiniz?",
+      "cancel": "İptal",
+      "confirm": "Sil"
+    },
+    "error": "Hata",
+    "success": "Başarılı",
+    "labels": {
+      "notAvailable": "Müsait Değil"
+    },
+    "errors": {
+      "title": "Hata",
+      "description": "Bir hata oluştu",
+      "tryAgain": "Lütfen tekrar deneyin",
+      "notFound": "Bulunamadı",
+      "unauthorized": "Yetkisiz Erişim",
+      "forbidden": "Erişim Engellendi",
+      "serverError": "Sunucu Hatası",
+      "unexpectedError": "Beklenmeyen bir hata oluştu"
+    },
+    "successes": {
+      "title": "Başarılı",
+      "saved": "Kaydedildi",
+      "updated": "Güncellendi",
+      "deleted": "Silindi",
+      "created": "Oluşturuldu"
     }
 
   },
