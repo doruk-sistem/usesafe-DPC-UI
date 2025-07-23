@@ -554,6 +554,14 @@
         "title": "Ürünler",
         "description": "Tüm ürünlerin listesi",
         "total": "Toplam: {count} ürün bulundu",
+        "totalProducts": "ürün",
+        "empty":{
+          "description": "Başlamak için ürün ekleyin",
+          "search": "Arama kriterlerinize uygun ürün bulunamadı",
+          "filtered": "Arama kriterlerine uygun ürün bulunamadı."
+        },
+        "model": "Model",
+        "viewDetails": "Detayları Görüntüle",
         "filter":{
           "all": "Tümü",
           "active": "Aktif",
@@ -656,10 +664,6 @@
           "addError": "Ürün eklenirken bir hata oluştu",
           "editSuccess": "Ürün başarıyla güncellendi",
           "editError": "Ürün güncellenirken bir hata oluştu"
-        },
-        "empty": {
-          "filtered": "Arama kriterlerine uygun ürün bulunamadı.",
-          "description": "Henüz ürün eklenmemiş."
         }
       },
       "empty": {
@@ -721,7 +725,9 @@
         "recyclable": {
           "yes": "Evet",
           "no": "Hayır"
-        }
+        },
+        "loading": "Malzemeler yükleniyor...",
+        "noMaterials": "Bu ürün için materyal bulunamadı."
       },
       "textile": {
         "title": "Tekstil Ürün Detayları",
@@ -775,6 +781,46 @@
           "chemical-usage": "Kimyasal Kullanımı",
           "renewable-energy": "Yenilenebilir Enerji",
           "water-saving": "Su Tasarrufu"
+        }
+      },
+      "usesafeCertification": {
+        "title": "UseSafe Sertifikasyonu",
+        "description": "Ürün UseSafe sertifika durumunu ve uyumluluk metriklerini görüntüleyin",
+        "progress": "Sertifikasyon İlerlemesi",
+        "certified": "Sertifikalı",
+        "notCertified": "Sertifikalı Değil",
+        "requirementProgress": "Sertifikasyon için minimum %{required} gerekli",
+        "certificationAchieved": "🎉 Tebrikler! Bu ürün UseSafe Sertifikalıdır",
+        "certificationDescription": "Bu ürün tüm UseSafe sertifikasyon gereksinimlerini karşılamaktadır ve kalite ve güvenlik standartları açısından güvenilirdir.",
+        "company": {
+          "title": "Şirket Belgeleri",
+          "allApproved": "Tüm şirket belgeleri onaylandı",
+          "hasPending": "Bazı şirket belgeleri inceleme bekliyor",
+          "hasRejected": "Bazı şirket belgeleri reddedildi",
+          "noDocuments": "Hiç şirket belgesi yüklenmedi",
+          "incomplete": "Şirket belgeleri eksik"
+        },
+        "documents": {
+          "title": "Ürün Belgeleri",
+          "allApproved": "Tüm ürün belgeleri onaylandı",
+          "hasPending": "Bazı ürün belgeleri inceleme bekliyor",
+          "hasRejected": "Bazı ürün belgeleri reddedildi",
+          "noDocuments": "Hiç ürün belgesi yüklenmedi",
+          "incomplete": "Ürün belgeleri eksik"
+        },
+        "dpp": {
+          "title": "DPP Konfigürasyonu",
+          "complete": "DPP konfigürasyonu tamamlandı",
+          "incomplete": "DPP konfigürasyonu %{percentage} tamamlandı",
+          "noConfig": "DPP konfigürasyonu bulunamadı"
+        },
+        "extraCertifications": {
+          "title": "Extra Sertifikalar",
+          "hasApproved": "Kalite sertifikaları onaylandı",
+          "hasPending": "Bazı sertifikalar inceleme bekliyor",
+          "hasRejected": "Bazı sertifikalar reddedildi",
+          "noCertifications": "Hiç extra sertifika yüklenmedi",
+          "incomplete": "Extra sertifikalar eksik"
         }
       },
       "qr": {
@@ -870,6 +916,7 @@
       "dashboard": "Panel",
       "productManagement": "Ürün Yönetimi",
       "products": "Ürünler",
+      "documents": "Belgeler",
       "supplyChainManagement": "Tedarik Zinciri Yönetimi",
       "suppliers": "Tedarikçiler",
       "myProducts": "Ürettiğim Ürünler",

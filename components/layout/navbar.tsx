@@ -29,12 +29,14 @@ export function Navbar() {
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-4">
-              <Link href="/auth/register">
-                <Button variant="ghost" className="gap-2">
-                  <Factory className="h-4 w-4" />
-                  {t('companyRegistration')}
-                </Button>
-              </Link>
+              {!user && (
+                <Link href="/auth/register">
+                  <Button variant="ghost" className="gap-2">
+                    <Factory className="h-4 w-4" />
+                    {t('companyRegistration')}
+                  </Button>
+                </Link>
+              )}
 
               <Link href="/products">
                 <Button variant="ghost" className="gap-2">
@@ -93,12 +95,14 @@ export function Navbar() {
         {/* Mobile Navigation */}
         {isMenuOpen && (
           <div className="md:hidden py-4 space-y-4">
-            <Link href="/auth/register">
-              <Button variant="ghost" className="w-full justify-start gap-2">
-                <Factory className="h-4 w-4" />
-                {t('companyRegistration')}
-              </Button>
-            </Link>
+            {!user && (
+              <Link href="/auth/register">
+                <Button variant="ghost" className="w-full justify-start gap-2">
+                  <Factory className="h-4 w-4" />
+                  {t('companyRegistration')}
+                </Button>
+              </Link>
+            )}
 
             <Link href="/products">
               <Button variant="ghost" className="w-full justify-start gap-2">

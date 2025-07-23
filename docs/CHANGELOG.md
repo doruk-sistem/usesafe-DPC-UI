@@ -5,6 +5,75 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.19] - 2025-01-15
+
+### Fixed
+- **Company Products Filtering**: Fixed admin company products page to correctly filter and display only products belonging to the specific company instead of showing all products in the system
+- **Company Products Hook**: Corrected `useProducts` hook usage by explicitly setting `fetchAll` to `false` and adding client-side company filtering as a backup
+
+### Enhanced
+- **Company Products UI**: Improved the company products page with:
+  - Search functionality to filter products by name
+  - Product count display showing total number of products
+  - Model information display for each product card
+  - Better accessibility with proper aria-labels for interactive elements
+  - Enhanced empty states for both no products and no search results scenarios
+  - Improved pagination interface
+
+### Added
+- **Translation Keys**: Added missing translation keys for company products functionality:
+  - `admin.products.list.totalProducts` for product count display
+  - `admin.products.list.empty.search` for search no results message
+  - `admin.products.list.model` for model label
+  - `admin.products.list.viewDetails` for view details button
+  - `dashboard.menu.documents` for documents tab in admin company page
+  - Added corresponding Turkish translations for all new keys
+
+## [0.1.18] - 2025-01-15
+
+### Added
+- **UseSafe Certification Card**: New certification metrics component on product details page
+  - Displays certification progress based on 4 key metrics with 100% total scoring system
+  - Company documents approval contributes 20% to certification score
+  - Required product documents approval contributes 40% to certification score  
+  - DPP configuration completion contributes 20% to certification score
+  - Extra certifications (ISO 9001, quality certificates) contribute 20% to certification score
+  - Products achieving 60%+ certification score are marked as "UseSafe Certified"
+  - Real-time status indicators for each certification component
+  - Visual progress bar and achievement badge for certified products
+  - Multilingual support (English/Turkish) for all certification metrics
+
+## [0.1.17] - 2025-07-23
+
+### Added
+- Added product materials display functionality to ProductDetails component
+- Integrated MaterialsCard component to fetch and show material composition from product_materials table
+- Added materials data fetching by product_id with proper loading and empty states
+- Enhanced material information display with proper translations for both English and Turkish languages
+- Added loading states and empty states for materials display
+
+### Changed
+- Updated MaterialsCard to fetch materials directly from product_materials table instead of receiving as props
+- Removed DPP config-based materials extraction in favor of database-driven approach
+- MaterialsCard now accepts productId prop instead of materials array prop
+
+### Fixed
+- Fixed import order for external dependencies in MaterialsCard component
+- Cleaned up duplicate translation keys in English localization file for materials section
+- Resolved materials data source to use proper database table (product_materials) instead of DPP config
+
+## [0.1.16] - 2025-07-23
+
+### Fixed
+- Fixed missing translation keys for `products.details.basicInfo.seller` and `products.details.basicInfo.taxNumber` in English translation file
+- Added "Seller" and "Tax Number" translations to match the Turkish translation structure
+- Resolved translation errors in BasicInformationCard component that prevented proper display of seller and tax number information
+
+### Added
+- Added `formatDocumentType` utility function to convert snake_case document types to Title Case format
+- Enhanced CertificationsCard component to display document types in user-friendly format (e.g., "product_safety_assessment" → "Product Safety Assessment")
+- Improved document type readability in product details certification table
+
 ## [0.1.15] - 2025-07-23
 
 ### Enhanced GPSR Compliance in Document Guidance API
