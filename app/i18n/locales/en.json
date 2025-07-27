@@ -605,7 +605,8 @@
         "instructions": "Use your smartphone camera or QR code reader app to scan",
         "downloadButton": "Download QR Code",
         "imageAlt": "Product Verification QR Code",
-        "productQRCode": "Product QR Code"
+        "productQRCode": "Product QR Code",
+        "productIdLabel": "Product ID"
       },
       "sustainability": {
         "title": "Sustainability",

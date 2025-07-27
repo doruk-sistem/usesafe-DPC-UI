@@ -838,7 +838,10 @@
         "environmentalMetrics": "Çevresel Metrikler"
       },
       "certifications": {
-        "title": "Sertifikalar",
+        "title": "Sertifikalar", 
+        "loadingCertifications": "Sertifikalar yükleniyor...",
+        "noCertifications": "Sertifika bulunamadı",
+        "errorLoadingCertifications": "Sertifikalar yüklenirken hata oluştu",
         "description": "Ürün sertifikalarını görüntüleyin",
         "table": {
           "name": "Sertifika Adı",
@@ -855,7 +858,8 @@
           "approved": "Onaylandı"
         },
         "actions": {
-          "download": "İndir"
+          "download": "İndir",
+          "noDocument": "Belge Yok"
         }
       },
       "sustainability": {
@@ -934,7 +938,8 @@
         "title": "QR Kod",
         "description": "Ürün doğrulama için QR kod",
         "downloadButton": "QR Kodu İndir",
-        "imageAlt": "Ürün Doğrulama QR Kodu"
+        "imageAlt": "Ürün Doğrulama QR Kodu",
+        "productIdLabel": "Ürün ID"
       },
       "backToProducts": "Ürünlere Dön",
       "storage": {
