@@ -19,7 +19,7 @@ interface ProductQRProps {
 export function ProductQR({ productId, productName, title, description }: ProductQRProps) {
   const [qrDataUrl, setQrDataUrl] = useState<string>("");
   const { toast } = useToast();
-  const t = useTranslations('product.details.qr');
+  const t = useTranslations('products.details.qr');
   
   useEffect(() => {
     const generateQR = async () => {

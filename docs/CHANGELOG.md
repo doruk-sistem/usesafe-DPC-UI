@@ -5,7 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.1.20] - 2025-01-15
+## [0.1.21] - 2025-07-27
+
+### Fixed
+- **Turkish Translation Keys**: Added missing translation keys to Turkish locale file:
+  - `products.details.certifications.table.documentType` - "Belge Tipi"
+  - `products.details.basicInfo.seller` - "Satıcı" 
+  - `products.details.basicInfo.taxNumber` - "Vergi Numarası"
+  - `products.details.certifications.status.approved` already existed as "Onaylandı"
+- **UseSafeCertificationCard**: Resolved missing translation keys that were causing display issues in the certification card component
+
+## [0.1.20] - 2025-07-24
 
 ### Enhanced
 - **Admin Product Details Page**: Replaced document redirection with inline document management
@@ -32,7 +42,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - **Import Organization**: Fixed ESLint import ordering violations in admin product details page
 
-## [0.1.19] - 2025-01-15
+## [0.1.19] - 2025-07-23
 
 ### Fixed
 - **Company Products Filtering**: Fixed admin company products page to correctly filter and display only products belonging to the specific company instead of showing all products in the system
@@ -56,7 +66,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `dashboard.menu.documents` for documents tab in admin company page
   - Added corresponding Turkish translations for all new keys
 
-## [0.1.18] - 2025-01-15
+## [0.1.18] - 2025-07-23
 
 ### Added
 - **UseSafe Certification Card**: New certification metrics component on product details page

@@ -5,44 +5,43 @@
     "verifyProducts": "Ürün Doğrula",
     "signIn": "Giriş Yap"
   },
-  "registration":{
-    "steps":{
-      "documents":{
-        "signatureCircular":"İmza Sirküleri *",
-        "tradeRegistry":"Ticaret Sicil Gazetesi *",
-        "taxPlate":"Vergi Levhası *",
-        "activityCertificate":"Faaliyet Belgesi *"
+  "registration": {
+    "steps": {
+      "documents": {
+        "signatureCircular": "İmza Sirküleri *",
+        "tradeRegistry": "Ticaret Sicil Gazetesi *",
+        "taxPlate": "Vergi Levhası *",
+        "activityCertificate": "Faaliyet Belgesi *"
       },
-      "address":{
-        "headquarters":"Genel Merkez Adresi *",
-        "city":"Şehir *",
-        "district":"İlçe *",
-        "postalCode":"Posta Kodu "
+      "address": {
+        "headquarters": "Genel Merkez Adresi *",
+        "city": "Şehir *",
+        "district": "İlçe *",
+        "postalCode": "Posta Kodu "
       },
-      "companyInfo":{
-        "taxIdPlaceholder":"10 haneli vergi numarası giriniz",
-        "companyName":"Şirket Adı *",
-        "taxId":"Vergi Numarası *",
-        "taxIdDescription":"Tam olarak 10 haneli olmalı",
-        "tradeRegisterNumber":"Ticaret Sicil Numarası",
-        "mersisNumber":"MERSIS Numarası",
-        "nationalId":"Kimlik Numarası *",
-        "countryCode":"Ülke Kodu *",
-        "phone":"Telefon Numarası *",
-        "phonePlaceholder":"Telefon numarası giriniz",
-        "phoneDescription":"Tam olarak 10 haneli olmalı",
-        "countryCodePlaceholder":"Ülke kodu seçiniz"
-
+      "companyInfo": {
+        "taxIdPlaceholder": "10 haneli vergi numarası giriniz",
+        "companyName": "Şirket Adı *",
+        "taxId": "Vergi Numarası *",
+        "taxIdDescription": "Tam olarak 10 haneli olmalı",
+        "tradeRegisterNumber": "Ticaret Sicil Numarası",
+        "mersisNumber": "MERSIS Numarası",
+        "nationalId": "Kimlik Numarası *",
+        "countryCode": "Ülke Kodu *",
+        "phone": "Telefon Numarası *",
+        "phonePlaceholder": "Telefon numarası giriniz",
+        "phoneDescription": "Tam olarak 10 haneli olmalı",
+        "countryCodePlaceholder": "Ülke kodu seçiniz"
       }
     }
   },
-  "list":{
+  "list": {
     "title": "Liste",
     "description": "Ürün listesi",
-    "empty":{
-      "title":"Ürün bulunamadı",
-      "description":"Bu şirket için ürün bulunamadı",
-      "addButton":"Ürün Ekle",
+    "empty": {
+      "title": "Ürün bulunamadı",
+      "description": "Bu şirket için ürün bulunamadı",
+      "addButton": "Ürün Ekle",
       "manufacturer": "Bu şirket için ürün bulunamadı"
     }
   },
@@ -54,7 +53,6 @@
         "documents": "Belgeler"
       },
       "status": {
-        
         "pendingDocuments": "Bekleyen Belgeler",
         "allDocumentsApproved": "Tüm Belgeler Onaylı",
         "draft": "Taslak",
@@ -93,32 +91,32 @@
     "certifications": {
       "title": "Sertifikalar",
       "description": "Sertifikaları gözden geçirin",
-      "header":{
+      "header": {
         "title": "Şirket Sertifikaları Sayfası",
         "description": "Bu sayfa, seçilen şirketin tüm sertifikalarını görüntülemek için kullanılır."
       },
-      "types":{
+      "types": {
         "quality_certificate": "Kalite Sertifikası",
         "iso_certificate": "ISO Sertifikası",
         "export_certificate": "İhracat Sertifikası",
         "production_permit": "Üretim İzni"
       },
-      "status":{
+      "status": {
         "pending": "Beklemede",
         "approved": "Onaylandı",
         "rejected": "Reddedildi"
       },
-      "filters":{
+      "filters": {
         "allCategories": "Tüm Kategoriler",
         "allStatus": "Tüm Durumlar"
       },
-      "actions":{
+      "actions": {
         "view": "Görüntüle",
         "new": "Yeni",
         "download": "İndir",
         "newCertification": "Yeni Sertifika"
       },
-      "columns":{
+      "columns": {
         "company": "Şirket",
         "certificationCount": "Sertifika Sayısı",
         "lastUpdated": "Son Güncelleme",
@@ -127,21 +125,21 @@
     },
     "product": {
       "steps": {
-       "documentUpload": {
-       "title": "Ürün Belgelerini Yükle",
-       "description": "Ürününüz için gerekli belgeleri yükleyin",
-       "verifyDocuments": "Belgeleri Doğrula",
-       "verifyDocumentsDescription": "Tüm yüklenen belgelerin doğruluğunu doğrulayın",
-       "addDocument": "Belge Ekle",
-       "uploadDocuments": "Belgeleri Yükle",
-       "productDocuments": "Ürün Belgeleri",
-       "verificationRequired": "Belgeleri Doğrula",
-       "pleaseVerifyDocuments": "Lütfen önce belgeleri doğrulayın",
-       "invalidUploadParameters": "Geçersiz yükleme parametreleri",
-       "invalidFileType": "Geçersiz dosya türü",
-       "fileSizeExceedsLimit": "Dosya boyutu sınırını aştı",
-       "uploadIssues": "Yükleme Sorunları",
-       "documentTypes": {
+        "documentUpload": {
+          "title": "Ürün Belgelerini Yükle",
+          "description": "Ürününüz için gerekli belgeleri yükleyin",
+          "verifyDocuments": "Belgeleri Doğrula",
+          "verifyDocumentsDescription": "Tüm yüklenen belgelerin doğruluğunu doğrulayın",
+          "addDocument": "Belge Ekle",
+          "uploadDocuments": "Belgeleri Yükle",
+          "productDocuments": "Ürün Belgeleri",
+          "verificationRequired": "Belgeleri Doğrula",
+          "pleaseVerifyDocuments": "Lütfen önce belgeleri doğrulayın",
+          "invalidUploadParameters": "Geçersiz yükleme parametreleri",
+          "invalidFileType": "Geçersiz dosya türü",
+          "fileSizeExceedsLimit": "Dosya boyutu sınırını aştı",
+          "uploadIssues": "Yükleme Sorunları",
+          "documentTypes": {
             "testReports": "Test Raporları",
             "technicalDocumentation": "Teknik Belgeler",
             "certifications": "Sertifikalar",
@@ -153,7 +151,6 @@
             "exportDocuments": "İhracat Belgeleri",
             "isoCertificates": "ISO Sertifikaları",
             "otherDocuments": "Other Documents"
-            
           }
         }
       }
@@ -220,7 +217,7 @@
         "title": "Firma Detayları",
         "loading": "Yükleniyor...",
         "backToList": "Listeye Dön",
-        "types":{
+        "types": {
           "manufacturer": "Üretici"
         },
         "error": {
@@ -404,11 +401,11 @@
     "dpc": {
       "title": "DPC Başlığı",
       "description": "DPC Açıklaması",
-        "details":{
-          "notFound": "Sertifika Yükleme Aktif Değil",
-          "notFoundDescription": "Lütfen yöneticinize başvurunuz.",
-          "backToList": "Sertifikalar Listesine Dön"
-        },
+      "details": {
+        "notFound": "Sertifika Yükleme Aktif Değil",
+        "notFoundDescription": "Lütfen yöneticinize başvurunuz.",
+        "backToList": "Sertifikalar Listesine Dön"
+      },
       "columns": {
         "product": "Ürün",
         "category": "Kategori",
@@ -484,10 +481,10 @@
       }
     },
     "products": {
-    "title": "Products",
+      "title": "Products",
       "description": "Manage and review all products in the system",
       "loading": "Loading products...",
-      "products":"Ürünler",
+      "products": "Ürünler",
       "searchPlaceholder": "Search products...",
       "filterByManufacturer": "Filter by manufacturer",
       "filterByStatus": "Filter by status",
@@ -509,364 +506,7 @@
       "created": "Created",
       "documentCount": "{count} document",
       "documentCount_plural": "{count} documents",
-      "unknownManufacturer": "Unknown Manufacturer",
-      "details": {
-        "backButton": "Back to Products",
-        "viewDocuments": "View Documents",
-        "title": "Ürün Detayları",
-        "description": "Ürün detaylarını görüntüleyin ve yönetin",
-        "productInfo": {
-          "title": "Product Information",
-          "id": "Product ID",
-          "manufacturer": "Manufacturer",
-          "type": "Type",
-          "status": "Status",
-          "created": "Created",
-          "description": "Description"
-        },
-        "documents": {
-          "title": "Documents",
-          "totalDocuments": "Total Documents",
-          "documentStatus": "Document Status",
-          "description": "Document information and status",
-          "id": "Document ID",
-          "type": "Type",
-          "validUntil": "Valid Until",
-          "rejectionReason": "Rejection Reason",
-          "viewDocument": "View Document",
-          "documentStatuses": {
-            "noDocuments": "No Documents",
-            "hasRejected": "Has Rejected Documents",
-            "pending": "Pending Review",
-            "hasExpired": "Has Expired Documents",
-            "allApproved": "All Approved",
-            "unknown": "Unknown Status"
-          }
-        },
-        "errorLoadingProduct": "Error Loading Product",
-        "unexpectedError": "An unexpected error occurred"
-      },
-      "errors": {
-        "notFound": "Product Not Found",
-        "notFoundDescription": "The requested product could not be found. It may have been deleted or you may not have permission to view it."
-      },
-      "list": {
-        "title": "Ürünler",
-        "description": "Tüm ürünlerin listesi",
-        "total": "Toplam: {count} ürün bulundu",
-        "totalProducts": "ürün",
-        "empty":{
-          "description": "Başlamak için ürün ekleyin",
-          "search": "Arama kriterlerinize uygun ürün bulunamadı",
-          "filtered": "Arama kriterlerine uygun ürün bulunamadı."
-        },
-        "model": "Model",
-        "viewDetails": "Detayları Görüntüle",
-        "filter":{
-          "all": "Tümü",
-          "active": "Aktif",
-          "inactive": "Pasif",
-          "pending":"Beklemede",
-          "placeholder": "Duruma göre filtrele..."
-        },
-        "search":{
-          "placeholder": "Ürün ara..."
-        },
-        "columns": {
-          "name": "Ürün Adı",
-          "productCode": "Ürün Kodu",
-          "productName": "Ürün Adı",
-          "sku": "SKU",
-          "category": "Kategori",
-          "status": "Durum",
-          "addedDate": "Eklenme Tarihi",
-          "actions": "İşlemler"
-        },
-        "ProductDocuments": {
-          "uploadNewDocument": "Yeni Belge Yükle",
-          "documentType": "Belge Tipi",
-          "select": "Seçin",
-          "qualityCertificate": "Kalite Sertifikaları",
-          "safetyCertificate": "Güvenlik Sertifikaları",
-          "testReports": "Test Raporları",
-          "technicalDocumentation": "Teknik Dokümantasyon",
-          "complianceDocuments": "Uygunluk Belgeleri",
-          "file": "Dosya",
-          "selectedFile": "Seçilen dosya:",
-          "additionalInfo": "Ek Bilgiler",
-          "version": "Versiyon",
-          "validUntilOptional": "Opsiyonel",
-          "notesOptional": "Opsiyonel",
-          "documentNotesPlaceholder": "Belge notları...",
-          "cancel": "İptal",
-          "uploading": "Yükleniyor...",
-          "uploadDocument": "Belge Yükle",
-          "noDocumentsFound": "Belge Bulunamadı",
-          "noDocumentsDescription": "Bu ürüne ait belge bulunmamaktadır.",
-          "documentName": "Belge Adı",
-          "type": "Tip",
-          "status": "Durum",
-          "validUntil": "Geçerlilik Tarihi",
-          "actions": "İşlemler",
-          "openMenu": "Menüyü aç",
-          "download": "İndir",
-          "view": "Görüntüle",
-          "viewHistory": "Geçmişi Görüntüle",
-          "reject": "Reddet",
-          "reupload": "Yeniden Yükle",
-          "documentDetails": "Belge Detayları",
-          "generalInfo": "Genel Bilgiler",
-          "fileSize": "Dosya Boyutu",
-          "uploadDate": "Yükleme Tarihi",
-          "notes": "Notlar",
-          "rejectionReason": "Reddetme Nedeni",
-          "rejectDocument": "Belgeyi Reddet",
-          "rejectDescription": "Lütfen belgeyi reddetme nedeninizi girin.",
-          "rejectionReasonPlaceholder": "Reddetme nedeni...",
-          "confirm": "Onayla",
-          "productDocuments": "Ürün Belgeleri",
-          "productNotFound": "Ürün Bulunamadı",
-          "productNotFoundDescription": "İstenen ürün bulunamadı.",
-          "notAvailable": "Mevcut Değil",
-          "success": "Başarılı",
-          "documentUploadedSuccessfully": "Belge başarıyla yüklendi",
-          "noNotes": "Not yok"
-        },
-        "status": {
-          "active": "Aktif",
-          "passive": "Pasif",
-          "draft": "Taslak",
-          "pending": "Onay Bekliyor",
-          "taslak": "Taslak",
-          "NEW": "Yeni"
-        },
-        "actions": {
-          "add": "Yeni Ürün Ekle",
-          "edit": "Düzenle",
-          "delete": "Sil",
-          "view": "Görüntüle",
-          "approve": "Onayla",
-          "reject": "Reddet",
-          "title": "İşlemler"
-        },
-        "filters": {
-          "all": "Tümü",
-          "active": "Aktif Ürünler",
-          "passive": "Pasif Ürünler",
-          "draft": "Taslaklar",
-          "pending": "Onay Bekleyenler"
-        },
-        "messages": {
-          "deleteConfirm": "Bu ürünü silmek istediğinizden emin misiniz?",
-          "deleteSuccess": "Ürün başarıyla silindi",
-          "deleteError": "Ürün silinirken bir hata oluştu",
-          "addSuccess": "Ürün başarıyla eklendi",
-          "addError": "Ürün eklenirken bir hata oluştu",
-          "editSuccess": "Ürün başarıyla güncellendi",
-          "editError": "Ürün güncellenirken bir hata oluştu"
-        }
-      },
-      "empty": {
-        "description": "Ürün bulunamadı",
-        "addFirst": "İlk Ürünü Ekle"
-      },
-      "actions": {
-        "title": "Actions",
-        "viewDetails": "View Details",
-        "viewDocuments": "View Documents"
-      }
-    },
-    "details": {
-      "title": "Ürün Detayları",
-      "description": "Ürün detaylarını görüntüleyin",
-      "quickInfo": {
-        "title": "Hızlı Bilgi",
-        "description": "Ürün hakkında hızlı bilgiler",
-        "model": "Model",
-        "manufacturer": "Üretici",
-        "unknown": "Bilinmiyor"
-      },
-      "keyFeatures": {
-        "title": "Ana Özellikler",
-        "name": "Özellik adı",
-        "value": "Değer",
-        "unit": "Birim (opsiyonel)",
-        "add": "Özellik Ekle"
-      },
-      "basicInfo": {
-        "title": "Temel Bilgiler",
-        "productCode": "Ürün Kodu",
-        "productName": "Ürün Adı",
-        "sku": "SKU",
-        "category": "Kategori",
-        "status": "Durum",
-        "addedDate": "Eklenme Tarihi",
-        "manufacturer": "Üretici"
-      },
-      "materials": {
-        "title": "Malzemeler",
-        "description": "Ürünün malzeme bileşimi",
-        "table": {
-          "material": "Malzeme",
-          "percentage": "Yüzde",
-          "recyclable": "Geri Dönüştürülebilir",
-          "description": "Açıklama",
-          "examples": {
-            "cotton": {
-              "name": "Pamuk",
-              "description": "BCI sertifikalı organik pamuk"
-            },
-            "elastane": {
-              "name": "Elastan",
-              "description": "Esneklik için elastan karışımı"
-            }
-          }
-        },
-        "recyclable": {
-          "yes": "Evet",
-          "no": "Hayır"
-        },
-        "loading": "Malzemeler yükleniyor...",
-        "noMaterials": "Bu ürün için materyal bulunamadı."
-      },
-      "textile": {
-        "title": "Tekstil Ürün Detayları",
-        "description": "Tekstil ürün detaylarını görüntüleyin",
-        "composition": "Kompozisyon",
-        "careInstructions": "Bakım Talimatları",
-        "sustainability": "Sürdürülebilirlik",
-        "certifications": "Sertifikalar",
-        "environmentalMetrics": "Çevresel Metrikler"
-      },
-      "certifications": {
-        "title": "Sertifikalar",
-        "description": "Ürün sertifikalarını görüntüleyin",
-        "table": {
-          "name": "Sertifika Adı",
-          "issuedBy": "Düzenleyen",
-          "validUntil": "Geçerlilik Tarihi",
-          "status": "Durum",
-          "document": "Belge"
-        },
-        "status": {
-          "valid": "Geçerli",
-          "expired": "Süresi Dolmuş",
-          "pending": "Beklemede"
-        },
-        "actions": {
-          "download": "İndir"
-        }
-      },
-      "sustainability": {
-        "title": "Sürdürülebilirlik",
-        "description": "Ürün sürdürülebilirlik metriklerini görüntüleyin",
-        "progress": "İlerleme",
-        "badge": "{value}% Sürdürülebilirlik",
-        "metrics": {
-          "waterUsage": "Su Kullanımı",
-          "carbonFootprint": "Karbon Ayak İzi",
-          "energyConsumption": "Enerji Tüketimi",
-          "recycledContent": "Geri Dönüştürülmüş İçerik",
-          "low": "Düşük",
-          "medium": "Orta",
-          "high": "Yüksek",
-          "carbon-footprint": "Karbon Ayak İzi",
-          "water-usage": "Su Kullanımı",
-          "energy-consumption": "Enerji Tüketimi",
-          "recycled-materials": "Geri Dönüştürülmüş Malzemeler",
-          "chemical-reduction": "Kimyasal Azaltma",
-          "biodegradability": "Biyolojik Bozunabilirlik",
-          "packaging": "Ambalaj",
-          "waste-reduction": "Atık Azaltımı",
-          "chemical-usage": "Kimyasal Kullanımı",
-          "renewable-energy": "Yenilenebilir Enerji",
-          "water-saving": "Su Tasarrufu"
-        }
-      },
-      "usesafeCertification": {
-        "title": "UseSafe Sertifikasyonu",
-        "description": "Ürün UseSafe sertifika durumunu ve uyumluluk metriklerini görüntüleyin",
-        "progress": "Sertifikasyon İlerlemesi",
-        "certified": "Sertifikalı",
-        "notCertified": "Sertifikalı Değil",
-        "requirementProgress": "Sertifikasyon için minimum %{required} gerekli",
-        "certificationAchieved": "🎉 Tebrikler! Bu ürün UseSafe Sertifikalıdır",
-        "certificationDescription": "Bu ürün tüm UseSafe sertifikasyon gereksinimlerini karşılamaktadır ve kalite ve güvenlik standartları açısından güvenilirdir.",
-        "company": {
-          "title": "Şirket Belgeleri",
-          "allApproved": "Tüm şirket belgeleri onaylandı",
-          "partialApproved": "{total} belgeden {approved} tanesi onaylandı",
-          "partialWithRejected": "{total} belgeden {approved} tanesi onaylandı (bazıları reddedildi)",
-          "hasPending": "Bazı şirket belgeleri inceleme bekliyor",
-          "hasRejected": "Bazı şirket belgeleri reddedildi",
-          "noDocuments": "Hiç şirket belgesi yüklenmedi",
-          "incomplete": "Şirket belgeleri eksik"
-        },
-        "documents": {
-          "title": "Ürün Belgeleri",
-          "allApproved": "Tüm ürün belgeleri onaylandı",
-          "partialApproved": "{total} belgeden {approved} tanesi onaylandı",
-          "partialWithRejected": "{total} belgeden {approved} tanesi onaylandı (bazıları reddedildi)",
-          "hasPending": "Bazı ürün belgeleri inceleme bekliyor",
-          "hasRejected": "Bazı ürün belgeleri reddedildi",
-          "noDocuments": "Hiç ürün belgesi yüklenmedi",
-          "incomplete": "Ürün belgeleri eksik"
-        },
-        "dpp": {
-          "title": "DPP Konfigürasyonu",
-          "complete": "DPP konfigürasyonu tamamlandı",
-          "incomplete": "DPP konfigürasyonu %{percentage} tamamlandı",
-          "noConfig": "DPP konfigürasyonu bulunamadı"
-        },
-        "extraCertifications": {
-          "title": "Extra Sertifikalar",
-          "hasApproved": "Kalite sertifikaları onaylandı",
-          "partialApproved": "{total} sertifikadan {approved} tanesi onaylandı",
-          "partialWithRejected": "{total} sertifikadan {approved} tanesi onaylandı (bazıları reddedildi)",
-          "hasPending": "Bazı sertifikalar inceleme bekliyor",
-          "hasRejected": "Bazı sertifikalar reddedildi",
-          "noCertifications": "Hiç extra sertifika yüklenmedi",
-          "incomplete": "Extra sertifikalar eksik"
-        }
-      },
-      "qr": {
-        "title": "QR Kod",
-        "description": "Ürün doğrulama için QR kod",
-        "downloadButton": "QR Kodu İndir",
-        "imageAlt": "Ürün Doğrulama QR Kodu"
-      },
-      "backToProducts": "Ürünlere Dön",
-      "storage": {
-        "charge": {
-          "sale": "Satış öncesi akü şarj seviyesi 12.6V'un üzerinde olmalıdır",
-          "minimum": "Depolama sırasında minimum voltaj 12.4V olmalıdır",
-          "damage": "Voltaj düşükse, paketi açıp 16.1V ve 1/20Cn akımda şarj edin, aksi halde kalıcı hasar oluşabilir"
-        },
-        "installation": {
-          "title": "Montaj Adımları",
-          "verify": "Akü uyumluluğunu araç kılavuzundan kontrol edin",
-          "engine": "Motorun kapalı olduğundan emin olun",
-          "remove": "Eski aküyü çıkarın (önce negatif kutup)",
-          "control": "Kısa devre olup olmadığını kontrol edin",
-          "clean": "Akü bölmesini ve kutup başlarını temizleyin",
-          "install": "Yeni aküyü takın (önce pozitif kabloyu bağlayın)",
-          "check": "Şarj akımı uyumluluğunu kontrol edin"
-        }
-      },
-      "hazards": {
-        "title": "Tehlikeler",
-        "health": "Sağlık Tehlikesi",
-        "healthDesc": "Akü asidi cilt ve gözlerde ciddi tahrişe neden olabilir.",
-        "corrosive": "Aşındırıcı",
-        "corrosiveDesc": "Akü asidi metal ve dokuları aşındırabilir.",
-        "warning": "Uyarı",
-        "warningDesc": "Yanlış kullanımda ciddi yaralanmalara yol açabilir.",
-        "explosive": "Patlayıcı",
-        "explosiveDesc": "Akü gazı patlayıcıdır, kıvılcım ve ateşten uzak tutun.",
-        "environmental": "Çevresel Tehlike",
-        "environmentalDesc": "Akü kimyasalları çevreye zararlıdır, doğaya karışmasını önleyin."
-          
-      }
+      "unknownManufacturer": "Unknown Manufacturer"
     }
   },
   "dashboard": {
@@ -1034,108 +674,6 @@
       }
     }
   },
-  "product": {
-    "details": {
-      "backToProducts": "Ürünlere Geri Dön",
-      "quickInfo": {
-        "title": "Hızlı Bilgi"
-      },
-      "keyFeatures": {
-        "title": "Ana Özellikler",
-        "name": "Özellik adı",
-        "value": "Değer",
-        "unit": "Birim (opsiyonel)",
-        "add": "Özellik Ekle"
-      },
-      "basicInfo": {
-        "title": "Temel Bilgiler"
-      },
-      "materials": {
-        "title": "Malzemeler",
-        "description": "Ürünün malzeme bileşimi",
-        "table": {
-          "material": "Malzeme",
-          "percentage": "Yüzde",
-          "recyclable": "Geri Dönüştürülebilir",
-          "description": "Açıklama",
-          "examples": {
-            "cotton": {
-              "name": "Pamuk",
-              "description": "BCI sertifikalı organik pamuk"
-            },
-            "elastane": {
-              "name": "Elastan",
-              "description": "Esneklik için elastan karışımı"
-            }
-          }
-        },
-        "recyclable": {
-          "yes": "Evet",
-          "no": "Hayır"
-        }
-      },
-      "textile": {
-        "careInstructions": "Bakım Talimatları"
-      },
-      "certifications": {
-        "title": "Sertifikalar",
-        "loadingCertifications": "Sertifikalar yükleniyor...",
-        "errorLoadingCertifications": "Sertifikalar yüklenirken bir hata oluştu",
-        "noCertifications": "Bu ürüne ait sertifika bulunamadı.",
-        "description": "Ürün sertifikalarını görüntüleyin",
-        "table": {
-          "name": "Sertifika Adı",
-          "issuedBy": "Düzenleyen",
-          "validUntil": "Geçerlilik Tarihi",
-          "status": "Durum",
-          "documentUrl": "Belge URL"
-        },
-        "status": {
-          "rejected": "Reddedildi",
-          "valid": "Geçerli",
-          "expired": "Süresi Dolmuş",
-          "pending": "Beklemede",
-          "approved": "Onaylandı"
-        }
-      },
-      "sustainability": {
-        "title": "Sürdürülebilirlik",
-        "description": "Ürün sürdürülebilirlik metriklerini görüntüleyin",
-        "progress": "İlerleme",
-        "badge": "{value}% Sürdürülebilirlik",
-        "metrics": {
-          "waterUsage": "Su Kullanımı",
-          "carbonFootprint": "Karbon Ayak İzi",
-          "energyConsumption": "Enerji Tüketimi",
-          "recycledContent": "Geri Dönüştürülmüş İçerik",
-          "low": "Düşük",
-          "medium": "Orta",
-          "high": "Yüksek",
-          "carbon-footprint": "Karbon Ayak İzi",
-          "water-usage": "Su Kullanımı",
-          "energy-consumption": "Enerji Tüketimi",
-          "recycled-materials": "Geri Dönüştürülmüş Malzemeler",
-          "chemical-reduction": "Kimyasal Azaltma",
-          "biodegradability": "Biyolojik Bozunabilirlik",
-          "packaging": "Ambalaj",
-          "waste-reduction": "Atık Azaltımı",
-          "chemical-usage": "Kimyasal Kullanımı",
-          "renewable-energy": "Yenilenebilir Enerji",
-          "water-saving": "Su Tasarrufu"
-        }
-      },
-      "qr": {
-        "title": "Ürün QR Kodu",
-        "description": "Ürün detaylarını görüntülemek için bu QR kodu tarayın",
-        "downloadButton": "QR Kodu İndir",
-        "imageAlt": "Ürün Doğrulama QR Kodu",
-        "success":{
-          "title": "QR Kodu Başarıyla Oluşturuldu",
-          "download": "QR Kodu İndirildi."
-        }
-      }
-    }
-  },
   "products": {
     "title": "Sertifikalı Ürünler",
     "description": "Dijital Ürün Pasaportu doğrulanmış sürdürülebilir ürünlerimizi keşfedin.",
@@ -1199,15 +737,45 @@
     "error": {
       "title": "Hata",
       "description": "Ürünler yüklenirken bir hata oluştu"
-
-    },      
+    },
     "verify": {
       "button": "Ürünü Doğrula"
-
     },
     "details": {
+      "backButton": "Back to Products",
+      "viewDocuments": "View Documents",
       "title": "Ürün Detayları",
-      "description": "Ürün detaylarını görüntüleyin",
+      "description": "Ürün detaylarını görüntüleyin ve yönetin",
+      "productInfo": {
+        "title": "Product Information",
+        "id": "Product ID",
+        "manufacturer": "Manufacturer",
+        "type": "Type",
+        "status": "Status",
+        "created": "Created",
+        "description": "Description"
+      },
+      "documents": {
+        "title": "Documents",
+        "totalDocuments": "Total Documents",
+        "documentStatus": "Document Status",
+        "description": "Document information and status",
+        "id": "Document ID",
+        "type": "Type",
+        "validUntil": "Valid Until",
+        "rejectionReason": "Rejection Reason",
+        "viewDocument": "View Document",
+        "documentStatuses": {
+          "noDocuments": "No Documents",
+          "hasRejected": "Has Rejected Documents",
+          "pending": "Pending Review",
+          "hasExpired": "Has Expired Documents",
+          "allApproved": "All Approved",
+          "unknown": "Unknown Status"
+        }
+      },
+      "errorLoadingProduct": "Error Loading Product",
+      "unexpectedError": "An unexpected error occurred",
       "quickInfo": {
         "title": "Hızlı Bilgi",
         "description": "Ürün hakkında hızlı bilgiler",
@@ -1232,7 +800,7 @@
         "addedDate": "Eklenme Tarihi",
         "manufacturer": "Üretici",
         "seller": "Satıcı",
-        "taxNumber": "Vergi No"
+        "taxNumber": "Vergi Numarası"
       },
       "materials": {
         "title": "Malzemeler",
@@ -1256,7 +824,9 @@
         "recyclable": {
           "yes": "Evet",
           "no": "Hayır"
-        }
+        },
+        "loading": "Malzemeler yükleniyor...",
+        "noMaterials": "Bu ürün için materyal bulunamadı."
       },
       "textile": {
         "title": "Tekstil Ürün Detayları",
@@ -1270,25 +840,22 @@
       "certifications": {
         "title": "Sertifikalar",
         "description": "Ürün sertifikalarını görüntüleyin",
-        "loadingCertifications": "Sertifikalar yükleniyor...",
-        "noCertifications": "Sertifika Bulunamadı",
         "table": {
           "name": "Sertifika Adı",
           "issuedBy": "Düzenleyen",
           "validUntil": "Geçerlilik Tarihi",
           "status": "Durum",
-          "document": "Belge"
+          "document": "Belge",
+          "documentType": "Belge Tipi"
         },
         "status": {
           "valid": "Geçerli",
           "expired": "Süresi Dolmuş",
           "pending": "Beklemede",
-          "approved": "Onaylandı",
-          "rejected": "Reddedildi"
+          "approved": "Onaylandı"
         },
         "actions": {
-          "download": "İndir",
-          "noDocument": "Belge Yok"
+          "download": "İndir"
         }
       },
       "sustainability": {
@@ -1317,20 +884,223 @@
           "water-saving": "Su Tasarrufu"
         }
       },
+      "usesafeCertification": {
+        "title": "UseSafe Sertifikasyonu",
+        "description": "Ürün UseSafe sertifika durumunu ve uyumluluk metriklerini görüntüleyin",
+        "progress": "Sertifikasyon İlerlemesi",
+        "certified": "Sertifikalı",
+        "notCertified": "Sertifikalı Değil",
+        "requirementProgress": "Sertifikasyon için minimum %{required} gerekli",
+        "certificationAchieved": "🎉 Tebrikler! Bu ürün UseSafe Sertifikalıdır",
+        "certificationDescription": "Bu ürün tüm UseSafe sertifikasyon gereksinimlerini karşılamaktadır ve kalite ve güvenlik standartları açısından güvenilirdir.",
+        "company": {
+          "title": "Şirket Belgeleri",
+          "allApproved": "Tüm şirket belgeleri onaylandı",
+          "partialApproved": "{total} belgeden {approved} tanesi onaylandı",
+          "partialWithRejected": "{total} belgeden {approved} tanesi onaylandı (bazıları reddedildi)",
+          "hasPending": "Bazı şirket belgeleri inceleme bekliyor",
+          "hasRejected": "Bazı şirket belgeleri reddedildi",
+          "noDocuments": "Hiç şirket belgesi yüklenmedi",
+          "incomplete": "Şirket belgeleri eksik"
+        },
+        "documents": {
+          "title": "Ürün Belgeleri",
+          "allApproved": "Tüm ürün belgeleri onaylandı",
+          "partialApproved": "{total} belgeden {approved} tanesi onaylandı",
+          "partialWithRejected": "{total} belgeden {approved} tanesi onaylandı (bazıları reddedildi)",
+          "hasPending": "Bazı ürün belgeleri inceleme bekliyor",
+          "hasRejected": "Bazı ürün belgeleri reddedildi",
+          "noDocuments": "Hiç ürün belgesi yüklenmedi",
+          "incomplete": "Ürün belgeleri eksik"
+        },
+        "dpp": {
+          "title": "DPP Konfigürasyonu",
+          "complete": "DPP konfigürasyonu tamamlandı",
+          "incomplete": "DPP konfigürasyonu %{percentage} tamamlandı",
+          "noConfig": "DPP konfigürasyonu bulunamadı"
+        },
+        "extraCertifications": {
+          "title": "Extra Sertifikalar",
+          "hasApproved": "Kalite sertifikaları onaylandı",
+          "partialApproved": "{total} sertifikadan {approved} tanesi onaylandı",
+          "partialWithRejected": "{total} sertifikadan {approved} tanesi onaylandı (bazıları reddedildi)",
+          "hasPending": "Bazı sertifikalar inceleme bekliyor",
+          "hasRejected": "Bazı sertifikalar reddedildi",
+          "noCertifications": "Hiç extra sertifika yüklenmedi",
+          "incomplete": "Extra sertifikalar eksik"
+        }
+      },
       "qr": {
         "title": "QR Kod",
         "description": "Ürün doğrulama için QR kod",
         "downloadButton": "QR Kodu İndir",
         "imageAlt": "Ürün Doğrulama QR Kodu"
       },
-      "backToProducts": "Ürünlere Dön"
+      "backToProducts": "Ürünlere Dön",
+      "storage": {
+        "charge": {
+          "sale": "Satış öncesi akü şarj seviyesi 12.6V'un üzerinde olmalıdır",
+          "minimum": "Depolama sırasında minimum voltaj 12.4V olmalıdır",
+          "damage": "Voltaj düşükse, paketi açıp 16.1V ve 1/20Cn akımda şarj edin, aksi halde kalıcı hasar oluşabilir"
+        },
+        "installation": {
+          "title": "Montaj Adımları",
+          "verify": "Akü uyumluluğunu araç kılavuzundan kontrol edin",
+          "engine": "Motorun kapalı olduğundan emin olun",
+          "remove": "Eski aküyü çıkarın (önce negatif kutup)",
+          "control": "Kısa devre olup olmadığını kontrol edin",
+          "clean": "Akü bölmesini ve kutup başlarını temizleyin",
+          "install": "Yeni aküyü takın (önce pozitif kabloyu bağlayın)",
+          "check": "Şarj akımı uyumluluğunu kontrol edin"
+        }
+      },
+      "hazards": {
+        "title": "Tehlikeler",
+        "health": "Sağlık Tehlikesi",
+        "healthDesc": "Akü asidi cilt ve gözlerde ciddi tahrişe neden olabilir.",
+        "corrosive": "Aşındırıcı",
+        "corrosiveDesc": "Akü asidi metal ve dokuları aşındırabilir.",
+        "warning": "Uyarı",
+        "warningDesc": "Yanlış kullanımda ciddi yaralanmalara yol açabilir.",
+        "explosive": "Patlayıcı",
+        "explosiveDesc": "Akü gazı patlayıcıdır, kıvılcım ve ateşten uzak tutun.",
+        "environmental": "Çevresel Tehlike",
+        "environmentalDesc": "Akü kimyasalları çevreye zararlıdır, doğaya karışmasını önleyin."
+      },
+      "errors": {
+        "notFound": "Product Not Found",
+        "notFoundDescription": "The requested product could not be found. It may have been deleted or you may not have permission to view it."
+      },
+      "list": {
+        "title": "Ürünler",
+        "description": "Tüm ürünlerin listesi",
+        "total": "Toplam: {count} ürün bulundu",
+        "totalProducts": "ürün",
+        "empty": {
+          "description": "Başlamak için ürün ekleyin",
+          "search": "Arama kriterlerinize uygun ürün bulunamadı",
+          "filtered": "Arama kriterlerine uygun ürün bulunamadı."
+        },
+        "model": "Model",
+        "viewDetails": "Detayları Görüntüle",
+        "filter": {
+          "all": "Tümü",
+          "active": "Aktif",
+          "inactive": "Pasif",
+          "pending": "Beklemede",
+          "placeholder": "Duruma göre filtrele..."
+        },
+        "search": {
+          "placeholder": "Ürün ara..."
+        },
+        "columns": {
+          "name": "Ürün Adı",
+          "productCode": "Ürün Kodu",
+          "productName": "Ürün Adı",
+          "sku": "SKU",
+          "category": "Kategori",
+          "status": "Durum",
+          "addedDate": "Eklenme Tarihi",
+          "actions": "İşlemler"
+        },
+        "ProductDocuments": {
+          "uploadNewDocument": "Yeni Belge Yükle",
+          "documentType": "Belge Tipi",
+          "select": "Seçin",
+          "qualityCertificate": "Kalite Sertifikaları",
+          "safetyCertificate": "Güvenlik Sertifikaları",
+          "testReports": "Test Raporları",
+          "technicalDocumentation": "Teknik Dokümantasyon",
+          "complianceDocuments": "Uygunluk Belgeleri",
+          "file": "Dosya",
+          "selectedFile": "Seçilen dosya:",
+          "additionalInfo": "Ek Bilgiler",
+          "version": "Versiyon",
+          "validUntilOptional": "Opsiyonel",
+          "notesOptional": "Opsiyonel",
+          "documentNotesPlaceholder": "Belge notları...",
+          "cancel": "İptal",
+          "uploading": "Yükleniyor...",
+          "uploadDocument": "Belge Yükle",
+          "noDocumentsFound": "Belge Bulunamadı",
+          "noDocumentsDescription": "Bu ürüne ait belge bulunmamaktadır.",
+          "documentName": "Belge Adı",
+          "type": "Tür",
+          "status": "Durum",
+          "validUntil": "Geçerlilik Tarihi",
+          "actions": "İşlemler",
+          "openMenu": "Menüyü aç",
+          "download": "İndir",
+          "view": "Görüntüle",
+          "viewHistory": "Geçmişi Görüntüle",
+          "reject": "Reddet",
+          "reupload": "Yeniden Yükle",
+          "documentDetails": "Belge Detayları",
+          "generalInfo": "Genel Bilgiler",
+          "fileSize": "Dosya Boyutu",
+          "uploadDate": "Yükleme Tarihi",
+          "notes": "Notlar",
+          "rejectionReason": "Reddetme Nedeni",
+          "rejectDocument": "Belgeyi Reddet",
+          "rejectDescription": "Lütfen belgeyi reddetme nedeninizi girin.",
+          "rejectionReasonPlaceholder": "Reddetme nedeni...",
+          "confirm": "Onayla",
+          "productDocuments": "Ürün Belgeleri",
+          "productNotFound": "Ürün Bulunamadı",
+          "productNotFoundDescription": "İstenen ürün bulunamadı.",
+          "notAvailable": "Mevcut Değil",
+          "success": "Başarılı",
+          "documentUploadedSuccessfully": "Belge başarıyla yüklendi",
+          "noNotes": "Not yok"
+        },
+        "status": {
+          "active": "Aktif",
+          "passive": "Pasif",
+          "draft": "Taslak",
+          "pending": "Onay Bekliyor",
+          "taslak": "Taslak",
+          "NEW": "Yeni"
+        },
+        "actions": {
+          "add": "Yeni Ürün Ekle",
+          "edit": "Düzenle",
+          "delete": "Sil",
+          "view": "Görüntüle",
+          "approve": "Onayla",
+          "reject": "Reddet",
+          "title": "İşlemler"
+        },
+        "filters": {
+          "all": "Tümü",
+          "active": "Aktif Ürünler",
+          "passive": "Pasif Ürünler",
+          "draft": "Taslaklar",
+          "pending": "Onay Bekleyenler"
+        },
+        "messages": {
+          "deleteConfirm": "Bu ürünü silmek istediğinizden emin misiniz?",
+          "deleteSuccess": "Ürün başarıyla silindi",
+          "deleteError": "Ürün silinirken bir hata oluştu",
+          "addSuccess": "Ürün başarıyla eklendi",
+          "addError": "Ürün eklenirken bir hata oluştu",
+          "editSuccess": "Ürün başarıyla güncellendi",
+          "editError": "Ürün güncellenirken bir hata oluştu"
+        }
+      },
+      "empty": {
+        "description": "Ürün bulunamadı",
+        "addFirst": "İlk Ürünü Ekle"
+      },
+      "actions": {
+        "title": "Actions",
+        "viewDetails": "View Details",
+        "viewDocuments": "View Documents"
+      }
     },
     "features": {
-      
       "title": "Ürün Özellikleri",
       "description": "Ürünlerimizin öne çıkan özellikleri",
       "button": "Ürünü Doğrula",
-
 
       "sections": {
         "traceability": {
@@ -1342,7 +1112,6 @@
           "title": "Tedarik Zinciri",
           "description": "Ürünün tedarik zinciri sürecini takip edin",
           "button": "Ürünü Doğrula"
-             
         },
         "certifications": {
           "title": "Sertifikalar",
@@ -1386,437 +1155,437 @@
         "batteries_and_accumulators": "Aküler ve Aküler",
         "electrical_equipment": "Elektrikli Ekipmanlar",
         "prepackaging": "Hazır Ambalajlama",
-        "food":"Gıda",
-        "stationery":"Kırtasiye",
-        "cosmetics":"Kozmetikler",
-        "please_select":"Lütfen Seçin",
-        "baby_shoes":"Bebek Ayakkabıları",
-        "children_shoes":"Çocuk Ayakkabıları",
-        "adult_shoes":"Yetişkin Ayakkabıları",
-        "other_footwear":"Diğer Ayakkabılar",
-        "training_cups":"ALIŞTIRMA BARDAĞI VE KAPAĞI",
-        "baby_carriers":"ASKILI TAŞIYICILAR",
-        "baby_bottles":"BİBERON, BİBERON BAŞLIĞI VE KAPAĞI",
-        "cribs_and_beds":"ÇOCUK KARYOLASI VE BEŞİKLER",
-        "high_chairs":"ÇOCUKLAR İÇİN YÜKSEK SANDALYELER",
-        "other_childcare":"Diğer Çocuk Ürünleri",
-        "pacifiers":"EMZİK",
-        "pacifier_clips":"EMZİK BAĞLAYICILAR",
-        "nursing_pillows":"EMZİRME YASTIĞI",
-        "home_cribs":"EVLERDE KULLANILAN SABİT VE KATLANABİLEN ÇOCUK KARYOLALARI",
-        "toilet_seat_reducers":"KLOZET DARALTICILAR",
-        "baby_bibs":"MAMA ÖNLÜKLERİ",
-        "stools":"TABURELER",
-        "portable_baby_beds":"TAŞINABİLİR BEBEK YATAKLARI VE DESTEKLERİ",
-        "strollers":"TEKERLEKLİ ÇOCUK ARABALARI",
-        "baby_walkers":"YÜRÜTEÇLER",
-        "dish_detergent":"BULAŞIK DETERJANI",
-        "laundry_detergent":"ÇAMAŞIR DETERJANI",
-        "bleach":"ÇAMAŞIR SUYU",
-        "fabric_softener":"ÇAMAŞIR YUMUŞATICISI",
-        "other_detergents":"DİĞER",
-        "general_cleaning":"GENEL TEMİZLİK ÜRÜNLERİ",
-        "limescale_remover":"KİREÇ ÇÖZÜCÜ",
-        "drain_opener":"LAVABO AÇICI",
-        "hydrochloric_acid":"TUZ RUHU",
-        "grease_remover":"YAĞ ÇÖZÜCÜ",
-        "sports_equipment":"SPOR EKİPMANLARI",
-        "lighters":"ÇAKMAKLAR",
-        "other_products":"DİĞER ÜRÜNLER",
-        "hand_tools":"EL ALETLERİ",
-        "laser_pointers":"LAZER İŞARETLEYİCİLER",
-        "furniture":"MOBİLYA",
-        "candles":"MUMLAR",
-        "playground_equipment":"OYUN ALANI ELEMANLARI VE DIŞ MEKÂN MOBİLYALARI",
-        "blinds":"STOR PERDELER",
-        "jewelry":"TAKILAR",
-        "food_imitation_bathroom":"YİYECEK TAKLİDİ ÜRÜNLER (BANYO ÜRÜNLERİ)",
-        "food_imitation_decorative":"YİYECEK TAKLİDİ ÜRÜNLER (DEKORATİF EŞYALAR)",
-        "food_imitation_candles":"YİYECEK TAKLİDİ ÜRÜNLER (DEKORATİF MUMLAR)",
-        "food_imitation_magnets":"YİYECEK TAKLİDİ ÜRÜNLER (MIKNATISLI ÜRÜNLER)",
-        "food_imitation_expanding":"YİYECEK TAKLİDİ ÜRÜNLER (OYUNCAKLAR DIŞINDA KALAN SUDA GENİŞLEYEN ÜRÜNLER)",
-        "interdental_brushes":"ARAYÜZ FIRÇALARI",
-        "other_toothbrushes":"DİĞER DİŞ FIRÇALARI",
-        "regular_toothbrushes":"DİŞ FIRÇALARI",
-        "electric_toothbrush_heads":"ELEKTRİKLE/PİLLE ÇALIŞAN DİŞ FIRÇALARININ FIRÇA BAŞLIKLARI",
-        "3d_printer":"3 BOYUTLU YAZICI",
-        "adapter":"ADAPTÖR",
-         "battery_charger":"AKÜ ŞARJ ALETLERİ",
-        "aquarium_equipment":"AKVARYUMLAR VE BAHÇE HAVUZLARINDA KULLANILAN ELEKTRİKLİ CİHAZLAR (HAVALANDIRICILAR, AKVARYUM ISITICILARI, OTOMATİK YEM DAĞITICILAR, ÇAMUR EMME CİHAZLARI)",
-        "alarm_device":"ALARM CİHAZLARI",
-        "alarm_recorder":"ALARM KAYIT CİHAZLARI",
-        "alarm_control_mechanism":"ALARM KUMANDA MEKANİZMASI",
-        "alarm_panel":"ALARM PANELİ",
-        "low_voltage_motor_starters":"ALÇAK GERİLİM MOTOR YOL VERİCİLERİ",
-        "amplified_sound_system":"AMFİLİ SES SİSTEMİ",
-        "amplifier":"AMPLİFİKATÖR (SES YÜKSELTİCİSİ)",
+        "food": "Gıda",
+        "stationery": "Kırtasiye",
+        "cosmetics": "Kozmetikler",
+        "please_select": "Lütfen Seçin",
+        "baby_shoes": "Bebek Ayakkabıları",
+        "children_shoes": "Çocuk Ayakkabıları",
+        "adult_shoes": "Yetişkin Ayakkabıları",
+        "other_footwear": "Diğer Ayakkabılar",
+        "training_cups": "ALIŞTIRMA BARDAĞI VE KAPAĞI",
+        "baby_carriers": "ASKILI TAŞIYICILAR",
+        "baby_bottles": "BİBERON, BİBERON BAŞLIĞI VE KAPAĞI",
+        "cribs_and_beds": "ÇOCUK KARYOLASI VE BEŞİKLER",
+        "high_chairs": "ÇOCUKLAR İÇİN YÜKSEK SANDALYELER",
+        "other_childcare": "Diğer Çocuk Ürünleri",
+        "pacifiers": "EMZİK",
+        "pacifier_clips": "EMZİK BAĞLAYICILAR",
+        "nursing_pillows": "EMZİRME YASTIĞI",
+        "home_cribs": "EVLERDE KULLANILAN SABİT VE KATLANABİLEN ÇOCUK KARYOLALARI",
+        "toilet_seat_reducers": "KLOZET DARALTICILAR",
+        "baby_bibs": "MAMA ÖNLÜKLERİ",
+        "stools": "TABURELER",
+        "portable_baby_beds": "TAŞINABİLİR BEBEK YATAKLARI VE DESTEKLERİ",
+        "strollers": "TEKERLEKLİ ÇOCUK ARABALARI",
+        "baby_walkers": "YÜRÜTEÇLER",
+        "dish_detergent": "BULAŞIK DETERJANI",
+        "laundry_detergent": "ÇAMAŞIR DETERJANI",
+        "bleach": "ÇAMAŞIR SUYU",
+        "fabric_softener": "ÇAMAŞIR YUMUŞATICISI",
+        "other_detergents": "DİĞER",
+        "general_cleaning": "GENEL TEMİZLİK ÜRÜNLERİ",
+        "limescale_remover": "KİREÇ ÇÖZÜCÜ",
+        "drain_opener": "LAVABO AÇICI",
+        "hydrochloric_acid": "TUZ RUHU",
+        "grease_remover": "YAĞ ÇÖZÜCÜ",
+        "sports_equipment": "SPOR EKİPMANLARI",
+        "lighters": "ÇAKMAKLAR",
+        "other_products": "DİĞER ÜRÜNLER",
+        "hand_tools": "EL ALETLERİ",
+        "laser_pointers": "LAZER İŞARETLEYİCİLER",
+        "furniture": "MOBİLYA",
+        "candles": "MUMLAR",
+        "playground_equipment": "OYUN ALANI ELEMANLARI VE DIŞ MEKÂN MOBİLYALARI",
+        "blinds": "STOR PERDELER",
+        "jewelry": "TAKILAR",
+        "food_imitation_bathroom": "YİYECEK TAKLİDİ ÜRÜNLER (BANYO ÜRÜNLERİ)",
+        "food_imitation_decorative": "YİYECEK TAKLİDİ ÜRÜNLER (DEKORATİF EŞYALAR)",
+        "food_imitation_candles": "YİYECEK TAKLİDİ ÜRÜNLER (DEKORATİF MUMLAR)",
+        "food_imitation_magnets": "YİYECEK TAKLİDİ ÜRÜNLER (MIKNATISLI ÜRÜNLER)",
+        "food_imitation_expanding": "YİYECEK TAKLİDİ ÜRÜNLER (OYUNCAKLAR DIŞINDA KALAN SUDA GENİŞLEYEN ÜRÜNLER)",
+        "interdental_brushes": "ARAYÜZ FIRÇALARI",
+        "other_toothbrushes": "DİĞER DİŞ FIRÇALARI",
+        "regular_toothbrushes": "DİŞ FIRÇALARI",
+        "electric_toothbrush_heads": "ELEKTRİKLE/PİLLE ÇALIŞAN DİŞ FIRÇALARININ FIRÇA BAŞLIKLARI",
+        "3d_printer": "3 BOYUTLU YAZICI",
+        "adapter": "ADAPTÖR",
+        "battery_charger": "AKÜ ŞARJ ALETLERİ",
+        "aquarium_equipment": "AKVARYUMLAR VE BAHÇE HAVUZLARINDA KULLANILAN ELEKTRİKLİ CİHAZLAR (HAVALANDIRICILAR, AKVARYUM ISITICILARI, OTOMATİK YEM DAĞITICILAR, ÇAMUR EMME CİHAZLARI)",
+        "alarm_device": "ALARM CİHAZLARI",
+        "alarm_recorder": "ALARM KAYIT CİHAZLARI",
+        "alarm_control_mechanism": "ALARM KUMANDA MEKANİZMASI",
+        "alarm_panel": "ALARM PANELİ",
+        "low_voltage_motor_starters": "ALÇAK GERİLİM MOTOR YOL VERİCİLERİ",
+        "amplified_sound_system": "AMFİLİ SES SİSTEMİ",
+        "amplifier": "AMPLİFİKATÖR (SES YÜKSELTİCİSİ)",
         "bulb": "AMPUL(ENERJİ TASARRUFLU,FLORESAN LAMBA,LED AMPUL)",
         "switch": "ANAHTAR/SWİTCH",
-         "instant_water_heater": "ANİ SU ISITICI (ŞOFBEN)",
-         "antenna_amplifier": "ANTEN YÜKSELTİCİ",
-         "arc_lamp": "ARK LAMBASI",
-         "lighting_fixture": "ARMATÜR (AVİZE,GECE LAMBASI, MASA LAMBASI, APLİK, VB.)",
-         "extractor_hood": "ASPİRATÖR",
-         "lighting_element": "AYDINLATMA ELEMANI (BALAST,DUY,STARTER)",
-         "connection_cables":"BAĞLANTI KABLOLARI(TELEVİZYON ALICILARI İÇİN)",
-         "copper_conductors": "BAKIR, BAKIR İLETKENLER VE BAKIR TELLER (EMAYE BOBİN TELİ)",
-         "barcode_reader": "BARKOD OKUYUCU",
-         "barcode_printer": "BARKOD YAZICISI" ,
-         "printing_machine": "BASKI MAKİNESİ",
-         "digital_printing_machine": "BASKI MAKİNESİ/DİJİTAL",
-         "baby_monitor": "BEBEK TELSİZİ",
-         "bottle_warmer": "BİBERON ISITICI",
-         "information_processing_unit": "BİLGİ İŞLEM BİRİMİ/ÜNİTESİ",
-         "computer_motherboard": "BİLGİSAYAR ANA KARTI",
-         "computer_memory": "BİLGİSAYAR BELLEK BİRİMİ (RAM)",
-         "computer_graphics_card": "BİLGİSAYAR EKRAN KARTI",
-         "computer_fan": "BİLGİSAYAR FANI",
-         "computer_power_supply": "BİLGİSAYAR GÜÇ KAYNAĞI",
-         "webcam": "BİLGİSAYAR KAMERASI/WEB KAMERASI/WEB CAM",
-         "computer_case": "BİLGİSAYAR KASASI",
-         "computer_sound_card": "BİLGİSAYAR SES KARTI",
-         "computer_tv_card": "BİLGİSAYAR TELEVİZYON KARTI/TV KARTI",
-         "single_phase_induction_motors": "BİR FAZLI ENDÜKSİYON MOTORLARI",
-         "blender": "BLENDER",
-         "bluetooth_flash_drive": "BLUETOOTH FLASH BELLEK",
-         "insect_killing_devices": "BÖCEK ÖLDÜRME CİHAZLARI",
-         "steam_cooker": "BUHARLI PİŞİRİCİ",
-         "steam_cleaners": "BUHARLI TEMİZLEYİCİLER",
-         "steam_iron": "BUHARLI ÜTÜ (ÜTÜ)",
-         "button": "BUTON",
-         "capture_card": "CAPTURA KARTI",
-         "cd_player": "CD PLAYER (CD OYNATICI)",
-         "cd_drive": "CD SÜRÜCÜ",
-         "pocket_computer": "CEP BİLGİSAYARI",
-         "skin_analyzer": "CİLT ANALİZ CİHAZI",
-         "skin_care_set": "CİLT BAKIM SETİ",
-         "skin_vacuum_device": "CİLT VAKUM CİHAZI(GÜZELLİK MERKEZLERİNDE KULLANILAN)",
-         "tea_maker": "ÇAY MAKİNESİ/SETİ",
-         "soup_warmer": "ÇORBA ISITICI",
-         "drum_oven": "DAVUL FIRIN",
-         "freezer": "DERİN DONDURUCU",
-         "revolution_counter": "DEVİR SAYACI",
-         "circuit_breaker": "DEVRE KESİCİ/CİRCUİT BREAKER",
-         "intercom": "DİAFON",
-         "digital_photo_frame": "DİJİTAL FOTOĞRAF ÇERÇEVESİ",
-         "digital_camera": "DİJİTAL FOTOĞRAF MAKİNESİ",
-         "toothbrush_machine": "DİŞ FIRÇASI MAKİNESİ",
-         "dvd_player": "DVD ÇALAR/DVD PLAYER",
-         "dvd_receiver": "DVD RECEİVER",
-         "dvd_drive": "DVD SÜRÜCÜ",
-         "dvd_writer": "DVD WRİTER (YAZICI)",
-         "bread_maker": "EKMEK YAPIM MAKİNESİ",
-         "flashlight": "EL FENERİ",
-         "hand_dryer": "EL KURUTMA MAKİNESİ",
-         "electric_motor_ac": "ELEKTRİK MOTORU (AC)",
-         "electric_motor_dc": "ELEKTRİK MOTORU (DC)",
-         "electrical_panel": "ELEKTRİK PANOSU",
-         "vacuum_cleaner": "ELEKTRİK SÜPÜRGESİ",
-         "rechargeable_vacuum_cleaner": "ELEKTRİK SÜPÜRGESİ (ŞARJLI)",
-         "electric_foot_warmer": "ELEKTRİKLİ AYAK ISITICISI",
-         "electric_fish_catching_machines": "ELEKTRİKLİ BALIK YAKALAMA MAKİNELERİ",
-         "electric_blanket": "ELEKTRİKLİ BATTANİYE",
-         "electric_knife": "ELEKTRİKLİ BIÇAK",
-         "electric_knife_sharpener": "ELEKTRİKLİ BIÇAK BİLEYİCİ",
-         "electric_tea_cauldron": "ELEKTRİKLİ ÇAY KAZANI",
-         "electric_fence_power_circuits": "ELEKTRİKLİ ÇİT GÜÇ DEVRELERİ",
-         "electric_oven": "ELEKTRİKLİ FIRIN",
-         "electric_towel_machines": "ELEKTRİKLİ HAVLU MAKİNELERİ",
-         "electric_heater": "ELEKTRİKLİ ISITICI",
-         "electric_paper_towel_machine": "ELEKTRİKLİ KAĞIT HAVLU MAKİNESİ",
-         "electric_combi_boiler": "ELEKTRİKLİ KOMBİ",
-         "electric_exercise_bike": "ELEKTRİKLİ KONDİSYON BİSİKLETİ",
-         "electric_treadmill": "ELEKTRİKLİ KOŞU BANDI",
-         "electric_room_heater": "ELEKTRİKLİ ODA ISTICISI",
-         "electric_organ": "ELEKTRİKLİ ORG",
-         "electric_cooking_device": "ELEKTRİKLİ PİŞİRME CİHAZI",
-         "electric_pizza_pan": "ELEKTRİKLİ PİZZA TAVA",
-         "electric_radiator": "ELEKTRİKLİ RADYATÖR",
-         "electric_sound_or_visual_signal_devices": "ELEKTRİKLİ SES VEYA GÖRÜNTÜLÜ İŞARET CİHAZLARI",
-         "electric_insect_screen": "ELEKTRİKLİ SİNEKLİK",
-         "electric_sterilizer": "ELEKTRİKLİ STERİLİZATÖR",
-         "electric_kettle": "ELEKTRİKLİ SU ISITICISI (KETTLE)",
-         "electric_water_heater": "ELEKTRİKLİ ŞOFBEN",
-         "electric_water_heater_with_tank": "ELEKTRİKLİ ŞOFBEN (DEPOLU TERMOSİFON)",
-         "electric_plate_warmer": "ELEKTRİKLİ TABAK ISITICI",
-         "electric_nail_dryer": "ELEKTRİKLİ TIRNAK KURUTUCU",
-         "electric_christmas_decoration": "ELEKTRİKLİ YILBAŞI SÜSÜ",
-         "electro_guitar_set": "ELEKTRO GİTAR SET",
-         "electronic_board": "ELEKTRONİK BOARD (YAZI TAHTASI)",
-         "electronic_card": "ELEKTRONİK KART",
-         "electronic_toilet_lid": "ELEKTRONİK KLOZET KAPAĞI",
-         "electronic_eraser": "ELEKTRONİK SİLGİ",
-         "infrared_ultraviolet_devices": "ENFRARUJ VE ULTRAVİOLE CİHAZLAR (DERİYE UYGULAMAK İÇİN)",
-         "epilation_device": "EPİLASYON ALETİ",
-         "ethernet_card": "ETHERNET KARTI",
-         "outdoor_food_cooler": "EV DIŞI GIDA SOĞUTUCU",
-         "home_theater_system": "EV SİNEMA SETİ",
-         "home_bain_marie": "EV TİPİ BENMARİ MAKİNELERİ",
-         "home_sharpening_machine": "EV TİPİ BİLEYLEME MAKİNESİ",
-         "home_steam_station_irons": "EV TİPİ BUHAR İSTASYONLU ÜTÜLER",
-         "home_steam_machine": "EV TİPİ BUHAR MAKİNESİ",
-         "home_steam_cleaning_machine": "EV TİPİ BUHAR TEMİZLEME MAKİNESİ",
-         "home_dishwasher": "EV TİPİ BULAŞIK MAKİNESİ",
-         "home_ice_machine": "EV TİPİ BUZ MAKİNESİ",
-         "home_refrigerators": "EV TİPİ BUZDOLAPLARI",
-         "home_clothes_dryer": "EV TİPİ ÇAMAŞIR KURUTMA MAKİNELERİ",
-         "home_washing_machines": "EV TİPİ ÇAMAŞIR MAKİNELERİ",
-         "home_chocolate_machine": "EV TİPİ ÇİKOLATA MAKİNESİ",
-         "home_garbage_disposal": "EV TİPİ ÇÖP ÖĞÜTÜCÜ",
-         "home_outdoor_unit": "EV TİPİ DIŞ ÜNİTE",
-         "home_sewing_machine": "EV TİPİ DİKİŞ MAKİNESİ",
-         "home_slicing_machine": "EV TİPİ DİLİMLEME MAKİNESİ",
-         "home_electric_can_opener": "EV TİPİ ELEKTRİKLİ KONSERVE AÇACAĞI",
-         "home_electric_water_pump": "EV TİPİ ELEKTRİKLİ SU POMPASI",
-         "home_meat_grinder": "EV TİPİ ET KIYMA MAKİNESİ",
-         "home_indoor_unit": "EV TİPİ İÇ ÜNİTE",
-         "home_coffee_grinder": "EV TİPİ KAHVE ÖĞÜTME MAKİNESİ",
-         "home_air_conditioners": "EV TİPİ KLİMALAR (İÇ VE DIŞ ÜNİTE BİRLİKTE)",
-         "home_washer_dryer_combo": "EV TİPİ KURUTMALI ÇAMAŞIR MAKİNELERİ",
-         "home_pasta_machine": "EV TİPİ PASTA MAKİNESİ",
-         "home_silicone_gun": "EV TİPİ SİLİKON TABANCASI",
-         "home_candy_machine": "EV TİPİ ŞEKERLEME MAKİNESİ",
-         "home_submersible_pump": "EV VE BENZERİ YERLERDE KULLANILAN DALGIÇ POMPA",
-         "home_circulation_pump": "EV VE BENZERİ YERLERDE KULLANILAN DEVİRDAİM POMPASI",
-         "home_digital_scale": "EVDE KULLANILAN DİGİTAL BASKÜL",
-         "paper_shredder": "EVRAK İMHA MAKİNESİ",
-         "fax_machine": "FAKS MAKİNASI",
-         "fan": "FAN",
-         "filter": "FİLTRE",
-         "plug": "FİŞ",
-         "plug_and_socket_group": "FİŞ VE PRİZ (GRUP)",
-         "usb_flash_drive": "FLASH DİSK (USB BELLEK)",
-         "camera": "FOTOĞRAF MAKİNESİ",
-         "photocopier": "FOTOKOPİ MAKİNESİ",
-         "frequency_converter": "FREKANS KONVERTER",
-         "frequency_booster": "FREKANS YÜKSELTİCİ",
-         "deep_fryer": "FRİTÖZ (KIZARTMA MAKİNESİ)",
-         "garage_door_remote": "GARAJ KAPISI KUMANDASI",
-         "gas_alarm_device": "GAZ ALARM CİHAZI(YANICI GAZ, KARBONMONOKSİT DEDEKTÖRÜ)",
-         "solar_panels": "GÜNEŞ PANELLERİ",
-         "beauty_center_heat_blanket": "GÜZELLİK MERKEZLERİNDE KULLANILAN ISI BATTANİYE",
-         "memory_card": "HAFIZA KARTI",
-         "hard_disk": "HARD DİSK",
-         "external_hard_disk": "HARİCİ HARD DİSK",
-         "air_filter": "HAVA FİLTRESİ",
-         "air_humidifier": "HAVA NEMLENDİRİCİ",
-         "air_curtain": "HAVA PERDESİ",
-         "air_purifier": "HAVA TEMİZLEME CİHAZI",
-         "calculator": "HESAP MAKİNESİ",
-         "speaker": "HOPARLÖR",
-         "light_converter": "IŞIK DÖNÜŞTÜRÜCÜ",
-         "spotlight": "IŞILDAK",
-         "thinning_passive_gymnastic_devices": "İNCELTME VE PASİF CİMLASTİK CİHAZLARI",
-         "inverter": "İNVERTÖR",
-         "jacuzzi": "JAKUZİ",
-         "joystick": "JOYSTİK",
-         "cable": "KABLO",
-         "cable_cutting_device": "KABLO KESME CİHAZI",
-         "residual_current_circuit_breaker": "KAÇAK AKIM KORUMA ANAHTARI",
-         "residual_current_relay": "KAÇAK AKIM ROLESİ",
-         "coffee_machine": "KAHVE MAKİNESİ",
-         "permanent_makeup_device": "KALICI MAKYAJ CİHAZI",
-         "camera_control_device": "KAMERA KONTROL CİHAZI",
-         "camera_monitor": "KAMERA MONİTÖRÜ (VİZÖR)",
-         "door_detector": "KAPI DEDEKTÖRÜ",
-         "door_security_system": "KAPI GÜVENLİK SİSTEMİ",
-         "card_encoding_device": "KART KODLAMA CİHAZI",
-         "card_reader": "KART OKUYUCU",
-         "muscle_simulator": "KAS SİMİLATÖRÜ",
-         "cassette_player": "KASETÇALAR",
-         "juicer": "KATI MEYVE SIKACAĞI",
-         "cavitation_device": "KAVİTASYON CİHAZI",
-         "recorder": "KAYIT CİHAZI (RECORDER)",
-         "uninterruptible_power_supply": "KESİNTİSİZ GÜÇ KAYNAKLARI(UPS)",
-         "hair_removal_machine": "KIL ALMA MAKİNESİ",
-         "keyboard": "KLAVYE (KEYBOARD)",
-         "terminal_block": "KLEMENS (VAGO)",
-         "compressor_motor": "KOMPRESÖR MOTORU",
-         "contactor": "KONTAKTÖR",
-         "control_device": "KONTROL CİHAZI/ÜNİTESİ",
-         "control_card": "KONTROL KARTI",
-         "control_keyboard": "KONTROL KLAVYESİ",
-         "control_panel": "KONTROL PANELİ",
-         "control_panel_general": "KONTROL PANOSU",
-         "fire_detection_control_panel": "KONTROL PANOSU (YANGIN ALGILAMA)",
-         "headphones": "KULAKLIK",
-         "headphone_kit": "KULAKLIK KİTİ",
-         "remote_control": "KUMANDA",
-         "laptop": "LAPTOP/NOTEBOOK/DİZÜSTÜ",
-         "laser_epilation_device": "LAZER EPİLASYON CİHAZI",
-         "laser_pointer": "LAZER POİNTER",
-         "lcd_led_oled_monitor": "LCD/LED/OLED MONİTÖR",
-         "led_projector": "LED PROJEKTÖR (BİNA AYDINLATMA)",
-         "soldering_machine": "LEHİM MAKİNESİ",
-         "soldering_gun": "LEHİM TABANCASI",
-         "lymph_drainage_device": "LENF DRENAJ CİHAZI",
-         "mine_detector": "MADEN DEDEKTÖRÜ",
-         "magnetic_tape": "MANYETİK TEYP",
-         "massage_device": "MASAJ ALETİ",
-         "massage_belt": "MASAJ KEMERİ/SAUNABELT",
-         "desktop_pc": "MASAÜSTÜ/PC",
-         "metal_detector": "METAL DEDEKTÖRÜ",
-         "popcorn_machine": "MISIR PATLATMA MAKİNESİ",
-         "microwave_oven": "MİKRODALGA FIRIN",
-         "microphone": "MİKROFON",
-         "microphone_kit": "MİKROFON KİTİ",
-         "mixer": "MİKSER",
-         "mini_oven": "MİNİ FIRIN",
-         "modem": "MODEM",
-         "motor_speed_control_device": "MOTOR HIZ KONTROL CİHAZI",
-         "motor_driver": "MOTOR SÜRÜCÜSÜ",
-         "mouse": "MOUSE/FARE",
-         "mp3_mp4_player": "MP3/MP4 PLAYER",
-         "kitchen_appliances": "MUTFAK MAKİNELERİ",
-         "food_processor": "MUTFAK ROBOTU",
-         "music_system": "MÜZİK SETİ",
-         "citrus_juicer": "NARENCİYE SIKACAĞI",
-         "navigation_device": "NAVİGASYON CİHAZI",
-         "optical_reader": "OPTİK OKUYUCU",
-         "automatic_room_spray": "OTOMATİK ODA SPREYİ",
-         "game_consoles": "OYUN KONSOLLARI",
-         "ozone_machine": "OZON MAKİNESİ",
-         "measuring_device": "ÖLÇÜ ALETİ/CİHAZI",
-         "money_counting_machine": "PARA SAYMA MAKİNESİ",
-         "surge_arresters": "PARAFUDRLAR",
-         "perfume_spraying_device": "PARFÜM PÜSKÜRTME CİHAZI",
-         "record_player": "PİKAP",
-         "battery_liquid_soap_dispenser": "PİLLİ SIVI SABUNLUK",
-         "runway_lighting_system": "PİST AYDINLATMA SİSTEMİ",
-         "plasma_heater": "PLAZMA ISITICI",
-         "press_iron": "PRES ÜTÜ",
-         "socket": "PRİZ",
-         "projector": "PROJEKSİYON CİHAZI (PROJEKTÖR)",
-         "radio": "RADYO",
-         "pocket_radio": "RADYO (CEP RADYOSU)",
-         "radio_cd_player": "RADYO CD ÇALAR",
-         "radio_cassette_player": "RADYO KASETÇALAR",
-         "reactive_power_control_units": "REAKTİF GÜÇ KONTROL ÜNİTELERİ",
-         "rectifier": "REDRESÖR",
-         "resistor": "REZİSTANS",
-         "router": "ROUTER",
-         "thermal_relay": "RÖLE(TERMİK)",
-         "fixed_home_ovens": "SABİT EV TİPİ FIRINLAR",
-         "hair_care_device": "SAÇ BAKIM CİHAZI",
-         "hair_clipper": "SAÇ KESME MAKİNESİ",
-         "hair_dryer": "SAÇ KURUTMA MAKİNESİ",
-         "hair_styling_machine": "SAÇ ŞEKİLLENDİRME MAKİNESİ",
-         "sauna": "SAUNA",
-         "scanner": "SCANNER /TARAYICI",
-         "sensor": "SENSÖR",
-         "servo_motor": "SERVO MOTOR",
-         "sound_adjusting_device": "SES DÜZENLEYİCİ CİHAZ",
-         "sound_recording_device": "SES KAYIT CİHAZI/ SİSTEMİ",
-         "sound_system": "SES SİSTEMİ",
-         "sound_device": "SES VERME CİHAZI",
-         "level_detection_device": "SEVİYE TESPİT CİHAZI",
-         "wax_hair_removal_machine": "SIR AĞDA MAKİNESİ",
-         "fuse": "SİGORTA (W OTOMAT)",
-         "siren": "SİREN",
-         "mosquito_repellent": "SİVRİSİNEK KOVUCU",
-         "slide_advance_remote": "SLAYT ATLATMA KUMANDASI",
-         "cooling_motor": "SOĞUTMA MOTORU",
-         "solarium_device": "SOLARYUM CİHAZI",
-         "water_purifier": "SU ARITMA CİHAZI",
-         "water_control_system": "SU KONTROL SİSTEMİ",
-         "water_dispenser": "SU SEBİLİ",
-         "waterbed_heater": "SU YATAĞI ISTICISI",
-         "charger": "ŞARJ CİHAZI (CEP TELEFONU HARİÇ)",
-         "mobile_phone_charger": "ŞARJ CİHAZI (CEP TELEFONU)",
-         "blood_pressure_monitor": "TANSİYON ÖLÇER",
-         "portable_immersion_water_heater": "TAŞINABİLİR ELEKTRİKLİ DALDIRMA TİPİ SU ISITICISI",
-         "portable_electric_grill": "TAŞINABİLİR ELEKTRİKLİ IZGARA",
-         "portable_electric_stove": "TAŞINABİLİR ELEKTRİKLİ OCAK",
-         "portable_welding_machine": "TAŞINABİLİR KAYNAK MAKİNESİ",
-         "lcd_television": "TELEVİZVON (LCD)",
-         "plasma_television": "TELEVİZVON (PLAZMA)",
-         "tube_television": "TELEVİZYON (TÜPLÜ)",
-         "television_receiver": "TELEVİZYON ALICISI",
-         "thermal_magnetic_compact_switch": "TERMİK MANYETİK KOMPAKT ŞALTER",
-         "thermal_magnetic_switch": "TERMİK MANYETİK ŞALTER (KOMPAKT ŞALTER)",
-         "thermostat": "TERMOSTAT",
-         "test_device": "TEST CİHAZI/MAKİNESİ",
-         "commercial_electric_boiling_pans": "TİCARİ ELEKTRİKLİ KAYNATMA TAVALARI(SICAK İÇECEK MAKİNALARI)",
-         "toaster": "TOST MAKİNESİ",
-         "transformer": "TRAFO",
-         "shaver": "TRAŞ MAKİNESİ",
-         "ultrasonic_cleaner": "ULTRASONİK TEMİZLEYİCİ",
-         "usb_port": "USB PORT",
-         "satellite_receiver": "UYDU ALICI CİHAZLARI (RECEİVER)",
-         "satellite_antenna": "UYDU ANTENİ",
-         "3d_scanner": "ÜÇ BOYUTLU TARAYICI",
-         "three_phase_induction_motors": "ÜÇ FAZLI ENDÜKSİYON MOTORLARI",
-         "blower_and_suction_bellows": "ÜFLEYİCİ VE EMİCİ KÖRÜK",
-         "ironing_board": "ÜTÜ MASASI",
-         "ventilator": "VANTİLATÖR",
-         "facial_steamer": "VAPOZON",
-         "vcd_player": "VCD OYNATICI/OKUYUCU/PLAYER",
-         "video_player": "VİDEO GÖSTERME CİHAZI/VİDEO PLAYER",
-         "video_recorder": "VİDEO KAYIT CİHAZI",
-         "voltage_regulator": "VOLTAJ REGÜLATÖRÜ",
-         "body_care_device": "VÜCUT BAKIM CİHAZI",
-         "glue_gun": "YAPIŞTIRICI TABANCA",
-         "cash_register": "YAZAR KASA",
-         "printer_various": "YAZICI (LAZER YAZICI, NOKTA VURUŞLU, MÜREKKEPLİ)",
-         "printer": "YAZICI (PRİNTER)",
-         "yogurt_maker": "YOĞURT YAPMA MAKİNESİ" ,
-         "egg_boiling_machine": "YUMURTA HAŞLAMA MAKİNASI",
-         "time_clock":"ZAMAN SAATİ/ZAMAN ROLESİ",
-         "alcoholic_beverages": "ALKOLLÜ İÇECEKLER",
-         "non_alcoholic_beverages": "ALKOLSÜZ İÇECEKLER",
-         "beekeeping_products": "ARICILIK ÜRÜNLERİ",
-         "flavors_and_additives": "AROMALAR VE KATKI MADDELERİ",
-         "spices_and_sauces": "BAHARATLAR, ÇEŞNİ VERİCİLER VE SOSLAR",
-         "legumes": "BAKLAGİLLER",
-         "fish_and_seafood": "BALIK VE DİĞER SU ÜRÜNLERİ",
-         "tea_and_coffee": "BİTKİ ÇAYI, SİYAH ÇAY VE KAHVE ÜRÜNLERİ",
-         "vegetable_oil_and_margarine": "BİTKİSEL YAĞ VE MARGARİN",
-         "geographical_indication_foods": "COĞRAFİ İŞARET ALMIŞ GIDA ÜRÜNLERİ",
-         "chocolate_and_cocoa": "ÇİKOLATA VE KAKAO ÜRÜNLERİ",
-         "meat_and_meat_products": "ET VE ET MAMULLERİ",
-         "ready_meals": "HAZIR YEMEK VE YEMEK FABRİKASI (TABLDOT)",
-         "imported_food_items": "İTHAL EDİLEN GIDA MADDELERİ",
-         "nuts_and_snacks": "KURUYEMİŞ VE ÇEREZLER",
-         "fruit_and_vegetable_processing": "MEYVE VE SEBZE İŞLEME",
-         "special_dietary_foods": "ÖZEL BESLENME AMAÇLI GIDALAR",
-         "pastry_and_desserts": "PASTACILIK ÜRÜNLERİ VE TATLILAR",
-         "milk_and_dairy": "SÜT VE SÜT MAMULLERİ",
-         "confectionery": "ŞEKERLİ MAMULLER",
-         "grain_flour_products": "TAHIL, UN VE UNLU MAMULLER",
-         "unclassified_foods": "TASNİF DIŞI GIDALAR",
-         "eggs_and_egg_products": "YUMURTA VE YUMURTA MAMULLERİ",
-         "bottle_nipples": "BİBERON BAŞLIKLARI",
-         "other_baby_products": "DİĞER BEBEK ÜRÜNLERİ",
-         "alcoholic_drinks": "ALKOLLÜ İÇKİLER",
-         "spices": "BAHARATLAR",
-         "plant_tea_coffee_products": "BİTKİ, ÇAY VE KAHVE ÜRÜNLERİ",
-         "paints": "BOYALAR",
-         "flavorings": "ÇEŞNİ VERİCİLER",
-         "solvents": "ÇÖZÜCÜLER",
-         "other": "DİĞER",
-         "glues_and_adhesives": "KATI, TOZ VEYA SIVI HALİNDEKİ TUTKALLAR VE YAPIŞTIRICILAR",
-         "canned_food": "KONSERVE",
-         "canned_foods_plural": "KONSERVELER",
-         "pet_dry_food": "KÖPEKLER VE KEDİLER İÇİN KURU GIDALAR",
-         "dried_fruits_vegetables": "KURUTULMUŞ MEYVE SEBZE",
-         "machine_oils": "MAKİNA YAĞLARI",
-         "yeast": "MAYA",
-         "knitting_yarns": "ÖRGÜ İPLERİ",
-         "jam_marmalade_jelly": "REÇEL, MARMELAT VE JÖLE",
-         "paste_sauce": "SALÇA",
-         "vinegar": "SİRKE",
-         "sauces": "SOSLAR",
-         "grain": "TAHIL",
-         "cleaning_agents": "TEMİZLİK MADDELERİ",
-         "cleaning_products": "TEMİZLİK ÜRÜNLERİ",
-         "pickles": "TURŞU",
-         "salt": "TUZ",
-         "flour_and_flour_products": "UN VE UNLU MAMULLER",
-         "varnish_and_polishes": "VERNİK VE CİLALAR",
-         "olives": "ZEYTİN",
-         "diapers": "ÇOCUK BEZİ",
-         "breast_pads": "GÖĞÜS PEDİ",
-         "sanitary_pads": "HİJYENİK PED",
+        "instant_water_heater": "ANİ SU ISITICI (ŞOFBEN)",
+        "antenna_amplifier": "ANTEN YÜKSELTİCİ",
+        "arc_lamp": "ARK LAMBASI",
+        "lighting_fixture": "ARMATÜR (AVİZE,GECE LAMBASI, MASA LAMBASI, APLİK, VB.)",
+        "extractor_hood": "ASPİRATÖR",
+        "lighting_element": "AYDINLATMA ELEMANI (BALAST,DUY,STARTER)",
+        "connection_cables": "BAĞLANTI KABLOLARI(TELEVİZYON ALICILARI İÇİN)",
+        "copper_conductors": "BAKIR, BAKIR İLETKENLER VE BAKIR TELLER (EMAYE BOBİN TELİ)",
+        "barcode_reader": "BARKOD OKUYUCU",
+        "barcode_printer": "BARKOD YAZICISI",
+        "printing_machine": "BASKI MAKİNESİ",
+        "digital_printing_machine": "BASKI MAKİNESİ/DİJİTAL",
+        "baby_monitor": "BEBEK TELSİZİ",
+        "bottle_warmer": "BİBERON ISITICI",
+        "information_processing_unit": "BİLGİ İŞLEM BİRİMİ/ÜNİTESİ",
+        "computer_motherboard": "BİLGİSAYAR ANA KARTI",
+        "computer_memory": "BİLGİSAYAR BELLEK BİRİMİ (RAM)",
+        "computer_graphics_card": "BİLGİSAYAR EKRAN KARTI",
+        "computer_fan": "BİLGİSAYAR FANI",
+        "computer_power_supply": "BİLGİSAYAR GÜÇ KAYNAĞI",
+        "webcam": "BİLGİSAYAR KAMERASI/WEB KAMERASI/WEB CAM",
+        "computer_case": "BİLGİSAYAR KASASI",
+        "computer_sound_card": "BİLGİSAYAR SES KARTI",
+        "computer_tv_card": "BİLGİSAYAR TELEVİZYON KARTI/TV KARTI",
+        "single_phase_induction_motors": "BİR FAZLI ENDÜKSİYON MOTORLARI",
+        "blender": "BLENDER",
+        "bluetooth_flash_drive": "BLUETOOTH FLASH BELLEK",
+        "insect_killing_devices": "BÖCEK ÖLDÜRME CİHAZLARI",
+        "steam_cooker": "BUHARLI PİŞİRİCİ",
+        "steam_cleaners": "BUHARLI TEMİZLEYİCİLER",
+        "steam_iron": "BUHARLI ÜTÜ (ÜTÜ)",
+        "button": "BUTON",
+        "capture_card": "CAPTURA KARTI",
+        "cd_player": "CD PLAYER (CD OYNATICI)",
+        "cd_drive": "CD SÜRÜCÜ",
+        "pocket_computer": "CEP BİLGİSAYARI",
+        "skin_analyzer": "CİLT ANALİZ CİHAZI",
+        "skin_care_set": "CİLT BAKIM SETİ",
+        "skin_vacuum_device": "CİLT VAKUM CİHAZI(GÜZELLİK MERKEZLERİNDE KULLANILAN)",
+        "tea_maker": "ÇAY MAKİNESİ/SETİ",
+        "soup_warmer": "ÇORBA ISITICI",
+        "drum_oven": "DAVUL FIRIN",
+        "freezer": "DERİN DONDURUCU",
+        "revolution_counter": "DEVİR SAYACI",
+        "circuit_breaker": "DEVRE KESİCİ/CİRCUİT BREAKER",
+        "intercom": "DİAFON",
+        "digital_photo_frame": "DİJİTAL FOTOĞRAF ÇERÇEVESİ",
+        "digital_camera": "DİJİTAL FOTOĞRAF MAKİNESİ",
+        "toothbrush_machine": "DİŞ FIRÇASI MAKİNESİ",
+        "dvd_player": "DVD ÇALAR/DVD PLAYER",
+        "dvd_receiver": "DVD RECEİVER",
+        "dvd_drive": "DVD SÜRÜCÜ",
+        "dvd_writer": "DVD WRİTER (YAZICI)",
+        "bread_maker": "EKMEK YAPIM MAKİNESİ",
+        "flashlight": "EL FENERİ",
+        "hand_dryer": "EL KURUTMA MAKİNESİ",
+        "electric_motor_ac": "ELEKTRİK MOTORU (AC)",
+        "electric_motor_dc": "ELEKTRİK MOTORU (DC)",
+        "electrical_panel": "ELEKTRİK PANOSU",
+        "vacuum_cleaner": "ELEKTRİK SÜPÜRGESİ",
+        "rechargeable_vacuum_cleaner": "ELEKTRİK SÜPÜRGESİ (ŞARJLI)",
+        "electric_foot_warmer": "ELEKTRİKLİ AYAK ISITICISI",
+        "electric_fish_catching_machines": "ELEKTRİKLİ BALIK YAKALAMA MAKİNELERİ",
+        "electric_blanket": "ELEKTRİKLİ BATTANİYE",
+        "electric_knife": "ELEKTRİKLİ BIÇAK",
+        "electric_knife_sharpener": "ELEKTRİKLİ BIÇAK BİLEYİCİ",
+        "electric_tea_cauldron": "ELEKTRİKLİ ÇAY KAZANI",
+        "electric_fence_power_circuits": "ELEKTRİKLİ ÇİT GÜÇ DEVRELERİ",
+        "electric_oven": "ELEKTRİKLİ FIRIN",
+        "electric_towel_machines": "ELEKTRİKLİ HAVLU MAKİNELERİ",
+        "electric_heater": "ELEKTRİKLİ ISITICI",
+        "electric_paper_towel_machine": "ELEKTRİKLİ KAĞIT HAVLU MAKİNESİ",
+        "electric_combi_boiler": "ELEKTRİKLİ KOMBİ",
+        "electric_exercise_bike": "ELEKTRİKLİ KONDİSYON BİSİKLETİ",
+        "electric_treadmill": "ELEKTRİKLİ KOŞU BANDI",
+        "electric_room_heater": "ELEKTRİKLİ ODA ISTICISI",
+        "electric_organ": "ELEKTRİKLİ ORG",
+        "electric_cooking_device": "ELEKTRİKLİ PİŞİRME CİHAZI",
+        "electric_pizza_pan": "ELEKTRİKLİ PİZZA TAVA",
+        "electric_radiator": "ELEKTRİKLİ RADYATÖR",
+        "electric_sound_or_visual_signal_devices": "ELEKTRİKLİ SES VEYA GÖRÜNTÜLÜ İŞARET CİHAZLARI",
+        "electric_insect_screen": "ELEKTRİKLİ SİNEKLİK",
+        "electric_sterilizer": "ELEKTRİKLİ STERİLİZATÖR",
+        "electric_kettle": "ELEKTRİKLİ SU ISITICISI (KETTLE)",
+        "electric_water_heater": "ELEKTRİKLİ ŞOFBEN",
+        "electric_water_heater_with_tank": "ELEKTRİKLİ ŞOFBEN (DEPOLU TERMOSİFON)",
+        "electric_plate_warmer": "ELEKTRİKLİ TABAK ISITICI",
+        "electric_nail_dryer": "ELEKTRİKLİ TIRNAK KURUTUCU",
+        "electric_christmas_decoration": "ELEKTRİKLİ YILBAŞI SÜSÜ",
+        "electro_guitar_set": "ELEKTRO GİTAR SET",
+        "electronic_board": "ELEKTRONİK BOARD (YAZI TAHTASI)",
+        "electronic_card": "ELEKTRONİK KART",
+        "electronic_toilet_lid": "ELEKTRONİK KLOZET KAPAĞI",
+        "electronic_eraser": "ELEKTRONİK SİLGİ",
+        "infrared_ultraviolet_devices": "ENFRARUJ VE ULTRAVİOLE CİHAZLAR (DERİYE UYGULAMAK İÇİN)",
+        "epilation_device": "EPİLASYON ALETİ",
+        "ethernet_card": "ETHERNET KARTI",
+        "outdoor_food_cooler": "EV DIŞI GIDA SOĞUTUCU",
+        "home_theater_system": "EV SİNEMA SETİ",
+        "home_bain_marie": "EV TİPİ BENMARİ MAKİNELERİ",
+        "home_sharpening_machine": "EV TİPİ BİLEYLEME MAKİNESİ",
+        "home_steam_station_irons": "EV TİPİ BUHAR İSTASYONLU ÜTÜLER",
+        "home_steam_machine": "EV TİPİ BUHAR MAKİNESİ",
+        "home_steam_cleaning_machine": "EV TİPİ BUHAR TEMİZLEME MAKİNESİ",
+        "home_dishwasher": "EV TİPİ BULAŞIK MAKİNESİ",
+        "home_ice_machine": "EV TİPİ BUZ MAKİNESİ",
+        "home_refrigerators": "EV TİPİ BUZDOLAPLARI",
+        "home_clothes_dryer": "EV TİPİ ÇAMAŞIR KURUTMA MAKİNELERİ",
+        "home_washing_machines": "EV TİPİ ÇAMAŞIR MAKİNELERİ",
+        "home_chocolate_machine": "EV TİPİ ÇİKOLATA MAKİNESİ",
+        "home_garbage_disposal": "EV TİPİ ÇÖP ÖĞÜTÜCÜ",
+        "home_outdoor_unit": "EV TİPİ DIŞ ÜNİTE",
+        "home_sewing_machine": "EV TİPİ DİKİŞ MAKİNESİ",
+        "home_slicing_machine": "EV TİPİ DİLİMLEME MAKİNESİ",
+        "home_electric_can_opener": "EV TİPİ ELEKTRİKLİ KONSERVE AÇACAĞI",
+        "home_electric_water_pump": "EV TİPİ ELEKTRİKLİ SU POMPASI",
+        "home_meat_grinder": "EV TİPİ ET KIYMA MAKİNESİ",
+        "home_indoor_unit": "EV TİPİ İÇ ÜNİTE",
+        "home_coffee_grinder": "EV TİPİ KAHVE ÖĞÜTME MAKİNESİ",
+        "home_air_conditioners": "EV TİPİ KLİMALAR (İÇ VE DIŞ ÜNİTE BİRLİKTE)",
+        "home_washer_dryer_combo": "EV TİPİ KURUTMALI ÇAMAŞIR MAKİNELERİ",
+        "home_pasta_machine": "EV TİPİ PASTA MAKİNESİ",
+        "home_silicone_gun": "EV TİPİ SİLİKON TABANCASI",
+        "home_candy_machine": "EV TİPİ ŞEKERLEME MAKİNESİ",
+        "home_submersible_pump": "EV VE BENZERİ YERLERDE KULLANILAN DALGIÇ POMPA",
+        "home_circulation_pump": "EV VE BENZERİ YERLERDE KULLANILAN DEVİRDAİM POMPASI",
+        "home_digital_scale": "EVDE KULLANILAN DİGİTAL BASKÜL",
+        "paper_shredder": "EVRAK İMHA MAKİNESİ",
+        "fax_machine": "FAKS MAKİNASI",
+        "fan": "FAN",
+        "filter": "FİLTRE",
+        "plug": "FİŞ",
+        "plug_and_socket_group": "FİŞ VE PRİZ (GRUP)",
+        "usb_flash_drive": "FLASH DİSK (USB BELLEK)",
+        "camera": "FOTOĞRAF MAKİNESİ",
+        "photocopier": "FOTOKOPİ MAKİNESİ",
+        "frequency_converter": "FREKANS KONVERTER",
+        "frequency_booster": "FREKANS YÜKSELTİCİ",
+        "deep_fryer": "FRİTÖZ (KIZARTMA MAKİNESİ)",
+        "garage_door_remote": "GARAJ KAPISI KUMANDASI",
+        "gas_alarm_device": "GAZ ALARM CİHAZI(YANICI GAZ, KARBONMONOKSİT DEDEKTÖRÜ)",
+        "solar_panels": "GÜNEŞ PANELLERİ",
+        "beauty_center_heat_blanket": "GÜZELLİK MERKEZLERİNDE KULLANILAN ISI BATTANİYE",
+        "memory_card": "HAFIZA KARTI",
+        "hard_disk": "HARD DİSK",
+        "external_hard_disk": "HARİCİ HARD DİSK",
+        "air_filter": "HAVA FİLTRESİ",
+        "air_humidifier": "HAVA NEMLENDİRİCİ",
+        "air_curtain": "HAVA PERDESİ",
+        "air_purifier": "HAVA TEMİZLEME CİHAZI",
+        "calculator": "HESAP MAKİNESİ",
+        "speaker": "HOPARLÖR",
+        "light_converter": "IŞIK DÖNÜŞTÜRÜCÜ",
+        "spotlight": "IŞILDAK",
+        "thinning_passive_gymnastic_devices": "İNCELTME VE PASİF CİMLASTİK CİHAZLARI",
+        "inverter": "İNVERTÖR",
+        "jacuzzi": "JAKUZİ",
+        "joystick": "JOYSTİK",
+        "cable": "KABLO",
+        "cable_cutting_device": "KABLO KESME CİHAZI",
+        "residual_current_circuit_breaker": "KAÇAK AKIM KORUMA ANAHTARI",
+        "residual_current_relay": "KAÇAK AKIM ROLESİ",
+        "coffee_machine": "KAHVE MAKİNESİ",
+        "permanent_makeup_device": "KALICI MAKYAJ CİHAZI",
+        "camera_control_device": "KAMERA KONTROL CİHAZI",
+        "camera_monitor": "KAMERA MONİTÖRÜ (VİZÖR)",
+        "door_detector": "KAPI DEDEKTÖRÜ",
+        "door_security_system": "KAPI GÜVENLİK SİSTEMİ",
+        "card_encoding_device": "KART KODLAMA CİHAZI",
+        "card_reader": "KART OKUYUCU",
+        "muscle_simulator": "KAS SİMİLATÖRÜ",
+        "cassette_player": "KASETÇALAR",
+        "juicer": "KATI MEYVE SIKACAĞI",
+        "cavitation_device": "KAVİTASYON CİHAZI",
+        "recorder": "KAYIT CİHAZI (RECORDER)",
+        "uninterruptible_power_supply": "KESİNTİSİZ GÜÇ KAYNAKLARI(UPS)",
+        "hair_removal_machine": "KIL ALMA MAKİNESİ",
+        "keyboard": "KLAVYE (KEYBOARD)",
+        "terminal_block": "KLEMENS (VAGO)",
+        "compressor_motor": "KOMPRESÖR MOTORU",
+        "contactor": "KONTAKTÖR",
+        "control_device": "KONTROL CİHAZI/ÜNİTESİ",
+        "control_card": "KONTROL KARTI",
+        "control_keyboard": "KONTROL KLAVYESİ",
+        "control_panel": "KONTROL PANELİ",
+        "control_panel_general": "KONTROL PANOSU",
+        "fire_detection_control_panel": "KONTROL PANOSU (YANGIN ALGILAMA)",
+        "headphones": "KULAKLIK",
+        "headphone_kit": "KULAKLIK KİTİ",
+        "remote_control": "KUMANDA",
+        "laptop": "LAPTOP/NOTEBOOK/DİZÜSTÜ",
+        "laser_epilation_device": "LAZER EPİLASYON CİHAZI",
+        "laser_pointer": "LAZER POİNTER",
+        "lcd_led_oled_monitor": "LCD/LED/OLED MONİTÖR",
+        "led_projector": "LED PROJEKTÖR (BİNA AYDINLATMA)",
+        "soldering_machine": "LEHİM MAKİNESİ",
+        "soldering_gun": "LEHİM TABANCASI",
+        "lymph_drainage_device": "LENF DRENAJ CİHAZI",
+        "mine_detector": "MADEN DEDEKTÖRÜ",
+        "magnetic_tape": "MANYETİK TEYP",
+        "massage_device": "MASAJ ALETİ",
+        "massage_belt": "MASAJ KEMERİ/SAUNABELT",
+        "desktop_pc": "MASAÜSTÜ/PC",
+        "metal_detector": "METAL DEDEKTÖRÜ",
+        "popcorn_machine": "MISIR PATLATMA MAKİNESİ",
+        "microwave_oven": "MİKRODALGA FIRIN",
+        "microphone": "MİKROFON",
+        "microphone_kit": "MİKROFON KİTİ",
+        "mixer": "MİKSER",
+        "mini_oven": "MİNİ FIRIN",
+        "modem": "MODEM",
+        "motor_speed_control_device": "MOTOR HIZ KONTROL CİHAZI",
+        "motor_driver": "MOTOR SÜRÜCÜSÜ",
+        "mouse": "MOUSE/FARE",
+        "mp3_mp4_player": "MP3/MP4 PLAYER",
+        "kitchen_appliances": "MUTFAK MAKİNELERİ",
+        "food_processor": "MUTFAK ROBOTU",
+        "music_system": "MÜZİK SETİ",
+        "citrus_juicer": "NARENCİYE SIKACAĞI",
+        "navigation_device": "NAVİGASYON CİHAZI",
+        "optical_reader": "OPTİK OKUYUCU",
+        "automatic_room_spray": "OTOMATİK ODA SPREYİ",
+        "game_consoles": "OYUN KONSOLLARI",
+        "ozone_machine": "OZON MAKİNESİ",
+        "measuring_device": "ÖLÇÜ ALETİ/CİHAZI",
+        "money_counting_machine": "PARA SAYMA MAKİNESİ",
+        "surge_arresters": "PARAFUDRLAR",
+        "perfume_spraying_device": "PARFÜM PÜSKÜRTME CİHAZI",
+        "record_player": "PİKAP",
+        "battery_liquid_soap_dispenser": "PİLLİ SIVI SABUNLUK",
+        "runway_lighting_system": "PİST AYDINLATMA SİSTEMİ",
+        "plasma_heater": "PLAZMA ISITICI",
+        "press_iron": "PRES ÜTÜ",
+        "socket": "PRİZ",
+        "projector": "PROJEKSİYON CİHAZI (PROJEKTÖR)",
+        "radio": "RADYO",
+        "pocket_radio": "RADYO (CEP RADYOSU)",
+        "radio_cd_player": "RADYO CD ÇALAR",
+        "radio_cassette_player": "RADYO KASETÇALAR",
+        "reactive_power_control_units": "REAKTİF GÜÇ KONTROL ÜNİTELERİ",
+        "rectifier": "REDRESÖR",
+        "resistor": "REZİSTANS",
+        "router": "ROUTER",
+        "thermal_relay": "RÖLE(TERMİK)",
+        "fixed_home_ovens": "SABİT EV TİPİ FIRINLAR",
+        "hair_care_device": "SAÇ BAKIM CİHAZI",
+        "hair_clipper": "SAÇ KESME MAKİNESİ",
+        "hair_dryer": "SAÇ KURUTMA MAKİNESİ",
+        "hair_styling_machine": "SAÇ ŞEKİLLENDİRME MAKİNESİ",
+        "sauna": "SAUNA",
+        "scanner": "SCANNER /TARAYICI",
+        "sensor": "SENSÖR",
+        "servo_motor": "SERVO MOTOR",
+        "sound_adjusting_device": "SES DÜZENLEYİCİ CİHAZ",
+        "sound_recording_device": "SES KAYIT CİHAZI/ SİSTEMİ",
+        "sound_system": "SES SİSTEMİ",
+        "sound_device": "SES VERME CİHAZI",
+        "level_detection_device": "SEVİYE TESPİT CİHAZI",
+        "wax_hair_removal_machine": "SIR AĞDA MAKİNESİ",
+        "fuse": "SİGORTA (W OTOMAT)",
+        "siren": "SİREN",
+        "mosquito_repellent": "SİVRİSİNEK KOVUCU",
+        "slide_advance_remote": "SLAYT ATLATMA KUMANDASI",
+        "cooling_motor": "SOĞUTMA MOTORU",
+        "solarium_device": "SOLARYUM CİHAZI",
+        "water_purifier": "SU ARITMA CİHAZI",
+        "water_control_system": "SU KONTROL SİSTEMİ",
+        "water_dispenser": "SU SEBİLİ",
+        "waterbed_heater": "SU YATAĞI ISTICISI",
+        "charger": "ŞARJ CİHAZI (CEP TELEFONU HARİÇ)",
+        "mobile_phone_charger": "ŞARJ CİHAZI (CEP TELEFONU)",
+        "blood_pressure_monitor": "TANSİYON ÖLÇER",
+        "portable_immersion_water_heater": "TAŞINABİLİR ELEKTRİKLİ DALDIRMA TİPİ SU ISITICISI",
+        "portable_electric_grill": "TAŞINABİLİR ELEKTRİKLİ IZGARA",
+        "portable_electric_stove": "TAŞINABİLİR ELEKTRİKLİ OCAK",
+        "portable_welding_machine": "TAŞINABİLİR KAYNAK MAKİNESİ",
+        "lcd_television": "TELEVİZVON (LCD)",
+        "plasma_television": "TELEVİZVON (PLAZMA)",
+        "tube_television": "TELEVİZYON (TÜPLÜ)",
+        "television_receiver": "TELEVİZYON ALICISI",
+        "thermal_magnetic_compact_switch": "TERMİK MANYETİK KOMPAKT ŞALTER",
+        "thermal_magnetic_switch": "TERMİK MANYETİK ŞALTER (KOMPAKT ŞALTER)",
+        "thermostat": "TERMOSTAT",
+        "test_device": "TEST CİHAZI/MAKİNESİ",
+        "commercial_electric_boiling_pans": "TİCARİ ELEKTRİKLİ KAYNATMA TAVALARI(SICAK İÇECEK MAKİNALARI)",
+        "toaster": "TOST MAKİNESİ",
+        "transformer": "TRAFO",
+        "shaver": "TRAŞ MAKİNESİ",
+        "ultrasonic_cleaner": "ULTRASONİK TEMİZLEYİCİ",
+        "usb_port": "USB PORT",
+        "satellite_receiver": "UYDU ALICI CİHAZLARI (RECEİVER)",
+        "satellite_antenna": "UYDU ANTENİ",
+        "3d_scanner": "ÜÇ BOYUTLU TARAYICI",
+        "three_phase_induction_motors": "ÜÇ FAZLI ENDÜKSİYON MOTORLARI",
+        "blower_and_suction_bellows": "ÜFLEYİCİ VE EMİCİ KÖRÜK",
+        "ironing_board": "ÜTÜ MASASI",
+        "ventilator": "VANTİLATÖR",
+        "facial_steamer": "VAPOZON",
+        "vcd_player": "VCD OYNATICI/OKUYUCU/PLAYER",
+        "video_player": "VİDEO GÖSTERME CİHAZI/VİDEO PLAYER",
+        "video_recorder": "VİDEO KAYIT CİHAZI",
+        "voltage_regulator": "VOLTAJ REGÜLATÖRÜ",
+        "body_care_device": "VÜCUT BAKIM CİHAZI",
+        "glue_gun": "YAPIŞTIRICI TABANCA",
+        "cash_register": "YAZAR KASA",
+        "printer_various": "YAZICI (LAZER YAZICI, NOKTA VURUŞLU, MÜREKKEPLİ)",
+        "printer": "YAZICI (PRİNTER)",
+        "yogurt_maker": "YOĞURT YAPMA MAKİNESİ",
+        "egg_boiling_machine": "YUMURTA HAŞLAMA MAKİNASI",
+        "time_clock": "ZAMAN SAATİ/ZAMAN ROLESİ",
+        "alcoholic_beverages": "ALKOLLÜ İÇECEKLER",
+        "non_alcoholic_beverages": "ALKOLSÜZ İÇECEKLER",
+        "beekeeping_products": "ARICILIK ÜRÜNLERİ",
+        "flavors_and_additives": "AROMALAR VE KATKI MADDELERİ",
+        "spices_and_sauces": "BAHARATLAR, ÇEŞNİ VERİCİLER VE SOSLAR",
+        "legumes": "BAKLAGİLLER",
+        "fish_and_seafood": "BALIK VE DİĞER SU ÜRÜNLERİ",
+        "tea_and_coffee": "BİTKİ ÇAYI, SİYAH ÇAY VE KAHVE ÜRÜNLERİ",
+        "vegetable_oil_and_margarine": "BİTKİSEL YAĞ VE MARGARİN",
+        "geographical_indication_foods": "COĞRAFİ İŞARET ALMIŞ GIDA ÜRÜNLERİ",
+        "chocolate_and_cocoa": "ÇİKOLATA VE KAKAO ÜRÜNLERİ",
+        "meat_and_meat_products": "ET VE ET MAMULLERİ",
+        "ready_meals": "HAZIR YEMEK VE YEMEK FABRİKASI (TABLDOT)",
+        "imported_food_items": "İTHAL EDİLEN GIDA MADDELERİ",
+        "nuts_and_snacks": "KURUYEMİŞ VE ÇEREZLER",
+        "fruit_and_vegetable_processing": "MEYVE VE SEBZE İŞLEME",
+        "special_dietary_foods": "ÖZEL BESLENME AMAÇLI GIDALAR",
+        "pastry_and_desserts": "PASTACILIK ÜRÜNLERİ VE TATLILAR",
+        "milk_and_dairy": "SÜT VE SÜT MAMULLERİ",
+        "confectionery": "ŞEKERLİ MAMULLER",
+        "grain_flour_products": "TAHIL, UN VE UNLU MAMULLER",
+        "unclassified_foods": "TASNİF DIŞI GIDALAR",
+        "eggs_and_egg_products": "YUMURTA VE YUMURTA MAMULLERİ",
+        "bottle_nipples": "BİBERON BAŞLIKLARI",
+        "other_baby_products": "DİĞER BEBEK ÜRÜNLERİ",
+        "alcoholic_drinks": "ALKOLLÜ İÇKİLER",
+        "spices": "BAHARATLAR",
+        "plant_tea_coffee_products": "BİTKİ, ÇAY VE KAHVE ÜRÜNLERİ",
+        "paints": "BOYALAR",
+        "flavorings": "ÇEŞNİ VERİCİLER",
+        "solvents": "ÇÖZÜCÜLER",
+        "other": "DİĞER",
+        "glues_and_adhesives": "KATI, TOZ VEYA SIVI HALİNDEKİ TUTKALLAR VE YAPIŞTIRICILAR",
+        "canned_food": "KONSERVE",
+        "canned_foods_plural": "KONSERVELER",
+        "pet_dry_food": "KÖPEKLER VE KEDİLER İÇİN KURU GIDALAR",
+        "dried_fruits_vegetables": "KURUTULMUŞ MEYVE SEBZE",
+        "machine_oils": "MAKİNA YAĞLARI",
+        "yeast": "MAYA",
+        "knitting_yarns": "ÖRGÜ İPLERİ",
+        "jam_marmalade_jelly": "REÇEL, MARMELAT VE JÖLE",
+        "paste_sauce": "SALÇA",
+        "vinegar": "SİRKE",
+        "sauces": "SOSLAR",
+        "grain": "TAHIL",
+        "cleaning_agents": "TEMİZLİK MADDELERİ",
+        "cleaning_products": "TEMİZLİK ÜRÜNLERİ",
+        "pickles": "TURŞU",
+        "salt": "TUZ",
+        "flour_and_flour_products": "UN VE UNLU MAMULLER",
+        "varnish_and_polishes": "VERNİK VE CİLALAR",
+        "olives": "ZEYTİN",
+        "diapers": "ÇOCUK BEZİ",
+        "breast_pads": "GÖĞÜS PEDİ",
+        "sanitary_pads": "HİJYENİK PED",
         "tampons": "TAMPON",
         "tape": "BANT",
         "lunch_box": "BESLENME ÇANTASI",
@@ -2181,9 +1950,8 @@
           "model": {
             "label": "Model",
             "placeholder": "Ürün modelini girin"
-
           },
-        
+
           "name": {
             "label": "Ad",
             "placeholder": "Ürün adını girin"
@@ -2580,50 +2348,50 @@
     "title": "Ayarlar",
     "description": "Hesabınızın ayarlarını yönetin ve tercihlerinizi yönetin",
     "saveChanges": "Değişiklikleri Kaydet",
-    "users":{
-      "title":"Kullanıcılar",
-      "description":"Kullanıcılarınızı yönetin ve yeni kullanıcılar davet edin",
-      "invite":"Yeni Kullanıcı Davet Et",
-      "existing":"Mevcut Kullanıcılar",
-      "loading":"Kullanıcılar yükleniyor...",
-      "no_users":"Henüz hiç kullanıcı bulunmuyor",
-      "no_users_description":"Şirketinize yeni kullanıcılar davet etmek için 'Yeni Kullanıcı Davet Et' butonunu kullanabilirsiniz.",
-      "roles":{
-        "admin":"Sistem Yöneticisi",
-        "company_admin":"Şirket Yöneticisi",
-        "manufacturer":"Şirket Kurucusu",
-        "user":"Kullanıcı"
+    "users": {
+      "title": "Kullanıcılar",
+      "description": "Kullanıcılarınızı yönetin ve yeni kullanıcılar davet edin",
+      "invite": "Yeni Kullanıcı Davet Et",
+      "existing": "Mevcut Kullanıcılar",
+      "loading": "Kullanıcılar yükleniyor...",
+      "no_users": "Henüz hiç kullanıcı bulunmuyor",
+      "no_users_description": "Şirketinize yeni kullanıcılar davet etmek için 'Yeni Kullanıcı Davet Et' butonunu kullanabilirsiniz.",
+      "roles": {
+        "admin": "Sistem Yöneticisi",
+        "company_admin": "Şirket Yöneticisi",
+        "manufacturer": "Şirket Kurucusu",
+        "user": "Kullanıcı"
       },
-      "delete":{
-        "title":"Kullanıcıyı Sil",
-        "description":"Bu kullanıcıyı silmek istediğinizden emin misiniz?",
-        "cancel":"İptal",
-        "delete":"Sil"
+      "delete": {
+        "title": "Kullanıcıyı Sil",
+        "description": "Bu kullanıcıyı silmek istediğinizden emin misiniz?",
+        "cancel": "İptal",
+        "delete": "Sil"
       },
-      "invites":{
-        "description":"Şirketinize yeni bir kullanıcı davet etmek için aşağıdaki formu doldurun.",
-        "full_name":"Ad Soyad",
-        "full_name_placeholder":"Ad Soyad giriniz",
-        "email":"E-posta",
-        "email_placeholder":"E-posta giriniz",
-        "role":"Rol",
-        "send":"Gönder",
-        "sending":"Gönderiliyor...",
-        "pending":"Bekleyen Davetler",
-        "pending_status":"Bekliyor",
-        "no_pending":"Bekleyen davet bulunmuyor",
-        "no_pending_description":"Şirketinize yeni kullanıcılar davet etmek için 'Yeni Kullanıcı Davet Et' butonunu kullanabilirsiniz.",
-        "error":{
-          "title":"Hata",
-          "description":"Lütfen tüm alanları doldurun"
+      "invites": {
+        "description": "Şirketinize yeni bir kullanıcı davet etmek için aşağıdaki formu doldurun.",
+        "full_name": "Ad Soyad",
+        "full_name_placeholder": "Ad Soyad giriniz",
+        "email": "E-posta",
+        "email_placeholder": "E-posta giriniz",
+        "role": "Rol",
+        "send": "Gönder",
+        "sending": "Gönderiliyor...",
+        "pending": "Bekleyen Davetler",
+        "pending_status": "Bekliyor",
+        "no_pending": "Bekleyen davet bulunmuyor",
+        "no_pending_description": "Şirketinize yeni kullanıcılar davet etmek için 'Yeni Kullanıcı Davet Et' butonunu kullanabilirsiniz.",
+        "error": {
+          "title": "Hata",
+          "description": "Lütfen tüm alanları doldurun"
         },
-        "success":{
-          "title":"Başarılı",
-          "description":"Davet başarıyla gönderildi"
+        "success": {
+          "title": "Başarılı",
+          "description": "Davet başarıyla gönderildi"
         },
-        "roles":{
-          "user":"Kullanıcı",
-          "company_admin":"Şirket Yöneticisi"
+        "roles": {
+          "user": "Kullanıcı",
+          "company_admin": "Şirket Yöneticisi"
         }
       }
     },
@@ -2636,12 +2404,12 @@
       "documents": "Belgeler",
       "certifications": "Sertifikalar"
     },
-    "security":{
-      "title":"Güvenlik",
-      "changePassword":{
-        "label":"Şifre Değiştir",
-        "description":"Hesabınızın güvenliğini sağlamak için şifrenizi değiştirin",
-        "button":"Şifre Değiştir",
+    "security": {
+      "title": "Güvenlik",
+      "changePassword": {
+        "label": "Şifre Değiştir",
+        "description": "Hesabınızın güvenliğini sağlamak için şifrenizi değiştirin",
+        "button": "Şifre Değiştir",
         "dialog": {
           "title": "Şifre Değiştir",
           "description": "Yeni şifrenizi girin",
@@ -2740,46 +2508,46 @@
     "materials": {
       "title": "Materyaller",
       "description": "Materyallerinizi yönetin ve takip edin",
-      "success":{
-        "title":"Başarılı",
-        "excelUploaded":"Excel dosyası başarıyla yüklendi"
+      "success": {
+        "title": "Başarılı",
+        "excelUploaded": "Excel dosyası başarıyla yüklendi"
       },
-      "error":{
-        "title":"Hata",
-        "totalPercentageExceeded":"Toplam yüzde 100'ü aşamaz",
-        "invalidFileType":"Geçersiz dosya türü"
+      "error": {
+        "title": "Hata",
+        "totalPercentageExceeded": "Toplam yüzde 100'ü aşamaz",
+        "invalidFileType": "Geçersiz dosya türü"
       },
-      "list":{
-        "title":"Materyaller",
-        "totalMaterials":"Toplam Materyal",
-        "noMaterials":"Henüz hiç materyal yüklenmedi",
-        "totalPercentage":"Toplam Yüzde",
-        "table":{
-          "material":"Materyal",
-          "percentage":"Yüzde",
-          "recyclable":"Yeniden Kullanılabilir",
-          "description":"Açıklama",
-          "actions":"İşlemler",
-          "no":"Hayır",
-          "yes":"Evet"
+      "list": {
+        "title": "Materyaller",
+        "totalMaterials": "Toplam Materyal",
+        "noMaterials": "Henüz hiç materyal yüklenmedi",
+        "totalPercentage": "Toplam Yüzde",
+        "table": {
+          "material": "Materyal",
+          "percentage": "Yüzde",
+          "recyclable": "Yeniden Kullanılabilir",
+          "description": "Açıklama",
+          "actions": "İşlemler",
+          "no": "Hayır",
+          "yes": "Evet"
         }
       },
-      "manualAdd":{
-        "title":"Manuel Ekle",
-        "materialName":"Materyal Adı",
-        "percentage":"Yüzde",
-        "recyclable":"Yeniden Kullanılabilir",
-        "description":"Açıklama",
-        "materialNamePlaceholder":"Materyal adı giriniz",
-        "yes":"Evet",
-        "no":"Hayır",
-        "descriptionPlaceholder":"Açıklama giriniz",
-        "addButton":"Ekle"
+      "manualAdd": {
+        "title": "Manuel Ekle",
+        "materialName": "Materyal Adı",
+        "percentage": "Yüzde",
+        "recyclable": "Yeniden Kullanılabilir",
+        "description": "Açıklama",
+        "materialNamePlaceholder": "Materyal adı giriniz",
+        "yes": "Evet",
+        "no": "Hayır",
+        "descriptionPlaceholder": "Açıklama giriniz",
+        "addButton": "Ekle"
       },
-      "excelUpload":{
-        "title":"Excel Yükle",
-        "downloadTemplate":"Şablonu İndir",
-        "instructions":"Excel dosyanızı yükleyin ve materyallerinizi yönetin"
+      "excelUpload": {
+        "title": "Excel Yükle",
+        "downloadTemplate": "Şablonu İndir",
+        "instructions": "Excel dosyanızı yükleyin ve materyallerinizi yönetin"
       }
     },
     "search": {
@@ -2884,8 +2652,8 @@
     "addProduct": {
       "title": "Yeni Ürün Ekle",
       "description": "Yeni bir ürün eklemek için formu doldurun",
-      "error":{
-        "title":"Hata"
+      "error": {
+        "title": "Hata"
       },
       "success": {
         "title": "Ürün Başarıyla Eklendi",
@@ -2981,7 +2749,7 @@
     "batteries_and_accumulators": "Aküler ve Yüksek Voltaj",
     "electrical_equipment": "Elektrikli Ekipmanlar",
     "prepackaging": "Hazır Ambalajlama",
-    "food":"Gıda"
+    "food": "Gıda"
   },
   "documentManagement": {
     "title": "Belge Yönetimi",
@@ -3007,7 +2775,7 @@
       "status": "Durum",
       "validUntil": "Geçerlilik Süresi",
       "version": "Versiyon",
-      "reject":{
+      "reject": {
         "title": "Belge Reddet",
         "description": "Belge reddedildi. Lütfen sebebi giriniz.",
         "reasonLabel": "Sebebi",
@@ -3101,19 +2869,17 @@
       "deleted": "Silindi",
       "created": "Oluşturuldu"
     }
-
   },
   "adminDashboard": {
     "title": "Yönetici Paneli",
     "description": "Sistem genelindeki işlemleri izleyin ve yönetin",
-    "companies":{
-      "details":"Detaylar"
+    "companies": {
+      "details": "Detaylar"
     },
     "labels": {
       "manufacturer": "Üretici",
       "document": "Belge",
       "dpc": "DPC"
-
     },
     "actions": {
       "review": "İncele"
@@ -3172,47 +2938,108 @@
           "pending": "Beklemede",
           "approved": "Onaylandı",
           "rejected": "Reddedildi"
-          
         }
-        },
-        "filters": {
-          "status": "Duruma göre filtrele",
-          "allManufacturers": "Tüm Üreticiler",
-          "pendingApproval": "Onay Bekleyenler",
-          "approved": "Onaylananlar",
-          "rejected": "Reddedilenler"
+      },
+      "filters": {
+        "status": "Duruma göre filtrele",
+        "allManufacturers": "Tüm Üreticiler",
+        "pendingApproval": "Onay Bekleyenler",
+        "approved": "Onaylananlar",
+        "rejected": "Reddedilenler"
+      },
+      "actions": {
+        "addNew": "Yeni Ekle",
+        "reject": "Reddet",
+        "approve": "Onayla"
+      },
+      "details": {
+        "backToList": "Listeye Dön",
+        "documents": {
+          "list": {
+            "empty": {
+              "description": "Bu üretici için belge bulunamadı."
+            }
+          }
         },
         "actions": {
-          "addNew": "Yeni Ekle",
           "reject": "Reddet",
           "approve": "Onayla"
         },
+        "status": {
+          "approved": "Onaylandı",
+          "rejected": "Reddedildi",
+          "pending": "Beklemede"
+        },
+        "companyInfo": {
+          "title": "Firma Bilgileri",
+          "email": "E-posta",
+          "phone": "Telefon",
+          "address": "Adres",
+          "taxId": "Vergi No",
+          "registrationDate": "Kayıt Tarihi"
+        },
+        "verification": {
+          "title": "Doğrulama Durumu",
+          "document": "Belge Doğrulama",
+          "taxId": "Vergi No Doğrulama",
+          "address": "Adres Doğrulama",
+          "contact": "İletişim Doğrulama",
+          "status": {
+            "inProgress": "İşlemde",
+            "verified": "Doğrulandı",
+            "pending": "Beklemede"
+          }
+        },
+        "ChosenAlpha": "ChosenAlpha"
+      }
+    },
+    "sections": {
+      "manufacturers": {
         "details": {
+          "notFound": "Ürün Bulunamadı",
           "backToList": "Listeye Dön",
-          "documents":{
-            "list":{
-              "empty":{
-                "description":"Bu üretici için belge bulunamadı."
+          "products": {
+            "title": "Ürünler",
+            "allStatus": "Tüm Durumlar",
+            "allApproved": "Tüm Onaylananlar",
+            "pendingReview": "Tüm Bekleyenler",
+
+            "hasRejectedDocuments": "Reddedilen Belgeleri Olan Ürünler",
+            "noDocuments": "Belgeleri Olmayan Ürünler",
+            "filterByStatus": "Duruma Göre Filtrele",
+
+            "category": "Kategori",
+            "description": "Ürün Açıklaması",
+            "status": {
+              "approved": "Onaylandı",
+              "rejected": "Reddedildi",
+              "pending": "Beklemede",
+              "NEW": "Yeni",
+              "DRAFT": "Taslak",
+              "ARCHIVED": "Arşivde",
+              "draft": "Taslak",
+              "new": "Yeni",
+              "archived": "Arşivde"
+            },
+            "list": {
+              "empty": {
+                "description": "Ürünler Bulunamadı"
               }
             }
           },
-          "actions": {
-            "reject": "Reddet",
-            "approve": "Onayla"
-          },
-          "status": {
-            "approved": "Onaylandı",
-            "rejected": "Reddedildi",
-            "pending": "Beklemede" 
-           
-          },
-          "companyInfo": {
-            "title": "Firma Bilgileri",
-            "email": "E-posta",
-            "phone": "Telefon",
-            "address": "Adres",
-            "taxId": "Vergi No",
-            "registrationDate": "Kayıt Tarihi"
+          "documents": {
+            "title": "Belgeler",
+            "uploadedAt": "Yüklendi",
+            "status": {
+              "PENDING": "Beklemede",
+              "APPROVED": "Onaylandı",
+              "REJECTED": "Reddedildi"
+            },
+            "list": {
+              "empty": {
+                "description": "Belgeler Bulunamadı"
+              }
+            }
           },
           "verification": {
             "title": "Doğrulama Durumu",
@@ -3226,119 +3053,52 @@
               "pending": "Beklemede"
             }
           },
-          "ChosenAlpha": "ChosenAlpha"
+          "companyInfo": {
+            "title": "Firma Bilgileri",
+            "address": "Adres",
+            "taxId": "Vergi No",
+            "registrationDate": "Kayıt Tarihi"
+          },
+          "status": {
+            "pending": "Beklemede",
+            "approved": "Onaylandı",
+            "rejected": "Reddedildi"
+          },
+          "actions": {
+            "approve": "Onayla",
+            "reject": "Reddet"
+          }
         }
       },
-      "sections": {
-        "manufacturers":{
-          "details":{
-            "notFound":"Ürün Bulunamadı",
-            "backToList":"Listeye Dön",
-            "products":{
-              "title":"Ürünler",
-              "allStatus":"Tüm Durumlar",
-              "allApproved":"Tüm Onaylananlar",
-              "pendingReview":"Tüm Bekleyenler",
-             
-              "hasRejectedDocuments":"Reddedilen Belgeleri Olan Ürünler",
-              "noDocuments":"Belgeleri Olmayan Ürünler",
-              "filterByStatus":"Duruma Göre Filtrele",
 
-              "category":"Kategori",
-              "description":"Ürün Açıklaması",
-              "status":{
-                
-                "approved":"Onaylandı",
-                "rejected":"Reddedildi",
-                "pending":"Beklemede",
-                "NEW":"Yeni",
-                "DRAFT":"Taslak",
-                "ARCHIVED":"Arşivde",
-                "draft":"Taslak",
-                "new":"Yeni",
-                "archived":"Arşivde"
-                
-
-              },
-              "list":{
-                "empty":{
-                  "description":"Ürünler Bulunamadı"
-                }
-              }
-            },
-            "documents":{
-              "title":"Belgeler",
-               "uploadedAt":"Yüklendi",
-              "status":{
-                "PENDING":"Beklemede",
-                "APPROVED":"Onaylandı",
-                "REJECTED":"Reddedildi"
-              },
-              "list":{
-                "empty":{
-                  "description":"Belgeler Bulunamadı"
-                }
-              }
-            },
-            "verification":{
-              "title":"Doğrulama Durumu",
-              "document":"Belge Doğrulama",
-              "taxId":"Vergi No Doğrulama",
-              "address":"Adres Doğrulama",
-              "contact":"İletişim Doğrulama",
-              "status":{
-                "inProgress":"İşlemde",
-                "verified":"Doğrulandı",
-                "pending":"Beklemede"
-              }
-            },
-            "companyInfo":{
-            "title":"Firma Bilgileri",
-            "address":"Adres",
-            "taxId":"Vergi No",
-            "registrationDate":"Kayıt Tarihi"
-          },
-            "status":{
-              "pending":"Beklemede",
-              "approved":"Onaylandı",
-              "rejected":"Reddedildi"
-            },
-            "actions":{
-              "approve":"Onayla",
-              "reject":"Reddet"
-            }
-          }
+      "recentApprovals": {
+        "title": "Son Onaylananlar",
+        "description": "Son onaylananları görüntüleyin",
+        "products": {
+          "uncategorized": "Kategorize Edilmemiş"
         },
 
-        "recentApprovals": {
-          "title": "Son Onaylananlar",
-          "description": "Son onaylananları görüntüleyin",
-          "products":{
-            "uncategorized":"Kategorize Edilmemiş"
-          },
-
-          "pagination":{
-            "previous":"Önceki",
-            "next":"Sonraki"
-          },
-          
-          "status":{
-            "approved":"Onaylandı",
-            "rejected":"Reddedildi",
-            "pending":"Bekleniyor"
-          }
-
+        "pagination": {
+          "previous": "Önceki",
+          "next": "Sonraki"
         },
-       
+
+        "status": {
+          "approved": "Onaylandı",
+          "rejected": "Reddedildi",
+          "pending": "Bekleniyor"
+        }
+      },
+
       "pendingApprovals": {
         "title": "Bekleyen Onaylar",
         "description": "Dikkat gerektiren son onay istekleri",
-        "products":{
-          "uncategorized":"Kategorize Edilmemiş"
+        "products": {
+          "uncategorized": "Kategorize Edilmemiş"
         },
-        "status":{
-          "pending":"Bekleniyor",
-          "review":"İnceleme Bekliyor"
+        "status": {
+          "pending": "Bekleniyor",
+          "review": "İnceleme Bekliyor"
         }
       },
       "systemAlerts": {
@@ -3365,41 +3125,41 @@
   "loading": "Yükleniyor...",
   "errorFetching": "Hata: Bilgiler alınamadı.",
   "auth": {
-    "success":{
-      "updateUser":{
+    "success": {
+      "updateUser": {
         "title": "Kullanıcı Güncellendi",
         "description": "Kullanıcı başarıyla güncellendi."
       },
-      "signUp":{
+      "signUp": {
         "title": "Hesap Oluştur",
         "description": "Yeni bir hesap oluşturun"
       },
-      "updatePassword":{
+      "updatePassword": {
         "title": "Şifre Güncellendi",
         "description": "Şifreniz başarıyla güncellendi."
       }
     },
-    "forgot-password":{
+    "forgot-password": {
       "title": "Şifre Kurtarma",
       "pageTitle": "Şifremi Unuttum",
       "description": "E-posta adresinizi girerek şifrenizi sıfırlayın",
       "pageDescription": "Hesabınıza yeniden erişim sağlayın",
       "submit": "Şifre Sıfırlama Bağlantısı Gönder",
       "reminder": "Şifrenizi hatırladınız mı?",
-      "login":"Giriş Yap",
-      "submitting":"Gönderiliyor...",
-      "success":{
-        "title":"Başarıyla Gönderildi",
-        "description":"Şifre sıfırlama bağlantısı başarıyla gönderildi.",
-        "button":"Giriş Yap"
+      "login": "Giriş Yap",
+      "submitting": "Gönderiliyor...",
+      "success": {
+        "title": "Başarıyla Gönderildi",
+        "description": "Şifre sıfırlama bağlantısı başarıyla gönderildi.",
+        "button": "Giriş Yap"
       },
       "email": {
         "label": "E-posta",
         "placeholder": "ornek@sirket.com"
       },
-      "error":{
-        "title":"Hata",
-        "description":"Beklenmeyen bir hata oluştu"
+      "error": {
+        "title": "Hata",
+        "description": "Beklenmeyen bir hata oluştu"
       }
     },
     "reset-password": {
@@ -3604,7 +3364,7 @@
   "certifications": {
     "title": "Sertifikalar",
     "description": "Ürün sertifikalarınızı görüntüleyin ve yönetin",
-    "detail":{
+    "detail": {
       "title": "Sertifika Detayı",
       "type": "Sertifika Tipi",
       "status": "Sertifika Durumu",
@@ -3613,61 +3373,61 @@
       "view": "Görüntüle",
       "download": "İndir"
     },
-    "form":{
-      "title":"Yeni Sertifika",
-      "description":"Yeni bir sertifika oluşturun",
-      "success":{
-        "title":"Sertifika Oluşturuldu",
-        "description":"Sertifika başarıyla oluşturuldu"
+    "form": {
+      "title": "Yeni Sertifika",
+      "description": "Yeni bir sertifika oluşturun",
+      "success": {
+        "title": "Sertifika Oluşturuldu",
+        "description": "Sertifika başarıyla oluşturuldu"
       },
-      "validation":{
-        "file":{
-          "required":"Sertifika dosyası seçin"
+      "validation": {
+        "file": {
+          "required": "Sertifika dosyası seçin"
         },
-        "type":{
-          "required":"Sertifika tipi seçin"
+        "type": {
+          "required": "Sertifika tipi seçin"
         }
       },
-      "submit":{
-        "default":"Sertifika Oluştur",
-        "loading":"Sertifika oluşturuluyor..."
+      "submit": {
+        "default": "Sertifika Oluştur",
+        "loading": "Sertifika oluşturuluyor..."
       },
-      "fields":{
-        "file":{
-          "placeholder":"Sertifika dosyası seçin",
-          "label":"Sertifika Dosyası",
-          "selected":"Seçilen Dosya"
+      "fields": {
+        "file": {
+          "placeholder": "Sertifika dosyası seçin",
+          "label": "Sertifika Dosyası",
+          "selected": "Seçilen Dosya"
         },
-        "type":{
-          "placeholder":"Sertifika tipi seçin",
-          "label":"Sertifika Tipi"
+        "type": {
+          "placeholder": "Sertifika tipi seçin",
+          "label": "Sertifika Tipi"
         }
       }
     },
-    "status":{
-      "pending":"Beklemede"
+    "status": {
+      "pending": "Beklemede"
     },
-    "filters":{
-      "type":{
-        "all":"Tüm Tipler",
-        "quality":"Kalite Sertifikası",
-        "iso":"ISO Sertifikası",
-        "other":"Diğer",
-        "placeholder":"Sertifika Tipi",
-        "production":"Üretim İzni",
-        "export":"İhracat Sertifikası"
+    "filters": {
+      "type": {
+        "all": "Tüm Tipler",
+        "quality": "Kalite Sertifikası",
+        "iso": "ISO Sertifikası",
+        "other": "Diğer",
+        "placeholder": "Sertifika Tipi",
+        "production": "Üretim İzni",
+        "export": "İhracat Sertifikası"
       },
-      "status":{
-        "all":"Tüm Durumlar",
-        "pending":"Beklemede",
-        "approved":"Onaylandı",
-        "rejected":"Reddedildi",
-        "placeholder":"Sertifika Durumu"
+      "status": {
+        "all": "Tüm Durumlar",
+        "pending": "Beklemede",
+        "approved": "Onaylandı",
+        "rejected": "Reddedildi",
+        "placeholder": "Sertifika Durumu"
       }
     },
-    "actions":{
-      "new":"Yeni Sertifika",
-      "download":"İndir"
+    "actions": {
+      "new": "Yeni Sertifika",
+      "download": "İndir"
     },
     "list": {
       "title": "Sertifika Listesi",
@@ -3675,21 +3435,21 @@
       "search": "Sertifika ara...",
       "filter": "Filtrele",
       "sort": "Sırala",
-      "loading":"Sertifikalar yükleniyor...",
-      "empty":{
-        "title":"Sertifika bulunamadı",
-        "description":"Sertifika bulunamadı",
-        "manufacturer":"Bu şirket için sertifika bulunamadı",
-        "addButton":"Ürün Ekle"
+      "loading": "Sertifikalar yükleniyor...",
+      "empty": {
+        "title": "Sertifika bulunamadı",
+        "description": "Sertifika bulunamadı",
+        "manufacturer": "Bu şirket için sertifika bulunamadı",
+        "addButton": "Ürün Ekle"
       },
-      "table":{
-        "document":"Belge",
-        "type":"Tip",
-        "status":"Durum",
-        "applicationDate":"Başvuru Tarihi",
-        "updateDate":"Güncelleme Tarihi",
-        "actions":"İşlemler",
-        "view":"Görüntüle"
+      "table": {
+        "document": "Belge",
+        "type": "Tip",
+        "status": "Durum",
+        "applicationDate": "Başvuru Tarihi",
+        "updateDate": "Güncelleme Tarihi",
+        "actions": "İşlemler",
+        "view": "Görüntüle"
       },
       "columns": {
         "name": "Ad",
@@ -3712,12 +3472,12 @@
       "ce": "CE İşareti",
       "rohs": "RoHS",
       "reach": "REACH",
-      "iso":"ISO Sertifikası",
-      "quality":"Kalite Sertifikası",
-      "other":"Diğer",
-      "export":"İhracat Sertifikası",
-      "production":"Üretim İzni",
-      "production_permit":"Üretim İzni",
+      "iso": "ISO Sertifikası",
+      "quality": "Kalite Sertifikası",
+      "other": "Diğer",
+      "export": "İhracat Sertifikası",
+      "production": "Üretim İzni",
+      "production_permit": "Üretim İzni",
       "export_certificate": "İhracat Sertifikası",
       "quality_certificate": "Kalite Sertifikası",
       "safety_certificate": "Güvenlik Sertifikası",
@@ -3727,9 +3487,9 @@
     "details": {
       "title": "Sertifika Detayları",
       "description": "Sertifika hakkında detaylı bilgileri görüntüleyin",
-      "actions":{
-        "view":"Görüntüle",
-        "download":"İndir"
+      "actions": {
+        "view": "Görüntüle",
+        "download": "İndir"
       },
       "basicInfo": {
         "title": "Temel Bilgiler",
@@ -3811,40 +3571,40 @@
       "devices": "Elektrikli cihazları kapatın ve uzaklaştırın."
     }
   },
- "addProduct": {
-  "form": {
-    "fields": {
-      "manufacturer": {
-        "companyName": "Firma Adı *",
-        "taxId": "Vergi Numarası *",
-        "contactPerson": "İletişim Kişisi *",
-        "contactEmail": "İletişim E-posta *",
-        "cancel": "İptal",
-        "create": "Üretici Oluştur"
+  "addProduct": {
+    "form": {
+      "fields": {
+        "manufacturer": {
+          "companyName": "Firma Adı *",
+          "taxId": "Vergi Numarası *",
+          "contactPerson": "İletişim Kişisi *",
+          "contactEmail": "İletişim E-posta *",
+          "cancel": "İptal",
+          "create": "Üretici Oluştur"
+        }
       }
     }
-  }
-},
+  },
   "documents": {
     "title": "Döküman Yönetimi",
     "description": "Şirket dökümanlarınızı yönetin",
-    "upload":{
-      "title":"Döküman Yükle",
-      "description":"Döküman yüklemek için tıklayın",
-      "typeLabel":"Döküman Tipi",
-      "typePlaceholder":"Döküman tipini seçin",
-      "fileLabel":"Dosya Seçin",
-      "filePlaceholder":"Dosyayı seçin",
-      "submit":"Yükle"
+    "upload": {
+      "title": "Döküman Yükle",
+      "description": "Döküman yüklemek için tıklayın",
+      "typeLabel": "Döküman Tipi",
+      "typePlaceholder": "Döküman tipini seçin",
+      "fileLabel": "Dosya Seçin",
+      "filePlaceholder": "Dosyayı seçin",
+      "submit": "Yükle"
     },
     "filters": {
       "all": "Tümü",
       "upload": "Yükle"
     },
-    "list":{
+    "list": {
       "title": "Dökümanlar",
       "description": "Şirket dökümanlarınızı yönetin",
-      "empty":{
+      "empty": {
         "title": "Döküman bulunamadı",
         "description": "Bir döküman yüklemek için tıklayın"
       }
@@ -3912,10 +3672,6 @@
       "view": "Görüntüle",
       "download": "İndir",
       "backToList": "Listeye Dön"
-      
     }
   }
-} 
-
-
-
+}
