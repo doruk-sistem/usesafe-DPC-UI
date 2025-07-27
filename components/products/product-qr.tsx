@@ -19,7 +19,7 @@ interface ProductQRProps {
 export function ProductQR({ productId, productName, title, description }: ProductQRProps) {
   const [qrDataUrl, setQrDataUrl] = useState<string>("");
   const { toast } = useToast();
-  const t = useTranslations('product.details.qr');
+  const t = useTranslations('products.details.qr');
   
   useEffect(() => {
     const generateQR = async () => {
@@ -85,6 +85,14 @@ export function ProductQR({ productId, productName, title, description }: Produc
             />
           </div>
         )}
+        <div className="text-center space-y-2">
+          <p className="text-sm font-medium text-muted-foreground">
+            {t('productIdLabel', { defaultValue: 'Product ID' })}
+          </p>
+          <p className="text-lg font-mono bg-muted px-3 py-1 rounded-md">
+            {productId}
+          </p>
+        </div>
         <Button variant="outline" onClick={downloadQR}>
           <Download className="mr-2 h-4 w-4" />
           {t('downloadButton')}
