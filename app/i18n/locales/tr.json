@@ -678,6 +678,9 @@
     "title": "Sertifikalı Ürünler",
     "description": "Dijital Ürün Pasaportu doğrulanmış sürdürülebilir ürünlerimizi keşfedin.",
     "loading": "Ürünler yükleniyor...",
+    "productLoading": "Ürün yükleniyor...",
+    "productNotFound": "Ürün bulunamadı",
+    "productNotFoundDescription": "ID: {productId}",
     "backToProducts": "Ürünlere Dön",
     "ProductDocuments": {
       "uploadNewDocument": "Yeni Belge Yükle",

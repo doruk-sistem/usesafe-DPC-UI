@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Latest] - 2025-01-21
+
+### Fixed
+- **Product Page Loading Issue**: Fixed flash of "Ürün bulunamadı" (Product not found) error during page load
+  - Added proper handling of authentication and company loading states
+  - Combined auth, company, and product loading states to show loading skeleton until all prerequisites are loaded
+  - Prevents premature display of error message when auth/company data is still loading
+  - Replaced hard-coded text with translation system (`useTranslations`)
+  - Used existing `Error` and `Loading` UI components for consistency
+  - Added support for both Turkish and English locales
+  - File: `app/products/[id]/page.tsx`
+
 ## [0.1.21] - 2025-07-27
 
 ### Fixed

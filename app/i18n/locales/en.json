@@ -557,6 +557,9 @@
     "title": "Certified Products",
     "description": "Explore our collection of certified sustainable products with verified Digital Product Passports.",
     "loading": "Loading products...",
+    "productLoading": "Loading product...",
+    "productNotFound": "Product not found",
+    "productNotFoundDescription": "ID: {productId}",
     "verify": {
       "button": "Verify Product"
     },

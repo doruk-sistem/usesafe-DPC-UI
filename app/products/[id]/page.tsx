@@ -1,26 +1,28 @@
 "use client";
 
 import { useParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 import { ProductContainer } from "@/components/products/product-container";
+import { Error } from "@/components/ui/error";
+import { Loading } from "@/components/ui/loading";
+import { useAuth } from "@/lib/hooks/use-auth";
 import { useProduct } from "@/lib/hooks/use-product";
 
 export default function ProductPage() {
   const params = useParams();
   const productId = params.id as string;
-  const { product, isLoading, error } = useProduct(productId);
+  const { isLoading: isAuthLoading, isCompanyLoading } = useAuth();
+  const { product, isLoading: isProductLoading, error } = useProduct(productId);
+  const t = useTranslations("products");
 
-  if (isLoading) {
+  const isOverallLoading = isAuthLoading || isCompanyLoading || isProductLoading;
+  
+  // Show loading if auth, company, or product data is still loading
+  if (isOverallLoading) {
     return (
       <div className="container mx-auto px-4 py-12">
-        <div className="animate-pulse">
-          <div className="h-8 bg-gray-200 rounded w-1/4 mb-4"></div>
-          <div className="h-64 bg-gray-200 rounded mb-4"></div>
-          <div className="space-y-3">
-            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-          </div>
-        </div>
+        <Loading text={t("productLoading")} />
       </div>
     );
   }
@@ -28,7 +30,7 @@ export default function ProductPage() {
   if (error) {
     return (
       <div className="container mx-auto px-4 py-12">
-        <h1 className="text-2xl font-bold text-red-600">{error.message}</h1>
+        <Error error={error} />
       </div>
     );
   }
@@ -36,8 +38,10 @@ export default function ProductPage() {
   if (!product) {
     return (
       <div className="container mx-auto px-4 py-12">
-        <h1 className="text-2xl font-bold">Ürün bulunamadı</h1>
-        <p className="mt-2 text-gray-600">ID: {productId}</p>
+        <Error 
+          title={t("productNotFound")} 
+          message={t("productNotFoundDescription", { productId })} 
+        />
       </div>
     );
   }
