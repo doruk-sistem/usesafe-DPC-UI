@@ -19,8 +19,9 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 import {
   AlertDialog,
@@ -70,6 +71,7 @@ interface ProductListProps {
 export function ProductList({ products, isLoading, isViewingManufacturer }: ProductListProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const router = useRouter();
   const t = useTranslations();
   const [productToDelete, setProductToDelete] = useState<BaseProduct | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -109,6 +111,10 @@ export function ProductList({ products, isLoading, isViewingManufacturer }: Prod
     if (productToDelete) {
       deleteProduct({ id: productToDelete.id });
     }
+  };
+
+  const handleRowClick = (productId: string) => {
+    router.push(`/products/${productId}`);
   };
 
   // ✅ getImageUrl için güvenli fallback eklendi
@@ -193,7 +199,11 @@ export function ProductList({ products, isLoading, isViewingManufacturer }: Prod
                 const status = determineProductStatus(product);
                 
                 return (
-                  <TableRow key={product.id}>
+                  <TableRow 
+                    key={product.id} 
+                    className="cursor-pointer hover:bg-muted/30 transition-colors"
+                    onClick={() => handleRowClick(product.id)}
+                  >
                     <TableCell>
                       <div className="flex items-center gap-4">
                         <div className="relative w-12 h-12">
@@ -272,6 +282,7 @@ export function ProductList({ products, isLoading, isViewingManufacturer }: Prod
                             variant="ghost"
                             size="icon"
                             className="h-8 w-8 p-0 rounded-full bg-gradient-to-br from-primary/5 via-primary/10 to-primary/5 hover:from-primary/10 hover:via-primary/15 hover:to-primary/10 border border-border/50 shadow-sm transition-all duration-200"
+                            onClick={(e) => e.stopPropagation()}
                           >
                             <MoreHorizontal className="h-4 w-4 text-primary/70 hover:text-primary transition-colors" />
                             <span className="sr-only">

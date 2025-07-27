@@ -81,21 +81,6 @@ export function ProductHeader({
           className="w-full sm:w-[200px]"
         />
 
-        <Select value={filter} onValueChange={handleFilterChange}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder={t("filters.type.label")} />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">{t("filters.type.all")}</SelectItem>
-            <SelectItem value="agm">{t("filters.type.agm")}</SelectItem>
-            <SelectItem value="efb">{t("filters.type.efb")}</SelectItem>
-            <SelectItem value="standard">
-              {t("filters.type.standard")}
-            </SelectItem>
-            <SelectItem value="marine">{t("filters.type.marine")}</SelectItem>
-          </SelectContent>
-        </Select>
-
         <Select value={status} onValueChange={handleStatusChange}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder={t("filters.status.label")} />
@@ -118,10 +103,6 @@ export function ProductHeader({
             </SelectItem>
           </SelectContent>
         </Select>
-
-        <Button variant="outline" size="icon" title={t("actions.download")}>
-          <Download className="h-4 w-4" />
-        </Button>
 
         {!isViewingManufacturer && (
           <Button asChild>

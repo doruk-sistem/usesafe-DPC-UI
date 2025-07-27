@@ -1,17 +1,16 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { companyApiHooks } from "@/lib/hooks/use-company";
 import { getDocuments } from "@/lib/services/documents";
 import { Document } from "@/lib/types/document";
-import { BaseProduct, KeyFeature, ProductImage } from "@/lib/types/product";
+import { BaseProduct } from "@/lib/types/product";
 
 import { BasicInformationCard } from "./product-details/BasicInformationCard";
 import { CertificationsCard } from "./product-details/CertificationsCard";
