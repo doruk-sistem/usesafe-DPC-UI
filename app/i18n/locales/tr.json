@@ -2853,8 +2853,11 @@
       "title": "Sil",
       "description": "Bu öğeyi silmek istediğinizden emin misiniz?",
       "cancel": "İptal",
-      "confirm": "Sil"
+      "confirm": "Sil",
+      "success": "Başarıyla silindi",
+      "error": "Silme işlemi başarısız. Lütfen tekrar deneyin."
     },
+    "deleting": "Siliniyor...",
     "error": "Hata",
     "success": "Başarılı",
     "labels": {

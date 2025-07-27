@@ -81,8 +81,8 @@ export function ProductList({ products, isLoading, isViewingManufacturer }: Prod
   const { mutate: deleteProduct } = productsApiHooks.useDeleteProductMutation({
     onSuccess: () => {
       toast({
-        title: "Product deleted",
-        description: "The product has been successfully deleted.",
+        title: t("common.success"),
+        description: t("common.delete.success"),
       });
       queryClient.invalidateQueries({ queryKey: ["getProducts"] });
       setIsDeleteDialogOpen(false);
@@ -90,11 +90,11 @@ export function ProductList({ products, isLoading, isViewingManufacturer }: Prod
     },
     onError: (error) => {
       toast({
-        title: "Error",
+        title: t("common.error"),
         description:
           error instanceof Error
             ? error.message
-            : "Failed to delete product. Please try again.",
+            : t("common.delete.error"),
         variant: "destructive",
       });
       setIsDeleteDialogOpen(false);
