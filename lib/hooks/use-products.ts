@@ -20,8 +20,8 @@ export function useProducts(companyId?: string, fetchAll: boolean = false) {
     }
   );
 
-  // Get all documents to calculate document counts and status for products
-  const { data: allDocuments = [], isLoading: isLoadingDocuments } = documentsApiHooks.useGetDocuments();
+  // Get documents to calculate document counts and status for products
+  const { data: allDocuments = [], isLoading: isLoadingDocuments } = documentsApiHooks.useGetDocuments(targetCompanyId);
 
   // Process products to include document counts and status from documents table
   const processedProducts: BaseProduct[] = products.map((product) => {
