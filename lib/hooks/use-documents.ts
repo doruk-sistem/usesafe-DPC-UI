@@ -7,12 +7,19 @@ import { supabase } from "@/lib/supabase/client";
 import { Document, DocumentStatus, DocumentType } from "@/lib/types/document";
 
 export const documentsApiHooks = {
-  useGetDocuments: () => {
+  useGetDocuments: (companyId?: string) => {
     return useQuery({
-      queryKey: ["documents"],
+      queryKey: ["documents", companyId],
       queryFn: async () => {
         try {
-          const { data, error } = await supabase.from("documents").select("*");
+          let query = supabase.from("documents").select("*");
+          
+          // If companyId is provided, filter by company
+          if (companyId) {
+            query = query.eq("companyId", companyId);
+          }
+          
+          const { data, error } = await query;
 
           if (error) {
             console.error("Supabase error:", error);

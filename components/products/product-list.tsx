@@ -22,9 +22,9 @@ import { BaseProduct } from "@/lib/types/product";
 
 export function ProductList() {
   const t = useTranslations("products.list");
-  const { user, isLoading: authLoading } = useAuth();
+  const { user, isLoading: authLoading, isAdmin } = useAuth();
   const { getCategoryName } = useProductCategories();
-  const { products, isLoading } = useProducts(undefined, true);
+  const { products, isLoading } = useProducts(undefined, isAdmin());
   const ITEMS_PER_PAGE = 9;
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.ceil(products.length / ITEMS_PER_PAGE);
