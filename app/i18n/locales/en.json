@@ -1821,8 +1821,11 @@
       "title": "Delete",
       "description": "Are you sure you want to delete this item?",
       "cancel": "Cancel",
-      "confirm": "Delete"
+      "confirm": "Delete",
+      "success": "Successfully deleted",
+      "error": "Failed to delete. Please try again."
     },
+    "deleting": "Deleting...",
     "auth": {
       "required": "Authentication Required",
       "loginRequired": "You need to login to view this page.",
