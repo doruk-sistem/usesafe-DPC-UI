@@ -174,10 +174,21 @@ export function CertificationList({ filters }: CertificationListProps) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>{t('list.title')}</CardTitle>
-          <CardDescription>
-            {t('list.description')}
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>{t('list.title')}</CardTitle>
+              <CardDescription>
+                {t('list.description')}
+              </CardDescription>
+            </div>
+            {!isViewingManufacturer && (
+              <Button asChild>
+                <Link href="/dashboard/certifications/new">
+                  {t('list.empty.upload')}
+                </Link>
+              </Button>
+            )}
+          </div>
         </CardHeader>
         <CardContent>
           <div className="text-center py-4">{t('list.loading')}</div>
@@ -190,10 +201,21 @@ export function CertificationList({ filters }: CertificationListProps) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>{t('list.title')}</CardTitle>
-          <CardDescription>
-            {t('list.description')}
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>{t('list.title')}</CardTitle>
+              <CardDescription>
+                {t('list.description')}
+              </CardDescription>
+            </div>
+            {!isViewingManufacturer && (
+              <Button asChild>
+                <Link href="/dashboard/certifications/new">
+                  {t('list.empty.upload')}
+                </Link>
+              </Button>
+            )}
+          </div>
         </CardHeader>
         <CardContent>
           <div className="text-center py-4 text-destructive">
@@ -209,10 +231,21 @@ export function CertificationList({ filters }: CertificationListProps) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>{t('list.title')}</CardTitle>
-          <CardDescription>
-            {t('list.description')}
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>{t('list.title')}</CardTitle>
+              <CardDescription>
+                {t('list.description')}
+              </CardDescription>
+            </div>
+            {!isViewingManufacturer && (
+              <Button asChild>
+                <Link href="/dashboard/certifications/new">
+                  {t('list.empty.upload')}
+                </Link>
+              </Button>
+            )}
+          </div>
         </CardHeader>
         <CardContent>
           <div className="text-center py-4 text-muted-foreground">

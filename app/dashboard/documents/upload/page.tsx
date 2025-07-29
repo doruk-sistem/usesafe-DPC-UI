@@ -30,6 +30,7 @@ import {
 import { useAuth } from "@/lib/hooks/use-auth";
 import { CompanyDocumentService } from "@/lib/services/companyDocument";
 import { DocumentType } from "@/lib/types/company";
+import { useQueryClient } from "@tanstack/react-query";
 
 
 const DOCUMENT_TYPES = [
@@ -47,6 +48,7 @@ type FormValues = z.infer<typeof formSchema>;
 
 export default function UploadDocumentPage() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { user } = useAuth();
   const [isUploading, setIsUploading] = useState(false);
   const [selectedFileName, setSelectedFileName] = useState<string>("");
@@ -76,8 +78,13 @@ export default function UploadDocumentPage() {
         user.user_metadata.data.company_id,
         values.type
       );
-      router.push("/dashboard/settings");
-      router.refresh();
+      
+      // Cache'i invalidate et
+      await queryClient.invalidateQueries({
+        queryKey: ['companyDocuments']
+      });
+      
+      router.push("/dashboard/settings?tab=documents");
     } catch (err) {
       setFileError(err instanceof Error ? err.message : "Döküman yüklenirken bir hata oluştu");
     } finally {
@@ -90,7 +97,7 @@ export default function UploadDocumentPage() {
       <Card>
         <CardHeader className="flex flex-row items-center gap-4">
           <Button variant="ghost" size="icon" asChild>
-            <Link href="/dashboard/settings">
+            <Link href="/dashboard/settings?tab=documents">
               <ArrowLeft className="h-5 w-5" />
             </Link>
           </Button>

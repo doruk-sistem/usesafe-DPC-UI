@@ -3627,6 +3627,19 @@
       "all": "Tümü",
       "upload": "Yükle"
     },
+    "delete": {
+      "success": {
+        "title": "Döküman Silindi",
+        "description": "Döküman başarıyla silindi"
+      },
+      "dialog": {
+        "title": "Döküman Sil",
+        "description": "Döküman silmek istediğinize emin misiniz?",
+        "confirm": "Sil",
+        "cancel": "İptal",
+        "deleting": "Siliniyor..."
+      }
+    },
     "list": {
       "title": "Dökümanlar",
       "description": "Şirket dökümanlarınızı yönetin",

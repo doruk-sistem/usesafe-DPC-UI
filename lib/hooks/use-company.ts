@@ -73,6 +73,28 @@ export const useDeleteCompanyDocument = () => {
   });
 };
 
+// Belge silme hook'u (hem sertifikalar hem de belgeler için)
+export const useDeleteDocument = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async ({ documentId }: { documentId: string }) => {
+      const { error } = await supabase
+        .from("company_documents")
+        .delete()
+        .eq("id", documentId);
+
+      if (error) throw error;
+      return { success: true };
+    },
+    onSuccess: () => {
+      // Hem company documents hem de documents cache'lerini invalidate et
+      queryClient.invalidateQueries({ queryKey: ['getCompanyDocuments'] });
+      queryClient.invalidateQueries({ queryKey: ['companyDocuments'] });
+    },
+  });
+};
+
 // Export the hooks that are used in components
 export const useCompany = (companyId: string) => {
   const { data: company, isLoading, error } = companyApiHooks.useGetCompanyQuery({ id: companyId });

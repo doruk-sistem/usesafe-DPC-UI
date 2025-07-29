@@ -2262,6 +2262,19 @@
       "all": "All",
       "upload": "Upload"
     },
+    "delete": {
+      "success": {
+        "title": "Document Deleted Successfully",
+        "description": "Document has been deleted successfully"
+      },
+      "dialog": {
+        "title": "Delete Document",
+        "description": "Are you sure you want to delete this document?",
+        "confirm": "Delete",
+        "cancel": "Cancel",
+        "deleting": "Deleting..."
+      }
+    },
     "list": {
       "title": "Documents",
       "description": "Manage your company documents",

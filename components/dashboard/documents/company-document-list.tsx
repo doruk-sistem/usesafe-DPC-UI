@@ -1,11 +1,14 @@
 "use client";
 
-import { FileText, MoreHorizontal, Download, History, ExternalLink, AlertTriangle, Plus } from "lucide-react";
+import { FileText, MoreHorizontal, Download, History, ExternalLink, AlertTriangle, Plus, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { useToast } from "@/components/ui/use-toast";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import {
   Card,
   CardContent,
@@ -37,13 +40,51 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useCompanyDocuments } from "@/lib/hooks/use-company-documents";
+import { useDeleteDocument } from "@/lib/hooks/use-company";
 import { Document } from "@/lib/types/document";
 import { getStatusIcon } from "@/lib/utils/document-utils";
 
 export function CompanyDocumentList() {
   const t = useTranslations();
+  const { toast } = useToast();
   const { useGetCompanyDocuments } = useCompanyDocuments();
   const { data: documents, isLoading, error } = useGetCompanyDocuments();
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [documentToDelete, setDocumentToDelete] = useState<string | null>(null);
+
+  const { mutate: deleteDocument, isPending: isDeleting } = useDeleteDocument();
+
+  // Silme dialog'unu aç
+  const openDeleteDialog = (documentId: string) => {
+    setDocumentToDelete(documentId);
+    setDeleteDialogOpen(true);
+  };
+
+  // Silme işlemini onayla
+  const confirmDelete = async () => {
+    if (documentToDelete) {
+      deleteDocument(
+        { documentId: documentToDelete },
+        {
+          onSuccess: () => {
+            toast({
+              title: t('documents.delete.success.title'),
+              description: t('documents.delete.success.description'),
+            });
+            setDeleteDialogOpen(false);
+            setDocumentToDelete(null);
+          },
+          onError: (error) => {
+            toast({
+              title: t('documents.delete.error.title'),
+              description: error instanceof Error ? error.message : t('documents.delete.error.generic'),
+              variant: "destructive",
+            });
+          }
+        }
+      );
+    }
+  };
 
   const getStatusVariant = (status: string) => {
     switch (status) {
@@ -149,7 +190,27 @@ export function CompanyDocumentList() {
   }
 
   return (
-    <Card>
+    <>
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t('documents.delete.dialog.title')}</DialogTitle>
+            <DialogDescription>
+              {t('documents.delete.dialog.description')}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>
+              {t('documents.delete.dialog.cancel')}
+            </Button>
+            <Button variant="destructive" onClick={confirmDelete} disabled={isDeleting}>
+              {isDeleting ? t('documents.delete.dialog.deleting') : t('documents.delete.dialog.confirm')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
@@ -251,7 +312,11 @@ export function CompanyDocumentList() {
                         </DropdownMenuItem>
                       )}
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem className="text-red-600">
+                      <DropdownMenuItem 
+                        onClick={() => openDeleteDialog(doc.id)}
+                        className="text-red-600"
+                      >
+                        <Trash2 className="h-4 w-4 mr-2" />
                         {t("documents.actions.delete")}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
@@ -263,5 +328,6 @@ export function CompanyDocumentList() {
         </Table>
       </CardContent>
     </Card>
+    </>
   );
 } 
