@@ -30,10 +30,12 @@ import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { certificationService } from "@/lib/services/certification";
 import { StorageHelper } from "@/lib/utils/storage";
+import { useQueryClient } from "@tanstack/react-query";
 
 export function NewDPCForm() {
   const t = useTranslations('certifications');
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { toast } = useToast();
   const { user, company } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
@@ -84,12 +86,17 @@ export function NewDPCForm() {
         filePath: fileName
       });
       
+      // Cache'i invalidate et
+      await queryClient.invalidateQueries({
+        queryKey: ['getCompanyDocuments']
+      });
+      
       toast({
         title: t('form.success.title'),
         description: t('form.success.description'),
       });
       
-      router.push("/dashboard/certifications");
+      router.push("/dashboard/settings?tab=certifications");
     } catch (error) {
       console.error("Error creating certification:", error);
       toast({
@@ -106,7 +113,7 @@ export function NewDPCForm() {
     <div className="space-y-6">
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="icon" asChild>
-          <Link href="/dashboard/certifications">
+          <Link href="/dashboard/settings?tab=certifications">
             <ArrowLeft className="h-5 w-5" />
           </Link>
         </Button>
