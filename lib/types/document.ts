@@ -37,7 +37,7 @@ export type CertificateType =
   | 'environmental_certificate'
   | 'iso_certificate'
   | 'export_certificate'
-  | 'production_certificate'
+  | 'production_permit'
   | 'activity_permit';  
 
 // Döküman tipleri

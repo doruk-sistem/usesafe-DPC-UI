@@ -43,7 +43,7 @@ const CERTIFICATE_TYPES = [
   'environmental_certificate',
   'iso_certificate',
   'export_certificate',
-  'production_certificate',
+  'production_permit',  // Üretim İzni
   'activity_permit'  // Faaliyet İzni (sertifika)
 ] as const;
 
@@ -121,8 +121,8 @@ export function CertificationList({ filters }: CertificationListProps) {
         return 'ISO Sertifikası';
       case 'export_certificate':
         return 'İhracat Sertifikası';
-      case 'production_certificate':
-        return 'Üretim Sertifikası';
+      case 'production_permit':
+        return 'Üretim İzni';
       case 'activity_permit':
         return 'Faaliyet İzni';
       default:
@@ -182,11 +182,6 @@ export function CertificationList({ filters }: CertificationListProps) {
               <>
                 <p>{t('list.empty.title')}</p>
                 <p className="mt-2">{t('list.empty.description')}</p>
-                <Button asChild className="mt-4">
-                  <Link href="/dashboard/certifications/new">
-                    {t('list.empty.addButton')}
-                  </Link>
-                </Button>
               </>
             )}
           </div>
@@ -198,10 +193,21 @@ export function CertificationList({ filters }: CertificationListProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{t('list.title')}</CardTitle>
-        <CardDescription>
-          {t('list.description')}
-        </CardDescription>
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle>{t('list.title')}</CardTitle>
+            <CardDescription>
+              {t('list.description')}
+            </CardDescription>
+          </div>
+          {!isViewingManufacturer && (
+                          <Button asChild>
+                <Link href="/dashboard/certifications/new">
+                  {t('list.empty.upload')}
+                </Link>
+              </Button>
+          )}
+        </div>
       </CardHeader>
       <CardContent>
         <Table>

@@ -3450,6 +3450,7 @@
       "empty": {
         "title": "Sertifika bulunamadı",
         "description": "Sertifika bulunamadı",
+        "upload": "Yükle",
         "manufacturer": "Bu şirket için sertifika bulunamadı",
         "addButton": "Ürün Ekle"
       },

@@ -273,6 +273,7 @@
       "empty": {
         "title": "No certifications found",
         "description": "No certifications found for your company",
+        "upload": "Upload",
         "manufacturer": "No certifications found for your company",
         "addButton": "Add Product"
       },
