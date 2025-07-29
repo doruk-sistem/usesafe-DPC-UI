@@ -270,6 +270,19 @@
       "title": "Certification List",
       "description": "View and manage your product certifications",
       "loading": "Loading certifications...",
+      "delete": {
+        "success": {
+          "title": "Certificate Deleted Successfully",
+          "description": "Certificate has been deleted successfully"
+        },
+        "dialog": {
+          "title": "Delete Certificate",
+          "description": "Are you sure you want to delete this certificate?",
+          "cancel": "Cancel",
+          "confirm": "Delete",
+          "deleting": "Deleting..."
+        }
+      },
       "empty": {
         "title": "No certifications found",
         "description": "No certifications found for your company",
@@ -278,7 +291,8 @@
         "addButton": "Add Product"
       },
       "actions": {
-        "view": "View"
+        "view": "View",
+        "delete":"Delete"
       },
       "table": {
         "document": "Document",

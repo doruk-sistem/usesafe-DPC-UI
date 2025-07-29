@@ -3447,6 +3447,19 @@
       "filter": "Filtrele",
       "sort": "Sırala",
       "loading": "Sertifikalar yükleniyor...",
+      "delete": {
+        "success": {
+          "title": "Sertifika Silindi",
+          "description": "Sertifika başarıyla silindi"
+        },
+        "dialog": {
+          "title": "Sertifika Sil",
+          "description": "Sertifika silmek istediğinize emin misiniz?",
+          "cancel": "İptal",
+          "confirm": "Sil",
+          "deleting": "Siliniyor..."
+        }
+        },
       "empty": {
         "title": "Sertifika bulunamadı",
         "description": "Sertifika bulunamadı",
@@ -3474,7 +3487,8 @@
         "view": "Görüntüle",
         "download": "İndir",
         "renew": "Yenile",
-        "revoke": "İptal Et"
+        "revoke": "İptal Et",
+        "delete": "Sil"
       }
     },
     "types": {

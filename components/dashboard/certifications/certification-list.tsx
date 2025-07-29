@@ -1,12 +1,15 @@
 "use client";
 
-import { Battery, MoreHorizontal, FileText, ExternalLink } from "lucide-react";
+import { Battery, MoreHorizontal, FileText, ExternalLink, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { useToast } from "@/components/ui/use-toast";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import {
   Card,
   CardContent,
@@ -31,7 +34,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useAuth } from "@/lib/hooks/use-auth";
-import { companyApiHooks } from "@/lib/hooks/use-company";
+import { companyApiHooks, useDeleteCompanyDocument } from "@/lib/hooks/use-company";
 import { CertificateType } from "@/lib/types/document";
 
 import { getStatusIcon } from "../../../lib/utils/document-utils";
@@ -69,15 +72,52 @@ interface CertificationListProps {
 export function CertificationList({ filters }: CertificationListProps) {
   const t = useTranslations('certifications');
   const { user, company } = useAuth();
+  const { toast } = useToast();
   const searchParams = useSearchParams();
   const manufacturerId = searchParams.get('manufacturer');
   const isViewingManufacturer = !!manufacturerId;
   const companyId = manufacturerId || user?.user_metadata?.company_id || company?.id;
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [documentToDelete, setDocumentToDelete] = useState<string | null>(null);
 
   const { data: allDocuments, isLoading, error } = companyApiHooks.useGetCompanyDocumentsQuery(
     { companyId },
     { enabled: !!companyId }
   );
+
+  const { mutate: deleteDocument, isPending: isDeleting } = useDeleteCompanyDocument();
+
+  // Silme dialog'unu aç
+  const openDeleteDialog = (documentId: string) => {
+    setDocumentToDelete(documentId);
+    setDeleteDialogOpen(true);
+  };
+
+  // Silme işlemini onayla
+  const confirmDelete = async () => {
+    if (documentToDelete) {
+      deleteDocument(
+        { documentId: documentToDelete },
+        {
+          onSuccess: () => {
+            toast({
+              title: t('list.delete.success.title'),
+              description: t('list.delete.success.description'),
+            });
+            setDeleteDialogOpen(false);
+            setDocumentToDelete(null);
+          },
+          onError: (error) => {
+            toast({
+              title: t('list.delete.error.title'),
+              description: error instanceof Error ? error.message : t('list.delete.error.generic'),
+              variant: "destructive",
+            });
+          }
+        }
+      );
+    }
+  };
   
   // Sadece sertifika tiplerini filtrele
   const filteredDocuments = allDocuments?.filter(doc => {
@@ -191,7 +231,27 @@ export function CertificationList({ filters }: CertificationListProps) {
   }
 
   return (
-    <Card>
+    <>
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t('list.delete.dialog.title')}</DialogTitle>
+            <DialogDescription>
+              {t('list.delete.dialog.description')}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>
+              {t('list.delete.dialog.cancel')}
+            </Button>
+            <Button variant="destructive" onClick={confirmDelete} disabled={isDeleting}>
+              {isDeleting ? t('list.delete.dialog.deleting') : t('list.delete.dialog.confirm')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
@@ -262,17 +322,32 @@ export function CertificationList({ filters }: CertificationListProps) {
                 <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon">
+                      <Button 
+                        variant="ghost" 
+                        size="icon"
+                        onClick={(e) => e.stopPropagation()}
+                      >
                         <MoreHorizontal className="h-4 w-4" />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
+                    <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
                       <Link href={`/dashboard/certifications/${doc.id}`}>
                         <DropdownMenuItem>
                           <ExternalLink className="mr-2 h-4 w-4" />
                           {t('list.actions.view')}
                         </DropdownMenuItem>
                       </Link>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem 
+                        onClick={(e) => {
+                          e.preventDefault();
+                          openDeleteDialog(doc.id);
+                        }}
+                        className="text-destructive"
+                      >
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        {t('list.actions.delete')}
+                      </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>
@@ -282,5 +357,6 @@ export function CertificationList({ filters }: CertificationListProps) {
         </Table>
       </CardContent>
     </Card>
+    </>
   );
 }

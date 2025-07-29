@@ -4,6 +4,8 @@ import { Company, CompanyDocument } from "@/lib/types/company";
 import { createApiHooks } from "../create-api-hooks";
 import { companyService } from "../services/company";
 
+import { useQueryClient, useMutation } from "@tanstack/react-query";
+
 export const companyApiHooks = createApiHooks({
   ...companyService,
   getCompanyDocuments: async ({ companyId }: { companyId: string }) => {
@@ -38,8 +40,38 @@ export const companyApiHooks = createApiHooks({
     });
     
     return filteredData as CompanyDocument[];
+  },
+  deleteCompanyDocument: async ({ documentId }: { documentId: string }) => {
+    const { error } = await supabase
+      .from("company_documents")
+      .delete()
+      .eq("id", documentId);
+
+    if (error) throw error;
+    return { success: true };
   }
 });
+
+// Manuel olarak delete mutation hook'u oluşturalım
+export const useDeleteCompanyDocument = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async ({ documentId }: { documentId: string }) => {
+      const { error } = await supabase
+        .from("company_documents")
+        .delete()
+        .eq("id", documentId);
+
+      if (error) throw error;
+      return { success: true };
+    },
+    onSuccess: () => {
+      // Tüm company documents cache'lerini invalidate et
+      queryClient.invalidateQueries({ queryKey: ['getCompanyDocuments'] });
+    },
+  });
+};
 
 // Export the hooks that are used in components
 export const useCompany = (companyId: string) => {
