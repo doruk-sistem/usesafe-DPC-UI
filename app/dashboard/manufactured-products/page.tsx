@@ -64,11 +64,8 @@ import { Document } from "@/lib/types/document";
 import { BaseProduct } from "@/lib/types/product";
 import { useAuth } from "@/lib/hooks/use-auth";
 
-// Mock data for demonstration - gerçek uygulamada bu veriler API'den gelecek
-// Removed: mockManufacturedProducts - now using real API data
-
 export default function ManufacturedProductsPage() {
-  const t = useTranslations();
+  const t = useTranslations("dashboard.manufacturedProducts");
   const { company } = useAuth();
   const [pageIndex, setPageIndex] = useState(0);
   const [pageSize, setPageSize] = useState(10);
@@ -166,7 +163,7 @@ export default function ManufacturedProductsPage() {
         <Card>
           <CardContent className="p-8">
             <div className="text-center text-red-500">
-              Ürünler yüklenirken bir hata oluştu: {productsError.message}
+              {t("errorLoadingProducts")}: {productsError.message}
             </div>
           </CardContent>
         </Card>
@@ -182,10 +179,10 @@ export default function ManufacturedProductsPage() {
           <div>
             <CardTitle className="flex items-center gap-2">
               <Factory className="w-5 h-5" />
-              Ürettiklerim
+              {t("title")}
             </CardTitle>
             <CardDescription>
-              Üretimini yaptığınız ürünler ve materyal tedarikçileri
+              {t("description")}
             </CardDescription>
           </div>
         </CardHeader>
@@ -197,7 +194,7 @@ export default function ManufacturedProductsPage() {
           <Card>
             <CardContent className="p-8">
               <div className="text-center text-muted-foreground">
-                Ürünler yükleniyor...
+                {t("loading")}
               </div>
             </CardContent>
           </Card>
@@ -207,12 +204,12 @@ export default function ManufacturedProductsPage() {
               <div className="text-center space-y-4">
                 <Factory className="w-12 h-12 mx-auto text-muted-foreground" />
                 <div>
-                  <h3 className="text-lg font-medium">Henüz Atanmış Ürün Yok</h3>
+                  <h3 className="text-lg font-medium">{t("noProductsAssigned")}</h3>
                   <p className="text-muted-foreground">
-                    Size üretici olarak atanan ürünler burada görünecek.
+                    {t("noProductsAssignedDescription")}
                   </p>
                   <p className="text-sm text-muted-foreground mt-2">
-                    Marka sahipleri sizi üretici olarak seçtiklerinde ürünler bu sayfada listelenecek.
+                    {t("noProductsAssignedDescription2")}
                   </p>
                 </div>
               </div>
@@ -227,15 +224,15 @@ export default function ManufacturedProductsPage() {
                     <div className="flex items-center gap-3">
                       <CardTitle className="text-lg">{product.name}</CardTitle>
                       <Badge variant="secondary">
-                        Fason Üretim
+                        {t("contractManufacturer")}
                       </Badge>
                     </div>
                     <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                      <span>Model: {product.model}</span>
+                      <span>{t("model")}: {product.model}</span>
                       <span>•</span>
                       <span className="flex items-center gap-1">
                         <Building2 className="w-4 h-4" />
-                        Marka Sahibi: {product.brand_owner?.name || "Bilinmiyor"}
+                        {t("brandOwner")}: {product.brand_owner?.name || t("unknownManufacturer")}
                       </span>
                     </div>
                   </div>
@@ -246,13 +243,13 @@ export default function ManufacturedProductsPage() {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>İşlemler</DropdownMenuLabel>
+                      <DropdownMenuLabel>{t("actions")}</DropdownMenuLabel>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem
                         onClick={() => handleViewDocuments(product.id)}
                       >
                         <FileText className="h-4 w-4 mr-2" />
-                        Belgeleri Görüntüle
+                        {t("viewDocuments")}
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         onClick={() => {
@@ -260,7 +257,7 @@ export default function ManufacturedProductsPage() {
                         }}
                       >
                         <Eye className="h-4 w-4 mr-2" />
-                        Ürünü Görüntüle
+                        {t("viewProduct")}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -270,7 +267,7 @@ export default function ManufacturedProductsPage() {
                 <div className="space-y-4">
                   <h4 className="font-semibold flex items-center gap-2">
                     <Users className="w-4 h-4" />
-                    Materyal Tedarikçileri
+                    {t("materialSuppliers")}
                   </h4>
                   
                   <div className="grid gap-3">
@@ -283,7 +280,7 @@ export default function ManufacturedProductsPage() {
                                 <h5 className="font-medium">{material.name}</h5>
                                 <Badge variant="outline">{material.percentage}%</Badge>
                                 <Badge variant={material.recyclable ? "success" : "secondary"}>
-                                  {material.recyclable ? "Geri Dönüştürülebilir" : "Geri Dönüştürülemez"}
+                                  {material.recyclable ? t("recyclable.yes") : t("recyclable.no")}
                                 </Badge>
                               </div>
                               
@@ -291,11 +288,11 @@ export default function ManufacturedProductsPage() {
                                 <Factory className="w-4 h-4 text-muted-foreground" />
                                 {material.assignedManufacturer ? (
                                   <span className="text-sm">
-                                    Materyal Üreticisi: <span className="font-medium">{material.assignedManufacturer.name}</span>
+                                    {t("materialManufacturer")}: <span className="font-medium">{material.assignedManufacturer.name}</span>
                                   </span>
                                 ) : (
                                   <span className="text-sm text-muted-foreground">
-                                    Materyal üreticisi atama işlemi için "Üretici Ata" butonunu kullanın
+                                    {t("materialManufacturerAssign")}
                                   </span>
                                 )}
                               </div>
@@ -307,14 +304,14 @@ export default function ManufacturedProductsPage() {
                               onClick={() => handleAssignMaterialManufacturer(product, material)}
                             >
                               <Settings className="w-4 h-4 mr-2" />
-                              {material.assignedManufacturer ? "Üreticiyi Değiştir" : "Üretici Ata"}
+                              {material.assignedManufacturer ? t("changeManufacturer") : t("assignManufacturer")}
                             </Button>
                           </div>
                         </div>
                       ))
                     ) : (
                       <div className="text-center py-4 text-muted-foreground">
-                        Bu ürün için henüz materyal tanımlanmamış.
+                        {t("noMaterialsAssigned")}
                       </div>
                     )}
                   </div>
@@ -329,7 +326,7 @@ export default function ManufacturedProductsPage() {
       <Dialog open={showDocumentsDialog} onOpenChange={setShowDocumentsDialog}>
         <DialogContent className="max-w-4xl">
           <DialogHeader>
-            <DialogTitle>Ürün Belgeleri</DialogTitle>
+            <DialogTitle>{t("documentsTitle")}</DialogTitle>
           </DialogHeader>
           {selectedProductId && (
             <div className="space-y-4">
@@ -345,7 +342,7 @@ export default function ManufacturedProductsPage() {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Settings className="w-5 h-5" />
-              Materyal Üreticisi Ata
+              {t("materialAssignmentTitle")}
             </DialogTitle>
           </DialogHeader>
           
@@ -355,17 +352,17 @@ export default function ManufacturedProductsPage() {
               <div className="p-4 bg-muted/50 rounded-lg">
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
-                    <h4 className="font-semibold">Materyal:</h4>
+                    <h4 className="font-semibold">{t("material")}:</h4>
                     <span>{selectedMaterial.name}</span>
                     <Badge variant="outline">{selectedMaterial.percentage}%</Badge>
                   </div>
                   <div className="flex items-center gap-2">
-                    <h4 className="font-semibold">Ürün:</h4>
+                    <h4 className="font-semibold">{t("product")}:</h4>
                     <span className="text-sm">{selectedProduct.name}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <h4 className="font-semibold">Marka Sahibi:</h4>
-                    <span className="text-sm">{selectedProduct.brand_owner?.name || "Bilinmiyor"}</span>
+                    <h4 className="font-semibold">{t("brandOwner")}:</h4>
+                    <span className="text-sm">{selectedProduct.brand_owner?.name || t("unknownManufacturer")}</span>
                   </div>
                 </div>
               </div>
@@ -375,7 +372,7 @@ export default function ManufacturedProductsPage() {
                 <div className="p-4 border-l-4 border-green-500 bg-green-50">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h4 className="font-semibold text-green-800">Mevcut Üretici</h4>
+                      <h4 className="font-semibold text-green-800">{t("currentManufacturer")}</h4>
                       <p className="text-green-700">{selectedMaterial.assignedManufacturer.name}</p>
                     </div>
                     <Button
@@ -390,7 +387,7 @@ export default function ManufacturedProductsPage() {
                       ) : (
                         <X className="w-4 h-4 mr-2" />
                       )}
-                      Kaldır
+                      {t("removeManufacturer")}
                     </Button>
                   </div>
                 </div>
@@ -398,12 +395,12 @@ export default function ManufacturedProductsPage() {
 
               {/* Search */}
               <div className="space-y-2">
-                <Label htmlFor="manufacturer-search">Üretici Ara</Label>
+                <Label htmlFor="manufacturer-search">{t("searchManufacturer")}</Label>
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                   <Input
                     id="manufacturer-search"
-                    placeholder="Üretici adı veya uzmanlık alanı ara..."
+                    placeholder={t("searchManufacturerPlaceholder")}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="pl-10"
@@ -413,7 +410,7 @@ export default function ManufacturedProductsPage() {
 
               {/* Manufacturers List */}
               <div className="space-y-2 max-h-64 overflow-y-auto">
-                <Label>Mevcut Üreticiler</Label>
+                <Label>{t("currentManufacturers")}</Label>
                 <div className="space-y-2">
                   {manufacturersLoading ? (
                     <div className="text-center py-8">
@@ -421,7 +418,7 @@ export default function ManufacturedProductsPage() {
                     </div>
                   ) : filteredManufacturers.length === 0 ? (
                     <div className="text-center py-8 text-muted-foreground">
-                      <p>Arama kriterlerinize uygun üretici bulunamadı.</p>
+                      <p>{t("noManufacturersFound")}</p>
                     </div>
                   ) : (
                     filteredManufacturers.map((manufacturer) => (
@@ -439,7 +436,7 @@ export default function ManufacturedProductsPage() {
                             <div className="flex items-center gap-2">
                               <h5 className="font-medium">{manufacturer.name}</h5>
                               <Badge variant="outline" className="text-xs">
-                                {manufacturer.companyType || "Üretici"}
+                                {manufacturer.companyType || t("manufacturer")}
                               </Badge>
                             </div>
                             {selectedManufacturer?.id === manufacturer.id && (
@@ -460,7 +457,7 @@ export default function ManufacturedProductsPage() {
               variant="outline"
               onClick={() => setShowMaterialAssignmentDialog(false)}
             >
-              İptal
+              {t("cancel")}
             </Button>
             <Button
               onClick={handleSaveAssignment}
@@ -471,7 +468,7 @@ export default function ManufacturedProductsPage() {
               ) : (
                 <Check className="w-4 h-4 mr-2" />
               )}
-              Kaydet
+              {t("save")}
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -24,7 +24,7 @@ interface MaterialsCardProps {
 }
 
 export function MaterialsCard({ productId, title = "Malzemeler", product }: MaterialsCardProps) {
-  const t = useTranslations("productDetails.materials");
+  const t = useTranslations("products.details.materials");
   
   const { data: materials, isLoading, error } = useProductMaterialsWithManufacturers(productId);
 
@@ -57,7 +57,7 @@ export function MaterialsCard({ productId, title = "Malzemeler", product }: Mate
         </CardHeader>
         <CardContent>
           <div className="text-center py-8 text-red-500">
-            Error loading materials: {error.message}
+            {t("errorLoadingMaterials")}: {error.message}
           </div>
         </CardContent>
       </Card>
@@ -100,7 +100,7 @@ export function MaterialsCard({ productId, title = "Malzemeler", product }: Mate
           <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border">
             <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
               <Users className="w-5 h-5" />
-              Üretim Zinciri
+              {t("productionChain")}
             </h3>
             <div className="flex items-center justify-between flex-wrap gap-4">
               <div className="flex items-center gap-2">
@@ -108,9 +108,9 @@ export function MaterialsCard({ productId, title = "Malzemeler", product }: Mate
                   <Building2 className="w-4 h-4 text-blue-600" />
                 </div>
                 <div>
-                  <p className="font-medium text-sm">Ürün Sahibi</p>
+                  <p className="font-medium text-sm">{t("productOwner")}</p>
                   <p className="text-sm text-muted-foreground">
-                    {product?.owner?.name || "Bilgi yükleniyor..."}
+                    {product?.owner?.name || t("loading")}
                   </p>
                 </div>
               </div>
@@ -122,7 +122,7 @@ export function MaterialsCard({ productId, title = "Malzemeler", product }: Mate
                   <Factory className="w-4 h-4 text-orange-600" />
                 </div>
                 <div>
-                  <p className="font-medium text-sm">Fason Üretici</p>
+                  <p className="font-medium text-sm">{t("contractManufacturer")}</p>
                   <p className="text-sm text-muted-foreground">
                     {product?.manufacturer?.name || "Bilgi yükleniyor..."}
                   </p>
@@ -141,7 +141,7 @@ export function MaterialsCard({ productId, title = "Malzemeler", product }: Mate
                     <div className="flex items-center gap-2 mt-1">
                       <Badge variant="outline">{material.percentage}%</Badge>
                       <Badge variant={material.recyclable ? "success" : "secondary"}>
-                        {material.recyclable ? "Geri Dönüştürülebilir" : "Geri Dönüştürülemez"}
+                        {material.recyclable ? t("recyclable.yes") : t("recyclable.no")}
                       </Badge>
                     </div>
                     {material.description && (
@@ -156,7 +156,7 @@ export function MaterialsCard({ productId, title = "Malzemeler", product }: Mate
                 <div className="mt-4 pt-4 border-t">
                   <h5 className="text-sm font-medium text-muted-foreground mb-3 flex items-center gap-1">
                     <Building2 className="w-4 h-4" />
-                    Materyal Üreticileri
+                    {t("materialManufacturers")}
                   </h5>
                   
                   {material.manufacturer ? (
@@ -170,26 +170,26 @@ export function MaterialsCard({ productId, title = "Malzemeler", product }: Mate
                             <div className="flex items-center gap-2">
                               <span className="font-medium text-sm">{material.manufacturer.name}</span>
                               <Badge variant="success" className="text-xs">
-                                Atanmış
+                                {t("assigned")}
                               </Badge>
                             </div>
-                            <p className="text-xs text-muted-foreground">Materyal Üreticisi</p>
+                            <p className="text-xs text-muted-foreground">{t("materialManufacturers")}</p>
                             {material.assigned_by && (
                               <p className="text-xs text-blue-600">
-                                {material.assigned_by.name} tarafından atandı
+                                {material.assigned_by.name} {t("assignedBy")}
                               </p>
                             )}
                           </div>
                         </div>
                         <Badge variant="outline" className="text-xs">
-                          Tedarikçi
+                          {t("supplier")}
                         </Badge>
                       </div>
                     </div>
                   ) : (
                     <div className="p-3 bg-muted/30 rounded-lg">
                       <p className="text-sm text-muted-foreground text-center">
-                        Bu materyal için henüz üretici atanmamış
+                        {t("noManufacturerAssigned")}
                       </p>
                     </div>
                   )}
