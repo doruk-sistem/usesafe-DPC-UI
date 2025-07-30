@@ -6,60 +6,24 @@ import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
-interface Material {
-  id: string;
-  name: string;
-  percentage: number;
-  recyclable: boolean;
-  description?: string;
-  assignedManufacturer?: {
-    id: string;
-    name: string;
-    type: string;
-  } | null;
-}
+import { useProductMaterialsWithManufacturers } from "@/lib/hooks/use-material-manufacturers";
 
 interface MaterialsCardProps {
   productId: string;
   title?: string;
 }
 
-// Mock data for demonstration - gerçek uygulamada bu veriler API'den gelecek
+// Mock data for company info - gerçek uygulamada bu veriler API'den gelecek
 const mockProductData = {
   productOwner: "Koton Co",
   contractManufacturer: "Bartu Co",
   manufacturerType: "contract", // contract = fason, own = kendi
-  materialManufacturers: {
-    "Pamuk": [{ id: "mfr1", name: "Furkan Co", verified: true }],
-    "Polyester": [{ id: "mfr2", name: "Alican Co", verified: true }],
-    "Elastane": [{ id: "mfr3", name: "Metin Co", verified: false }]
-  }
 };
 
 export function MaterialsCard({ productId, title = "Malzemeler" }: MaterialsCardProps) {
   const t = useTranslations("productDetails.materials");
-
-  // Mock materials data - gerçek uygulamada API'den gelecek
-  const mockMaterials = [
-    {
-      id: "mat1",
-      name: "Pamuk",
-      percentage: 55,
-      recyclable: true,
-      description: "Organik pamuk kumaş"
-    },
-    {
-      id: "mat2", 
-      name: "Polyester",
-      percentage: 45,
-      recyclable: false,
-      description: "Sentetik polyester elyaf"
-    }
-  ];
-
-  const materials = mockMaterials;
-  const isLoading = false;
+  
+  const { data: materials, isLoading, error } = useProductMaterialsWithManufacturers(productId);
 
   if (isLoading) {
     return (
@@ -73,6 +37,24 @@ export function MaterialsCard({ productId, title = "Malzemeler" }: MaterialsCard
         <CardContent>
           <div className="text-center py-8 text-muted-foreground">
             {t("loading") || "Loading materials..."}
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (error) {
+    return (
+      <Card className="lg:col-span-2">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Factory className="w-5 h-5" />
+            {title}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-8 text-red-500">
+            Error loading materials: {error.message}
           </div>
         </CardContent>
       </Card>
@@ -154,7 +136,7 @@ export function MaterialsCard({ productId, title = "Malzemeler" }: MaterialsCard
                     <div className="flex items-center gap-2 mt-1">
                       <Badge variant="outline">{material.percentage}%</Badge>
                       <Badge variant={material.recyclable ? "success" : "secondary"}>
-                        {material.recyclable ? t("recyclable.yes") : t("recyclable.no")}
+                        {material.recyclable ? "Geri Dönüştürülebilir" : "Geri Dönüştürülemez"}
                       </Badge>
                     </div>
                     {material.description && (
@@ -172,31 +154,32 @@ export function MaterialsCard({ productId, title = "Malzemeler" }: MaterialsCard
                     Materyal Üreticileri
                   </h5>
                   
-                  {mockProductData.materialManufacturers[material.name as keyof typeof mockProductData.materialManufacturers] ? (
+                  {material.manufacturer ? (
                     <div className="space-y-2">
-                      {mockProductData.materialManufacturers[material.name as keyof typeof mockProductData.materialManufacturers]?.map((manufacturer, index) => (
-                        <div key={index} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
-                          <div className="flex items-center gap-3">
-                            <div className="p-1.5 bg-green-100 rounded">
-                              <Building2 className="w-3 h-3 text-green-600" />
-                            </div>
-                            <div>
-                              <div className="flex items-center gap-2">
-                                <span className="font-medium text-sm">{manufacturer.name}</span>
-                                {manufacturer.verified && (
-                                  <Badge variant="success" className="text-xs">
-                                    Doğrulanmış
-                                  </Badge>
-                                )}
-                              </div>
-                              <p className="text-xs text-muted-foreground">Materyal Üreticisi</p>
-                            </div>
+                      <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                        <div className="flex items-center gap-3">
+                          <div className="p-1.5 bg-green-100 rounded">
+                            <Building2 className="w-3 h-3 text-green-600" />
                           </div>
-                          <Badge variant="outline" className="text-xs">
-                            Tedarikçi
-                          </Badge>
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span className="font-medium text-sm">{material.manufacturer.name}</span>
+                              <Badge variant="success" className="text-xs">
+                                Atanmış
+                              </Badge>
+                            </div>
+                            <p className="text-xs text-muted-foreground">Materyal Üreticisi</p>
+                            {material.assigned_by && (
+                              <p className="text-xs text-blue-600">
+                                {material.assigned_by.name} tarafından atandı
+                              </p>
+                            )}
+                          </div>
                         </div>
-                      ))}
+                        <Badge variant="outline" className="text-xs">
+                          Tedarikçi
+                        </Badge>
+                      </div>
                     </div>
                   ) : (
                     <div className="p-3 bg-muted/30 rounded-lg">

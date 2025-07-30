@@ -53,104 +53,23 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  useAssignMaterialManufacturer,
+  useRemoveMaterialManufacturer,
+  useAvailableManufacturers,
+} from "@/lib/hooks/use-material-manufacturers";
+import { useManufacturedProducts } from "@/lib/hooks/use-manufactured-products";
 import { usePendingProducts } from "@/lib/hooks/use-pending-products";
 import { Document } from "@/lib/types/document";
 import { BaseProduct } from "@/lib/types/product";
+import { useAuth } from "@/lib/hooks/use-auth";
 
-// Mock data for available material manufacturers
-const mockMaterialManufacturers = [
-  {
-    id: "mfr1",
-    name: "Furkan Co",
-    location: "İstanbul, Türkiye",
-    specialization: "Pamuk İşleme",
-    rating: 4.8,
-    verified: true
-  },
-  {
-    id: "mfr2", 
-    name: "Alican Co",
-    location: "Bursa, Türkiye",
-    specialization: "Sentetik Elyaf",
-    rating: 4.6,
-    verified: true
-  },
-  {
-    id: "mfr3",
-    name: "Metin Tekstil",
-    location: "Denizli, Türkiye", 
-    specialization: "Doğal Elyaf",
-    rating: 4.7,
-    verified: false
-  },
-  {
-    id: "mfr4",
-    name: "Özkan Iplik",
-    location: "Kahramanmaraş, Türkiye",
-    specialization: "Pamuk, Akrilik",
-    rating: 4.5,
-    verified: true
-  }
-];
-
-// Mock data for demonstration - gerçek uygulamada API'den gelecek
-const mockManufacturedProducts = [
-  {
-    id: "1",
-    name: "Bisiklet Yaka Pamuklu Regular Fit Scuba Kumaş Kısa Kollu Basic Erkek Tişört",
-    model: "5SAM10058MK052",
-    brandOwner: "Koton Co",
-    manufacturerType: "contract", // fason
-    status: "ACTIVE",
-    materials: [
-      {
-        id: "mat1",
-        name: "Pamuk",
-        percentage: 55,
-        recyclable: true,
-        assignedManufacturer: null
-      },
-      {
-        id: "mat2", 
-        name: "Polyester",
-        percentage: 45,
-        recyclable: false,
-        assignedManufacturer: {
-          id: "comp1",
-          name: "Furkan Co",
-          type: "MATERIAL_MANUFACTURER"
-        }
-      }
-    ]
-  },
-  {
-    id: "2",
-    name: "Akrilik Antibakteriyel Elyaf Karışımı Kazak",
-    model: "KAZ2024001",
-    brandOwner: "Mavi Co",
-    manufacturerType: "contract",
-    status: "ACTIVE", 
-    materials: [
-      {
-        id: "mat3",
-        name: "Akrilik",
-        percentage: 60,
-        recyclable: false,
-        assignedManufacturer: null
-      },
-      {
-        id: "mat4",
-        name: "Antibakteriyel Elyaf", 
-        percentage: 40,
-        recyclable: false,
-        assignedManufacturer: null
-      }
-    ]
-  }
-];
+// Mock data for demonstration - gerçek uygulamada bu veriler API'den gelecek
+// Removed: mockManufacturedProducts - now using real API data
 
 export default function ManufacturedProductsPage() {
   const t = useTranslations();
+  const { company } = useAuth();
   const [pageIndex, setPageIndex] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [selectedProductId, setSelectedProductId] = useState<string | null>(
@@ -158,12 +77,15 @@ export default function ManufacturedProductsPage() {
   );
   const [showDocumentsDialog, setShowDocumentsDialog] = useState(false);
   const [showMaterialAssignmentDialog, setShowMaterialAssignmentDialog] = useState(false);
-  const [selectedMaterial, setSelectedMaterial] = useState<any>(null);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
+  const [selectedMaterial, setSelectedMaterial] = useState<any>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedManufacturer, setSelectedManufacturer] = useState<any>(null);
 
-  const { data, isLoading, error } = usePendingProducts(pageIndex, pageSize);
+  const { data: manufacturedProducts = [], isLoading: productsLoading, error: productsError } = useManufacturedProducts(company?.id);
+  const { data: availableManufacturers = [], isLoading: manufacturersLoading } = useAvailableManufacturers();
+  const assignMaterialManufacturer = useAssignMaterialManufacturer();
+  const removeMaterialManufacturer = useRemoveMaterialManufacturer();
 
   const handleViewDocuments = (productId: string) => {
     setSelectedProductId(productId);
@@ -179,61 +101,51 @@ export default function ManufacturedProductsPage() {
     setShowMaterialAssignmentDialog(true);
   };
 
-  const handleSaveAssignment = () => {
-    if (!selectedManufacturer) return;
+  const handleSaveAssignment = async () => {
+    if (!selectedManufacturer || !selectedMaterial || !selectedProduct || !company?.id) return;
     
-    // Bu kısımda gerçek API çağrısı yapılacak
-    console.log("Assigning manufacturer:", {
-      productId: selectedProduct.id,
-      materialId: selectedMaterial.id,
-      manufacturerId: selectedManufacturer.id
-    });
-    
-    // Mock: Update the local data
-    const updatedProducts = mockManufacturedProducts.map(product => {
-      if (product.id === selectedProduct.id) {
-        return {
-          ...product,
-          materials: product.materials.map(material => {
-            if (material.id === selectedMaterial.id) {
-              return {
-                ...material,
-                assignedManufacturer: selectedManufacturer
-              };
-            }
-            return material;
-          })
-        };
-      }
-      return product;
-    });
-    
-    // Close dialog and reset state
-    setShowMaterialAssignmentDialog(false);
-    setSelectedMaterial(null);
-    setSelectedProduct(null);
-    setSelectedManufacturer(null);
-    setSearchQuery("");
+    try {
+      await assignMaterialManufacturer.mutateAsync({
+        materialId: selectedMaterial.id,
+        manufacturerId: selectedManufacturer.id,
+        assignedBy: company.id,
+        productId: selectedProduct.id,
+      });
+      
+      // Close dialog and reset state
+      setShowMaterialAssignmentDialog(false);
+      setSelectedMaterial(null);
+      setSelectedProduct(null);
+      setSelectedManufacturer(null);
+      setSearchQuery("");
+    } catch (error) {
+      console.error("Error assigning manufacturer:", error);
+    }
   };
 
-  const handleRemoveAssignment = () => {
-    // Bu kısımda gerçek API çağrısı yapılacak
-    console.log("Removing manufacturer assignment:", {
-      productId: selectedProduct.id,
-      materialId: selectedMaterial.id
-    });
+  const handleRemoveAssignment = async () => {
+    if (!selectedMaterial || !selectedProduct) return;
     
-    // Close dialog and reset state
-    setShowMaterialAssignmentDialog(false);
-    setSelectedMaterial(null);
-    setSelectedProduct(null);
-    setSelectedManufacturer(null);
-    setSearchQuery("");
+    try {
+      await removeMaterialManufacturer.mutateAsync({
+        materialId: selectedMaterial.id,
+        productId: selectedProduct.id,
+      });
+      
+      // Close dialog and reset state
+      setShowMaterialAssignmentDialog(false);
+      setSelectedMaterial(null);
+      setSelectedProduct(null);
+      setSelectedManufacturer(null);
+      setSearchQuery("");
+    } catch (error) {
+      console.error("Error removing manufacturer:", error);
+    }
   };
 
-  const filteredManufacturers = mockMaterialManufacturers.filter(manufacturer =>
+  const filteredManufacturers = availableManufacturers.filter(manufacturer =>
     manufacturer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    manufacturer.specialization.toLowerCase().includes(searchQuery.toLowerCase())
+    (manufacturer.companyType && manufacturer.companyType.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   const getManufacturerTypeDisplay = (type: string) => {
@@ -244,8 +156,22 @@ export default function ManufacturedProductsPage() {
     return type === "contract" ? "secondary" : "default";
   };
 
-  if (isLoading) {
+  if (productsLoading) {
     return <Loading />;
+  }
+
+  if (productsError) {
+    return (
+      <div className="container mx-auto py-6">
+        <Card>
+          <CardContent className="p-8">
+            <div className="text-center text-red-500">
+              Ürünler yüklenirken bir hata oluştu: {productsError.message}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
 
   return (
@@ -267,108 +193,136 @@ export default function ManufacturedProductsPage() {
 
       {/* Products List */}
       <div className="space-y-4">
-        {mockManufacturedProducts.map((product) => (
-          <Card key={product.id}>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div className="space-y-2">
-                  <div className="flex items-center gap-3">
-                    <CardTitle className="text-lg">{product.name}</CardTitle>
-                    <Badge variant={getManufacturerTypeBadge(product.manufacturerType)}>
-                      {getManufacturerTypeDisplay(product.manufacturerType)}
-                    </Badge>
-                  </div>
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                    <span>Model: {product.model}</span>
-                    <span>•</span>
-                    <span className="flex items-center gap-1">
-                      <Building2 className="w-4 h-4" />
-                      Marka Sahibi: {product.brandOwner}
-                    </span>
-                  </div>
-                </div>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="sm">
-                      <MoreHorizontal className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>İşlemler</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      onClick={() => handleViewDocuments(product.id)}
-                    >
-                      <FileText className="h-4 w-4 mr-2" />
-                      Belgeleri Görüntüle
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onClick={() => {
-                        window.location.href = `/dashboard/products/${product.id}`;
-                      }}
-                    >
-                      <Eye className="h-4 w-4 mr-2" />
-                      Ürünü Görüntüle
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+        {productsLoading ? (
+          <Card>
+            <CardContent className="p-8">
+              <div className="text-center text-muted-foreground">
+                Ürünler yükleniyor...
               </div>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <h4 className="font-semibold flex items-center gap-2">
-                  <Users className="w-4 h-4" />
-                  Materyal Tedarikçileri
-                </h4>
-                
-                <div className="grid gap-3">
-                  {product.materials.map((material) => (
-                    <div key={material.id} className="border rounded-lg p-4">
-                      <div className="flex items-center justify-between">
-                        <div className="space-y-2">
-                          <div className="flex items-center gap-3">
-                            <h5 className="font-medium">{material.name}</h5>
-                            <Badge variant="outline">{material.percentage}%</Badge>
-                            <Badge variant={material.recyclable ? "success" : "secondary"}>
-                              {material.recyclable ? "Geri Dönüştürülebilir" : "Geri Dönüştürülemez"}
-                            </Badge>
-                          </div>
-                          
-                          <div className="flex items-center gap-2">
-                            <Factory className="w-4 h-4 text-muted-foreground" />
-                            {material.assignedManufacturer ? (
-                              <div className="flex items-center gap-2">
-                                <span className="text-sm font-medium text-green-700">
-                                  {material.assignedManufacturer.name}
-                                </span>
-                                <Badge variant="success" className="text-xs">
-                                  Atanmış
-                                </Badge>
-                              </div>
-                            ) : (
-                              <span className="text-sm text-muted-foreground">
-                                Üretici atanmamış
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                        
-                        <Button
-                          variant={material.assignedManufacturer ? "outline" : "default"}
-                          size="sm"
-                          onClick={() => handleAssignMaterialManufacturer(product, material)}
-                        >
-                          <Settings className="w-4 h-4 mr-2" />
-                          {material.assignedManufacturer ? "Değiştir" : "Üretici Ata"}
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
+            </CardContent>
+          </Card>
+        ) : manufacturedProducts.length === 0 ? (
+          <Card>
+            <CardContent className="p-8">
+              <div className="text-center space-y-4">
+                <Factory className="w-12 h-12 mx-auto text-muted-foreground" />
+                <div>
+                  <h3 className="text-lg font-medium">Henüz Atanmış Ürün Yok</h3>
+                  <p className="text-muted-foreground">
+                    Size üretici olarak atanan ürünler burada görünecek.
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Marka sahipleri sizi üretici olarak seçtiklerinde ürünler bu sayfada listelenecek.
+                  </p>
                 </div>
               </div>
             </CardContent>
           </Card>
-        ))}
+        ) : (
+          manufacturedProducts.map((product) => (
+            <Card key={product.id}>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-3">
+                      <CardTitle className="text-lg">{product.name}</CardTitle>
+                      <Badge variant="secondary">
+                        Fason Üretim
+                      </Badge>
+                    </div>
+                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                      <span>Model: {product.model}</span>
+                      <span>•</span>
+                      <span className="flex items-center gap-1">
+                        <Building2 className="w-4 h-4" />
+                        Marka Sahibi: {product.brand_owner?.name || "Bilinmiyor"}
+                      </span>
+                    </div>
+                  </div>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="sm">
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuLabel>İşlemler</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        onClick={() => handleViewDocuments(product.id)}
+                      >
+                        <FileText className="h-4 w-4 mr-2" />
+                        Belgeleri Görüntüle
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => {
+                          window.location.href = `/dashboard/products/${product.id}`;
+                        }}
+                      >
+                        <Eye className="h-4 w-4 mr-2" />
+                        Ürünü Görüntüle
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <h4 className="font-semibold flex items-center gap-2">
+                    <Users className="w-4 h-4" />
+                    Materyal Tedarikçileri
+                  </h4>
+                  
+                  <div className="grid gap-3">
+                    {product.materials && product.materials.length > 0 ? (
+                      product.materials.map((material) => (
+                        <div key={material.id} className="border rounded-lg p-4">
+                          <div className="flex items-center justify-between">
+                            <div className="space-y-2">
+                              <div className="flex items-center gap-3">
+                                <h5 className="font-medium">{material.name}</h5>
+                                <Badge variant="outline">{material.percentage}%</Badge>
+                                <Badge variant={material.recyclable ? "success" : "secondary"}>
+                                  {material.recyclable ? "Geri Dönüştürülebilir" : "Geri Dönüştürülemez"}
+                                </Badge>
+                              </div>
+                              
+                              <div className="flex items-center gap-2">
+                                <Factory className="w-4 h-4 text-muted-foreground" />
+                                {material.assignedManufacturer ? (
+                                  <span className="text-sm">
+                                    Materyal Üreticisi: <span className="font-medium">{material.assignedManufacturer.name}</span>
+                                  </span>
+                                ) : (
+                                  <span className="text-sm text-muted-foreground">
+                                    Materyal üreticisi atama işlemi için "Üretici Ata" butonunu kullanın
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                            
+                            <Button
+                              variant="default"
+                              size="sm"
+                              onClick={() => handleAssignMaterialManufacturer(product, material)}
+                            >
+                              <Settings className="w-4 h-4 mr-2" />
+                              {material.assignedManufacturer ? "Üreticiyi Değiştir" : "Üretici Ata"}
+                            </Button>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="text-center py-4 text-muted-foreground">
+                        Bu ürün için henüz materyal tanımlanmamış.
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))
+        )}
       </div>
 
       {/* Documents Dialog */}
@@ -411,7 +365,7 @@ export default function ManufacturedProductsPage() {
                   </div>
                   <div className="flex items-center gap-2">
                     <h4 className="font-semibold">Marka Sahibi:</h4>
-                    <span className="text-sm">{selectedProduct.brandOwner}</span>
+                    <span className="text-sm">{selectedProduct.brand_owner?.name || "Bilinmiyor"}</span>
                   </div>
                 </div>
               </div>
@@ -429,8 +383,13 @@ export default function ManufacturedProductsPage() {
                       size="sm"
                       onClick={handleRemoveAssignment}
                       className="text-red-600 hover:text-red-700"
+                      disabled={removeMaterialManufacturer.isPending}
                     >
-                      <X className="w-4 h-4 mr-2" />
+                      {removeMaterialManufacturer.isPending ? (
+                        <Loading className="w-4 h-4 mr-2" />
+                      ) : (
+                        <X className="w-4 h-4 mr-2" />
+                      )}
                       Kaldır
                     </Button>
                   </div>
@@ -456,47 +415,42 @@ export default function ManufacturedProductsPage() {
               <div className="space-y-2 max-h-64 overflow-y-auto">
                 <Label>Mevcut Üreticiler</Label>
                 <div className="space-y-2">
-                  {filteredManufacturers.map((manufacturer) => (
-                    <div
-                      key={manufacturer.id}
-                      className={`p-3 border rounded-lg cursor-pointer transition-colors ${
-                        selectedManufacturer?.id === manufacturer.id
-                          ? "border-primary bg-primary/5"
-                          : "border-border hover:border-primary/50"
-                      }`}
-                      onClick={() => setSelectedManufacturer(manufacturer)}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="space-y-1">
-                          <div className="flex items-center gap-2">
-                            <h5 className="font-medium">{manufacturer.name}</h5>
-                            {manufacturer.verified && (
-                              <Badge variant="success" className="text-xs">
-                                <Check className="w-3 h-3 mr-1" />
-                                Doğrulanmış
+                  {manufacturersLoading ? (
+                    <div className="text-center py-8">
+                      <Loading />
+                    </div>
+                  ) : filteredManufacturers.length === 0 ? (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <p>Arama kriterlerinize uygun üretici bulunamadı.</p>
+                    </div>
+                  ) : (
+                    filteredManufacturers.map((manufacturer) => (
+                      <div
+                        key={manufacturer.id}
+                        className={`p-3 border rounded-lg cursor-pointer transition-colors ${
+                          selectedManufacturer?.id === manufacturer.id
+                            ? "border-primary bg-primary/5"
+                            : "border-border hover:border-primary/50"
+                        }`}
+                        onClick={() => setSelectedManufacturer(manufacturer)}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-2">
+                              <h5 className="font-medium">{manufacturer.name}</h5>
+                              <Badge variant="outline" className="text-xs">
+                                {manufacturer.companyType || "Üretici"}
                               </Badge>
+                            </div>
+                            {selectedManufacturer?.id === manufacturer.id && (
+                              <Check className="w-5 h-5 text-primary" />
                             )}
                           </div>
-                          <p className="text-sm text-muted-foreground">
-                            {manufacturer.specialization}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            📍 {manufacturer.location} • ⭐ {manufacturer.rating}
-                          </p>
                         </div>
-                        {selectedManufacturer?.id === manufacturer.id && (
-                          <Check className="w-5 h-5 text-primary" />
-                        )}
                       </div>
-                    </div>
-                  ))}
+                    ))
+                  )}
                 </div>
-                
-                {filteredManufacturers.length === 0 && (
-                  <div className="text-center py-8 text-muted-foreground">
-                    <p>Arama kriterlerinize uygun üretici bulunamadı.</p>
-                  </div>
-                )}
               </div>
             </div>
           )}
@@ -510,9 +464,13 @@ export default function ManufacturedProductsPage() {
             </Button>
             <Button
               onClick={handleSaveAssignment}
-              disabled={!selectedManufacturer}
+              disabled={!selectedManufacturer || assignMaterialManufacturer.isPending}
             >
-              <Check className="w-4 h-4 mr-2" />
+              {assignMaterialManufacturer.isPending ? (
+                <Loading className="w-4 h-4 mr-2" />
+              ) : (
+                <Check className="w-4 h-4 mr-2" />
+              )}
               Kaydet
             </Button>
           </DialogFooter>
