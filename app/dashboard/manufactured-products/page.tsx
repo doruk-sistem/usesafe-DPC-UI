@@ -5,8 +5,6 @@ import {
   MoreHorizontal,
   FileText,
   Eye,
-  CheckCircle,
-  XCircle,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
@@ -26,8 +24,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
-  DialogFooter,
 } from "@/components/ui/dialog";
 import {
   DropdownMenu,
@@ -37,7 +33,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Label } from "@/components/ui/label";
 import { Loading } from "@/components/ui/loading";
 import {
   Table,
@@ -47,7 +42,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Textarea } from "@/components/ui/textarea";
 import { usePendingProducts } from "@/lib/hooks/use-pending-products";
 import { Document } from "@/lib/types/document";
 import { BaseProduct } from "@/lib/types/product";
@@ -60,32 +54,12 @@ export default function PendingProductsPage() {
     null
   );
   const [showDocumentsDialog, setShowDocumentsDialog] = useState(false);
-  const [showRejectDialog, setShowRejectDialog] = useState(false);
-  const [rejectionReason, setRejectionReason] = useState("");
 
-  const { data, isLoading, error, approveProduct, rejectProduct } =
-  usePendingProducts(pageIndex, pageSize);
+  const { data, isLoading, error } = usePendingProducts(pageIndex, pageSize);
 
   const handleViewDocuments = (productId: string) => {
     setSelectedProductId(productId);
     setShowDocumentsDialog(true);
-  };
-
-  const handleApproveProduct = (productId: string) => {
-  approveProduct(productId);
-  };
-
-  const handleRejectProduct = (productId: string) => {
-    setSelectedProductId(productId);
-    setShowRejectDialog(true);
-  };
-
-  const handleRejectConfirm = () => {
-    if (!selectedProductId) return;
-
-    rejectProduct({ productId: selectedProductId, reason: rejectionReason });
-    setShowRejectDialog(false);
-    setRejectionReason("");
   };
 
   const hasPendingDocuments = (product: BaseProduct) => {
@@ -239,36 +213,6 @@ export default function PendingProductsPage() {
                                     <Eye className="h-4 w-4 mr-2" />
                                     {t("pages.pendingProducts.actions.icons.view")}
                                   </DropdownMenuItem>
-                                  {product.status === "NEW" && (
-                                    <>
-                                      <DropdownMenuSeparator />
-                                      <DropdownMenuLabel>
-                                        {t("pages.pendingProducts.actions.control")}
-                                      </DropdownMenuLabel>
-                                      <DropdownMenuItem
-                                        onClick={() =>
-                                          handleApproveProduct(product.id)
-                                        }
-                                        className="text-green-600 hover:text-green-700 hover:bg-green-50"
-                                      >
-                                        <CheckCircle className="h-4 w-4 mr-2 text-green-600" />
-                                        {t(
-                                          "pages.pendingProducts.actions.icons.approve"
-                                        )}
-                                      </DropdownMenuItem>
-                                      <DropdownMenuItem
-                                        onClick={() =>
-                                          handleRejectProduct(product.id)
-                                        }
-                                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                                      >
-                                        <XCircle className="h-4 w-4 mr-2 text-red-600" />
-                                        {t(
-                                          "pages.pendingProducts.actions.icons.reject"
-                                        )}
-                                      </DropdownMenuItem>
-                                    </>
-                                  )}
                                 </DropdownMenuContent>
                               </DropdownMenu>
                             </div>
@@ -293,47 +237,6 @@ export default function PendingProductsPage() {
               <ProductDocuments productId={selectedProductId} />
             </div>
           )}
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={showRejectDialog} onOpenChange={setShowRejectDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>
-              {t("pages.pendingProducts.rejectDialog.title")}
-            </DialogTitle>
-            <DialogDescription>
-              {t("pages.pendingProducts.rejectDialog.description")}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4">
-            <Label htmlFor="rejection-reason">
-              {t("pages.pendingProducts.rejectDialog.reasonLabel")}
-            </Label>
-            <Textarea
-              id="rejection-reason"
-              value={rejectionReason}
-              onChange={(e) => setRejectionReason(e.target.value)}
-              placeholder={t(
-                "pages.pendingProducts.rejectDialog.reasonPlaceholder"
-              )}
-            />
-          </div>
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => {
-                setShowRejectDialog(false);
-                setRejectionReason("");
-                setSelectedProductId(null);
-              }}
-            >
-              {t("pages.pendingProducts.rejectDialog.cancel")}
-            </Button>
-            <Button variant="destructive" onClick={handleRejectConfirm}>
-              {t("pages.pendingProducts.rejectDialog.reject")}
-            </Button>
-          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

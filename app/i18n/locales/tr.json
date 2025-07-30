@@ -47,8 +47,8 @@
   },
   "pages": {
     "pendingProducts": {
-      "title": "Bekleyen Ürünler",
-      "description": "Bekleyen ürünlerin listesi",
+      "title": "Ürettiğim Ürünler",
+      "description": "Ürettiğim ürünlerin listesi",
       "columns": {
         "documents": "Belgeler"
       },

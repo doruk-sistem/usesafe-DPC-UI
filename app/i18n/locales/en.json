@@ -331,8 +331,8 @@
   },
   "pages": {
     "pendingProducts": {
-      "title": "Pending Products",
-      "description": "List of products pending approval",
+      "title": "My Products",
+      "description": "List of my products",
       "columns": {
         "documents": "Documents"
       },
