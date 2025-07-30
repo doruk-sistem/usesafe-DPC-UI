@@ -11,16 +11,19 @@ import { useProductMaterialsWithManufacturers } from "@/lib/hooks/use-material-m
 interface MaterialsCardProps {
   productId: string;
   title?: string;
+  product?: {
+    company_id?: string;
+    manufacturer_id?: string;
+    owner?: {
+      name: string;
+    };
+    manufacturer?: {
+      name: string;
+    };
+  };
 }
 
-// Mock data for company info - gerçek uygulamada bu veriler API'den gelecek
-const mockProductData = {
-  productOwner: "Koton Co",
-  contractManufacturer: "Bartu Co",
-  manufacturerType: "contract", // contract = fason, own = kendi
-};
-
-export function MaterialsCard({ productId, title = "Malzemeler" }: MaterialsCardProps) {
+export function MaterialsCard({ productId, title = "Malzemeler", product }: MaterialsCardProps) {
   const t = useTranslations("productDetails.materials");
   
   const { data: materials, isLoading, error } = useProductMaterialsWithManufacturers(productId);
@@ -106,7 +109,9 @@ export function MaterialsCard({ productId, title = "Malzemeler" }: MaterialsCard
                 </div>
                 <div>
                   <p className="font-medium text-sm">Ürün Sahibi</p>
-                  <p className="text-sm text-muted-foreground">{mockProductData.productOwner}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {product?.owner?.name || "Bilgi yükleniyor..."}
+                  </p>
                 </div>
               </div>
               
@@ -117,10 +122,10 @@ export function MaterialsCard({ productId, title = "Malzemeler" }: MaterialsCard
                   <Factory className="w-4 h-4 text-orange-600" />
                 </div>
                 <div>
-                  <p className="font-medium text-sm">
-                    {mockProductData.manufacturerType === "contract" ? "Fason Üretici" : "Kendi Üretici"}
+                  <p className="font-medium text-sm">Fason Üretici</p>
+                  <p className="text-sm text-muted-foreground">
+                    {product?.manufacturer?.name || "Bilgi yükleniyor..."}
                   </p>
-                  <p className="text-sm text-muted-foreground">{mockProductData.contractManufacturer}</p>
                 </div>
               </div>
             </div>
