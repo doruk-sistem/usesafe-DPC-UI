@@ -40,7 +40,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useCompanyDocuments } from "@/lib/hooks/use-company-documents";
-import { useDeleteDocument } from "@/lib/hooks/use-company";
+import { useDeleteCompanyDocument } from "@/lib/hooks/use-company";
 import { Document } from "@/lib/types/document";
 import { getStatusIcon } from "@/lib/utils/document-utils";
 
@@ -52,7 +52,7 @@ export function CompanyDocumentList() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [documentToDelete, setDocumentToDelete] = useState<string | null>(null);
 
-  const { mutate: deleteDocument, isPending: isDeleting } = useDeleteDocument();
+  const { mutate: deleteDocument, isPending: isDeleting } = useDeleteCompanyDocument();
 
   // Silme dialog'unu aç
   const openDeleteDialog = (documentId: string) => {

@@ -69,18 +69,19 @@ export const useDeleteCompanyDocument = () => {
     onSuccess: () => {
       // Tüm company documents cache'lerini invalidate et
       queryClient.invalidateQueries({ queryKey: ['getCompanyDocuments'] });
+      queryClient.invalidateQueries({ queryKey: ['companyDocuments'] });
     },
   });
 };
 
-// Belge silme hook'u (hem sertifikalar hem de belgeler için)
+// Ürün belgeleri silme hook'u (documents tablosu için)
 export const useDeleteDocument = () => {
   const queryClient = useQueryClient();
   
   return useMutation({
     mutationFn: async ({ documentId }: { documentId: string }) => {
       const { error } = await supabase
-        .from("company_documents")
+        .from("documents")
         .delete()
         .eq("id", documentId);
 
@@ -88,9 +89,8 @@ export const useDeleteDocument = () => {
       return { success: true };
     },
     onSuccess: () => {
-      // Hem company documents hem de documents cache'lerini invalidate et
-      queryClient.invalidateQueries({ queryKey: ['getCompanyDocuments'] });
-      queryClient.invalidateQueries({ queryKey: ['companyDocuments'] });
+      // Documents cache'lerini invalidate et
+      queryClient.invalidateQueries({ queryKey: ['documents'] });
     },
   });
 };
