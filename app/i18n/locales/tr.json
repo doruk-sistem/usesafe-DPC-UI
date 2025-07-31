@@ -906,7 +906,8 @@
           "valid": "Geçerli",
           "expired": "Süresi Dolmuş",
           "pending": "Beklemede",
-          "approved": "Onaylandı"
+          "approved": "Onaylandı",
+          "rejected": "Reddedildi"
         },
         "actions": {
           "download": "İndir",
