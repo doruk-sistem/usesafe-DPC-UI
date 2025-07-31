@@ -15,6 +15,13 @@ export interface SustainabilityMetrics {
   recycled_materials: string;
   chemical_reduction: string;
   biodegradability: string;
+  // Senior onaylı yeni metrikler
+  water_consumption_per_unit: string;
+  recycled_content_percentage: string;
+  chemical_consumption_per_unit: string;
+  greenhouse_gas_emissions: string;
+  co2e_emissions_per_unit: string;
+  minimum_durability_years: string;
 }
 
 export class SustainabilityCalculatorService {
@@ -35,12 +42,18 @@ export class SustainabilityCalculatorService {
         Please provide the following metrics in JSON format:
         {
           "sustainability_score": number (0-100),
-          "carbon_footprint": string (e.g., "2.5 kg CO2e"),
-          "water_usage": string (e.g., "1.2k liters"),
-          "energy_consumption": string (e.g., "4.8 kWh per unit"),
-          "recycled_materials": string (e.g., "30% of total materials"),
-          "chemical_reduction": string (e.g., "45% less than conventional"),
-          "biodegradability": string (e.g., "80% biodegradable materials")
+          "carbon_footprint": string (e.g., "3.2 kg CO2e"),
+          "water_usage": string (e.g., "2500 liters"),
+          "energy_consumption": string (e.g., "7.5 kWh per unit"),
+          "recycled_materials": string (e.g., "0% of total materials"),
+          "chemical_reduction": string (e.g., "30% less than conventional"),
+          "biodegradability": string (e.g., "20% biodegradable materials"),
+          "water_consumption_per_unit": string (e.g., "15.000 Litre"),
+          "recycled_content_percentage": string (e.g., "40%"),
+          "chemical_consumption_per_unit": string (e.g., "8 kg"),
+          "greenhouse_gas_emissions": string (e.g., "205.4"),
+          "co2e_emissions_per_unit": string (e.g., "30 kg"),
+          "minimum_durability_years": string (e.g., "10 yıl")
         }
 
         IMPORTANT GUIDELINES:
@@ -73,13 +86,20 @@ export class SustainabilityCalculatorService {
       const metrics = JSON.parse(jsonMatch[0]) as SustainabilityMetrics;
       
       const defaultMetrics: SustainabilityMetrics = {
-        sustainability_score: 75,
-        carbon_footprint: "3.0 kg CO2e",
-        water_usage: "1.5k liters",
-        energy_consumption: "5.2 kWh per unit",
-        recycled_materials: "25% of total materials",
-        chemical_reduction: "35% less than conventional",
-        biodegradability: "70% biodegradable materials"
+        sustainability_score: 65,
+        carbon_footprint: "3.2 kg CO2e",
+        water_usage: "2500 liters",
+        energy_consumption: "7.5 kWh per unit",
+        recycled_materials: "0% of total materials",
+        chemical_reduction: "30% less than conventional",
+        biodegradability: "20% biodegradable materials",
+        // Senior onaylı gerçek metrikler
+        water_consumption_per_unit: "15.000 Litre",
+        recycled_content_percentage: "40%",
+        chemical_consumption_per_unit: "8 kg",
+        greenhouse_gas_emissions: "205.4",
+        co2e_emissions_per_unit: "30 kg",
+        minimum_durability_years: "10 yıl"
       };
 
       const finalMetrics = {
@@ -90,15 +110,21 @@ export class SustainabilityCalculatorService {
       return finalMetrics;
 
     } catch (error) {
-      // Fallback to default values
+      // Fallback to default values (Senior onaylı gerçek metrikler)
       return {
-        sustainability_score: 75,
-        carbon_footprint: "3.0 kg CO2e",
-        water_usage: "1.5k liters",
-        energy_consumption: "5.2 kWh per unit",
-        recycled_materials: "25% of total materials",
-        chemical_reduction: "35% less than conventional",
-        biodegradability: "70% biodegradable materials"
+        sustainability_score: 65,
+        carbon_footprint: "3.2 kg CO2e",
+        water_usage: "2500 liters",
+        energy_consumption: "7.5 kWh per unit",
+        recycled_materials: "0% of total materials",
+        chemical_reduction: "30% less than conventional",
+        biodegradability: "20% biodegradable materials",
+        water_consumption_per_unit: "15.000 Litre",
+        recycled_content_percentage: "40%",
+        chemical_consumption_per_unit: "8 kg",
+        greenhouse_gas_emissions: "205.4",
+        co2e_emissions_per_unit: "30 kg",
+        minimum_durability_years: "10 yıl"
       };
     }
   }

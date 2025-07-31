@@ -688,7 +688,13 @@
           "waste-reduction": "Waste Reduction",
           "chemical-usage": "Chemical Usage",
           "renewable-energy": "Renewable Energy",
-          "water-saving": "Water Saving"
+          "water-saving": "Water Saving",
+          "water-consumption-per-unit": "Water Consumption Per Unit",
+          "recycled-content-percentage": "Recycled Content Percentage", 
+          "chemical-consumption-per-unit": "Chemical Consumption Per Unit",
+          "greenhouse-gas-emissions": "Greenhouse Gas Emissions",
+          "co2e-emissions-per-unit": "CO2e Emissions Per Unit",
+          "minimum-durability-years": "Minimum Durability"
         }
       },
       "usesafeCertification": {
