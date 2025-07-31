@@ -302,6 +302,7 @@ export function ProductList({ products, isLoading, isViewingManufacturer }: Prod
                             <Link
                               href={`/dashboard/products/${product.id}`}
                               className="flex items-center px-2 py-1.5 text-sm rounded-md cursor-pointer hover:bg-primary/5 transition-colors"
+                              onClick={(e) => e.stopPropagation()}
                             >
                               <Battery className="h-4 w-4 mr-2 text-primary/70" />
                               <span>
@@ -313,6 +314,7 @@ export function ProductList({ products, isLoading, isViewingManufacturer }: Prod
                             <Link
                               href={`/dashboard/products/${product.id}/edit`}
                               className="flex items-center px-2 py-1.5 text-sm rounded-md cursor-pointer hover:bg-primary/5 transition-colors"
+                              onClick={(e) => e.stopPropagation()}
                             >
                               <Pencil className="h-4 w-4 mr-2 text-primary/70" />
                               <span>
@@ -324,6 +326,7 @@ export function ProductList({ products, isLoading, isViewingManufacturer }: Prod
                             <Link
                               href={`/dashboard/products/${product.id}/documents`}
                               className="flex items-center px-2 py-1.5 text-sm rounded-md cursor-pointer hover:bg-primary/5 transition-colors"
+                              onClick={(e) => e.stopPropagation()}
                             >
                               <FileText className="h-4 w-4 mr-2 text-primary/70" />
                               <span>
@@ -333,7 +336,10 @@ export function ProductList({ products, isLoading, isViewingManufacturer }: Prod
                           </DropdownMenuItem>
                           <DropdownMenuSeparator className="my-1 bg-border/50" />
                           <DropdownMenuItem
-                            onClick={() => handleDeleteClick(product)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteClick(product);
+                            }}
                             className="flex items-center px-2 py-1.5 text-sm rounded-md cursor-pointer text-destructive hover:text-destructive hover:bg-destructive/5 transition-colors"
                           >
                             <Trash className="h-4 w-4 mr-2" />
