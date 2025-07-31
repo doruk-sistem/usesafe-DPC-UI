@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Error } from "@/components/ui/error";
 import { useProductMaterialsWithManufacturers } from "@/lib/hooks/use-material-manufacturers";
 
 interface MaterialsCardProps {
@@ -56,9 +57,11 @@ export function MaterialsCard({ productId, title = "Malzemeler", product }: Mate
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-center py-8 text-red-500">
-            {t("errorLoadingMaterials")}: {error.message}
-          </div>
+          <Error
+            title={t("errorLoadingMaterials")}
+            error={error}
+            className="min-h-[200px]"
+          />
         </CardContent>
       </Card>
     );
@@ -124,7 +127,7 @@ export function MaterialsCard({ productId, title = "Malzemeler", product }: Mate
                 <div>
                   <p className="font-medium text-sm">{t("contractManufacturer")}</p>
                   <p className="text-sm text-muted-foreground">
-                    {product?.manufacturer?.name || "Bilgi yükleniyor..."}
+                    {product?.manufacturer?.name || t("loading")}
                   </p>
                 </div>
               </div>
