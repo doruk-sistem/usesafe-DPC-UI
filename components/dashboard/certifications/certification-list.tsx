@@ -1,12 +1,15 @@
 "use client";
 
-import { Battery, MoreHorizontal, FileText, ExternalLink } from "lucide-react";
+import { Battery, MoreHorizontal, FileText, ExternalLink, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { useToast } from "@/components/ui/use-toast";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import {
   Card,
   CardContent,
@@ -31,7 +34,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useAuth } from "@/lib/hooks/use-auth";
-import { companyApiHooks } from "@/lib/hooks/use-company";
+import { companyApiHooks, useDeleteCompanyDocument } from "@/lib/hooks/use-company";
 import { CertificateType } from "@/lib/types/document";
 
 import { getStatusIcon } from "../../../lib/utils/document-utils";
@@ -43,7 +46,7 @@ const CERTIFICATE_TYPES = [
   'environmental_certificate',
   'iso_certificate',
   'export_certificate',
-  'production_certificate',
+  'production_permit',  // Üretim İzni
   'activity_permit'  // Faaliyet İzni (sertifika)
 ] as const;
 
@@ -69,15 +72,52 @@ interface CertificationListProps {
 export function CertificationList({ filters }: CertificationListProps) {
   const t = useTranslations('certifications');
   const { user, company } = useAuth();
+  const { toast } = useToast();
   const searchParams = useSearchParams();
   const manufacturerId = searchParams.get('manufacturer');
   const isViewingManufacturer = !!manufacturerId;
   const companyId = manufacturerId || user?.user_metadata?.company_id || company?.id;
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [documentToDelete, setDocumentToDelete] = useState<string | null>(null);
 
   const { data: allDocuments, isLoading, error } = companyApiHooks.useGetCompanyDocumentsQuery(
     { companyId },
     { enabled: !!companyId }
   );
+
+  const { mutate: deleteDocument, isPending: isDeleting } = useDeleteCompanyDocument();
+
+  // Silme dialog'unu aç
+  const openDeleteDialog = (documentId: string) => {
+    setDocumentToDelete(documentId);
+    setDeleteDialogOpen(true);
+  };
+
+  // Silme işlemini onayla
+  const confirmDelete = async () => {
+    if (documentToDelete) {
+      deleteDocument(
+        { documentId: documentToDelete },
+        {
+          onSuccess: () => {
+            toast({
+              title: t('list.delete.success.title'),
+              description: t('list.delete.success.description'),
+            });
+            setDeleteDialogOpen(false);
+            setDocumentToDelete(null);
+          },
+          onError: (error) => {
+            toast({
+              title: t('list.delete.error.title'),
+              description: error instanceof Error ? error.message : t('list.delete.error.generic'),
+              variant: "destructive",
+            });
+          }
+        }
+      );
+    }
+  };
   
   // Sadece sertifika tiplerini filtrele
   const filteredDocuments = allDocuments?.filter(doc => {
@@ -121,8 +161,8 @@ export function CertificationList({ filters }: CertificationListProps) {
         return 'ISO Sertifikası';
       case 'export_certificate':
         return 'İhracat Sertifikası';
-      case 'production_certificate':
-        return 'Üretim Sertifikası';
+      case 'production_permit':
+        return 'Üretim İzni';
       case 'activity_permit':
         return 'Faaliyet İzni';
       default:
@@ -134,10 +174,21 @@ export function CertificationList({ filters }: CertificationListProps) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>{t('list.title')}</CardTitle>
-          <CardDescription>
-            {t('list.description')}
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>{t('list.title')}</CardTitle>
+              <CardDescription>
+                {t('list.description')}
+              </CardDescription>
+            </div>
+            {!isViewingManufacturer && (
+              <Button asChild>
+                <Link href="/dashboard/certifications/new">
+                  {t('list.empty.upload')}
+                </Link>
+              </Button>
+            )}
+          </div>
         </CardHeader>
         <CardContent>
           <div className="text-center py-4">{t('list.loading')}</div>
@@ -150,10 +201,21 @@ export function CertificationList({ filters }: CertificationListProps) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>{t('list.title')}</CardTitle>
-          <CardDescription>
-            {t('list.description')}
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>{t('list.title')}</CardTitle>
+              <CardDescription>
+                {t('list.description')}
+              </CardDescription>
+            </div>
+            {!isViewingManufacturer && (
+              <Button asChild>
+                <Link href="/dashboard/certifications/new">
+                  {t('list.empty.upload')}
+                </Link>
+              </Button>
+            )}
+          </div>
         </CardHeader>
         <CardContent>
           <div className="text-center py-4 text-destructive">
@@ -169,10 +231,21 @@ export function CertificationList({ filters }: CertificationListProps) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>{t('list.title')}</CardTitle>
-          <CardDescription>
-            {t('list.description')}
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>{t('list.title')}</CardTitle>
+              <CardDescription>
+                {t('list.description')}
+              </CardDescription>
+            </div>
+            {!isViewingManufacturer && (
+              <Button asChild>
+                <Link href="/dashboard/certifications/new">
+                  {t('list.empty.upload')}
+                </Link>
+              </Button>
+            )}
+          </div>
         </CardHeader>
         <CardContent>
           <div className="text-center py-4 text-muted-foreground">
@@ -182,11 +255,6 @@ export function CertificationList({ filters }: CertificationListProps) {
               <>
                 <p>{t('list.empty.title')}</p>
                 <p className="mt-2">{t('list.empty.description')}</p>
-                <Button asChild className="mt-4">
-                  <Link href="/dashboard/certifications/new">
-                    {t('list.empty.addButton')}
-                  </Link>
-                </Button>
               </>
             )}
           </div>
@@ -196,12 +264,43 @@ export function CertificationList({ filters }: CertificationListProps) {
   }
 
   return (
-    <Card>
+    <>
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t('list.delete.dialog.title')}</DialogTitle>
+            <DialogDescription>
+              {t('list.delete.dialog.description')}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>
+              {t('list.delete.dialog.cancel')}
+            </Button>
+            <Button variant="destructive" onClick={confirmDelete} disabled={isDeleting}>
+              {isDeleting ? t('list.delete.dialog.deleting') : t('list.delete.dialog.confirm')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Card>
       <CardHeader>
-        <CardTitle>{t('list.title')}</CardTitle>
-        <CardDescription>
-          {t('list.description')}
-        </CardDescription>
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle>{t('list.title')}</CardTitle>
+            <CardDescription>
+              {t('list.description')}
+            </CardDescription>
+          </div>
+          {!isViewingManufacturer && (
+                          <Button asChild>
+                <Link href="/dashboard/certifications/new">
+                  {t('list.empty.upload')}
+                </Link>
+              </Button>
+          )}
+        </div>
       </CardHeader>
       <CardContent>
         <Table>
@@ -256,17 +355,32 @@ export function CertificationList({ filters }: CertificationListProps) {
                 <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon">
+                      <Button 
+                        variant="ghost" 
+                        size="icon"
+                        onClick={(e) => e.stopPropagation()}
+                      >
                         <MoreHorizontal className="h-4 w-4" />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
+                    <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
                       <Link href={`/dashboard/certifications/${doc.id}`}>
                         <DropdownMenuItem>
                           <ExternalLink className="mr-2 h-4 w-4" />
                           {t('list.actions.view')}
                         </DropdownMenuItem>
                       </Link>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem 
+                        onClick={(e) => {
+                          e.preventDefault();
+                          openDeleteDialog(doc.id);
+                        }}
+                        className="text-destructive"
+                      >
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        {t('list.actions.delete')}
+                      </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>
@@ -276,5 +390,6 @@ export function CertificationList({ filters }: CertificationListProps) {
         </Table>
       </CardContent>
     </Card>
+    </>
   );
 }

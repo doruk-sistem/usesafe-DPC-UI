@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Leaf, Droplets, Zap, Recycle, Beaker, Sprout } from "lucide-react";
+import { Leaf, Droplets, Zap, Recycle, Beaker, Sprout, Clock, Truck, FlaskConical, TreePine } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
@@ -27,18 +27,26 @@ export function SustainabilityMetricsCard({
     switch (fieldId) {
       case "water-usage":
       case "water-saving":
+      case "water-consumption-per-unit":
         return <Droplets className="w-4 h-4" />;
       case "energy-consumption":
       case "renewable-energy":
         return <Zap className="w-4 h-4" />;
       case "recycled-materials":
       case "recycled-content":
+      case "recycled-content-percentage":
         return <Recycle className="w-4 h-4" />;
       case "chemical-reduction":
       case "chemical-usage":
+      case "chemical-consumption-per-unit":
         return <Beaker className="w-4 h-4" />;
       case "biodegradability":
         return <Sprout className="w-4 h-4" />;
+      case "greenhouse-gas-emissions":
+      case "co2e-emissions-per-unit":
+        return <TreePine className="w-4 h-4" />;
+      case "minimum-durability-years":
+        return <Clock className="w-4 h-4" />;
       default:
         return <Leaf className="w-4 h-4" />;
     }

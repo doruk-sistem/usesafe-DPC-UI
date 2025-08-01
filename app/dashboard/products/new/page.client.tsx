@@ -191,6 +191,13 @@ export default function NewProductPageClient() {
                 { id: "recycled-materials", name: "Recycled Materials", value: sustainabilityMetrics.recycled_materials },
                 { id: "chemical-reduction", name: "Chemical Reduction", value: sustainabilityMetrics.chemical_reduction },
                 { id: "biodegradability", name: "Biodegradability", value: sustainabilityMetrics.biodegradability },
+                // Senior onaylı yeni metrikler
+                { id: "water-consumption-per-unit", name: "Water Consumption Per Unit", value: sustainabilityMetrics.water_consumption_per_unit },
+                { id: "recycled-content-percentage", name: "Recycled Content Percentage", value: sustainabilityMetrics.recycled_content_percentage },
+                { id: "chemical-consumption-per-unit", name: "Chemical Consumption Per Unit", value: sustainabilityMetrics.chemical_consumption_per_unit },
+                { id: "greenhouse-gas-emissions", name: "Greenhouse Gas Emissions", value: sustainabilityMetrics.greenhouse_gas_emissions },
+                { id: "co2e-emissions-per-unit", name: "CO2e Emissions Per Unit", value: sustainabilityMetrics.co2e_emissions_per_unit },
+                { id: "minimum-durability-years", name: "Minimum Durability", value: sustainabilityMetrics.minimum_durability_years },
               ]
             }
           ]
