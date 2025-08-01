@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslations } from "next-intl";
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -26,23 +27,25 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/lib/supabase/client";
 
-const formSchema = z.object({
-  password: z.string().min(8, {
-    message: "Password must be at least 8 characters.",
-  }),
-  confirmPassword: z.string().min(8, {
-    message: "Password must be at least 8 characters.",
-  }),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords do not match",
-  path: ["confirmPassword"],
-});
-
 export default function SetPasswordPage() {
   const router = useRouter();
   const { toast } = useToast();
+  const t = useTranslations("auth.set-password");
   const [loading, setLoading] = useState(false);
   const supabaseClient = supabase;
+
+  // Dynamic schema with translations
+  const formSchema = z.object({
+    password: z.string().min(8, {
+      message: t("validation.minLength"),
+    }),
+    confirmPassword: z.string().min(8, {
+      message: t("validation.minLength"),
+    }),
+  }).refine((data) => data.password === data.confirmPassword, {
+    message: t("validation.passwordMismatch"),
+    path: ["confirmPassword"],
+  });
 
   useEffect(() => {
     const setSessionFromHash = async () => {
@@ -60,8 +63,8 @@ export default function SetPasswordPage() {
 
           if (error) {
             toast({
-              title: "Error",
-              description: "Failed to set session. Please try again.",
+              title: t("error.title"),
+              description: t("error.description"),
               variant: "destructive",
             });
           }
@@ -70,7 +73,7 @@ export default function SetPasswordPage() {
     };
 
     setSessionFromHash();
-  }, [supabaseClient.auth, toast]);
+  }, [supabaseClient.auth, toast, t]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -90,16 +93,16 @@ export default function SetPasswordPage() {
       if (error) throw error;
 
       toast({
-        title: "Success",
-        description: "Your password has been set successfully.",
+        title: t("success.title"),
+        description: t("success.description"),
       });
 
       window.location.href = "https://app.usesafe.net/dashboard";
     } catch (error) {
       console.error("Error setting password:", error);
       toast({
-        title: "Error",
-        description: "Failed to set password. Please try again.",
+        title: t("error.title"),
+        description: t("error.description"),
         variant: "destructive",
       });
     } finally {
@@ -112,9 +115,9 @@ export default function SetPasswordPage() {
       <div className="w-full max-w-md">
         <Card>
           <CardHeader>
-            <CardTitle>Set Your Password</CardTitle>
+            <CardTitle>{t("title")}</CardTitle>
             <CardDescription>
-              Please set a password for your account
+              {t("description")}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -125,11 +128,11 @@ export default function SetPasswordPage() {
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>New Password</FormLabel>
+                      <FormLabel>{t("newPassword")}</FormLabel>
                       <FormControl>
                         <Input
                           type="password"
-                          placeholder="Enter your new password"
+                          placeholder={t("newPasswordPlaceholder")}
                           {...field}
                         />
                       </FormControl>
@@ -142,11 +145,11 @@ export default function SetPasswordPage() {
                   name="confirmPassword"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Confirm Password</FormLabel>
+                      <FormLabel>{t("confirmPassword")}</FormLabel>
                       <FormControl>
                         <Input
                           type="password"
-                          placeholder="Confirm your new password"
+                          placeholder={t("confirmPasswordPlaceholder")}
                           {...field}
                         />
                       </FormControl>
@@ -155,7 +158,7 @@ export default function SetPasswordPage() {
                   )}
                 />
                 <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? "Setting..." : "Set Password"}
+                  {loading ? t("submitting") : t("submit")}
                 </Button>
               </form>
             </Form>

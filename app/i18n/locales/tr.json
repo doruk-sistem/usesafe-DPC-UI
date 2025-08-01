@@ -3254,6 +3254,28 @@
         "passwordMismatch": "Şifreler eşleşmiyor"
       }
     },
+    "set-password": {
+      "title": "Şifrenizi Belirleyin",
+      "description": "Lütfen hesabınız için yeni şifre belirleyin",
+      "newPassword": "Yeni Şifre",
+      "confirmPassword": "Şifreyi Onayla",
+      "newPasswordPlaceholder": "Yeni şifrenizi girin",
+      "confirmPasswordPlaceholder": "Yeni şifrenizi tekrar girin",
+      "submit": "Şifreyi Belirle",
+      "submitting": "Belirleniyor...",
+      "success": {
+        "title": "Başarılı",
+        "description": "Şifreniz başarıyla belirlendi."
+      },
+      "error": {
+        "title": "Hata",
+        "description": "Şifre belirlenirken hata oluştu. Lütfen tekrar deneyin."
+      },
+      "validation": {
+        "minLength": "Şifre en az 8 karakter olmalıdır",
+        "passwordMismatch": "Şifreler eşleşmiyor"
+      }
+    },
     "companyInfo": {
       "companyType": {
         "label": "Firma Türü *",
