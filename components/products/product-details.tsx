@@ -159,6 +159,16 @@ export function ProductDetails({ product, additionalComponents }: ProductDetails
         <MaterialsCard
           title={t("materials.title")}
           productId={product.id}
+          product={{
+            company_id: product.company_id,
+            manufacturer_id: product.manufacturer_id,
+            owner: {
+              name: company?.name || "Bilgi yükleniyor..."
+            },
+            manufacturer: {
+              name: typeof manufacturer === 'string' ? manufacturer : manufacturer?.name || "Bilgi yükleniyor..."
+            }
+          }}
         />
 
         {/* Sertifikalar */}

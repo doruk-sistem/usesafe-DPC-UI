@@ -47,7 +47,7 @@ export const useDashboardMenu = () => {
         },
         {
           title: t('menu.myProducts'),
-          href: "/dashboard/pending-products",
+          href: "/dashboard/manufactured-products",
           icon: "ClipboardCheck",
           show: company?.companyType === CompanyType.MANUFACTURER
         },

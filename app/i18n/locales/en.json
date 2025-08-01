@@ -331,8 +331,8 @@
   },
   "pages": {
     "pendingProducts": {
-      "title": "Pending Products",
-      "description": "List of products pending approval",
+      "title": "My Products",
+      "description": "List of my products",
       "columns": {
         "documents": "Documents"
       },
@@ -379,6 +379,45 @@
     }
   },
   "dashboard": {
+    "manufacturedProducts": {
+      "errorLoadingProducts": "Error loading products",
+      "title": "Products I Produce",
+      "description": "Products and material suppliers I produce",
+      "loading": "Loading products...",
+      "noProductsAssigned": "No products assigned",
+      "noProductsAssignedDescription": "Products assigned to you as a manufacturer will appear here.",
+      "noProductsAssignedDescription2": "Brand owners will list your products when they select you as a manufacturer.",
+      "contractManufacturer": "Contract Manufacturer",
+      "model": "Model",
+      "brandOwner": "Brand Owner",
+      "unknownManufacturer": "Unknown",
+      "actions": "Actions",
+      "viewDocuments": "View Documents",
+      "viewProduct": "View Product",
+      "materialSuppliers": "Material Suppliers",
+      "materialManufacturer": "Material Manufacturer",
+      "materialManufacturerAssign": "Use the \"Assign Manufacturer\" button to assign a material manufacturer",
+      "changeManufacturer": "Change Manufacturer",
+      "assignManufacturer": "Assign Manufacturer",
+      "noMaterialsAssigned": "No materials assigned for this product",
+      "recyclable": {
+        "yes": "Recyclable",
+        "no": "Not Recyclable"
+      },
+      "documentsTitle": "Product Documents",
+      "materialAssignmentTitle": "Material Manufacturer Assignment",
+      "material": "Material",
+      "product": "Product",
+      "currentManufacturer": "Current Manufacturer",
+      "removeManufacturer": "Remove Manufacturer",
+      "searchManufacturer": "Search Manufacturer",
+      "searchManufacturerPlaceholder": "Search manufacturer by name or expertise",
+      "currentManufacturers": "Current Manufacturers",
+      "noManufacturersFound": "No manufacturer found matching your search criteria.",
+      "manufacturer": "Manufacturer",
+      "cancel": "Cancel",
+      "save": "Save"
+    },
     "title": "Dashboard",
     "welcome": "Welcome",
     "overview": {
@@ -710,6 +749,15 @@
       },
       "materials": {
         "title": "Materials",
+        "productionChain": "Production Chain",
+        "productOwner": "Product Owner",
+        "contractManufacturer": "Contract Manufacturer",
+        "materialManufacturers": "Material Manufacturers",
+        "assigned": "Assigned",
+        "assignedBy": "Appointed by",
+        "noManufacturerAssigned": "No manufacturer assigned for this material",
+        "supplier": "Supplier",
+        "errorLoadingMaterials": "Error loading materials",
         "table": {
           "material": "Material",
           "percentage": "Percentage",
