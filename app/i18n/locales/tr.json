@@ -937,7 +937,13 @@
           "waste-reduction": "Atık Azaltımı",
           "chemical-usage": "Kimyasal Kullanımı",
           "renewable-energy": "Yenilenebilir Enerji",
-          "water-saving": "Su Tasarrufu"
+          "water-saving": "Su Tasarrufu",
+          "water-consumption-per-unit": "Birim Başına Su Tüketimi",
+          "recycled-content-percentage": "Geri Dönüştürülmüş İçerik Yüzdesi",
+          "chemical-consumption-per-unit": "Birim Başına Kimyasal Tüketimi",
+          "greenhouse-gas-emissions": "Sera Gazı Emisyonları",
+          "co2e-emissions-per-unit": "Birim Başına CO2e Emisyonları",
+          "minimum-durability-years": "Minimum Dayanıklılık"
         }
       },
       "usesafeCertification": {

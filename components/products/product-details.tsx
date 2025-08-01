@@ -92,13 +92,21 @@ export function ProductDetails({ product, additionalComponents }: ProductDetails
       name: field.name,
       value: field.value
     })) || [
-      { id: "sustainability-score", name: "Sustainability Score", value: 85 },
-      { id: "carbon-footprint", name: "Carbon Footprint", value: "2.5 kg CO2e" },
-      { id: "water-usage", name: "Water Usage", value: "1.2k liters" },
-      { id: "energy-consumption", name: "Energy Consumption", value: "4.8 kWh per unit" },
-      { id: "recycled-materials", name: "Recycled Materials", value: "30% of total materials" },
-      { id: "chemical-reduction", name: "Chemical Reduction", value: "45% less than conventional" },
-      { id: "biodegradability", name: "Biodegradability", value: "80% biodegradable materials" },
+      // Senior onaylı gerçek sürdürülebilirlik metrikleri
+      { id: "sustainability-score", name: "Sustainability Score", value: 65 },
+      { id: "carbon-footprint", name: "Carbon Footprint", value: "3.2 kg CO2e" },
+      { id: "water-usage", name: "Water Usage", value: "2500 liters" },
+      { id: "energy-consumption", name: "Energy Consumption", value: "7.5 kWh per unit" },
+      { id: "recycled-materials", name: "Recycled Materials", value: "0% of total materials" },
+      { id: "chemical-reduction", name: "Chemical Reduction", value: "30% less than conventional" },
+      { id: "biodegradability", name: "Biodegradability", value: "20% biodegradable materials" },
+      // Yeni eklenen detaylı metrikler
+      { id: "water-consumption-per-unit", name: "Water Consumption Per Unit", value: "15.000 Litre" },
+      { id: "recycled-content-percentage", name: "Recycled Content Percentage", value: "40%" },
+      { id: "chemical-consumption-per-unit", name: "Chemical Consumption Per Unit", value: "8 kg" },
+      { id: "greenhouse-gas-emissions", name: "Greenhouse Gas Emissions", value: "205.4" },
+      { id: "co2e-emissions-per-unit", name: "CO2e Emissions Per Unit", value: "30 kg" },
+      { id: "minimum-durability-years", name: "Minimum Durability", value: "10 yıl" },
     ];
 
 
