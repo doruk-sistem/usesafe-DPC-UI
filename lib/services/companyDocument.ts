@@ -80,10 +80,19 @@ export class CompanyDocumentService {
         throw new Error("Supabase bağlantısı başlatılamadı");
       }
 
+      // Kayıt belgeleri tipleri
+      const registrationDocTypes = [
+        "signature_circular",
+        "trade_registry_gazette", 
+        "tax_plate",
+        "activity_certificate"
+      ];
+
       const { data: documents, error } = await supabase
         .from("company_documents")
         .select("*")
-        .eq("companyId", companyId);
+        .eq("companyId", companyId)
+        .in("type", registrationDocTypes);
 
       if (error) {
         throw new Error(`Veritabanı hatası: ${error.message}`);

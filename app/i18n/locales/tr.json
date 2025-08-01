@@ -47,8 +47,8 @@
   },
   "pages": {
     "pendingProducts": {
-      "title": "Bekleyen Ürünler",
-      "description": "Bekleyen ürünlerin listesi",
+      "title": "Ürettiğim Ürünler",
+      "description": "Ürettiğim ürünlerin listesi",
       "columns": {
         "documents": "Belgeler"
       },
@@ -510,6 +510,45 @@
     }
   },
   "dashboard": {
+    "manufacturedProducts": {
+      "errorLoadingProducts": "Ürünler yüklenirken hata oluştu",
+      "title": "Ürettiklerim",
+      "description": "Ürettiğim ürünler ve malzeme tedarikçileri",
+      "loading": "Ürünler yükleniyor...",
+      "noProductsAssigned": "Henüz Atanmış Ürün Yok",
+      "noProductsAssignedDescription": "Size üretici olarak atanan ürünler burada görünecek.",
+      "noProductsAssignedDescription2": "Marka sahipleri sizi üretici olarak seçtiklerinde ürünler bu sayfada listelenecek.",
+      "contractManufacturer": "Fason Üretim",
+      "model": "Model",
+      "brandOwner": "Marka Sahibi",
+      "unknownManufacturer": "Bilinmiyor",
+      "actions": "İşlemler",
+      "viewDocuments": "Belgeleri Görüntüle",
+      "viewProduct": "Ürünü Görüntüle",
+      "materialSuppliers": "Materyal Tedarikçileri",
+      "materialManufacturer": "Materyal Üreticisi",
+      "materialManufacturerAssign": "Materyal üreticisi atama işlemi için \"Üretici Ata\" butonunu kullanın",
+      "changeManufacturer": "Üreticiyi Değiştir",
+      "assignManufacturer": "Üretici Ata",
+      "noMaterialsAssigned": "Bu ürün için henüz materyal tanımlanmamış.",
+      "recyclable": {
+        "yes": "Geri Dönüştürülebilir",
+        "no": "Geri Dönüştürülemez"
+      },
+      "documentsTitle": "Ürün Belgeleri",
+      "materialAssignmentTitle": "Materyal Üreticisi Ata",
+      "material": "Materyal",
+      "product": "Ürün",
+      "currentManufacturer": "Mevcut Üretici",
+      "removeManufacturer": "Üreticiyi Kaldır",
+      "searchManufacturer": "Üretici Ara",
+      "searchManufacturerPlaceholder": "Üretici adı veya uzmanlık alanı ara...",
+      "currentManufacturers": "Mevcut Üreticiler",
+      "noManufacturersFound": "Arama kriterlerinize uygun üretici bulunamadı.",
+      "manufacturer": "Üretici",
+      "cancel": "İptal",
+      "save": "Kaydet"
+    },
     "title": "Kontrol Paneli",
     "welcome": "Hoş Geldiniz",
     "overview": {
@@ -808,6 +847,15 @@
       "materials": {
         "title": "Malzemeler",
         "description": "Ürünün malzeme bileşimi",
+        "productionChain": "Üretim Zinciri",
+        "productOwner": "Ürün Sahibi",
+        "contractManufacturer": "Fason Üretici",
+        "materialManufacturers": "Malzeme Üreticileri",
+        "assigned": "Atanmış",
+        "assignedBy": "tarafından atandı",
+        "noManufacturerAssigned": "Bu malzeme için henüz üretici atanmamış",
+        "supplier": "Tedarikçi",
+        "errorLoadingMaterials": "Malzemeler yüklenirken hata oluştu",
         "table": {
           "material": "Malzeme",
           "percentage": "Yüzde",
@@ -858,7 +906,8 @@
           "valid": "Geçerli",
           "expired": "Süresi Dolmuş",
           "pending": "Beklemede",
-          "approved": "Onaylandı"
+          "approved": "Onaylandı",
+          "rejected": "Reddedildi"
         },
         "actions": {
           "download": "İndir",
@@ -3447,9 +3496,23 @@
       "filter": "Filtrele",
       "sort": "Sırala",
       "loading": "Sertifikalar yükleniyor...",
+      "delete": {
+        "success": {
+          "title": "Sertifika Silindi",
+          "description": "Sertifika başarıyla silindi"
+        },
+        "dialog": {
+          "title": "Sertifika Sil",
+          "description": "Sertifika silmek istediğinize emin misiniz?",
+          "cancel": "İptal",
+          "confirm": "Sil",
+          "deleting": "Siliniyor..."
+        }
+        },
       "empty": {
         "title": "Sertifika bulunamadı",
         "description": "Sertifika bulunamadı",
+        "upload": "Yükle",
         "manufacturer": "Bu şirket için sertifika bulunamadı",
         "addButton": "Ürün Ekle"
       },
@@ -3473,7 +3536,8 @@
         "view": "Görüntüle",
         "download": "İndir",
         "renew": "Yenile",
-        "revoke": "İptal Et"
+        "revoke": "İptal Et",
+        "delete": "Sil"
       }
     },
     "types": {
@@ -3611,6 +3675,19 @@
     "filters": {
       "all": "Tümü",
       "upload": "Yükle"
+    },
+    "delete": {
+      "success": {
+        "title": "Döküman Silindi",
+        "description": "Döküman başarıyla silindi"
+      },
+      "dialog": {
+        "title": "Döküman Sil",
+        "description": "Döküman silmek istediğinize emin misiniz?",
+        "confirm": "Sil",
+        "cancel": "İptal",
+        "deleting": "Siliniyor..."
+      }
     },
     "list": {
       "title": "Dökümanlar",

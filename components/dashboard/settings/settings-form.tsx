@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { useSearchParams } from "next/navigation";
 import * as z from "zod";
 
 import { CertificationList } from "@/components/dashboard/certifications/certification-list";
@@ -67,6 +68,7 @@ type SettingsFormValues = z.infer<typeof settingsSchema>;
 export function SettingsForm() {
   const { toast } = useToast();
   const t = useTranslations("settings");
+  const searchParams = useSearchParams();
   const { canManageUsers, company, isCompanyLoading, updatePassword } = useAuth();
   const { users, invitations, loading, inviting, deleting, fetchUsers, inviteUser, deleteUser, updateInvitationStatus, deleteInvitation } = useUsers();
   const [inviteFormData, setInviteFormData] = useState({ full_name: "", email: "", role: "user" });
@@ -77,6 +79,9 @@ export function SettingsForm() {
   const [showPasswordDialog, setShowPasswordDialog] = useState(false);
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  
+  // URL'den tab parametresini al
+  const defaultTab = searchParams.get('tab') || 'company';
 
   // Kullanıcı rolü için badge rengi belirleme
   const getRoleBadgeColor = (role: string) => {
@@ -298,7 +303,7 @@ export function SettingsForm() {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-        <Tabs defaultValue="company" className="space-y-4">
+        <Tabs defaultValue={defaultTab} className="space-y-4">
           <TabsList>
             <TabsTrigger value="company">{t("tabs.company")}</TabsTrigger>
             <TabsTrigger value="contact">{t("tabs.contact")}</TabsTrigger>
