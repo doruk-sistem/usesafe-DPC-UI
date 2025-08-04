@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowLeft, Upload } from "lucide-react";
+import { ArrowLeft, Upload, AlertCircle } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -11,6 +11,7 @@ import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   Form,
   FormControl,
@@ -49,7 +50,7 @@ type FormValues = z.infer<typeof formSchema>;
 export default function UploadDocumentPage() {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { user } = useAuth();
+  const { user, company } = useAuth();
   const [isUploading, setIsUploading] = useState(false);
   const [selectedFileName, setSelectedFileName] = useState<string>("");
   const [file, setFile] = useState<File | null>(null);
@@ -61,21 +62,28 @@ export default function UploadDocumentPage() {
     defaultValues: { type: undefined as unknown as DocumentType },
   });
 
+  // Şirket ID'sini farklı yerlerden almaya çalış
+  const companyId = user?.user_metadata?.data?.company_id || 
+                   user?.user_metadata?.company_id || 
+                   company?.id;
+
   async function onSubmit(values: FormValues) {
     setFileError("");
     if (!file) {
       setFileError("Dosya seçin");
       return;
     }
-    if (!user?.user_metadata?.data?.company_id) {
-      form.setError("type", { message: "Şirket bilgisi bulunamadı" });
+    
+    if (!companyId) {
+      setFileError(t("companyNotFoundError"));
       return;
     }
+    
     setIsUploading(true);
     try {
       await CompanyDocumentService.uploadDocument(
         file,
-        user.user_metadata.data.company_id,
+        companyId,
         values.type
       );
       
@@ -107,6 +115,14 @@ export default function UploadDocumentPage() {
           </div>
         </CardHeader>
         <CardContent className="space-y-6">
+          {!companyId && (
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>{t("companyNotFoundError")}
+              </AlertDescription>
+            </Alert>
+          )}
+          
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               <FormField
@@ -155,10 +171,15 @@ export default function UploadDocumentPage() {
                     <Upload className="w-8 h-8 mb-2 text-gray-400" />
                     <span>{selectedFileName || t("filePlaceholder")}</span>
                   </label>
-                  {fileError && <p className="text-sm text-red-500 mt-2">{fileError}</p>}
+                  {fileError && (
+                    <Alert variant="destructive">
+                      <AlertCircle className="h-4 w-4" />
+                      <AlertDescription>{fileError}</AlertDescription>
+                    </Alert>
+                  )}
                 </div>
               </div>
-              <Button type="submit" className="w-full" disabled={isUploading}>
+              <Button type="submit" className="w-full" disabled={isUploading || !companyId}>
                 {isUploading ? "Yükleniyor..." : t("submit")}
               </Button>
             </form>

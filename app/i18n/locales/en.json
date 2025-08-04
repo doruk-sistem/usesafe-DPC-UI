@@ -2413,7 +2413,8 @@
       "typePlaceholder": "Select document type",
       "fileLabel": "File",
       "filePlaceholder": "Select or drag a file here",
-      "submit": "Upload"
+      "submit": "Upload",
+      "companyNotFoundError": "Company information not found. Please complete the company registration first."
     }
   },
   "admin": {

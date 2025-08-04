@@ -3698,7 +3698,8 @@
       "typePlaceholder": "Döküman tipini seçin",
       "fileLabel": "Dosya Seçin",
       "filePlaceholder": "Dosyayı seçin",
-      "submit": "Yükle"
+      "submit": "Yükle",
+      "companyNotFoundError": "Şirket bilgisi bulunamadı. Lütfen önce şirket kaydını tamamlayın."
     },
     "filters": {
       "all": "Tümü",
