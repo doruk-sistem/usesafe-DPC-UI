@@ -2649,6 +2649,12 @@
         "add": "Özellik Ekle"
       }
     },
+    "status": {
+      "approved": "Onaylandı",
+      "rejected": "Reddedildi",
+      "pending": "Beklemede",
+      "archived": "Arşivlendi"
+    },
     "filters": {
       "type": {
         "label": "Ürün Tipi",

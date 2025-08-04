@@ -68,6 +68,26 @@ interface ProductListProps {
   };
 }
 
+// Helper function to get status label with translation
+const getStatusLabel = (status: string, t: any) => {
+  switch (status) {
+    case "DELETED":
+      return t("productManagement.status.rejected", { defaultValue: "Reddedildi" });
+    case "NEW":
+      return t("productManagement.status.pending", { defaultValue: "Beklemede" });
+    case "PENDING":
+      return t("productManagement.status.pending", { defaultValue: "Beklemede" });
+    case "REJECTED":
+      return t("productManagement.status.rejected", { defaultValue: "Reddedildi" });
+    case "APPROVED":
+      return t("productManagement.status.approved", { defaultValue: "Onaylandı" });
+    case "ARCHIVED":
+      return t("productManagement.status.archived", { defaultValue: "Arşivlendi" });
+    default:
+      return t("productManagement.status.pending", { defaultValue: "Beklemede" });
+  }
+};
+
 export function ProductList({ products, isLoading, isViewingManufacturer }: ProductListProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -272,7 +292,7 @@ export function ProductList({ products, isLoading, isViewingManufacturer }: Prod
                             : "secondary"
                         }
                       >
-                        {status === "DELETED" ? "REDDEDİLDİ" : status === "NEW" ? "PENDING" : status === "REJECTED" ? "REJECTED" : status || "PENDING"}
+                        {getStatusLabel(status || "", t)}
                       </Badge>
                     </TableCell>
                     <TableCell>

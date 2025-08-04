@@ -1817,9 +1817,10 @@
       "showing": "Showing {start} to {end} of {total} products"
     },
     "status": {
-      "draft": "Draft",
-      "published": "Published",
-      "archived": "Archived"
+      "archived": "Archived",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "pending": "Pending"
     },
     "delete": {
       "title": "Delete Product",
@@ -2413,8 +2414,7 @@
       "typePlaceholder": "Select document type",
       "fileLabel": "File",
       "filePlaceholder": "Select or drag a file here",
-      "submit": "Upload",
-      "companyNotFoundError": "Company information not found. Please complete the company registration first."
+      "submit": "Upload"
     }
   },
   "admin": {
