@@ -28,7 +28,7 @@ export function DocumentGuidanceCard({
   productTypeLabel,
   subcategoryLabel,
 }: DocumentGuidanceCardProps) {
-  const t = useTranslations();
+  const t = useTranslations("aiGuidance");
 
   if (isLoading) {
     return (
@@ -54,7 +54,7 @@ export function DocumentGuidanceCard({
         <CardHeader>
           <div className="flex items-center gap-2">
             <AlertCircle className="h-5 w-5 text-red-600" />
-            <CardTitle className="text-red-800">AI Rehberliği Alınamadı</CardTitle>
+            <CardTitle className="text-red-800">{t("guidanceUnavailable")}</CardTitle>
           </div>
         </CardHeader>
         <CardContent>
@@ -69,7 +69,7 @@ export function DocumentGuidanceCard({
             className="mt-4"
           >
             <RefreshCw className="h-4 w-4 mr-2" />
-            Tekrar Dene
+            {t("tryAgain")}
           </Button>
         </CardContent>
       </Card>
@@ -86,7 +86,7 @@ export function DocumentGuidanceCard({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-blue-600" />
-            <CardTitle className="text-blue-800">AI Document Guidance</CardTitle>
+            <CardTitle className="text-blue-800">{t("aiDocumentGuidance")}</CardTitle>
           </div>
           <Button
             variant="ghost"
@@ -98,7 +98,7 @@ export function DocumentGuidanceCard({
           </Button>
         </div>
         <CardDescription className="text-blue-700">
-          Recommended documents for {productTypeLabel || guidance.productType} - {subcategoryLabel || guidance.subcategory}
+          {t("recommendedDocumentsFor")} {productTypeLabel || guidance.productType} - {subcategoryLabel || guidance.subcategory}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -107,7 +107,7 @@ export function DocumentGuidanceCard({
           <div>
             <h4 className="font-semibold text-green-800 mb-3 flex items-center gap-2">
               <CheckCircle className="h-4 w-4" />
-              Required Documents
+              {t("requiredDocuments")}
             </h4>
             <div className="space-y-3">
               {guidance.requiredDocuments.map((doc, index) => (
@@ -115,13 +115,13 @@ export function DocumentGuidanceCard({
                   <div className="flex items-start justify-between mb-2">
                     <h5 className="font-medium text-green-800">{doc.label}</h5>
                     <Badge variant="default" className="bg-green-100 text-green-800">
-                      Required
+                      {t("required")}
                     </Badge>
                   </div>
                   <p className="text-sm text-gray-600 mb-2">{doc.description}</p>
                   {doc.examples.length > 0 && (
                     <div>
-                      <p className="text-xs font-medium text-gray-500 mb-1">Examples:</p>
+                      <p className="text-xs font-medium text-gray-500 mb-1">{t("examples")}:</p>
                       <div className="flex flex-wrap gap-1">
                         {doc.examples.map((example, idx) => (
                           <Badge key={idx} variant="secondary" className="text-xs">
@@ -142,7 +142,7 @@ export function DocumentGuidanceCard({
           <div>
             <h4 className="font-semibold text-blue-800 mb-3 flex items-center gap-2">
               <Info className="h-4 w-4" />
-              Optional Documents
+              {t("optionalDocuments")}
             </h4>
             <div className="space-y-3">
               {guidance.optionalDocuments.map((doc, index) => (
@@ -150,13 +150,13 @@ export function DocumentGuidanceCard({
                   <div className="flex items-start justify-between mb-2">
                     <h5 className="font-medium text-blue-800">{doc.label}</h5>
                     <Badge variant="outline" className="text-blue-600">
-                      Optional
+                      {t("optional")}
                     </Badge>
                   </div>
                   <p className="text-sm text-gray-600 mb-2">{doc.description}</p>
                   {doc.examples.length > 0 && (
                     <div>
-                      <p className="text-xs font-medium text-gray-500 mb-1">Examples:</p>
+                      <p className="text-xs font-medium text-gray-500 mb-1">{t("examples")}:</p>
                       <div className="flex flex-wrap gap-1">
                         {doc.examples.map((example, idx) => (
                           <Badge key={idx} variant="secondary" className="text-xs">
@@ -177,7 +177,7 @@ export function DocumentGuidanceCard({
           <Collapsible>
             <CollapsibleTrigger asChild>
               <Button variant="ghost" className="w-full justify-between p-0 h-auto">
-                <span className="text-sm font-medium text-gray-700">General Notes</span>
+                <span className="text-sm font-medium text-gray-700">{t("generalNotes")}</span>
                 <Info className="h-4 w-4" />
               </Button>
             </CollapsibleTrigger>
@@ -194,7 +194,7 @@ export function DocumentGuidanceCard({
           <Collapsible>
             <CollapsibleTrigger asChild>
               <Button variant="ghost" className="w-full justify-between p-0 h-auto">
-                <span className="text-sm font-medium text-gray-700">Compliance Requirements</span>
+                <span className="text-sm font-medium text-gray-700">{t("complianceRequirements")}</span>
                 <AlertCircle className="h-4 w-4" />
               </Button>
             </CollapsibleTrigger>

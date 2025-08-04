@@ -5,6 +5,19 @@
     "verifyProducts": "Ürün Doğrula",
     "signIn": "Giriş Yap"
   },
+  "aiGuidance": {
+    "guidanceUnavailable": "AI Rehberliği Alınamadı",
+    "tryAgain": "Tekrar Dene",
+    "aiDocumentGuidance": "AI Belge Rehberliği",
+    "recommendedDocumentsFor":"Önerilen Belgeler",
+    "requiredDocuments":"Zorunlu Belgeler",
+    "required":"Zorunlu",
+    "examples":"Örnekler",
+    "optionalDocuments":"İsteğe Bağlı Belgeler",
+    "optional":"Opsiyonel",
+    "generalNotes":"Genel Notlar",
+    "complianceRequirements":"Uyumluluk Gereksinimleri"
+  },
   "registration": {
     "steps": {
       "documents": {
@@ -2568,6 +2581,49 @@
     "noProducts": "Ürün bulunamadı",
     "editProduct": "Ürünü Düzenle",
     "deleteProduct": "Ürünü Sil",
+    "edit":{
+      "editProduct":"Ürünü Düzenle",
+      "productName":"Ürün Adı",
+      "model":"Model",
+      "productType":"Ürün Tipi",
+      "productImages":"Ürün Görselleri",
+      "addNewImage":"Yeni Görsel Ekle",
+      "productDocuments":"Ürün Belgeleri",
+      "pending":"Beklemede",
+      "rejected":"Reddedildi",
+      "approved":"Onaylandı",
+      "type":"Tip",
+      "uploadDate":"Yükleme Tarihi",
+      "version":"Versiyon",
+      "download":"İndir",
+      "delete":"Sil",
+      "cancel":"İptal",
+      "saveChanges":"Değişiklikleri Kaydet",
+      "rejectionReason":"Reddedilme Sebebi",
+      "addNewDocument":"Yeni Belgeler Ekle",
+      "back":"Geri",
+      "primary":"Öne Çıkar",
+      "addNewDocumentDescription":"Yeni belge açıklaması ekleyin",
+      "documentFile":"Belge Dosyası",
+      "documentType":"Belge Tipi",
+      "selectDocumentType":"Belge Tipi Seçin",
+      "technicalDocumentation":"Teknik Belgeler",
+      "testReports":"Test Raporları",
+      "complianceDocuments":"Uyum Belgeleri",
+      "certificates":"Sertifikalar",
+      "other":"Diğer",
+      "uploadDocument":"Belge Yükle",
+      "deleteDocument":"Belge Sil",
+      "deleteDocumentConfirmation":"Bu belgeyi silmek istediğinizden emin misiniz?",
+      "uploading":"Yükleniyor...",
+      "success":"Başarılı",
+      "imageUploadedSuccess":"Görsel başarıyla yüklendi",
+      "setAsPrimary":"Öne Çıkar",
+      "primaryImageUpdatedSuccess":"Öne çıkarılan görsel başarıyla güncellendi",
+      "imageDeletedSuccess":"Görsel başarıyla silindi",
+      "saving":"Kaydediliyor...",
+      "productUpdatedSuccess":"Ürün başarıyla güncellendi"
+    },
     "materials": {
       "title": "Materyaller",
       "description": "Materyallerinizi yönetin ve takip edin",
@@ -2649,6 +2705,12 @@
         "add": "Özellik Ekle"
       }
     },
+    "status": {
+      "approved": "Onaylandı",
+      "rejected": "Reddedildi",
+      "pending": "Beklemede",
+      "archived": "Arşivlendi"
+    },
     "filters": {
       "type": {
         "label": "Ürün Tipi",
@@ -2687,6 +2749,7 @@
       "openMenu": "Menüyü Aç"
     },
     "list": {
+      "more": "daha fazla",
       "title": "Ürün Listesi",
       "description": "Tüm ürünlerinizi görüntüleyin ve yönetin",
       "loading": "Ürünler yükleniyor...",
@@ -2818,6 +2881,23 @@
     "title": "Belge Yönetimi",
     "description": "Belge yüklemelerini inceleyin ve yönetin",
     "backToList": "Listeye Dön",
+    "history": {
+      "documentHistory": "Belge Geçmişi",
+      "documentUploaded": "Belge yüklendi",
+      "initialDocumentUpload": "Başlangıç belgesi yüklendi",
+      "statusChanged": "Durum değişti",
+      "documentStatusUpdatedToPending": "Belge durumu beklemede olarak güncellendi",
+      "version": "Versiyon",
+      "system": "Sistem",
+      "admin": "Yönetici",
+      "back": "Geri",
+      "error": "Hata",
+      "failedToLoadHistory": "Belge geçmişi yüklenemedi",
+      "noHistoryFound": "Geçmiş Bulunamadı",
+      "noHistoryDescription": "Bu belgenin geçmiş kayıtları bulunmuyor.",
+      "approved": "Onaylandı",
+      "rejected": "Reddedildi"
+    },
     "documentTypes": {
       "testReports": "Test Raporları",
       "technicalDocumentation": "Teknik Dokümantasyon",
