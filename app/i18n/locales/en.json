@@ -9,6 +9,19 @@
     "verifyProducts": "Verify Products",
     "signIn": "Sign In"
   },
+  "aiGuidance": {
+    "guidanceUnavailable": "Guidance unavailable",
+    "tryAgain": "Try again",
+    "aiDocumentGuidance": "AI Document Guidance",
+    "recommendedDocumentsFor":"Recommended Documents For",
+    "requiredDocuments":"Required Documents",
+    "required":"Required",
+    "examples":"Examples",
+    "optionalDocuments":"Optional Documents",
+    "optional":"Optional",
+    "generalNotes":"General Notes",
+    "complianceRequirements":"Compliance Requirements"
+  },
   "registration": {
     "steps": {
       "documents": {

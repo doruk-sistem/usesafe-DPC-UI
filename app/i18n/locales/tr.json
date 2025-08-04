@@ -5,6 +5,19 @@
     "verifyProducts": "Ürün Doğrula",
     "signIn": "Giriş Yap"
   },
+  "aiGuidance": {
+    "guidanceUnavailable": "AI Rehberliği Alınamadı",
+    "tryAgain": "Tekrar Dene",
+    "aiDocumentGuidance": "AI Belge Rehberliği",
+    "recommendedDocumentsFor":"Önerilen Belgeler",
+    "requiredDocuments":"Zorunlu Belgeler",
+    "required":"Zorunlu",
+    "examples":"Örnekler",
+    "optionalDocuments":"İsteğe Bağlı Belgeler",
+    "optional":"Opsiyonel",
+    "generalNotes":"Genel Notlar",
+    "complianceRequirements":"Uyumluluk Gereksinimleri"
+  },
   "registration": {
     "steps": {
       "documents": {
