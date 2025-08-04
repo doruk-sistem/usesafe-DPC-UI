@@ -2601,7 +2601,15 @@
       "other":"Diğer",
       "uploadDocument":"Belge Yükle",
       "deleteDocument":"Belge Sil",
-      "deleteDocumentConfirmation":"Bu belgeyi silmek istediğinizden emin misiniz?"
+      "deleteDocumentConfirmation":"Bu belgeyi silmek istediğinizden emin misiniz?",
+      "uploading":"Yükleniyor...",
+      "success":"Başarılı",
+      "imageUploadedSuccess":"Görsel başarıyla yüklendi",
+      "setAsPrimary":"Öne Çıkar",
+      "primaryImageUpdatedSuccess":"Öne çıkarılan görsel başarıyla güncellendi",
+      "imageDeletedSuccess":"Görsel başarıyla silindi",
+      "saving":"Kaydediliyor...",
+      "productUpdatedSuccess":"Ürün başarıyla güncellendi"
     },
     "materials": {
       "title": "Materyaller",

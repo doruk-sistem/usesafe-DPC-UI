@@ -1670,7 +1670,15 @@
       "other":"Other",
       "uploadDocument":"Upload Document",
       "deleteDocument":"Delete Document",
-      "deleteDocumentConfirmation":"Are you sure you want to delete this document?"
+      "deleteDocumentConfirmation":"Are you sure you want to delete this document?",
+      "uploading":"Uploading...",
+      "success":"Success",
+      "imageUploadedSuccess":"Image uploaded successfully",
+      "setAsPrimary":"Set as Primary",
+      "primaryImageUpdatedSuccess":"Primary image updated successfully",
+      "imageDeletedSuccess":"Image deleted successfully",
+      "saving":"Saving...",
+      "productUpdatedSuccess":"Product updated successfully"
     },
     "materials": {
       "title": "Materials",
