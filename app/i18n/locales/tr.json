@@ -2693,6 +2693,7 @@
       "openMenu": "Menüyü Aç"
     },
     "list": {
+      "more": "daha fazla",
       "title": "Ürün Listesi",
       "description": "Tüm ürünlerinizi görüntüleyin ve yönetin",
       "loading": "Ürünler yükleniyor...",

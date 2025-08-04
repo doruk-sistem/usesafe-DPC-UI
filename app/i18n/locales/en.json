@@ -1777,6 +1777,7 @@
       }
     },
     "list": {
+      "more": "more",
       "title": "Product List",
       "description": "View and manage your products",
       "loading": "Loading products...",

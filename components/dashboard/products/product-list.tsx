@@ -270,7 +270,7 @@ export function ProductList({ products, isLoading, isViewingManufacturer }: Prod
                           ))}
                           {product.key_features && product.key_features.length > 3 && (
                             <Badge variant="secondary" className="text-xs">
-                              +{product.key_features.length - 3} more
+                              +{product.key_features.length - 3} {t("productManagement.list.more")}
                             </Badge>
                           )}
                         </div>
