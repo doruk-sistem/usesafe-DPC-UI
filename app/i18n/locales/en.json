@@ -9,6 +9,19 @@
     "verifyProducts": "Verify Products",
     "signIn": "Sign In"
   },
+  "aiGuidance": {
+    "guidanceUnavailable": "Guidance unavailable",
+    "tryAgain": "Try again",
+    "aiDocumentGuidance": "AI Document Guidance",
+    "recommendedDocumentsFor":"Recommended Documents For",
+    "requiredDocuments":"Required Documents",
+    "required":"Required",
+    "examples":"Examples",
+    "optionalDocuments":"Optional Documents",
+    "optional":"Optional",
+    "generalNotes":"General Notes",
+    "complianceRequirements":"Compliance Requirements"
+  },
   "registration": {
     "steps": {
       "documents": {
@@ -1637,6 +1650,49 @@
   "productManagement": {
     "title": "Product Management",
     "description": "Manage and track all your products",
+    "edit":{
+      "editProduct":"Edit Product",
+      "productName":"Product Name",
+      "model":"Model",
+      "productType":"Product Type",
+      "productImages":"Product Images",
+      "addNewImage":"Add New Image",
+      "productDocuments":"Product Documents",
+      "pending":"Pending",
+      "rejected":"Rejected",
+      "approved":"Approved",
+      "type":"Type",
+      "uploadDate":"Upload Date",
+      "version":"Version",
+      "download":"Download",
+      "delete":"Delete",
+      "cancel":"Cancel",
+      "saveChanges":"Save Changes",
+      "rejectionReason":"Rejection Reason",
+      "addNewDocument":"Add New Document",
+      "back":"Back",
+      "primary":"Primary",
+      "addNewDocumentDescription":"Add new document description",
+      "documentFile":"Document File",
+      "documentType":"Document Type",
+      "selectDocumentType":"Select Document Type",
+      "technicalDocumentation":"Technical Documentation",
+      "testReports":"Test Reports",
+      "complianceDocuments":"Compliance Documents",
+      "certificates":"Certificates",
+      "other":"Other",
+      "uploadDocument":"Upload Document",
+      "deleteDocument":"Delete Document",
+      "deleteDocumentConfirmation":"Are you sure you want to delete this document?",
+      "uploading":"Uploading...",
+      "success":"Success",
+      "imageUploadedSuccess":"Image uploaded successfully",
+      "setAsPrimary":"Set as Primary",
+      "primaryImageUpdatedSuccess":"Primary image updated successfully",
+      "imageDeletedSuccess":"Image deleted successfully",
+      "saving":"Saving...",
+      "productUpdatedSuccess":"Product updated successfully"
+    },
     "materials": {
       "title": "Materials",
       "description": "Manage and track all your materials",
@@ -1777,6 +1833,7 @@
       }
     },
     "list": {
+      "more": "more",
       "title": "Product List",
       "description": "View and manage your products",
       "loading": "Loading products...",
@@ -1817,9 +1874,10 @@
       "showing": "Showing {start} to {end} of {total} products"
     },
     "status": {
-      "draft": "Draft",
-      "published": "Published",
-      "archived": "Archived"
+      "archived": "Archived",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "pending": "Pending"
     },
     "delete": {
       "title": "Delete Product",
@@ -1972,6 +2030,23 @@
     "title": "Document Management",
     "description": "Manage your company documents and certificates",
     "backToList": "Back to List",
+    "history": {
+      "documentHistory": "Document History",
+      "documentUploaded": "Document uploaded",
+      "initialDocumentUpload": "Initial document upload",
+      "statusChanged": "Status changed",
+      "documentStatusUpdatedToPending": "Document status updated to pending",
+      "version": "Version",
+      "system": "System",
+      "admin": "Admin",
+      "back": "Back",
+      "error": "Error",
+      "failedToLoadHistory": "Failed to load history",
+      "noHistoryFound": "No history found",
+      "noHistoryDescription": "No history found for this document.",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
     "repository": {
       "title": "Document Repository",
       "noDocumentsFound": "No documents found",

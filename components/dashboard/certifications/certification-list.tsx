@@ -150,24 +150,7 @@ export function CertificationList({ filters }: CertificationListProps) {
   };
 
   const getDocumentType = (type: string) => {
-    switch (type) {
-      case 'quality_certificate':
-        return 'Kalite Sertifikası';
-      case 'safety_certificate':
-        return 'Güvenlik Sertifikası';
-      case 'environmental_certificate':
-        return 'Çevre Sertifikası';
-      case 'iso_certificate':
-        return 'ISO Sertifikası';
-      case 'export_certificate':
-        return 'İhracat Sertifikası';
-      case 'production_permit':
-        return 'Üretim İzni';
-      case 'activity_permit':
-        return 'Faaliyet İzni';
-      default:
-        return type;
-    }
+    return t(`types.${type}`, { defaultValue: type });
   };
 
   if (isLoading) {
