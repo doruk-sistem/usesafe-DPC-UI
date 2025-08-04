@@ -103,15 +103,33 @@ export class CompanyDocumentService {
       }
 
       const mappedDocuments = await Promise.all(documents.map(async (doc: any) => {
-        // Get public URL for the document
-        const publicUrl = await this.getPublicUrl(doc.filePath);
+        // Get public URL for the document (sadece filePath varsa)
+        const publicUrl = doc.filePath && doc.filePath.trim() !== '' 
+          ? await this.getPublicUrl(doc.filePath) 
+          : null;
         
-        return {
+        // Döküman adını belirle
+        let documentName = "Unnamed Document";
+        if (doc.filePath && doc.filePath.trim() !== '') {
+          documentName = doc.filePath.split('/').pop() || "Unnamed Document";
+        } else {
+          // filePath boşsa, tip ve ID'ye göre anlamlı isim oluştur
+          const typeLabels = {
+            'signature_circular': 'İmza Sirküleri',
+            'trade_registry_gazette': 'Ticaret Sicil Gazetesi',
+            'tax_plate': 'Vergi Levhası',
+            'activity_certificate': 'Faaliyet Belgesi'
+          };
+          const typeLabel = typeLabels[doc.type] || doc.type;
+          documentName = `${typeLabel} - ${doc.id.slice(0, 8)}`;
+        }
+        
+        const mappedDoc = {
           id: doc.id,
-          name: doc.filePath?.split('/').pop() || "Unnamed Document",
+          name: documentName,
           type: doc.type,
           category: doc.type,
-          url: publicUrl,
+          url: publicUrl || "",
           filePath: doc.filePath || "",
           status: (doc.status || "pending").toLowerCase(),
           fileSize: "",
@@ -126,6 +144,8 @@ export class CompanyDocumentService {
           manufacturer: undefined,
           companyId: doc.companyId
         };
+        
+        return mappedDoc;
       }));
 
       return mappedDocuments;
