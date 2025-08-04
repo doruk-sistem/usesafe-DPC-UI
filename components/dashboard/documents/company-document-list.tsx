@@ -264,7 +264,7 @@ export function CompanyDocumentList() {
                     </div>
                   </div>
                 </TableCell>
-                <TableCell>{doc.type}</TableCell>
+                <TableCell>{t(`documents.types.${doc.type}`, { defaultValue: doc.type })}</TableCell>
                 <TableCell>
                   <Badge
                     variant={getStatusVariant(doc.status)}
