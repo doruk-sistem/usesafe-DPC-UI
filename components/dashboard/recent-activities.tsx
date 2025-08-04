@@ -87,7 +87,7 @@ export function RecentActivities() {
               </p>
             </div>
             <div className="px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-600 whitespace-nowrap">
-              {activity.status}
+              {t("status." + activity.status.toLowerCase())}
             </div>
           </motion.div>
         ))}
