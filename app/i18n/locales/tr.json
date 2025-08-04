@@ -2868,6 +2868,23 @@
     "title": "Belge Yönetimi",
     "description": "Belge yüklemelerini inceleyin ve yönetin",
     "backToList": "Listeye Dön",
+    "history": {
+      "documentHistory": "Belge Geçmişi",
+      "documentUploaded": "Belge yüklendi",
+      "initialDocumentUpload": "Başlangıç belgesi yüklendi",
+      "statusChanged": "Durum değişti",
+      "documentStatusUpdatedToPending": "Belge durumu beklemede olarak güncellendi",
+      "version": "Versiyon",
+      "system": "Sistem",
+      "admin": "Yönetici",
+      "back": "Geri",
+      "error": "Hata",
+      "failedToLoadHistory": "Belge geçmişi yüklenemedi",
+      "noHistoryFound": "Geçmiş Bulunamadı",
+      "noHistoryDescription": "Bu belgenin geçmiş kayıtları bulunmuyor.",
+      "approved": "Onaylandı",
+      "rejected": "Reddedildi"
+    },
     "documentTypes": {
       "testReports": "Test Raporları",
       "technicalDocumentation": "Teknik Dokümantasyon",

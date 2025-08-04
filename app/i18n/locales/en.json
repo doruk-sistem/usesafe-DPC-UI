@@ -2017,6 +2017,23 @@
     "title": "Document Management",
     "description": "Manage your company documents and certificates",
     "backToList": "Back to List",
+    "history": {
+      "documentHistory": "Document History",
+      "documentUploaded": "Document uploaded",
+      "initialDocumentUpload": "Initial document upload",
+      "statusChanged": "Status changed",
+      "documentStatusUpdatedToPending": "Document status updated to pending",
+      "version": "Version",
+      "system": "System",
+      "admin": "Admin",
+      "back": "Back",
+      "error": "Error",
+      "failedToLoadHistory": "Failed to load history",
+      "noHistoryFound": "No history found",
+      "noHistoryDescription": "No history found for this document.",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
     "repository": {
       "title": "Document Repository",
       "noDocumentsFound": "No documents found",
