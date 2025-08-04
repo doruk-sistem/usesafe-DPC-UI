@@ -5,7 +5,7 @@ import { ArrowLeft, AlertCircle, Upload, FileText, Download, Trash2, Plus } from
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-
+import { useTranslations } from "next-intl";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
   AlertDialog,
@@ -38,25 +38,25 @@ interface ProductEditProps {
   reuploadDocumentId?: string;
 }
 
-const documentTypeLabels: Record<string, string> = {
-  quality_cert: "Quality Certificate",
-  safety_cert: "Safety Certificate",
-  test_reports: "Test Reports",
-  technical_docs: "Technical Documentation",
-  compliance_docs: "Compliance Documents",
-  certificates: "Certificates",
-  other: "Other"
-};
+const documentTypeLabels = (t: any): Record<string, string> => ({
+  quality_cert: t("qualityCertificate"),
+  safety_cert: t("safetyCertificate"),
+  test_reports: t("testReports"),
+  technical_docs: t("technicalDocumentation"),
+  compliance_docs: t("complianceDocuments"),
+  certificates: t("certificates"),
+  other: t("other")
+});
 
 // Belge türünü gösterme fonksiyonu - AI türlerini destekler
-const getDocumentTypeLabel = (doc: any) => {
+const getDocumentTypeLabel = (doc: any, t: any) => {
   // Eğer originalType varsa (AI'dan gelen), onu göster
   if (doc.originalType) {
     return doc.originalType;
   }
   
   // Standart türler için label kullan
-  return documentTypeLabels[doc.type] || doc.type;
+  return documentTypeLabels(t)[doc.type] || doc.type;
 };
 
 export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps) {
@@ -67,6 +67,7 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
+  const t = useTranslations("productManagement.edit");
   const [newDocument, setNewDocument] = useState<{
     file: File | null;
     name: string;
@@ -154,8 +155,8 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
       } catch (error) {
         console.error("Error fetching product:", error);
         toast({
-          title: "Error",
-          description: "Failed to load product details",
+          title: t("error"),
+          description: t("failedToLoadProduct"),
           variant: "destructive",
         });
       } finally {
@@ -210,14 +211,14 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
       setAllDocuments(documents);
       
       toast({
-        title: "Success",
-        description: "Document uploaded successfully",
+        title: t("success"),
+        description: t("documentUploadedSuccess"),
       });
     } catch (error) {
       console.error("Error uploading document:", error);
       toast({
-        title: "Error",
-        description: "Failed to upload document",
+        title: t("error"),
+        description: t("failedToUploadDocument"),
         variant: "destructive",
       });
     } finally {
@@ -248,14 +249,14 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
       setAllDocuments(prev => prev.filter(doc => doc.id !== documentToDelete.id));
 
       toast({
-        title: "Success",
-        description: "Document deleted successfully",
+        title: t("success"),
+        description: t("documentDeletedSuccess"),
       });
     } catch (error) {
       console.error("Error deleting document:", error);
       toast({
-        title: "Error",
-        description: "Failed to delete document",
+        title: t("error"),
+        description: t("failedToDeleteDocument"),
         variant: "destructive",
       });
     } finally {
@@ -290,14 +291,14 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
       setShowAddDialog(false);
 
       toast({
-        title: "Success",
-        description: "Document added successfully",
+        title: t("success"),
+        description: t("documentAddedSuccess"),
       });
     } catch (error) {
       console.error("Error adding document:", error);
       toast({
-        title: "Error",
-        description: "Failed to add document",
+        title: t("error"),
+        description: t("failedToAddDocument"),
         variant: "destructive",
       });
     } finally {
@@ -323,16 +324,16 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
       if (error) throw error;
 
       toast({
-        title: "Success",
-        description: "Product updated successfully",
+        title: t("success"),
+        description: t("productUpdatedSuccess"),
       });
 
       router.push("/dashboard/products");
     } catch (error) {
       console.error("Error updating product:", error);
       toast({
-        title: "Error",
-        description: "Failed to update product",
+        title: t("error"),
+        description: t("failedToUpdateProduct"),
         variant: "destructive",
       });
     } finally {
@@ -344,9 +345,9 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
     if (!status) return null;
     
     const statusConfig = {
-      pending: { variant: "secondary" as const, text: "Pending" },
-      approved: { variant: "default" as const, text: "Approved" },
-      rejected: { variant: "destructive" as const, text: "Rejected" },
+      pending: { variant: "secondary" as const, text: t("pending") },
+      approved: { variant: "default" as const, text: t("approved") },
+      rejected: { variant: "destructive" as const, text: t("rejected") },
     };
 
     const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.pending;
@@ -398,14 +399,14 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
       setNewImage(null);
 
       toast({
-        title: "Success",
-        description: "Image uploaded successfully",
+        title: t("success"),
+        description: t("imageUploadedSuccess"),
       });
     } catch (error) {
       console.error("Error uploading image:", error);
       toast({
-        title: "Error",
-        description: "Failed to upload image",
+        title: t("error"),
+        description: t("failedToUploadImage"),
         variant: "destructive",
       });
     } finally {
@@ -427,14 +428,14 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
       setProduct(prev => prev ? { ...prev, images: updatedImages } : null);
 
       toast({
-        title: "Success",
-        description: "Image deleted successfully",
+        title: t("success"),
+        description: t("imageDeletedSuccess"),
       });
     } catch (error) {
       console.error("Error deleting image:", error);
       toast({
-        title: "Error",
-        description: "Failed to delete image",
+        title: t("error"),
+        description: t("failedToDeleteImage"),
         variant: "destructive",
       });
     }
@@ -458,13 +459,13 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
 
       setProduct(prev => prev ? { ...prev, images: updatedImages } : null);
       toast({
-        title: "Success",
-        description: "Primary image updated successfully",
+        title: t("success"),
+        description: t("primaryImageUpdatedSuccess"),
       });
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to update primary image",
+        title: t("error"),
+        description: t("failedToUpdatePrimaryImage"),
         variant: "destructive",
       });
     }
@@ -474,7 +475,7 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Edit Product</CardTitle>
+          <CardTitle>{t("editProduct")}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -494,12 +495,12 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
     return (
       <Card>
         <CardContent className="flex flex-col items-center justify-center py-12">
-          <h2 className="text-xl font-semibold mb-2">Product Not Found</h2>
+          <h2 className="text-xl font-semibold mb-2">{t("productNotFound")}</h2>
           <p className="text-muted-foreground mb-4">
-            The requested product could not be found.
+            {t("productNotFoundDescription")}
           </p>
           <Button asChild>
-            <Link href="/dashboard/products">Back to Products</Link>
+            <Link href="/dashboard/products">{t("backToProducts")}</Link>
           </Button>
         </CardContent>
       </Card>
@@ -514,10 +515,10 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
             <Button variant="ghost" size="icon" asChild>
               <Link href="/dashboard/products">
                 <ArrowLeft className="h-4 w-4" />
-                <span className="sr-only">Back</span>
+                <span className="sr-only">{t("back")}</span>
               </Link>
             </Button>
-            <CardTitle>Edit Product</CardTitle>
+            <CardTitle>{t("editProduct")}</CardTitle>
           </div>
         </CardHeader>
         <CardContent>
@@ -530,11 +531,11 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
                 return (
                   <Alert variant="destructive">
                     <AlertCircle className="h-4 w-4" />
-                    <AlertTitle>Product Rejected</AlertTitle>
+                    <AlertTitle>{t("productRejected")}</AlertTitle>
                     <AlertDescription>
                       <div className="mt-2">
-                        <p><strong>Rejection Reason:</strong> {lastHistory.reason.replace("Rejected: ", "")}</p>
-                        <p><strong>Rejection Date:</strong> {new Date(lastHistory.timestamp).toLocaleDateString()}</p>
+                        <p><strong>{t("rejectionReason")}:</strong> {lastHistory.reason.replace("Rejected: ", "")}</p>
+                        <p><strong>{t("rejectionDate")}:</strong> {new Date(lastHistory.timestamp).toLocaleDateString()}</p>
                       </div>
                     </AlertDescription>
                   </Alert>
@@ -547,20 +548,20 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
           {rejectedDocument && (
             <Alert variant="destructive" key="rejected-document-alert">
               <AlertCircle className="h-4 w-4" />
-              <AlertTitle>Document Rejected</AlertTitle>
+              <AlertTitle>{t("documentRejected")}</AlertTitle>
               <AlertDescription>
                 <div className="mt-2">
-                  <p key="doc-name"><strong>Document:</strong> {rejectedDocument.name}</p>
-                  <p key="doc-type"><strong>Type:</strong> {getDocumentTypeLabel(rejectedDocument)}</p>
-                  <p key="doc-reason"><strong>Rejection Reason:</strong> {rejectedDocument.rejection_reason}</p>
-                  <p key="doc-date"><strong>Rejection Date:</strong> {rejectedDocument.uploadedAt ? new Date(rejectedDocument.uploadedAt).toLocaleDateString() : "N/A"}</p>
+                  <p key="doc-name"><strong>{t("document")}:</strong> {rejectedDocument.name}</p>
+                  <p key="doc-type"><strong>{t("type")}:</strong> {getDocumentTypeLabel(rejectedDocument, t)}</p>
+                  <p key="doc-reason"><strong>{t("rejectionReason")}:</strong> {rejectedDocument.rejection_reason}</p>
+                  <p key="doc-date"><strong>{t("rejectionDate")}:</strong> {rejectedDocument.uploadedAt ? new Date(rejectedDocument.uploadedAt).toLocaleDateString() : t("notAvailable")}</p>
                 </div>
               </AlertDescription>
             </Alert>
           )}
           
           <div className="space-y-2">
-            <Label htmlFor="name">Product Name</Label>
+            <Label htmlFor="name">{t("productName")}</Label>
             <Input 
               id="name" 
               value={formData.name} 
@@ -568,7 +569,7 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="model">Model</Label>
+            <Label htmlFor="model">{t("model")}</Label>
             <Input 
               id="model" 
               value={formData.model} 
@@ -576,7 +577,7 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="type">Product Type</Label>
+            <Label htmlFor="type">{t("productType")}</Label>
             <Input 
               id="product_type" 
               value={getFullProductTypeDisplay()} 
@@ -588,7 +589,7 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
           
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold">Product Images</h3>
+              <h3 className="text-lg font-semibold">{t("productImages")}</h3>
               <div className="flex items-center gap-2">
                 <Input
                   type="file"
@@ -609,11 +610,11 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
                   disabled={isUploadingImage}
                 >
                   {isUploadingImage ? (
-                    "Uploading..."
+                    t("uploading")
                   ) : (
                     <>
                       <Upload className="h-4 w-4 mr-2" />
-                      Add New Image
+                      {t("addNewImage")}
                     </>
                   )}
                 </Button>
@@ -636,7 +637,7 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
                         onClick={() => handleSetPrimaryImage(image.url)}
                         disabled={image.is_primary}
                       >
-                        {image.is_primary ? "Primary" : "Set as Primary"}
+                        {image.is_primary ? t("primary") : t("setAsPrimary")}
                       </Button>
                       <Button
                         size="sm"
@@ -656,24 +657,24 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
           
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold">Product Documents</h3>
+              <h3 className="text-lg font-semibold">{t("productDocuments")}</h3>
               <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
                 <DialogTrigger asChild>
                   <Button size="sm">
                     <Plus className="h-4 w-4 mr-2" />
-                    Add New Document
+                    {t("addNewDocument")}
                   </Button>
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
-                    <DialogTitle>Add New Document</DialogTitle>
+                    <DialogTitle>{t("addNewDocument")}</DialogTitle>
                     <DialogDescription>
-                      Upload a new document for this product.
+                      {t("addNewDocumentDescription")}
                     </DialogDescription>
                   </DialogHeader>
                   <div className="space-y-4 py-4">
                     <div className="space-y-2">
-                      <Label htmlFor="document-file">Document File</Label>
+                      <Label htmlFor="document-file">{t("documentFile")}</Label>
                       <Input
                         id="document-file"
                         type="file"
@@ -681,35 +682,35 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
                       />
                       {newDocument.file && (
                         <p className="text-sm text-muted-foreground">
-                          Selected: {newDocument.name}
+                          {t("selected")}: {newDocument.name}
                         </p>
                       )}
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="document-type">Document Type</Label>
+                      <Label htmlFor="document-type">{t("documentType")}</Label>
                       <Select
                         value={newDocument.type}
                         onValueChange={handleDocumentTypeChange}
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder="Select document type" />
+                          <SelectValue placeholder={t("selectDocumentType")} />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="technical_docs">Technical Documentation</SelectItem>
-                          <SelectItem value="test_reports">Test Reports</SelectItem>
-                          <SelectItem value="compliance_docs">Compliance Documents</SelectItem>
-                          <SelectItem value="certificates">Certificates</SelectItem>
-                          <SelectItem value="other">Other</SelectItem>
+                          <SelectItem value="technical_docs">{t("technicalDocumentation")}</SelectItem>
+                          <SelectItem value="test_reports">{t("testReports")}</SelectItem>
+                          <SelectItem value="compliance_docs">{t("complianceDocuments")}</SelectItem>
+                          <SelectItem value="certificates">{t("certificates")}</SelectItem>
+                          <SelectItem value="other">{t("other")}</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
                   </div>
                   <DialogFooter>
                     <Button variant="outline" onClick={() => setShowAddDialog(false)}>
-                      Cancel
+                      {t("cancel")}
                     </Button>
                     <Button onClick={handleAddNewDocument} disabled={isUploading || !newDocument.file}>
-                      {isUploading ? "Uploading..." : "Upload Document"}
+                      {isUploading ? t("uploading") : t("uploadDocument")}
                     </Button>
                   </DialogFooter>
                 </DialogContent>
@@ -718,7 +719,7 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
             
             {allDocuments.length === 0 ? (
               <div className="text-center py-6 text-muted-foreground">
-                No documents found for this product.
+                {t("noDocumentsFound")}
               </div>
             ) : (
               <div className="space-y-4">
@@ -734,7 +735,7 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
                         <Button variant="ghost" size="sm" asChild>
                           <Link href={doc.url || "#"}>
                             <Download className="h-4 w-4 mr-1" />
-                            Download
+                            {t("download")}
                           </Link>
                         </Button>
                         <Button 
@@ -744,30 +745,30 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
                           disabled={isDeleting === doc.id}
                         >
                           <Trash2 className="h-4 w-4 mr-1" />
-                          {isDeleting === doc.id ? "Deleting..." : "Delete"}
+                          {isDeleting === doc.id ? t("deleting") : t("delete")}
                         </Button>
                       </div>
                     </div>
                     <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground">
                       <div key={`doc-type-${doc.id}`}>
-                        <span className="font-medium">Type:</span> {getDocumentTypeLabel(doc)}
+                        <span className="font-medium">{t("type")}:</span> {getDocumentTypeLabel(doc, t)}
                       </div>
                       <div key={`doc-version-${doc.id}`}>
-                        <span className="font-medium">Version:</span> {doc.version || "1.0"}
+                        <span className="font-medium">{t("version")}:</span> {doc.version || "1.0"}
                       </div>
                       <div key={`doc-upload-date-${doc.id}`}>
-                        <span className="font-medium">Upload Date:</span> {doc.uploadedAt ? new Date(doc.uploadedAt).toLocaleDateString() : "N/A"}
+                        <span className="font-medium">{t("uploadDate")}:</span> {doc.uploadedAt ? new Date(doc.uploadedAt).toLocaleDateString() : t("notAvailable")}
                       </div>
                       {doc.rejection_reason && (
                         <div key={`doc-rejection-reason-${doc.id}`}>
-                          <span className="font-medium">Rejection Reason:</span> {doc.rejection_reason}
+                          <span className="font-medium">{t("rejectionReason")}:</span> {doc.rejection_reason}
                         </div>
                       )}
                     </div>
                     
                     {doc.id === reuploadDocumentId && (
                       <div className="mt-4 pt-4 border-t">
-                        <Label htmlFor={`document-${doc.id}`} className="text-sm font-medium">Re-upload Document</Label>
+                        <Label htmlFor={`document-${doc.id}`} className="text-sm font-medium">{t("reuploadDocument")}</Label>
                         <div className="flex items-center space-x-2 mt-2">
                           <Input
                             id={`document-${doc.id}`}
@@ -777,7 +778,7 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
                           />
                           <Button size="sm" disabled={isUploading}>
                             <Upload className="h-4 w-4 mr-2" />
-                            {isUploading ? "Uploading..." : "Upload"}
+                            {isUploading ? t("uploading") : t("upload")}
                           </Button>
                         </div>
                       </div>
@@ -790,10 +791,10 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
           
           <div className="flex justify-end space-x-2">
             <Button variant="outline" asChild>
-              <Link href="/dashboard/products">Cancel</Link>
+              <Link href="/dashboard/products">{t("cancel")}</Link>
             </Button>
             <Button onClick={handleSaveChanges} disabled={isSaving}>
-              {isSaving ? "Saving..." : "Save Changes"}
+              {isSaving ? t("saving") : t("saveChanges")}
             </Button>
           </div>
         </div>
@@ -804,18 +805,18 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
     <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Delete Document</AlertDialogTitle>
+          <AlertDialogTitle>{t("deleteDocument")}</AlertDialogTitle>
           <AlertDialogDescription>
-            Are you sure you want to delete &quot;{documentToDelete?.name}&quot;? This action cannot be undone.
+            {t("deleteDocumentConfirmation", { name: documentToDelete?.name || "" })}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
           <AlertDialogAction
             onClick={confirmDeleteDocument}
             className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
           >
-            Delete
+            {t("delete")}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
