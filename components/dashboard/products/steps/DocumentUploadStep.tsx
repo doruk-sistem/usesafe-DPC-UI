@@ -40,9 +40,10 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
   const [isVerified, setIsVerified] = useState(false);
   const t = useTranslations();
 
-  // Get product type and subcategory from form
+  // Get product type, subcategory and weight from form
   const productType = form.watch("product_type");
   const subcategory = form.watch("product_subcategory");
+  const weight = form.watch("weight");
 
   // Get real labels from localStorage (set in BasicInfoStep)
   const getCategoryLabel = (categoryId: string): string => {
@@ -53,10 +54,11 @@ export function DocumentUploadStep({ form }: DocumentUploadStepProps) {
     return localStorage.getItem('selectedSubcategoryLabel') || subcategoryId;
   };
 
-  // ChatGPT guidance hook - Send real labels to AI
+  // ChatGPT guidance hook - Send real labels and weight to AI
   const { guidance, isLoading: guidanceLoading, error: guidanceError, refreshGuidance } = useChatGPTGuidance({
     productType: getCategoryLabel(productType),
     subcategory: getSubcategoryLabel(subcategory),
+    weight: weight,
     enabled: !!productType && !!subcategory,
   });
 

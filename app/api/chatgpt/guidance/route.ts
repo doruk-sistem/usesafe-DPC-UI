@@ -23,7 +23,7 @@ export interface ProductDocumentGuidance {
 
 export async function POST(request: NextRequest) {
   try {
-    const { productType, subcategory } = await request.json();
+    const { productType, subcategory, weight } = await request.json();
 
     if (!productType || !subcategory) {
       return NextResponse.json(
@@ -47,6 +47,7 @@ Determine all necessary GPSR (General Product Safety Regulation) compliance docu
 
 Product Type: ${productType}
 Subcategory: ${subcategory}
+Product Weight: ${weight ? `${weight} kg` : 'Not specified'}
 
 Select from these specific GPSR compliance documents based on the product category and risk level:
 
@@ -77,12 +78,13 @@ OPTIONAL DOCUMENTS (choose relevant ones):
 - CBAM Registry Documentation (for CBAM covered products)
 - Carbon Footprint Assessment (for CBAM covered products)
 
-Analyze the specific product "${productType}" in "${subcategory}" category and determine:
+Analyze the specific product "${productType}" in "${subcategory}" category (${weight ? `weighing ${weight} kg` : 'weight not specified'}) and determine:
 1. Which documents are mandatory vs optional based on:
-   - Product risk level (consumer use, age groups, potential hazards)
+   - Product risk level (consumer use, age groups, potential hazards, weight considerations)
    - CE marking requirements for this category
    - Applicable harmonized standards
    - GPSR obligations for this product type
+   - Weight-specific safety requirements (heavy products may need additional handling/installation guidance)
 
 2. Whether DPP (Digital Product Passport) is required under ESPR:
    - Check if product category falls under ESPR scope and timeline
@@ -100,6 +102,7 @@ Analyze the specific product "${productType}" in "${subcategory}" category and d
 
 3. Whether CBAM (Carbon Border Adjustment Mechanism) compliance is required:
    - Check if product category falls under CBAM regulation scope
+   - Consider product weight for carbon footprint calculations (heavier products typically have higher emissions)
    - CBAM REQUIRED (true): Products covered by CBAM sectors
    - CBAM NOT REQUIRED (false): Products NOT covered by CBAM sectors
    - CBAM covered sectors:
@@ -109,6 +112,7 @@ Analyze the specific product "${productType}" in "${subcategory}" category and d
      * Fertilizers and fertilizer products
      * Electricity (for imports)
      * Hydrogen and hydrogen products
+   - Weight considerations: Products over 10kg may require additional transportation impact assessments
 
 Respond ONLY with this JSON format:
 
@@ -154,6 +158,8 @@ CRITICAL RULES:
 - CBAM Evaluation: Set cbamRequired = true if product falls under CBAM covered sectors
 - CBAM Evaluation: Set cbamRequired = false if product is NOT covered by CBAM regulation
 - Consider product-specific requirements for ${productType}
+- Factor in product weight (${weight ? `${weight} kg` : 'not specified'}) for safety and compliance assessments
+- Heavy products (>10kg) may need additional handling, installation, and transportation safety documents
 - NEVER use numbers or indexes in response
 - Respond ONLY with JSON object
 - Use actual product type and subcategory names in descriptions
@@ -200,10 +206,12 @@ CBAM COMPLIANCE:
 - Third country certificate requirements for imports
 
 Your task:
-- Analyze the specific product type and subcategory provided
-- Determine GPSR compliance requirements based on product risk level
+- Analyze the specific product type, subcategory, and weight provided
+- Determine GPSR compliance requirements based on product risk level and weight considerations
 - Evaluate ESPR DPP requirement: Set true if category is in ESPR plan (now through 2030), false if not planned
 - Evaluate CBAM requirement: Set true if category is covered by CBAM sectors (cement, iron/steel, aluminium, fertilizers, electricity, hydrogen), false if not covered
+- Consider weight impact: Heavy products (>10kg) may require additional safety documentation for handling, installation, and transportation
+- Weight considerations for carbon footprint: Heavier products typically have higher transportation emissions
 - Identify mandatory vs recommended documentation including CBAM documents for covered products
 - Consider product-specific safety, sustainability, and carbon compliance standards
 - Provide practical compliance guidance for EU market access
