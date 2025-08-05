@@ -5,12 +5,14 @@ import { ChatGPTService, type ProductDocumentGuidance } from '@/lib/services/cha
 interface UseChatGPTGuidanceProps {
   productType: string; // LABEL (isim) olarak gelmeli
   subcategory: string; // LABEL (isim) olarak gelmeli
+  weight?: number; // Ürün ağırlığı (kg)
   enabled?: boolean;
 }
 
 export function useChatGPTGuidance({
   productType,
   subcategory,
+  weight,
   enabled = true,
 }: UseChatGPTGuidanceProps) {
   const [guidance, setGuidance] = useState<ProductDocumentGuidance | null>(null);
@@ -28,8 +30,8 @@ export function useChatGPTGuidance({
       setError(null);
 
       try {
-        // Artık doğrudan label (isim) gönderiyoruz
-        const result = await ChatGPTService.getDocumentGuidance(productType, subcategory);
+        // Artık doğrudan label (isim) gönderiyoruz ve weight'i ekliyoruz
+        const result = await ChatGPTService.getDocumentGuidance(productType, subcategory, weight);
         setGuidance(result);
       } catch (err) {
         console.error('Error fetching ChatGPT guidance:', err);
@@ -43,7 +45,7 @@ export function useChatGPTGuidance({
     const timeoutId = setTimeout(fetchGuidance, 1000);
 
     return () => clearTimeout(timeoutId);
-  }, [productType, subcategory, enabled]);
+  }, [productType, subcategory, weight, enabled]);
 
   const refreshGuidance = async () => {
     if (!productType || !subcategory) return;
@@ -52,8 +54,8 @@ export function useChatGPTGuidance({
     setError(null);
 
     try {
-      // Artık doğrudan label (isim) gönderiyoruz
-      const result = await ChatGPTService.getDocumentGuidance(productType, subcategory);
+      // Artık doğrudan label (isim) gönderiyoruz ve weight'i ekliyoruz
+      const result = await ChatGPTService.getDocumentGuidance(productType, subcategory, weight);
       setGuidance(result);
     } catch (err) {
       console.error('Error refreshing ChatGPT guidance:', err);

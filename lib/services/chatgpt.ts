@@ -29,10 +29,11 @@ export class ChatGPTService {
 
   static async getDocumentGuidance(
     productType: string,
-    subcategory: string
+    subcategory: string,
+    weight?: number
   ): Promise<ProductDocumentGuidance> {
-    // Check cache first
-    const cacheKey = `${productType}-${subcategory}`;
+    // Check cache first (include weight in cache key)
+    const cacheKey = `${productType}-${subcategory}-${weight || 'no-weight'}`;
     if (this.cache.has(cacheKey)) {
       return this.cache.get(cacheKey)!;
     }
@@ -56,6 +57,7 @@ export class ChatGPTService {
         body: JSON.stringify({
           productType,
           subcategory,
+          weight,
         }),
       });
 
@@ -72,7 +74,7 @@ export class ChatGPTService {
     } catch (error) {
       console.error('API error:', error);
       // Fallback to default requirements
-      return this.getDefaultGuidance(productType, subcategory);
+      return this.getDefaultGuidance(productType, subcategory, weight);
     }
   }
 
@@ -122,7 +124,8 @@ export class ChatGPTService {
 
   private static getDefaultGuidance(
     productType: string,
-    subcategory: string
+    subcategory: string,
+    weight?: number
   ): ProductDocumentGuidance {
     return {
       productType,

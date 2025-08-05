@@ -1759,6 +1759,10 @@
         "label": "Model",
         "placeholder": "Select Model"
       },
+      "weight": {
+        "label": "Product Weight",
+        "placeholder": "Enter product weight"
+      },
       "description": {
         "label": "Description",
         "placeholder": "Enter product description"
