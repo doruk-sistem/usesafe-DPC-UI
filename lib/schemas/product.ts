@@ -17,6 +17,7 @@ export const productSchema = z.object({
   product_type: z.string().min(1, "Product type is required"),
   product_subcategory: z.string().min(1, "Product subcategory is required"),
   model: z.string().min(1, "Product model is required"),
+  weight: z.number().min(0.001, "Weight must be greater than 0").optional(),
   images: z
     .array(
       z.object({

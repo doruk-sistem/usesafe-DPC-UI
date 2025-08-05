@@ -22,6 +22,7 @@ export interface Database {
           product_type: string
           product_subcategory: string
           model?: string
+          weight?: number
           status: ProductStatus
           status_history: StatusTransition[]
           images: ProductImage[]
@@ -40,6 +41,7 @@ export interface Database {
           product_type: string
           product_subcategory: string
           model: string
+          weight?: number
           status?: ProductStatus
           status_history?: StatusTransition[]
           images: {
@@ -72,6 +74,7 @@ export interface Database {
           product_type?: string
           product_subcategory?: string
           model?: string
+          weight?: number
           documents?: Document[]
           manufacturer_id?: string
           document_status?: string

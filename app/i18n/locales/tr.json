@@ -2703,6 +2703,10 @@
         "value": "Değer",
         "unit": "Birim (opsiyonel)",
         "add": "Özellik Ekle"
+      },
+      "weight": {
+        "label": "Ürün Ağırlığı",
+        "placeholder": "Ürünün ağırlığını giriniz"
       }
     },
     "status": {

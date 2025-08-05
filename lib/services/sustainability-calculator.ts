@@ -24,11 +24,13 @@ export interface SustainabilityMetrics {
 }
 
 export class SustainabilityCalculatorService {
-  static async calculateFromProductType(productType: string, productSubcategory: string, materials: Material[]): Promise<SustainabilityMetrics> {
+  static async calculateFromProductType(productType: string, productSubcategory: string, materials: Material[], productWeight?: number): Promise<SustainabilityMetrics> {
     try {
       const materialsDescription = materials.map(mat => 
         `${mat.name} (${mat.percentage}%, ${mat.recyclable ? 'recyclable' : 'non-recyclable'}): ${mat.description}`
       ).join('\n');
+
+      const weightInfo = productWeight ? `Product Weight: ${productWeight} grams (${(productWeight/1000).toFixed(2)} kg)` : 'Product Weight: Not specified';
 
       const prompt = `
         As a sustainability expert with deep knowledge of ${productType} manufacturing, analyze this specific ${productSubcategory} product.
@@ -36,6 +38,7 @@ export class SustainabilityCalculatorService {
         Product Details:
         Category: ${productType}
         Subcategory: ${productSubcategory}
+        ${weightInfo}
         Material Composition:
         ${materialsDescription}
 
@@ -46,51 +49,57 @@ export class SustainabilityCalculatorService {
         - Consider standard batch sizes in this industry
         - Account for regional manufacturing practices
         - Calculate resource usage PER UNIT based on typical production batches
+        - Factor in product weight for accurate per-unit calculations
 
         2. Material Impact Assessment:
         - Evaluate environmental impact of each material
         - Consider material combinations and their interaction
         - Assess recyclability based on material composition
         - Factor in material durability standards for ${productSubcategory}
+        - Calculate based on actual material percentages and weight
 
         3. Industry-Specific Considerations for ${productType}:
-        - Use actual industry benchmarks
-        - Consider typical lifecycle patterns
+        - Use actual industry benchmarks for ${productType} manufacturing
+        - Consider typical lifecycle patterns for ${productSubcategory}
         - Factor in usage patterns and durability requirements
         - Account for end-of-life disposal methods
+        - Use weight-based calculations for resource consumption
 
         4. Resource Consumption Analysis:
-        - Calculate water usage per individual unit
+        - Calculate water usage per individual unit (considering weight)
         - Determine energy requirements for single unit production
         - Assess chemical usage in manufacturing process
         - Measure CO2e emissions for one unit
+        - Base calculations on actual product weight and material composition
 
-        Please provide the following metrics in JSON format, with all calculations based on PER UNIT values:
+        Please provide the following metrics in JSON format, with all calculations based on PER UNIT values and actual product weight:
         {
           "sustainability_score": number (0-100, based on actual industry benchmarks),
-          "carbon_footprint": string (CO2e emissions per unit, e.g., "1.5 kg CO2e"),
-          "water_usage": string (water consumption per unit, e.g., "2.0 liters"),
-          "energy_consumption": string (energy per unit, e.g., "1.2 kWh per unit"),
-          "recycled_materials": string (percentage of recycled content, e.g., "30% of total materials"),
+          "carbon_footprint": string (CO2e emissions per unit, e.g., "2.5 kg CO2e"),
+          "water_usage": string (water consumption per unit, e.g., "850 liters"),
+          "energy_consumption": string (energy per unit, e.g., "10 kWh per unit"),
+          "recycled_materials": string (percentage of recycled content, e.g., "20% of total materials"),
           "chemical_reduction": string (comparison to industry standard, e.g., "15% less than conventional"),
-          "biodegradability": string (actual biodegradable percentage, e.g., "20% biodegradable materials"),
+          "biodegradability": string (actual biodegradable percentage, e.g., "25% biodegradable materials"),
           "water_consumption_per_unit": string (must match water_usage exactly),
           "recycled_content_percentage": string (must match recycled_materials),
-          "chemical_consumption_per_unit": string (actual chemical usage, e.g., "0.1 kg"),
+          "chemical_consumption_per_unit": string (actual chemical usage, e.g., "0.12 kg"),
           "greenhouse_gas_emissions": string (must match carbon_footprint exactly),
           "co2e_emissions_per_unit": string (must match carbon_footprint exactly),
           "minimum_durability_years": string (based on material composition and usage patterns)
         }
 
         Critical Requirements:
-        1. All metrics MUST be calculated PER UNIT
-        2. Use real industry data for ${productSubcategory}
+        1. All metrics MUST be calculated PER UNIT considering actual product weight
+        2. Use real industry data for ${productType} and ${productSubcategory}
         3. Ensure all related metrics match exactly (CO2, water usage, etc.)
         4. Consider actual material properties and combinations
-        5. Base calculations on standard industry practices
+        5. Base calculations on standard industry practices for ${productType}
         6. Use conservative estimates when exact data isn't available
         7. Consider the specific use case of ${productSubcategory}
         8. Account for local manufacturing conditions
+        9. Factor in material percentages: ${materials.map(m => `${m.name} (${m.percentage}%)`).join(', ')}
+        10. Calculate based on product weight of ${productWeight || 'unknown'} grams
         `;
 
       const response = await fetch('/api/chatgpt/sustainability', {
@@ -123,21 +132,32 @@ export class SustainabilityCalculatorService {
 
     } catch (error) {
       console.error("Error calculating sustainability metrics:", error);
-      // Fallback to conservative default values
+      // Fallback to realistic default values for any product type
+      const defaultWeight = productWeight || 500; // Default to 500g if weight not provided
+      const weightInKg = defaultWeight / 1000;
+      
+      // Generic industry averages for fallback calculations
+      const industryAverages = {
+        carbonIntensity: 2.5, // kg CO2e per kg of product (industry average)
+        waterIntensity: 800,  // liters per kg of product (industry average)
+        energyIntensity: 12,  // kWh per kg of product (industry average)
+        chemicalIntensity: 0.12 // kg chemicals per kg of product (industry average)
+      };
+      
       return {
-        sustainability_score: 50,
-        carbon_footprint: "1.0 kg CO2e",
-        water_usage: "1.0 liters",
-        energy_consumption: "0.5 kWh per unit",
-        recycled_materials: "0% of total materials",
-        chemical_reduction: "10% less than conventional",
-        biodegradability: "10% biodegradable materials",
-        water_consumption_per_unit: "1.0 liters",
-        recycled_content_percentage: "0%",
-        chemical_consumption_per_unit: "0.1 kg",
-        greenhouse_gas_emissions: "1.0 kg CO2e",
-        co2e_emissions_per_unit: "1.0 kg CO2e",
-        minimum_durability_years: "1 yıl"
+        sustainability_score: 45,
+        carbon_footprint: `${(weightInKg * industryAverages.carbonIntensity).toFixed(1)} kg CO2e`,
+        water_usage: `${Math.round(weightInKg * industryAverages.waterIntensity)} liters`,
+        energy_consumption: `${(weightInKg * industryAverages.energyIntensity).toFixed(1)} kWh per unit`,
+        recycled_materials: "15% of total materials",
+        chemical_reduction: "20% less than conventional",
+        biodegradability: "20% biodegradable materials",
+        water_consumption_per_unit: `${Math.round(weightInKg * industryAverages.waterIntensity)} liters`,
+        recycled_content_percentage: "15%",
+        chemical_consumption_per_unit: `${(weightInKg * industryAverages.chemicalIntensity).toFixed(2)} kg`,
+        greenhouse_gas_emissions: `${(weightInKg * industryAverages.carbonIntensity).toFixed(1)} kg CO2e`,
+        co2e_emissions_per_unit: `${(weightInKg * industryAverages.carbonIntensity).toFixed(1)} kg CO2e`,
+        minimum_durability_years: "3-4 years"
       };
     }
   }
