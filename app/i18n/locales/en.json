@@ -727,6 +727,16 @@
     },
     "details": {
       "backToProducts": "Back to Products",
+      "distributors":{
+        "loading":"Loading distributors...",
+        "title":"Distributors",
+        "contactInformation":"Contact Information",
+        "assignedAt":"Assigned At",
+
+        "status":{
+          "active":"Active"
+        }
+      },
       "basicInfo": {
         "title": "Basic Information",
         "productCode": "Product Code",
