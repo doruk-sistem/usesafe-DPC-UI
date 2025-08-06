@@ -84,7 +84,7 @@ export function AddDistributorModal({ isOpen, onClose, onSuccess }: AddDistribut
       };
 
       // Insert into database
-      const { error } = await DistributorService.createDistributor({ distributorData });
+      const { error } = await DistributorService.createDistributor(distributorData);
 
       if (error) {
         throw new Error(error.message);
