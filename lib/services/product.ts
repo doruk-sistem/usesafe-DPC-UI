@@ -265,23 +265,63 @@ export const productService = createService({
 
       // Insert distributors if provided
       if (data && distributors && distributors.length > 0) {
+        console.log("Creating distributors for product:", data.id);
+        console.log("Distributors data:", distributors);
+        
         const { data: { user } } = await supabase.auth.getUser();
         const assignedBy = user?.id || 'system';
         
-        const distributorRows = distributors.map((dist: any) => ({
-          product_id: data.id,
-          distributor_id: dist.id, // Use dist.id instead of dist.distributorId
-          assigned_by: assignedBy,
-          status: 'active',
-          territory: null,
-          commission_rate: null,
-          notes: null,
-        }));
+        const distributorRows = distributors.map((dist: any) => {
+          const distributorId = dist.id || dist.distributorId;
+          console.log("Processing distributor:", dist);
+          console.log("Distributor ID:", distributorId);
+          
+          return {
+            product_id: data.id,
+            distributor_id: distributorId,
+            assigned_by: assignedBy,
+            status: 'active',
+            territory: null,
+            commission_rate: null,
+            notes: null,
+          };
+        });
+        
+        console.log("Distributor rows to insert:", distributorRows);
         
         const { error: distributorsError } = await supabase.from("product_distributors").insert(distributorRows);
         if (distributorsError) {
           console.error("Error inserting distributors:", distributorsError);
+          console.error("Distributor data:", distributors);
+          console.error("Distributor rows:", distributorRows);
           // Not blocking product creation, just log error
+        } else {
+          console.log("Distributors inserted successfully");
+          
+          // Update assigned_products_count for each distributor
+          for (const dist of distributors) {
+            const distributorId = dist.id || dist.distributorId;
+            if (distributorId) {
+              // Get current count
+              const { data: currentDistributor } = await supabase
+                .from("distributors")
+                .select("assigned_products_count")
+                .eq("id", distributorId)
+                .single();
+              
+              if (currentDistributor) {
+                const newCount = (currentDistributor.assigned_products_count || 0) + 1;
+                
+                // Update the count
+                await supabase
+                  .from("distributors")
+                  .update({ assigned_products_count: newCount })
+                  .eq("id", distributorId);
+                
+                console.log(`Updated distributor ${distributorId} count to ${newCount}`);
+              }
+            }
+          }
         }
       }
 

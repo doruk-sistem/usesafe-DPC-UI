@@ -47,6 +47,27 @@
       "addDistributor":"Distribütör Ekle",
       "export":"Dışa Aktar"
     },
+    "add":{
+      "title":"Yeni Distribütör Ekle",
+      "description":"Yeni bir distribütör eklemek için formu doldurun",
+      "form":{
+        "name":"Distribütör Adı",
+        "namePlaceholder":"Distribütör adını girin",
+        "taxNumber":"Vergi Numarası",
+        "taxNumberPlaceholder":"Vergi numarasını girin",
+        "email":"E-posta",
+        "emailPlaceholder":"E-posta adresini girin",
+        "phone":"Telefon",
+        "phonePlaceholder":"Telefon numarasını girin",
+        "website":"Web Sitesi",
+        "websitePlaceholder":"Web sitesi URL'sini girin",
+        "address":"Adres",
+        "addressPlaceholder":"Adres bilgilerini girin",
+        "cancel":"İptal",
+        "add":"Distribütör Ekle",
+        "adding":"Ekleniyor..."
+      }
+    },
     "sort":{
       "nameAsc":"Ad (A-Z)",
       "nameDesc":"Ad (Z-A)",

@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/components/ui/use-toast";
 
 import { DistributorHeader } from "@/components/dashboard/distributors/distributor-header";
@@ -9,7 +10,9 @@ import { DistributorFilters } from "@/lib/types/distributor";
 
 export default function DistributorsPage() {
   const [filters, setFilters] = useState<DistributorFilters>({});
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const handleFiltersChange = (newFilters: DistributorFilters) => {
     setFilters(newFilters);
@@ -28,11 +31,14 @@ export default function DistributorsPage() {
   };
 
   const handleAddDistributor = () => {
-    toast({
-      title: "Distribütör ekleme",
-      description: "Distribütör ekleme formu açılıyor...",
-    });
-    // Add distributor logic will be implemented here
+    setIsAddModalOpen(true);
+  };
+
+  const handleAddSuccess = () => {
+    // Invalidate distributor queries to refresh the list
+    queryClient.invalidateQueries({ queryKey: ['getDistributors'] });
+    queryClient.invalidateQueries({ queryKey: ['getDistributorStats'] });
+    setIsAddModalOpen(false);
   };
 
   return (
@@ -42,10 +48,13 @@ export default function DistributorsPage() {
         onSearch={handleSearch}
         onExport={handleExport}
         onAddDistributor={handleAddDistributor}
+        isAddModalOpen={isAddModalOpen}
+        onAddModalClose={() => setIsAddModalOpen(false)}
+        onAddSuccess={handleAddSuccess}
       />
       
       <Suspense fallback={<div>Distribütörler yükleniyor...</div>}>
-        <DistributorList filters={filters} />
+        <DistributorList filters={filters} onAddDistributor={handleAddDistributor} />
       </Suspense>
     </div>
   );

@@ -14,12 +14,16 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { DistributorFilters } from "@/lib/types/distributor";
+import { AddDistributorModal } from "./add-distributor-modal";
 
 interface DistributorHeaderProps {
   onFiltersChange: (filters: DistributorFilters) => void;
   onSearch: (query: string) => void;
   onExport: () => void;
   onAddDistributor: () => void;
+  isAddModalOpen: boolean;
+  onAddModalClose: () => void;
+  onAddSuccess: () => void;
 }
 
 export function DistributorHeader({
@@ -27,6 +31,9 @@ export function DistributorHeader({
   onSearch,
   onExport,
   onAddDistributor,
+  isAddModalOpen,
+  onAddModalClose,
+  onAddSuccess,
 }: DistributorHeaderProps) {
   const t = useTranslations("distributors");
   const [searchQuery, setSearchQuery] = useState("");
@@ -71,8 +78,6 @@ export function DistributorHeader({
           />
         </div>
 
-
-
         {/* Sort */}
         <Select
           value={`${filters.sortBy || "name"}-${filters.sortOrder || "asc"}`}
@@ -102,6 +107,13 @@ export function DistributorHeader({
           {t("actions.addDistributor")}
         </Button>
       </div>
+
+      {/* Add Distributor Modal */}
+      <AddDistributorModal
+        isOpen={isAddModalOpen}
+        onClose={onAddModalClose}
+        onSuccess={onAddSuccess}
+      />
     </div>
   );
 } 

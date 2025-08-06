@@ -259,6 +259,25 @@ export class DistributorService {
 
         if (!error) {
           console.log('Successfully assigned distributor to product in database');
+          
+          // Update assigned_products_count for the distributor
+          const { data: currentDistributor } = await supabase
+            .from("distributors")
+            .select("assigned_products_count")
+            .eq("id", assignment.distributorId)
+            .single();
+          
+          if (currentDistributor) {
+            const newCount = (currentDistributor.assigned_products_count || 0) + 1;
+            
+            await supabase
+              .from("distributors")
+              .update({ assigned_products_count: newCount })
+              .eq("id", assignment.distributorId);
+            
+            console.log(`Updated distributor ${assignment.distributorId} count to ${newCount}`);
+          }
+          
           return;
         }
       }
@@ -285,6 +304,25 @@ export class DistributorService {
 
         if (!error) {
           console.log('Successfully removed distributor from product');
+          
+          // Update assigned_products_count for the distributor
+          const { data: currentDistributor } = await supabase
+            .from("distributors")
+            .select("assigned_products_count")
+            .eq("id", distributorId)
+            .single();
+          
+          if (currentDistributor) {
+            const newCount = Math.max(0, (currentDistributor.assigned_products_count || 0) - 1);
+            
+            await supabase
+              .from("distributors")
+              .update({ assigned_products_count: newCount })
+              .eq("id", distributorId);
+            
+            console.log(`Updated distributor ${distributorId} count to ${newCount}`);
+          }
+          
           return;
         }
       }
@@ -351,6 +389,50 @@ export class DistributorService {
     }
 
     return [];
+  }
+
+  // Create distributor
+  static async createDistributor(distributorData: any): Promise<{ data?: Distributor; error?: { message: string } }> {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        return { error: { message: "User not authenticated" } };
+      }
+
+      const { data: distributor, error } = await supabase
+        .from("distributors")
+        .insert([distributorData])
+        .select()
+        .single();
+
+      if (error) {
+        return { error: { message: error.message } };
+      }
+
+      if (distributor) {
+        return {
+          data: {
+            id: distributor.id,
+            name: distributor.name,
+            companyType: distributor.company_type,
+            taxInfo: distributor.tax_info,
+            email: distributor.email,
+            phone: distributor.phone,
+            website: distributor.website,
+            address: distributor.address,
+            assignedProducts: distributor.assigned_products_count,
+            createdAt: distributor.created_at,
+            updatedAt: distributor.updated_at,
+          }
+        };
+      }
+
+      return { error: { message: "Failed to create distributor" } };
+    } catch (error) {
+      console.warn("Failed to create distributor:", error);
+      return { error: { message: "Failed to create distributor" } };
+    }
   }
 }
 
@@ -419,5 +501,10 @@ export const distributorService = createService({
   // Search distributors
   searchDistributors: async ({ query }: { query: string }): Promise<Distributor[]> => {
     return DistributorService.searchDistributors(query);
+  },
+
+  // Create distributor
+  createDistributor: async ({ distributorData }: { distributorData: any }): Promise<{ data?: Distributor; error?: { message: string } }> => {
+    return DistributorService.createDistributor(distributorData);
   }
 }); 

@@ -16,6 +16,27 @@
     "addDistributor":"Add Distributor",
     "export":"Export"
     },
+    "add":{
+      "title":"Add New Distributor",
+      "description":"Fill out the form to add a new distributor",
+      "form":{
+        "name":"Distributor Name",
+        "namePlaceholder":"Enter distributor name",
+        "taxNumber":"Tax Number",
+        "taxNumberPlaceholder":"Enter tax number",
+        "email":"Email",
+        "emailPlaceholder":"Enter email address",
+        "phone":"Phone",
+        "phonePlaceholder":"Enter phone number",
+        "website":"Website",
+        "websitePlaceholder":"Enter website URL",
+        "address":"Address",
+        "addressPlaceholder":"Enter address details",
+        "cancel":"Cancel",
+        "add":"Add Distributor",
+        "adding":"Adding..."
+      }
+    },
     "sort":{
       "nameAsc":"Name (A-Z)",
       "nameDesc":"Name (Z-A)",

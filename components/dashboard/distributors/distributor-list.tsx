@@ -21,9 +21,10 @@ import type { Distributor } from "@/lib/types/distributor";
 
 interface DistributorListProps {
   filters?: any;
+  onAddDistributor?: () => void;
 }
 
-export function DistributorList({ filters }: DistributorListProps) {
+export function DistributorList({ filters, onAddDistributor }: DistributorListProps) {
   const { distributors, stats, isLoading, error } = useDistributorList(filters);
   const t = useTranslations("distributors");
 
@@ -74,7 +75,7 @@ export function DistributorList({ filters }: DistributorListProps) {
             <p className="text-sm text-muted-foreground mb-4">
               {t("list.empty.description")}
             </p>
-            <Button>
+            <Button onClick={onAddDistributor}>
               <Truck className="h-4 w-4 mr-2" />
               {t("list.empty.addFirst")}
             </Button>
