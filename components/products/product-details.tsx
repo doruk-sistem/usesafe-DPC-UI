@@ -14,6 +14,7 @@ import { BaseProduct } from "@/lib/types/product";
 
 import { BasicInformationCard } from "./product-details/BasicInformationCard";
 import { CertificationsCard } from "./product-details/CertificationsCard";
+import { DistributorsCard } from "./product-details/DistributorsCard";
 import { MaterialsCard } from "./product-details/MaterialsCard";
 import { ProductHeader } from "./product-details/ProductHeader";
 import { ProductImageGallery } from "./product-details/ProductImageGallery";
@@ -177,6 +178,12 @@ export function ProductDetails({ product, additionalComponents }: ProductDetails
               name: typeof manufacturer === 'string' ? manufacturer : manufacturer?.name || "Bilgi yükleniyor..."
             }
           }}
+        />
+
+        {/* Distribütörler */}
+        <DistributorsCard
+          title={t("distributors.title")}
+          productId={product.id}
         />
 
         {/* Sertifikalar */}

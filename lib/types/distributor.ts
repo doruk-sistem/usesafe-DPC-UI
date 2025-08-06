@@ -38,10 +38,7 @@ export interface ProductDistributor {
     model: string;
     productType: string;
   };
-  assignedByCompany?: {
-    id: string;
-    name: string;
-  };
+  assignedByCompany?: string;
 }
 
 export interface DistributorAssignment {

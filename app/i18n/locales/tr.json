@@ -896,6 +896,16 @@
       "viewDocuments": "View Documents",
       "title": "Ürün Detayları",
       "description": "Ürün detaylarını görüntüleyin ve yönetin",
+      "distributors":{
+        "title":"Distribütörler",
+        "contactInformation":"İletişim Bilgileri",
+        "assignedAt":"Atanma Tarihi",
+        "assignedBy":"Atayan",
+        "loading":"Distribütörler yükleniyor...",
+        "status":{
+          "active":"Aktif"
+        }
+      },
       "productInfo": {
         "title": "Product Information",
         "id": "Product ID",

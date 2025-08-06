@@ -163,6 +163,7 @@ export class DistributorService {
             productId: pd.product_id,
             distributorId: pd.distributor_id,
             assignedBy: pd.assigned_by,
+            assignedByCompany: pd.assigned_by, // assigned_by now contains the company name directly
             assignedAt: pd.assigned_at,
             status: pd.status as 'active' | 'inactive' | 'pending',
             territory: pd.territory,
@@ -214,6 +215,7 @@ export class DistributorService {
             productId: pd.product_id,
             distributorId: pd.distributor_id,
             assignedBy: pd.assigned_by,
+            assignedByCompany: pd.assigned_by, // assigned_by now contains the company name directly
             assignedAt: pd.assigned_at,
             status: pd.status as 'active' | 'inactive' | 'pending',
             territory: pd.territory,
@@ -245,12 +247,45 @@ export class DistributorService {
       const { data: { user } } = await supabase.auth.getUser();
       
       if (user) {
+        // Get current user's company name
+        let companyName = "Bilinmeyen Şirket";
+        
+        // Try to get company name from user metadata
+        const companyId = user.user_metadata?.data?.company_id || user.user_metadata?.company_id;
+        
+        if (companyId) {
+          const { data: company } = await supabase
+            .from("companies")
+            .select("name")
+            .eq("id", companyId)
+            .single();
+          
+          if (company?.name) {
+            companyName = company.name;
+          }
+        }
+        
+        // If no company found, try to get from user's profile or use a more descriptive name
+        if (companyName === "Bilinmeyen Şirket") {
+          // Try to get user's full name or email as fallback
+          const userFullName = user.user_metadata?.full_name || user.user_metadata?.name;
+          const userEmail = user.email;
+          
+          if (userFullName) {
+            companyName = `${userFullName} (Kullanıcı)`;
+          } else if (userEmail) {
+            companyName = `${userEmail.split('@')[0]} (Kullanıcı)`;
+          } else {
+            companyName = "Manuel Atama";
+          }
+        }
+        
         const { error } = await supabase
           .from("product_distributors")
           .insert([{
             product_id: productId,
             distributor_id: assignment.distributorId,
-            assigned_by: assignedBy,
+            assigned_by: companyName, // Store company name instead of user ID
             status: 'active',
             territory: assignment.territory,
             commission_rate: assignment.commissionRate,
