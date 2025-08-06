@@ -144,6 +144,50 @@ export const productService = createService({
         productData.materials = materials;
       }
 
+      // Fetch distributors for this product
+      const { data: productDistributors, error: distributorsError } = await supabase
+        .from("product_distributors")
+        .select(`
+          *,
+          distributor:distributor_id (
+            id,
+            name,
+            company_type,
+            tax_info,
+            email,
+            phone,
+            website,
+            address,
+            assigned_products_count
+          )
+        `)
+        .eq("product_id", id);
+      
+      if (!distributorsError && productDistributors) {
+        productData.distributors = productDistributors.map(pd => ({
+          id: pd.id,
+          productId: pd.product_id,
+          distributorId: pd.distributor_id,
+          assignedBy: pd.assigned_by,
+          assignedAt: pd.assigned_at,
+          status: pd.status as 'active' | 'inactive' | 'pending',
+          territory: pd.territory,
+          commissionRate: pd.commission_rate,
+          notes: pd.notes,
+          distributor: pd.distributor ? {
+            id: pd.distributor.id,
+            name: pd.distributor.name,
+            companyType: pd.distributor.company_type,
+            taxInfo: pd.distributor.tax_info,
+            email: pd.distributor.email,
+            phone: pd.distributor.phone,
+            website: pd.distributor.website,
+            address: pd.distributor.address,
+            assignedProducts: pd.distributor.assigned_products_count,
+          } : undefined,
+        }));
+      }
+
       return { data: productData };
     } catch (error) {
       return {
@@ -221,16 +265,19 @@ export const productService = createService({
 
       // Insert distributors if provided
       if (data && distributors && distributors.length > 0) {
+        const { data: { user } } = await supabase.auth.getUser();
+        const assignedBy = user?.id || 'system';
+        
         const distributorRows = distributors.map((dist: any) => ({
           product_id: data.id,
-          distributor_id: dist.distributorId,
-          assigned_by: dist.assignedBy,
-          assigned_at: dist.assignedAt,
-          status: dist.status,
-          territory: dist.territory || null,
-          commission_rate: dist.commissionRate || null,
-          notes: dist.notes || null,
+          distributor_id: dist.id, // Use dist.id instead of dist.distributorId
+          assigned_by: assignedBy,
+          status: 'active',
+          territory: null,
+          commission_rate: null,
+          notes: null,
         }));
+        
         const { error: distributorsError } = await supabase.from("product_distributors").insert(distributorRows);
         if (distributorsError) {
           console.error("Error inserting distributors:", distributorsError);

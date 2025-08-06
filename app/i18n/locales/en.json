@@ -56,6 +56,11 @@
       "title": "Distributors",
       "description": "View and manage your distributors",
       "loading":"Loading distributors...",
+      "empty":{
+        "title":"No distributors found",
+        "description":"There are no distributors yet",
+        "addFirst":"Add your first distributor"
+      },
       "actions":{
         "more": "More",
         "view":"View",
@@ -1816,6 +1821,7 @@
         "selectedDistributors":"Selected Distributors",
         "selected":"Selected",
         "products":"Products",
+        "noDistributorsFound":"No distributors found",
         "info":{
           "title":"Distributor Assignment",
           "description":"Select distributors for your product to streamline sales and distribution processes.",

@@ -5,16 +5,7 @@ import {
   DistributorFilters,
   DistributorAssignment 
 } from "@/lib/types/distributor";
-import { 
-  mockDistributors, 
-  mockProductDistributors, 
-  mockDistributorStats,
-  getDistributorById,
-  getDistributorsByStatus,
-  getProductDistributors,
-  getDistributorProducts,
-  searchDistributors
-} from "@/lib/data/mock-distributors";
+import { supabase } from "@/lib/supabase/client";
 
 import { createService } from "../api-client";
 
@@ -22,71 +13,226 @@ import { createService } from "../api-client";
 export class DistributorService {
   // Get all distributors
   static async getDistributors(filters?: DistributorFilters): Promise<Distributor[]> {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 300));
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (user) {
+        let query = supabase
+          .from("distributors")
+          .select("*");
 
-    let filteredDistributors = [...mockDistributors];
-
-    // Apply filters
-    if (filters?.search) {
-      filteredDistributors = searchDistributors(filters.search);
-    }
-
-    // Apply sorting
-    if (filters?.sortBy) {
-      filteredDistributors.sort((a, b) => {
-        let aValue: any, bValue: any;
-
-        switch (filters.sortBy) {
-          case 'name':
-            aValue = a.name;
-            bValue = b.name;
-            break;
-          case 'assignedProducts':
-            aValue = a.assignedProducts || 0;
-            bValue = b.assignedProducts || 0;
-            break;
-          case 'createdAt':
-            aValue = new Date(a.createdAt || '').getTime();
-            bValue = new Date(b.createdAt || '').getTime();
-            break;
-          default:
-            aValue = a.name;
-            bValue = b.name;
+        // Apply search filter
+        if (filters?.search) {
+          query = query.or(`name.ilike.%${filters.search}%,tax_info->>'taxNumber'.ilike.%${filters.search}%`);
         }
 
-        if (filters.sortOrder === 'desc') {
-          return bValue > aValue ? 1 : -1;
+        // Apply sorting
+        if (filters?.sortBy) {
+          const sortColumn = filters.sortBy === 'assignedProducts' ? 'assigned_products_count' : filters.sortBy;
+          query = query.order(sortColumn, { ascending: filters.sortOrder === 'asc' });
+        } else {
+          query = query.order('name', { ascending: true });
         }
-        return aValue > bValue ? 1 : -1;
-      });
+
+        const { data: distributors, error } = await query;
+
+        if (!error && distributors) {
+          // Transform database format to our interface format
+          return distributors.map(dbDistributor => ({
+            id: dbDistributor.id,
+            name: dbDistributor.name,
+            companyType: dbDistributor.company_type,
+            taxInfo: dbDistributor.tax_info,
+            email: dbDistributor.email,
+            phone: dbDistributor.phone,
+            website: dbDistributor.website,
+            address: dbDistributor.address,
+            assignedProducts: dbDistributor.assigned_products_count,
+            createdAt: dbDistributor.created_at,
+            updatedAt: dbDistributor.updated_at,
+          }));
+        }
+      }
+    } catch (error) {
+      console.warn("Failed to fetch from real API:", error);
     }
 
-    return filteredDistributors;
+    // Return empty array if no data
+    return [];
   }
 
   // Get distributor by ID
   static async getDistributor(id: string): Promise<Distributor | null> {
-    await new Promise(resolve => setTimeout(resolve, 200));
-    return getDistributorById(id) || null;
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (user) {
+        const { data: distributor, error } = await supabase
+          .from("distributors")
+          .select("*")
+          .eq("id", id)
+          .single();
+
+        if (!error && distributor) {
+          return {
+            id: distributor.id,
+            name: distributor.name,
+            companyType: distributor.company_type,
+            taxInfo: distributor.tax_info,
+            email: distributor.email,
+            phone: distributor.phone,
+            website: distributor.website,
+            address: distributor.address,
+            assignedProducts: distributor.assigned_products_count,
+            createdAt: distributor.created_at,
+            updatedAt: distributor.updated_at,
+          };
+        }
+      }
+    } catch (error) {
+      console.warn("Failed to fetch distributor by ID:", error);
+    }
+
+    return null;
   }
 
   // Get distributor stats
   static async getDistributorStats(): Promise<DistributorStats> {
-    await new Promise(resolve => setTimeout(resolve, 150));
-    return mockDistributorStats;
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (user) {
+        const { data: distributors, error } = await supabase
+          .from("distributors")
+          .select("assigned_products_count");
+
+        if (!error && distributors) {
+          const total = distributors.length;
+          const withProducts = distributors.filter(d => d.assigned_products_count > 0).length;
+          const withoutProducts = total - withProducts;
+          const totalProducts = distributors.reduce((sum, d) => sum + (d.assigned_products_count || 0), 0);
+
+          return {
+            total,
+            withProducts,
+            withoutProducts,
+            totalProducts,
+          };
+        }
+      }
+    } catch (error) {
+      console.warn("Failed to fetch stats from real API:", error);
+    }
+
+    // Return default stats
+    return {
+      total: 0,
+      withProducts: 0,
+      withoutProducts: 0,
+      totalProducts: 0,
+    };
   }
 
   // Get product distributors
   static async getProductDistributors(productId: string): Promise<ProductDistributor[]> {
-    await new Promise(resolve => setTimeout(resolve, 250));
-    return getProductDistributors(productId);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (user) {
+        const { data: productDistributors, error } = await supabase
+          .from("product_distributors")
+          .select(`
+            *,
+            distributor:distributor_id (
+              id,
+              name,
+              company_type,
+              tax_info,
+              email,
+              phone,
+              website,
+              address,
+              assigned_products_count
+            )
+          `)
+          .eq("product_id", productId);
+
+        if (!error && productDistributors) {
+          return productDistributors.map(pd => ({
+            id: pd.id,
+            productId: pd.product_id,
+            distributorId: pd.distributor_id,
+            assignedBy: pd.assigned_by,
+            assignedAt: pd.assigned_at,
+            status: pd.status as 'active' | 'inactive' | 'pending',
+            territory: pd.territory,
+            commissionRate: pd.commission_rate,
+            notes: pd.notes,
+            distributor: pd.distributor ? {
+              id: pd.distributor.id,
+              name: pd.distributor.name,
+              companyType: pd.distributor.company_type,
+              taxInfo: pd.distributor.tax_info,
+              email: pd.distributor.email,
+              phone: pd.distributor.phone,
+              website: pd.distributor.website,
+              address: pd.distributor.address,
+              assignedProducts: pd.distributor.assigned_products_count,
+            } : undefined,
+          }));
+        }
+      }
+    } catch (error) {
+      console.warn("Failed to fetch product distributors from real API:", error);
+    }
+
+    return [];
   }
 
   // Get distributor products
   static async getDistributorProducts(distributorId: string): Promise<ProductDistributor[]> {
-    await new Promise(resolve => setTimeout(resolve, 250));
-    return getDistributorProducts(distributorId);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (user) {
+        const { data: productDistributors, error } = await supabase
+          .from("product_distributors")
+          .select(`
+            *,
+            product:product_id (
+              id,
+              name,
+              model,
+              product_type
+            )
+          `)
+          .eq("distributor_id", distributorId);
+
+        if (!error && productDistributors) {
+          return productDistributors.map(pd => ({
+            id: pd.id,
+            productId: pd.product_id,
+            distributorId: pd.distributor_id,
+            assignedBy: pd.assigned_by,
+            assignedAt: pd.assigned_at,
+            status: pd.status as 'active' | 'inactive' | 'pending',
+            territory: pd.territory,
+            commissionRate: pd.commission_rate,
+            notes: pd.notes,
+            product: pd.product ? {
+              id: pd.product.id,
+              name: pd.product.name,
+              model: pd.product.model || '',
+              productType: pd.product.product_type || '',
+            } : undefined,
+          }));
+        }
+      }
+    } catch (error) {
+      console.warn("Failed to fetch distributor products from real API:", error);
+    }
+
+    return [];
   }
 
   // Assign distributor to product
@@ -95,17 +241,31 @@ export class DistributorService {
     assignment: DistributorAssignment,
     assignedBy: string
   ): Promise<void> {
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    // Simulate assignment - in real implementation this would save to database
-    console.log('Assigning distributor to product:', {
-      productId,
-      assignment,
-      assignedBy
-    });
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (user) {
+        const { error } = await supabase
+          .from("product_distributors")
+          .insert([{
+            product_id: productId,
+            distributor_id: assignment.distributorId,
+            assigned_by: assignedBy,
+            status: 'active',
+            territory: assignment.territory,
+            commission_rate: assignment.commissionRate,
+            notes: assignment.notes,
+          }]);
 
-    // For mock data, we would add to the mockProductDistributors array
-    // In real implementation, this would be a database insert
+        if (!error) {
+          console.log('Successfully assigned distributor to product in database');
+          return;
+        }
+      }
+    } catch (error) {
+      console.warn("Failed to assign distributor in database:", error);
+      throw error;
+    }
   }
 
   // Remove distributor from product
@@ -113,14 +273,25 @@ export class DistributorService {
     productId: string,
     distributorId: string
   ): Promise<void> {
-    await new Promise(resolve => setTimeout(resolve, 400));
-    
-    console.log('Removing distributor from product:', {
-      productId,
-      distributorId
-    });
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (user) {
+        const { error } = await supabase
+          .from("product_distributors")
+          .delete()
+          .eq("product_id", productId)
+          .eq("distributor_id", distributorId);
 
-    // In real implementation, this would be a database delete
+        if (!error) {
+          console.log('Successfully removed distributor from product');
+          return;
+        }
+      }
+    } catch (error) {
+      console.warn("Failed to remove distributor from product:", error);
+      throw error;
+    }
   }
 
   // Update distributor status
@@ -128,20 +299,58 @@ export class DistributorService {
     distributorId: string,
     status: 'active' | 'inactive' | 'pending'
   ): Promise<void> {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    
-    console.log('Updating distributor status:', {
-      distributorId,
-      status
-    });
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (user) {
+        const { error } = await supabase
+          .from("distributors")
+          .update({ status })
+          .eq("id", distributorId);
 
-    // In real implementation, this would be a database update
+        if (!error) {
+          console.log('Successfully updated distributor status');
+          return;
+        }
+      }
+    } catch (error) {
+      console.warn("Failed to update distributor status:", error);
+      throw error;
+    }
   }
 
   // Search distributors
   static async searchDistributors(query: string): Promise<Distributor[]> {
-    await new Promise(resolve => setTimeout(resolve, 200));
-    return searchDistributors(query);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (user) {
+        const { data: distributors, error } = await supabase
+          .from("distributors")
+          .select("*")
+          .or(`name.ilike.%${query}%,tax_info->>'taxNumber'.ilike.%${query}%`);
+
+        if (!error && distributors) {
+          return distributors.map(dbDistributor => ({
+            id: dbDistributor.id,
+            name: dbDistributor.name,
+            companyType: dbDistributor.company_type,
+            taxInfo: dbDistributor.tax_info,
+            email: dbDistributor.email,
+            phone: dbDistributor.phone,
+            website: dbDistributor.website,
+            address: dbDistributor.address,
+            assignedProducts: dbDistributor.assigned_products_count,
+            createdAt: dbDistributor.created_at,
+            updatedAt: dbDistributor.updated_at,
+          }));
+        }
+      }
+    } catch (error) {
+      console.warn("Failed to search distributors:", error);
+    }
+
+    return [];
   }
 }
 

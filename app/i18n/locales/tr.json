@@ -18,6 +18,11 @@
       "title":"Distribütörler",
       "description":"Distribütörleri görüntüle ve yönet",
       "loading":"Distribütörler yükleniyor...",
+      "empty":{
+        "title":"Distribütör bulunamadı",
+        "description":"Henüz distribütör bulunmamaktadır",
+        "addFirst":"İlk distribütörünüzü ekleyin"
+      },
       "actions":{
         "more":"Daha Fazla",
         "view":"Görüntüle",
@@ -2742,14 +2747,15 @@
       "placeholder": "Ürün ara..."
     },
     "form": {
-              "distributor":{
-          "title":"Distribütör Seçimi",
-          "description":"Ürününüz için distribütör seçin veya birden fazla distribütör atayın",
+        "distributor":{
+        "title":"Distribütör Seçimi",
+        "description":"Ürününüz için distribütör seçin veya birden fazla distribütör atayın",
         "searchDistributors":"Distribütör Ara",
         "searchPlaceholder":"Distribütör adı veya vergi numarası giriniz",
         "selectedDistributors":"Seçilen Distribütörler",
         "selected":"Seçilen",
         "products":"Ürünler",
+        "noDistributorsFound":"Distribütör bulunamadı",
         "info":{
           "title":"Distribütör Atama Hakkında",
           "description":"Ürününüz için distribütör atayarak satış ve dağıtım süreçlerini kolaylaştırın.",
