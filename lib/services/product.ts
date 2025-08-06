@@ -154,10 +154,10 @@ export const productService = createService({
       };
     }
   },
-  createProduct: async (product: NewProduct & { materials?: any[] }): Promise<ProductResponse> => {
+  createProduct: async (product: NewProduct & { materials?: any[]; distributors?: any[] }): Promise<ProductResponse> => {
     try {
-      // Extract documents, key_features, and materials if they exist
-      const { documents = {}, manufacturer_id, key_features = [], materials = [], ...productData } = product;
+      // Extract documents, key_features, materials, and distributors if they exist
+      const { documents = {}, manufacturer_id, key_features = [], materials = [], distributors = [], ...productData } = product;
 
       // Create the product WITHOUT documents in JSONB - documents are now stored in separate table
       const { data, error } = await supabase
@@ -215,6 +215,25 @@ export const productService = createService({
         const { error: materialsError } = await supabase.from("product_materials").insert(materialRows);
         if (materialsError) {
           console.error("Error inserting materials:", materialsError);
+          // Not blocking product creation, just log error
+        }
+      }
+
+      // Insert distributors if provided
+      if (data && distributors && distributors.length > 0) {
+        const distributorRows = distributors.map((dist: any) => ({
+          product_id: data.id,
+          distributor_id: dist.distributorId,
+          assigned_by: dist.assignedBy,
+          assigned_at: dist.assignedAt,
+          status: dist.status,
+          territory: dist.territory || null,
+          commission_rate: dist.commissionRate || null,
+          notes: dist.notes || null,
+        }));
+        const { error: distributorsError } = await supabase.from("product_distributors").insert(distributorRows);
+        if (distributorsError) {
+          console.error("Error inserting distributors:", distributorsError);
           // Not blocking product creation, just log error
         }
       }

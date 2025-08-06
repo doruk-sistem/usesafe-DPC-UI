@@ -1,5 +1,6 @@
 import { Document } from "./document";
 import { Database } from "./supabase";
+import { ProductDistributor } from "./distributor";
 
 export type DPPFieldType =
   | "text"
@@ -57,6 +58,7 @@ export type BaseProduct = Database["public"]["Tables"]["products"]["Row"] & {
     id: string;
     name: string;
   };
+  distributors?: ProductDistributor[]; // ✅ Eklenecek
   key_features?: ProductKeyFeature[]; // Yeni ilişkisel key_features
   documents?: Document[]; // Documents array for the product
   dpp_config?: {
@@ -75,6 +77,7 @@ export type BaseProduct = Database["public"]["Tables"]["products"]["Row"] & {
 
 export type NewProduct = Database["public"]["Tables"]["products"]["Insert"] & {
   dpp_config?: any;
+  distributors?: ProductDistributor[];
   // espr_compliance?: {
   //   directives: Array<{
   //     directive_number: string;

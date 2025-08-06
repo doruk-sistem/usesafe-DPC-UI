@@ -5,6 +5,74 @@
     "verifyProducts": "Ürün Doğrula",
     "signIn": "Giriş Yap"
   },
+  "distributors":{
+    "title":"Distribütörler",
+    "description":"Distribütörleri görüntüle ve yönet",
+    "stats":{
+      "total":"Toplam",
+      "withProducts":"Ürün Atanmış",
+      "withoutProducts":"Ürün Atanmamış",
+      "totalProducts":"Toplam Ürün"
+    },
+    "list":{
+      "title":"Distribütörler",
+      "description":"Distribütörleri görüntüle ve yönet",
+      "loading":"Distribütörler yükleniyor...",
+      "actions":{
+        "more":"Daha Fazla",
+        "view":"Görüntüle",
+        "edit":"Düzenle",
+        "viewProducts":"Ürünleri Görüntüle",
+        "viewDocuments":"Belgeleri Görüntüle",
+        "viewCertifications":"Sertifikaları Görüntüle",
+        "delete":"Sil"
+      },
+      "columns":{
+        "company":"Şirket",
+        "territory":"Bölge",
+        "taxId":"Vergi No",
+        "products":"Ürünler",
+        "revenue":"Gelir",
+        "commission":"Komisyon",
+        "status":"Durum",
+        "createdAt":"Oluşturulma Tarihi"
+      }
+    },
+    "actions":{
+      "addDistributor":"Distribütör Ekle",
+      "export":"Dışa Aktar"
+    },
+    "sort":{
+      "nameAsc":"Ad (A-Z)",
+      "nameDesc":"Ad (Z-A)",
+      "productsAsc":"Ürünler (Artan)",
+      "productsDesc":"Ürünler (Azalan)",
+      "newest":"Yeni",
+      "oldest":"Eski"
+    },
+    "territories":{
+      "turkey":"Türkiye",
+      "aegean":"Ege Denizi",
+      "mediterranean":"Akdeniz",
+      "blackSea":"Karadeniz",
+      "centralAnatolia":"Orta Anadolu"
+    },
+    "status":{
+      "active":"Aktif",
+      "pending":"Beklemede",
+      "inactive":"Pasif"
+    },
+    "filters":{
+      "allStatuses":"Tüm Durumlar",
+      "allTerritories":"Tüm Bölgeler",
+      "status":"Durum",
+      "territory":"Bölge",
+      "sortBy":"Sıralama"
+    },
+    "search":{
+      "placeholder":"Distribütör ara"
+    }
+  },
   "aiGuidance": {
     "guidanceUnavailable": "AI Rehberliği Alınamadı",
     "tryAgain": "Tekrar Dene",
@@ -618,7 +686,8 @@
       "supplyChainManagement": "Tedarik Zinciri Yönetimi",
       "suppliers": "Tedarikçiler",
       "myProducts": "Ürettiğim Ürünler",
-      "settings": "Ayarlar"
+      "settings": "Ayarlar",
+      "distributors": "Distribütörler"
     },
     "registration": {
       "title": "Kayıt",
@@ -2673,6 +2742,22 @@
       "placeholder": "Ürün ara..."
     },
     "form": {
+              "distributor":{
+          "title":"Distribütör Seçimi",
+          "description":"Ürününüz için distribütör seçin veya birden fazla distribütör atayın",
+        "searchDistributors":"Distribütör Ara",
+        "searchPlaceholder":"Distribütör adı veya vergi numarası giriniz",
+        "selectedDistributors":"Seçilen Distribütörler",
+        "selected":"Seçilen",
+        "products":"Ürünler",
+        "info":{
+          "title":"Distribütör Atama Hakkında",
+          "description":"Ürününüz için distribütör atayarak satış ve dağıtım süreçlerini kolaylaştırın.",
+          "benefit1":"Distribütörler ürünlerinizi pazarlayabilir ve satabilir",
+          "benefit2":"Bölgesel dağıtım ağları oluşturabilirsiniz",
+          "benefit3":"Satış performansını takip edebilirsiniz"
+        }
+      },
       "images": {
         "title": "Ürün Görseli",
         "upload": "Görsel Yükle"

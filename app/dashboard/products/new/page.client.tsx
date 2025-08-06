@@ -162,8 +162,8 @@ export default function NewProductPageClient() {
         }
       }
 
-      // 4. Ürünü oluştur - materials alanını products tablosuna göndermeden ayır
-      const { documentFiles, materials, ...productData } = data;
+      // 4. Ürünü oluştur - materials ve distributors alanlarını products tablosuna göndermeden ayır
+      const { documentFiles, materials, distributors, ...productData } = data;
       
       const response = await productService.createProduct({
         ...productData,
@@ -203,6 +203,14 @@ export default function NewProductPageClient() {
           ]
         } : undefined,
         materials,
+        // Distribütör atamalarını işle
+        distributors: distributors?.map((distributor: any) => ({
+          distributorId: distributor.id,
+          assignedBy: user.id,
+          assignedAt: new Date().toISOString(),
+          status: 'active' as const,
+          notes: `Ürün oluşturulurken atandı - ${new Date().toLocaleDateString('tr-TR')}`,
+        })) || [],
       });
 
       // 4. Belgelerin productId'sini güncelle

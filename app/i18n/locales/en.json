@@ -9,6 +9,74 @@
     "verifyProducts": "Verify Products",
     "signIn": "Sign In"
   },
+  "distributors": {
+    "title": "Distributors",
+    "description": "View and manage your distributors",
+    "actions":{
+    "addDistributor":"Add Distributor",
+    "export":"Export"
+    },
+    "sort":{
+      "nameAsc":"Name (A-Z)",
+      "nameDesc":"Name (Z-A)",
+      "productsAsc":"Products (Low-High)",
+      "productsDesc":"Products (High-Low)",
+      "newest":"Newest",
+      "oldest":"Oldest"
+    },
+    "territories":{
+      "turkey":"Turkey",
+      "aegean":"Aegean",
+      "mediterranean":"Mediterranean",
+      "blackSea":"Black Sea",
+      "centralAnatolia":"Central Anatolia"
+    },
+    "filters":{
+      "allStatuses":"All Statuses",
+      "allTerritories":"All Territories",
+      "status":"Status",
+      "territory":"Territory",
+      "sortBy":"Sort By"
+    },
+    "search":{
+      "placeholder":"Search distributors"
+    },
+    "status":{
+      "active":"Active",
+      "pending":"Pending",
+      "inactive":"Inactive"
+    },
+    "stats":{
+        "total": "Total",
+        "withProducts": "With Products",
+        "withoutProducts": "Without Products",
+        "totalProducts": "Total Products"
+      },
+    "list":{
+      "title": "Distributors",
+      "description": "View and manage your distributors",
+      "loading":"Loading distributors...",
+      "actions":{
+        "more": "More",
+        "view":"View",
+        "edit":"Edit",
+        "viewProducts":"View Products",
+        "viewDocuments":"View Documents",
+        "viewCertifications":"View Certifications",
+        "delete":"Delete"
+      },
+      "columns":{
+        "company":"Company",
+        "territory":"Territory",
+        "taxId":"Tax ID",
+        "products":"Products",
+        "revenue":"Revenue",
+        "commission":"Commission",
+        "status":"Status",
+        "createdAt":"Created At"
+      }
+    }
+  },
   "aiGuidance": {
     "guidanceUnavailable": "Guidance unavailable",
     "tryAgain": "Try again",
@@ -482,7 +550,8 @@
       "supplyChainManagement": "Supply Chain Management",
       "suppliers": "Suppliers",
       "myProducts": "My Products",
-      "settings": "Settings"
+      "settings": "Settings",
+      "distributors": "Distributors"
     },
     "registration": {
       "title": "Registration",
@@ -1739,6 +1808,22 @@
       }
     },
     "form": {
+      "distributor":{
+        "title":"Distributor Selection",
+        "description":"Select distributors for your product or assign multiple distributors",
+        "searchDistributors":"Search Distributors",
+        "searchPlaceholder":"Enter distributor name or tax number",
+        "selectedDistributors":"Selected Distributors",
+        "selected":"Selected",
+        "products":"Products",
+        "info":{
+          "title":"Distributor Assignment",
+          "description":"Select distributors for your product to streamline sales and distribution processes.",
+          "benefit1":"Distributors can market and sell your products",
+          "benefit2":"Build regional distribution networks",
+          "benefit3":"Monitor product distribution effectively"
+        }
+      },
       "images": {
         "title": "Product Images",
         "upload": "Upload Image"
