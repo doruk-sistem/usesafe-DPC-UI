@@ -469,6 +469,104 @@ export class DistributorService {
       return { error: { message: "Failed to create distributor" } };
     }
   }
+
+  // Update distributor
+  static async updateDistributor(id: string, updateData: any): Promise<{ data?: Distributor; error?: { message: string } }> {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        return { error: { message: "User not authenticated" } };
+      }
+
+      const { data: distributor, error } = await supabase
+        .from("distributors")
+        .update(updateData)
+        .eq("id", id)
+        .select()
+        .single();
+
+      if (error) {
+        return { error: { message: error.message } };
+      }
+
+      if (distributor) {
+        return {
+          data: {
+            id: distributor.id,
+            name: distributor.name,
+            companyType: distributor.company_type,
+            taxInfo: distributor.tax_info,
+            email: distributor.email,
+            phone: distributor.phone,
+            website: distributor.website,
+            address: distributor.address,
+            assignedProducts: distributor.assigned_products_count,
+            createdAt: distributor.created_at,
+            updatedAt: distributor.updated_at,
+          }
+        };
+      }
+
+      return { error: { message: "Failed to update distributor" } };
+    } catch (error) {
+      console.warn("Failed to update distributor:", error);
+      return { error: { message: "Failed to update distributor" } };
+    }
+  }
+
+  // Delete distributor
+  static async deleteDistributor(id: string): Promise<{ success?: boolean; error?: { message: string } }> {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        return { error: { message: "User not authenticated" } };
+      }
+
+      // First, check if distributor has any assigned products
+      const { data: productDistributors, error: checkError } = await supabase
+        .from("product_distributors")
+        .select("id, product_id")
+        .eq("distributor_id", id);
+
+      if (checkError) {
+        return { error: { message: "Failed to check distributor assignments" } };
+      }
+
+      // If distributor has assigned products, remove them first
+      if (productDistributors && productDistributors.length > 0) {
+        console.log(`Removing ${productDistributors.length} product assignments for distributor ${id}`);
+        
+        // Remove all product assignments for this distributor
+        const { error: removeError } = await supabase
+          .from("product_distributors")
+          .delete()
+          .eq("distributor_id", id);
+
+        if (removeError) {
+          return { error: { message: `Failed to remove product assignments: ${removeError.message}` } };
+        }
+
+        console.log(`Successfully removed ${productDistributors.length} product assignments`);
+      }
+
+      // Now delete the distributor
+      const { error } = await supabase
+        .from("distributors")
+        .delete()
+        .eq("id", id);
+
+      if (error) {
+        return { error: { message: error.message } };
+      }
+
+      return { success: true };
+    } catch (error) {
+      console.warn("Failed to delete distributor:", error);
+      return { error: { message: "Failed to delete distributor" } };
+    }
+  }
 }
 
 // API client service object
@@ -541,5 +639,15 @@ export const distributorService = createService({
   // Create distributor
   createDistributor: async ({ distributorData }: { distributorData: any }): Promise<{ data?: Distributor; error?: { message: string } }> => {
     return DistributorService.createDistributor(distributorData);
+  },
+
+  // Update distributor
+  updateDistributor: async ({ id, updateData }: { id: string; updateData: any }): Promise<{ data?: Distributor; error?: { message: string } }> => {
+    return DistributorService.updateDistributor(id, updateData);
+  },
+
+  // Delete distributor
+  deleteDistributor: async ({ id }: { id: string }): Promise<{ success?: boolean; error?: { message: string } }> => {
+    return DistributorService.deleteDistributor(id);
   }
 }); 

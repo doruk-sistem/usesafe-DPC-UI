@@ -91,6 +91,15 @@
         "viewCertifications":"View Certifications",
         "delete":"Delete"
       },
+      "deleteDialog":{
+        "title":"Delete Distributor",
+        "description":"Are you sure you want to delete the distributor '{name}'? This action will also remove all product assignments and cannot be undone.",
+        "confirm":"Delete",
+        "cancel":"Cancel",
+        "deleting":"Deleting..."
+      },
+      "deleteSuccess":"Distributor and all product assignments deleted successfully",
+      "deleteError":"An error occurred while deleting the distributor",
       "columns":{
         "company":"Company",
         "territory":"Territory",
@@ -100,6 +109,135 @@
         "commission":"Commission",
         "status":"Status",
         "createdAt":"Created At"
+      }
+    },
+    "details":{
+      "title":"Distributor Details",
+      "description":"View distributor information",
+      "actions":{
+        "edit":"Edit",
+        "viewProducts":"View Products"
+      },
+      "basicInfo":{
+        "title":"Basic Information",
+        "name":"Company Name",
+        "taxNumber":"Tax Number",
+        "tradeRegistryNo":"Trade Registry Number",
+        "mersisNo":"MERSIS Number"
+      },
+      "contactInfo":{
+        "title":"Contact Information",
+        "email":"Email",
+        "phone":"Phone",
+        "website":"Website"
+      },
+      "addressInfo":{
+        "title":"Address Information",
+        "headquarters":"Headquarters Address",
+        "branches":"Branch Addresses"
+      },
+      "stats":{
+        "title":"Statistics",
+        "assignedProducts":"Assigned Products",
+        "createdAt":"Created At",
+        "updatedAt":"Updated At"
+      },
+      "error":{
+        "title":"Error",
+        "description":"An error occurred while loading distributor information"
+      }
+    },
+    "edit":{
+      "title":"Edit Distributor",
+      "description":"Update distributor information",
+      "basicInfo":{
+        "title":"Basic Information",
+        "description":"Update company basic information",
+        "name":"Company Name",
+        "namePlaceholder":"Enter company name",
+        "taxNumber":"Tax Number",
+        "taxNumberPlaceholder":"Enter tax number",
+        "tradeRegistryNo":"Trade Registry Number",
+        "tradeRegistryNoPlaceholder":"Enter trade registry number",
+        "mersisNo":"MERSIS Number",
+        "mersisNoPlaceholder":"Enter MERSIS number"
+      },
+      "contactInfo":{
+        "title":"Contact Information",
+        "description":"Update contact information",
+        "email":"Email",
+        "emailPlaceholder":"Enter email address",
+        "phone":"Phone",
+        "phonePlaceholder":"Enter phone number",
+        "website":"Website",
+        "websitePlaceholder":"Enter website URL"
+      },
+      "addressInfo":{
+        "title":"Address Information",
+        "description":"Update address information",
+        "headquarters":"Headquarters Address",
+        "headquartersPlaceholder":"Enter headquarters address",
+        "branches":"Branch Addresses",
+        "branchesPlaceholder":"Enter branch addresses"
+      },
+      "actions":{
+        "save":"Save",
+        "saving":"Saving...",
+        "cancel":"Cancel"
+      },
+      "success":{
+        "title":"Success",
+        "description":"Distributor information updated successfully"
+      },
+      "error":{
+        "title":"Error",
+        "description":"An error occurred while updating distributor information"
+      }
+    },
+    "products":{
+      "title":"Distributor Products",
+      "description":"View products assigned to this distributor",
+      "distributorInfo":{
+        "title":"Distributor Information",
+        "name":"Company Name",
+        "taxNumber":"Tax Number",
+        "totalProducts":"Total Products"
+      },
+      "list":{
+        "title":"Assigned Products",
+        "description":"All products assigned to this distributor",
+        "empty":{
+          "title":"No products found",
+          "description":"No products have been assigned to this distributor yet"
+        },
+        "columns":{
+          "product":"Product",
+          "type":"Type",
+          "status":"Status",
+          "territory":"Territory",
+          "commission":"Commission",
+          "assignedBy":"Assigned By",
+          "assignedAt":"Assigned At"
+        },
+        "status":{
+          "active":"Active",
+          "pending":"Pending",
+          "inactive":"Inactive"
+        },
+        "territory":{
+          "notSpecified":"Not specified"
+        },
+        "actions":{
+          "viewProduct":"View Product"
+        }
+      },
+      "notes":{
+        "title":"Notes",
+        "description":"Notes for product assignments"
+      },
+      "error":{
+        "title":"Error",
+        "description":"An error occurred while loading product information"
       }
     }
   },
@@ -732,7 +870,7 @@
         "title":"Distributors",
         "contactInformation":"Contact Information",
         "assignedAt":"Assigned At",
-
+        "noDistributors":"No distributors found for this product.",
         "status":{
           "active":"Active"
         }

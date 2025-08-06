@@ -32,6 +32,15 @@
         "viewCertifications":"Sertifikaları Görüntüle",
         "delete":"Sil"
       },
+      "deleteDialog":{
+        "title":"Distribütörü Sil",
+        "description":"'{name}' adlı distribütörü silmek istediğinizden emin misiniz? Bu işlem tüm ürün atamalarını da kaldıracak ve geri alınamaz.",
+        "confirm":"Sil",
+        "cancel":"İptal",
+        "deleting":"Siliniyor..."
+      },
+      "deleteSuccess":"Distribütör ve tüm ürün atamaları başarıyla silindi",
+      "deleteError":"Distribütör silinirken bir hata oluştu",
       "columns":{
         "company":"Şirket",
         "territory":"Bölge",
@@ -97,6 +106,135 @@
     },
     "search":{
       "placeholder":"Distribütör ara"
+    },
+    "details":{
+      "title":"Distribütör Detayları",
+      "description":"Distribütör bilgilerini görüntüle",
+      "actions":{
+        "edit":"Düzenle",
+        "viewProducts":"Ürünleri Görüntüle"
+      },
+      "basicInfo":{
+        "title":"Temel Bilgiler",
+        "name":"Şirket Adı",
+        "taxNumber":"Vergi Numarası",
+        "tradeRegistryNo":"Ticaret Sicil Numarası",
+        "mersisNo":"MERSİS Numarası"
+      },
+      "contactInfo":{
+        "title":"İletişim Bilgileri",
+        "email":"E-posta",
+        "phone":"Telefon",
+        "website":"Web Sitesi"
+      },
+      "addressInfo":{
+        "title":"Adres Bilgileri",
+        "headquarters":"Merkez Adresi",
+        "branches":"Şube Adresleri"
+      },
+      "stats":{
+        "title":"İstatistikler",
+        "assignedProducts":"Atanmış Ürünler",
+        "createdAt":"Oluşturulma Tarihi",
+        "updatedAt":"Güncellenme Tarihi"
+      },
+      "error":{
+        "title":"Hata",
+        "description":"Distribütör bilgileri yüklenirken bir hata oluştu"
+      }
+    },
+    "edit":{
+      "title":"Distribütör Düzenle",
+      "description":"Distribütör bilgilerini güncelle",
+      "basicInfo":{
+        "title":"Temel Bilgiler",
+        "description":"Şirket temel bilgilerini güncelleyin",
+        "name":"Şirket Adı",
+        "namePlaceholder":"Şirket adını girin",
+        "taxNumber":"Vergi Numarası",
+        "taxNumberPlaceholder":"Vergi numarasını girin",
+        "tradeRegistryNo":"Ticaret Sicil Numarası",
+        "tradeRegistryNoPlaceholder":"Ticaret sicil numarasını girin",
+        "mersisNo":"MERSİS Numarası",
+        "mersisNoPlaceholder":"MERSİS numarasını girin"
+      },
+      "contactInfo":{
+        "title":"İletişim Bilgileri",
+        "description":"İletişim bilgilerini güncelleyin",
+        "email":"E-posta",
+        "emailPlaceholder":"E-posta adresini girin",
+        "phone":"Telefon",
+        "phonePlaceholder":"Telefon numarasını girin",
+        "website":"Web Sitesi",
+        "websitePlaceholder":"Web sitesi URL'sini girin"
+      },
+      "addressInfo":{
+        "title":"Adres Bilgileri",
+        "description":"Adres bilgilerini güncelleyin",
+        "headquarters":"Merkez Adresi",
+        "headquartersPlaceholder":"Merkez adresini girin",
+        "branches":"Şube Adresleri",
+        "branchesPlaceholder":"Şube adreslerini girin"
+      },
+      "actions":{
+        "save":"Kaydet",
+        "saving":"Kaydediliyor...",
+        "cancel":"İptal"
+      },
+      "success":{
+        "title":"Başarılı",
+        "description":"Distribütör bilgileri başarıyla güncellendi"
+      },
+      "error":{
+        "title":"Hata",
+        "description":"Distribütör bilgileri güncellenirken bir hata oluştu"
+      }
+    },
+    "products":{
+      "title":"Distribütör Ürünleri",
+      "description":"Bu distribütöre atanmış ürünleri görüntüle",
+      "distributorInfo":{
+        "title":"Distribütör Bilgileri",
+        "name":"Şirket Adı",
+        "taxNumber":"Vergi Numarası",
+        "totalProducts":"Toplam Ürün"
+      },
+      "list":{
+        "title":"Atanmış Ürünler",
+        "description":"Bu distribütöre atanmış tüm ürünler",
+        "empty":{
+          "title":"Ürün bulunamadı",
+          "description":"Bu distribütöre henüz ürün atanmamış"
+        },
+        "columns":{
+          "product":"Ürün",
+          "type":"Tip",
+          "status":"Durum",
+          "territory":"Bölge",
+          "commission":"Komisyon",
+          "assignedBy":"Atayan",
+          "assignedAt":"Atama Tarihi"
+        },
+        "status":{
+          "active":"Aktif",
+          "pending":"Beklemede",
+          "inactive":"Pasif"
+        },
+        "territory":{
+          "notSpecified":"Belirtilmemiş"
+        },
+        "actions":{
+          "viewProduct":"Ürünü Görüntüle"
+        }
+      },
+      "notes":{
+        "title":"Notlar",
+        "description":"Ürün atamalarına ait notlar"
+      },
+      "error":{
+        "title":"Hata",
+        "description":"Ürün bilgileri yüklenirken bir hata oluştu"
+      }
     }
   },
   "aiGuidance": {
@@ -902,6 +1040,7 @@
         "assignedAt":"Atanma Tarihi",
         "assignedBy":"Atayan",
         "loading":"Distribütörler yükleniyor...",
+        "noDistributors":"Bu ürüne atanmış distribütör bulunamadı.",
         "status":{
           "active":"Aktif"
         }

@@ -1,12 +1,24 @@
 "use client";
 
-import { Truck, MoreHorizontal, FileText, ExternalLink, Box, Eye, Edit, Trash2 } from "lucide-react";
+import { Truck, MoreHorizontal, Box, Eye, Edit, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { useState } from "react";
+import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,7 +28,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { useDistributorList } from "@/lib/hooks/use-distributors";
+import { useDistributorList, useDeleteDistributor } from "@/lib/hooks/use-distributors";
 import type { Distributor } from "@/lib/types/distributor";
 
 interface DistributorListProps {
@@ -26,7 +38,37 @@ interface DistributorListProps {
 
 export function DistributorList({ filters, onAddDistributor }: DistributorListProps) {
   const { distributors, stats, isLoading, error } = useDistributorList(filters);
+  const deleteDistributorMutation = useDeleteDistributor();
   const t = useTranslations("distributors");
+  
+  // State for delete confirmation dialog
+  const [distributorToDelete, setDistributorToDelete] = useState<Distributor | null>(null);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
+  // Handle delete distributor
+  const handleDeleteDistributor = async () => {
+    if (!distributorToDelete) return;
+
+    try {
+      const result = await deleteDistributorMutation.mutateAsync({ id: distributorToDelete.id });
+      
+      if (result.success) {
+        toast.success(t("list.deleteSuccess"));
+        setIsDeleteDialogOpen(false);
+        setDistributorToDelete(null);
+      } else if (result.error) {
+        toast.error(result.error.message);
+      }
+    } catch (error) {
+      toast.error(t("list.deleteError"));
+    }
+  };
+
+  // Open delete confirmation dialog
+  const openDeleteDialog = (distributor: Distributor) => {
+    setDistributorToDelete(distributor);
+    setIsDeleteDialogOpen(true);
+  };
 
   if (isLoading) {
     return (
@@ -112,7 +154,8 @@ export function DistributorList({ filters, onAddDistributor }: DistributorListPr
   };
 
   return (
-    <Card>
+    <>
+      <Card>
       <CardHeader>
         <CardTitle>{t("list.title")}</CardTitle>
         <CardDescription>
@@ -194,20 +237,11 @@ export function DistributorList({ filters, onAddDistributor }: DistributorListPr
                           {t("list.actions.viewProducts")}
                         </Link>
                       </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link href={`/dashboard/distributors/${distributor.id}/documents`}>
-                          <FileText className="h-4 w-4 mr-2" />
-                          {t("list.actions.viewDocuments")}
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link href={`/dashboard/distributors/${distributor.id}/certifications`}>
-                          <ExternalLink className="h-4 w-4 mr-2" />
-                          {t("list.actions.viewCertifications")}
-                        </Link>
-                      </DropdownMenuItem>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem className="text-destructive">
+                      <DropdownMenuItem 
+                        className="text-destructive"
+                        onClick={() => openDeleteDialog(distributor)}
+                      >
                         <Trash2 className="h-4 w-4 mr-2" />
                         {t("list.actions.delete")}
                       </DropdownMenuItem>
@@ -220,5 +254,28 @@ export function DistributorList({ filters, onAddDistributor }: DistributorListPr
         </Table>
       </CardContent>
     </Card>
+
+    {/* Delete Confirmation Dialog */}
+    <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>{t("list.deleteDialog.title")}</AlertDialogTitle>
+          <AlertDialogDescription>
+            {t("list.deleteDialog.description", { name: distributorToDelete?.name || "" })}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>{t("list.deleteDialog.cancel")}</AlertDialogCancel>
+          <AlertDialogAction
+            onClick={handleDeleteDistributor}
+            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            disabled={deleteDistributorMutation.isPending}
+          >
+            {deleteDistributorMutation.isPending ? t("list.deleteDialog.deleting") : t("list.deleteDialog.confirm")}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+    </>
   );
 } 

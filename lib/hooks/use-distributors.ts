@@ -106,6 +106,18 @@ export const useUpdateDistributorStatus = () => {
   });
 };
 
+export const useDeleteDistributor = () => {
+  const queryClient = useQueryClient();
+  
+  return distributorApiHooks.useDeleteDistributorMutation({
+    onSuccess: () => {
+      // Invalidate related queries
+      queryClient.invalidateQueries({ queryKey: ['getDistributors'] });
+      queryClient.invalidateQueries({ queryKey: ['getDistributorStats'] });
+    }
+  });
+};
+
 // Search hook
 export const useSearchDistributors = (query: string) => {
   const { data: searchResults = [], isLoading, error } = distributorApiHooks.useSearchDistributorsQuery({ query });
