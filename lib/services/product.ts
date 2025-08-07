@@ -144,6 +144,50 @@ export const productService = createService({
         productData.materials = materials;
       }
 
+      // Fetch distributors for this product
+      const { data: productDistributors, error: distributorsError } = await supabase
+        .from("product_distributors")
+        .select(`
+          *,
+          distributor:distributor_id (
+            id,
+            name,
+            company_type,
+            tax_info,
+            email,
+            phone,
+            website,
+            address,
+            assigned_products_count
+          )
+        `)
+        .eq("product_id", id);
+      
+      if (!distributorsError && productDistributors) {
+        productData.distributors = productDistributors.map(pd => ({
+          id: pd.id,
+          productId: pd.product_id,
+          distributorId: pd.distributor_id,
+          assignedBy: pd.assigned_by,
+          assignedAt: pd.assigned_at,
+          status: pd.status as 'active' | 'inactive' | 'pending',
+          territory: pd.territory,
+          commissionRate: pd.commission_rate,
+          notes: pd.notes,
+          distributor: pd.distributor ? {
+            id: pd.distributor.id,
+            name: pd.distributor.name,
+            companyType: pd.distributor.company_type,
+            taxInfo: pd.distributor.tax_info,
+            email: pd.distributor.email,
+            phone: pd.distributor.phone,
+            website: pd.distributor.website,
+            address: pd.distributor.address,
+            assignedProducts: pd.distributor.assigned_products_count,
+          } : undefined,
+        }));
+      }
+
       return { data: productData };
     } catch (error) {
       return {
@@ -154,10 +198,10 @@ export const productService = createService({
       };
     }
   },
-  createProduct: async (product: NewProduct & { materials?: any[] }): Promise<ProductResponse> => {
+  createProduct: async (product: NewProduct & { materials?: any[]; distributors?: any[] }): Promise<ProductResponse> => {
     try {
-      // Extract documents, key_features, and materials if they exist
-      const { documents = {}, manufacturer_id, key_features = [], materials = [], ...productData } = product;
+      // Extract documents, key_features, materials, and distributors if they exist
+      const { documents = {}, manufacturer_id, key_features = [], materials = [], distributors = [], ...productData } = product;
 
       // Create the product WITHOUT documents in JSONB - documents are now stored in separate table
       const { data, error } = await supabase
@@ -216,6 +260,68 @@ export const productService = createService({
         if (materialsError) {
           console.error("Error inserting materials:", materialsError);
           // Not blocking product creation, just log error
+        }
+      }
+
+      // Insert distributors if provided
+      if (data && distributors && distributors.length > 0) {
+        console.log("Creating distributors for product:", data.id);
+        console.log("Distributors data:", distributors);
+        
+        const { data: { user } } = await supabase.auth.getUser();
+        const assignedBy = user?.id || 'system';
+        
+        const distributorRows = distributors.map((dist: any) => {
+          const distributorId = dist.id || dist.distributorId;
+          console.log("Processing distributor:", dist);
+          console.log("Distributor ID:", distributorId);
+          
+          return {
+            product_id: data.id,
+            distributor_id: distributorId,
+            assigned_by: assignedBy,
+            status: 'active',
+            territory: null,
+            commission_rate: null,
+            notes: null,
+          };
+        });
+        
+        console.log("Distributor rows to insert:", distributorRows);
+        
+        const { error: distributorsError } = await supabase.from("product_distributors").insert(distributorRows);
+        if (distributorsError) {
+          console.error("Error inserting distributors:", distributorsError);
+          console.error("Distributor data:", distributors);
+          console.error("Distributor rows:", distributorRows);
+          // Not blocking product creation, just log error
+        } else {
+          console.log("Distributors inserted successfully");
+          
+          // Update assigned_products_count for each distributor
+          for (const dist of distributors) {
+            const distributorId = dist.id || dist.distributorId;
+            if (distributorId) {
+              // Get current count
+              const { data: currentDistributor } = await supabase
+                .from("distributors")
+                .select("assigned_products_count")
+                .eq("id", distributorId)
+                .single();
+              
+              if (currentDistributor) {
+                const newCount = (currentDistributor.assigned_products_count || 0) + 1;
+                
+                // Update the count
+                await supabase
+                  .from("distributors")
+                  .update({ assigned_products_count: newCount })
+                  .eq("id", distributorId);
+                
+                console.log(`Updated distributor ${distributorId} count to ${newCount}`);
+              }
+            }
+          }
         }
       }
 

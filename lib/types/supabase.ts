@@ -80,6 +80,88 @@ export interface Database {
           document_status?: string
         }
       }
+      distributors: {
+        Row: {
+          id: string
+          name: string
+          company_type: string
+          tax_info: Json
+          email: string | null
+          phone: string | null
+          website: string | null
+          address: Json
+          assigned_products_count: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          company_type?: string
+          tax_info?: Json
+          email?: string | null
+          phone?: string | null
+          website?: string | null
+          address?: Json
+          assigned_products_count?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          company_type?: string
+          tax_info?: Json
+          email?: string | null
+          phone?: string | null
+          website?: string | null
+          address?: Json
+          assigned_products_count?: number
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      product_distributors: {
+        Row: {
+          id: string
+          product_id: string
+          distributor_id: string
+          assigned_by: string
+          assigned_at: string
+          status: string
+          territory: string | null
+          commission_rate: number | null
+          notes: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          product_id: string
+          distributor_id: string
+          assigned_by: string
+          assigned_at?: string
+          status?: string
+          territory?: string | null
+          commission_rate?: number | null
+          notes?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          product_id?: string
+          distributor_id?: string
+          assigned_by?: string
+          assigned_at?: string
+          status?: string
+          territory?: string | null
+          commission_rate?: number | null
+          notes?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
     }
     Views: {
       [_ in never]: never

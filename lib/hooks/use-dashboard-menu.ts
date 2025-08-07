@@ -46,6 +46,11 @@ export const useDashboardMenu = () => {
           icon: "Factory",
         },
         {
+          title: t('menu.distributors'),
+          href: "/dashboard/distributors",
+          icon: "Truck",
+        },
+        {
           title: t('menu.myProducts'),
           href: "/dashboard/manufactured-products",
           icon: "ClipboardCheck",

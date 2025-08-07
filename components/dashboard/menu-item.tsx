@@ -8,6 +8,7 @@ import {
   Settings,
   QrCode,
   FileText,
+  Truck,
 } from "lucide-react";
 import Link from "next/link";
 import React from "react";
@@ -26,6 +27,7 @@ const iconMap: Record<string, any> = {
   Settings,
   QrCode,
   FileText,
+  Truck,
 };
 
 interface MenuItemProps {

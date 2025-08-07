@@ -16,6 +16,7 @@ import { BasicInfoStep } from "./steps/BasicInfoStep";
 import { DocumentUploadStep } from "./steps/DocumentUploadStep";
 import { ManufacturerSelect } from "./steps/manufacturerSelect/ManufacturerSelect";
 import { MaterialsStep } from "./steps/MaterialsStep";
+import { DistributorSelect } from "./steps/DistributorSelect";
 
 const documentSchema = z.record(z.string(), z.array(z.object({
   name: z.string(),
@@ -71,6 +72,26 @@ const productSchema = z.object({
     .default([]),
   documents: documentSchema.optional(),
   manufacturer_id: z.string().optional(),
+  distributors: z.array(z.object({
+    id: z.string(),
+    name: z.string(),
+    companyType: z.string(),
+    taxInfo: z.object({
+      taxNumber: z.string(),
+      tradeRegistryNo: z.string().optional(),
+      mersisNo: z.string().optional(),
+    }),
+    email: z.string().optional(),
+    phone: z.string().optional(),
+    website: z.string().optional(),
+    address: z.object({
+      headquarters: z.string().optional(),
+      branches: z.string().optional(),
+    }).optional(),
+    assignedProducts: z.number().optional(),
+    createdAt: z.string().optional(),
+    updatedAt: z.string().optional(),
+  })).optional(),
 });
 
 // ✅ Tipler Birebir Eşleşti
@@ -82,7 +103,7 @@ interface ProductFormProps {
 }
 
 // ✅ Toplam Adım Sabitlendi
-const TOTAL_STEPS = 4; // Materials step eklendi
+const TOTAL_STEPS = 5; // Distributor step eklendi
 
 export function ProductForm({
   onSubmit,
@@ -106,6 +127,7 @@ export function ProductForm({
       materials: [],
       documents: undefined,
       manufacturer_id: "",
+      distributors: [],
     },
   });
 
@@ -176,6 +198,8 @@ export function ProductForm({
         documents: processedDocuments,
         // File objelerini ayrı gönder
         documentFiles: finalDocumentFiles,
+        // Distribütörleri ekle
+        distributors: data.distributors || [],
       });
     } finally {
       setIsSubmitting(false);
@@ -211,6 +235,9 @@ export function ProductForm({
 
         {/* ✅ Adım 4 */}
         {step === 4 && <ManufacturerSelect form={form} />}
+
+        {/* ✅ Adım 5 - Distribütör Seçimi */}
+        {step === 5 && <DistributorSelect form={form} />}
 
         {/* ✅ Adım 4 - ESPR Uyumluluğu (Geçici olarak kaldırıldı) */}
         {/* {step === 4 && <EsprComplianceStep form={form as any} />} */}

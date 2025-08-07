@@ -14,9 +14,13 @@ export interface ProductCategory {
 
 export interface ProductSubcategory {
   id: number;
-  name: string;
-  label?: string;
-  category_id: number;
+  product: string; // product_types tablosundaki 'product' kolonu
+  description?: string;
+  category_id?: number;
+  created_at?: string;
+  updated_at?: string;
+  deleted_at?: string | null;
+  user_id?: string | null;
 }
 
 export function useProductCategories() {
@@ -39,10 +43,10 @@ export function useProductCategories() {
 
         if (categoriesError) throw categoriesError;
 
-        // Fetch subcategories if the table exists
+        // Fetch subcategories (product_types table)
         try {
           const { data: subcategoriesData, error: subcategoriesError } = await supabase
-            .from('product_subcategories')
+            .from('product_types')
             .select('*')
             .order('id');
 
@@ -50,8 +54,8 @@ export function useProductCategories() {
             setSubcategories(subcategoriesData);
           }
         } catch (subError) {
-          // Subcategories table might not exist, just continue
-          console.log('Subcategories might not be available:', subError);
+          console.log('Product types table error:', subError);
+          setSubcategories([]);
         }
 
         setCategories(categoriesData || []);
@@ -88,7 +92,7 @@ export function useProductCategories() {
   const getSubcategoryName = (subcategoryId: string | number): string => {
     const numericId = typeof subcategoryId === 'string' ? Number(subcategoryId) : subcategoryId;
     const subcategory = subcategories.find(sub => sub.id === numericId);
-    return subcategory?.name || String(subcategoryId);
+    return subcategory?.product || String(subcategoryId);
   };
 
   return {
