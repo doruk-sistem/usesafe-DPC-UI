@@ -150,7 +150,15 @@ export function ProductDetails({ product, additionalComponents }: ProductDetails
 
           <ProductKeyFeatures 
             title={t("keyFeatures.title")}
-            features={product.key_features}
+            features={[
+              ...(product.key_features || []),
+              // Weight bilgisini ekle (eğer varsa)
+              ...(product.weight ? [{
+                name: t("keyFeatures.weight"),
+                value: `${product.weight} kg`,
+                unit: ""
+              }] : [])
+            ]}
           />
         </div>
       </div>
