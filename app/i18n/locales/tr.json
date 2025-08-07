@@ -1138,7 +1138,8 @@
         "name": "Özellik adı",
         "value": "Değer",
         "unit": "Birim (opsiyonel)",
-        "add": "Özellik Ekle"
+        "add": "Özellik Ekle",
+        "weight": "Ağırlık"
       },
       "basicInfo": {
         "title": "Temel Bilgiler",

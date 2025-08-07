@@ -1060,7 +1060,8 @@
         "category": "Category"
       },
       "keyFeatures": {
-        "title": "Key Features"
+        "title": "Key Features",
+        "weight": "Weight"
       },
       "materials": {
         "title": "Materials",
