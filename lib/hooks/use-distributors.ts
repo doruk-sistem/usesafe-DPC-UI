@@ -72,9 +72,10 @@ export const useAssignDistributorToProduct = () => {
   const queryClient = useQueryClient();
   
   return distributorApiHooks.useAssignDistributorToProductMutation({
-    onSuccess: (_, { productId }) => {
+    onSuccess: (_, { productId, assignment }) => {
       // Invalidate related queries
       queryClient.invalidateQueries({ queryKey: ['getProductDistributors', { productId }] });
+      queryClient.invalidateQueries({ queryKey: ['getDistributorProducts', { distributorId: assignment.distributorId }] });
       queryClient.invalidateQueries({ queryKey: ['getDistributorStats'] });
       queryClient.invalidateQueries({ queryKey: ['getDistributors'] });
     }
@@ -85,9 +86,10 @@ export const useRemoveDistributorFromProduct = () => {
   const queryClient = useQueryClient();
   
   return distributorApiHooks.useRemoveDistributorFromProductMutation({
-    onSuccess: (_, { productId }) => {
+    onSuccess: (_, { productId, distributorId }) => {
       // Invalidate related queries
       queryClient.invalidateQueries({ queryKey: ['getProductDistributors', { productId }] });
+      queryClient.invalidateQueries({ queryKey: ['getDistributorProducts', { distributorId }] });
       queryClient.invalidateQueries({ queryKey: ['getDistributorStats'] });
       queryClient.invalidateQueries({ queryKey: ['getDistributors'] });
     }

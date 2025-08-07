@@ -213,7 +213,8 @@
           "territory":"Bölge",
           "commission":"Komisyon",
           "assignedBy":"Atayan",
-          "assignedAt":"Atama Tarihi"
+          "assignedAt":"Atama Tarihi",
+          "actions":"İşlemler"
         },
         "status":{
           "active":"Aktif",
@@ -224,7 +225,8 @@
           "notSpecified":"Belirtilmemiş"
         },
         "actions":{
-          "viewProduct":"Ürünü Görüntüle"
+          "viewProduct":"Ürünü Görüntüle",
+          "removeProduct":"Ürünü Sil"
         }
       },
       "notes":{
@@ -234,6 +236,23 @@
       "error":{
         "title":"Hata",
         "description":"Ürün bilgileri yüklenirken bir hata oluştu"
+      },
+      "remove":{
+        "success":{
+          "title":"Ürün Kaldırıldı",
+          "description":"{productName} ürünü distribütörden başarıyla kaldırıldı"
+        },
+        "error":{
+          "title":"Hata",
+          "description":"Ürün distribütörden kaldırılırken bir hata oluştu"
+        },
+        "dialog":{
+          "title":"Ürünü Kaldır",
+          "description":"{productName} ürününü {distributorName} distribütöründen kaldırmak istediğinizden emin misiniz? Bu işlem geri alınamaz.",
+          "confirm":"Kaldır",
+          "cancel":"İptal",
+          "removing":"Kaldırılıyor..."
+        }
       }
     }
   },

@@ -1,17 +1,19 @@
 "use client";
 
-import { Suspense } from "react";
-import { ArrowLeft, Package, ExternalLink, Calendar, User, MapPin, Percent } from "lucide-react";
+import { Suspense, useState } from "react";
+import { ArrowLeft, Package, ExternalLink, Calendar, User, MapPin, Percent, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { useToast } from "@/components/ui/use-toast";
 import { useDistributor } from "@/lib/hooks/use-distributors";
-import { useDistributorProducts } from "@/lib/hooks/use-distributors";
+import { useDistributorProducts, useRemoveDistributorFromProduct } from "@/lib/hooks/use-distributors";
 
 export default function DistributorProductsPage() {
   const params = useParams();
@@ -44,7 +46,13 @@ export default function DistributorProductsPage() {
 function DistributorProducts({ distributorId }: { distributorId: string }) {
   const { distributor, isLoading: distributorLoading } = useDistributor(distributorId);
   const { distributorProducts: products, isLoading: productsLoading, error } = useDistributorProducts(distributorId);
+  const removeDistributorMutation = useRemoveDistributorFromProduct();
+  const { toast } = useToast();
   const t = useTranslations("distributors");
+  
+  // Modal state
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [productToDelete, setProductToDelete] = useState<{ id: string; name: string } | null>(null);
 
   if (distributorLoading || productsLoading) {
     return <DistributorProductsSkeleton />;
@@ -78,6 +86,37 @@ function DistributorProducts({ distributorId }: { distributorId: string }) {
         return "destructive";
       default:
         return "outline";
+    }
+  };
+
+  const handleRemoveProductClick = (productId: string, productName: string) => {
+    setProductToDelete({ id: productId, name: productName });
+    setShowDeleteDialog(true);
+  };
+
+  const handleConfirmRemoveProduct = async () => {
+    if (!productToDelete) return;
+
+    try {
+      await removeDistributorMutation.mutateAsync({
+        productId: productToDelete.id,
+        distributorId
+      });
+      
+      toast({
+        title: t("products.remove.success.title"),
+        description: t("products.remove.success.description", { productName: productToDelete.name }),
+      });
+      
+      setShowDeleteDialog(false);
+      setProductToDelete(null);
+    } catch (error) {
+      console.error("Error removing product from distributor:", error);
+      toast({
+        title: t("products.remove.error.title"),
+        description: t("products.remove.error.description"),
+        variant: "destructive",
+      });
     }
   };
 
@@ -145,7 +184,7 @@ function DistributorProducts({ distributorId }: { distributorId: string }) {
                   <TableHead>{t("products.list.columns.commission")}</TableHead>
                   <TableHead>{t("products.list.columns.assignedBy")}</TableHead>
                   <TableHead>{t("products.list.columns.assignedAt")}</TableHead>
-                  <TableHead></TableHead>
+                  <TableHead>{t("products.list.columns.actions")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -209,14 +248,29 @@ function DistributorProducts({ distributorId }: { distributorId: string }) {
                       </div>
                     </TableCell>
                     <TableCell>
-                      {productAssignment.product && (
-                        <Button variant="ghost" size="icon" asChild>
-                          <Link href={`/dashboard/products/${productAssignment.product.id}`}>
-                            <ExternalLink className="h-4 w-4" />
-                            <span className="sr-only">{t("products.list.actions.viewProduct")}</span>
-                          </Link>
+                      <div className="flex items-center gap-2">
+                        {productAssignment.product && (
+                          <Button variant="ghost" size="icon" asChild>
+                            <Link href={`/dashboard/products/${productAssignment.product.id}`}>
+                              <ExternalLink className="h-4 w-4" />
+                              <span className="sr-only">{t("products.list.actions.viewProduct")}</span>
+                            </Link>
+                          </Button>
+                        )}
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleRemoveProductClick(
+                            productAssignment.productId,
+                            productAssignment.product?.name || "Bilinmeyen Ürün"
+                          )}
+                          disabled={removeDistributorMutation.isPending}
+                          className="text-destructive hover:text-destructive"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                          <span className="sr-only">{t("products.list.actions.removeProduct")}</span>
                         </Button>
-                      )}
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -252,6 +306,34 @@ function DistributorProducts({ distributorId }: { distributorId: string }) {
           </CardContent>
         </Card>
       )}
+
+      {/* Silme Onay Modalı */}
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t("products.remove.dialog.title")}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t("products.remove.dialog.description", { 
+                productName: productToDelete?.name || "",
+                distributorName: distributor?.name || ""
+              })}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t("products.remove.dialog.cancel")}</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleConfirmRemoveProduct}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              disabled={removeDistributorMutation.isPending}
+            >
+              {removeDistributorMutation.isPending 
+                ? t("products.remove.dialog.removing") 
+                : t("products.remove.dialog.confirm")
+              }
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

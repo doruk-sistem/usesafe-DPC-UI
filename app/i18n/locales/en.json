@@ -89,7 +89,7 @@
         "viewProducts":"View Products",
         "viewDocuments":"View Documents",
         "viewCertifications":"View Certifications",
-        "delete":"Delete"
+        "delete":"Delete"      
       },
       "deleteDialog":{
         "title":"Delete Distributor",
@@ -108,7 +108,9 @@
         "revenue":"Revenue",
         "commission":"Commission",
         "status":"Status",
-        "createdAt":"Created At"
+        "createdAt":"Created At",
+        "actions":"Actions",
+        "removeProduct":"Remove Product"
       }
     },
     "details":{
@@ -197,6 +199,23 @@
     "products":{
       "title":"Distributor Products",
       "description":"View products assigned to this distributor",
+      "remove":{
+        "success":{
+          "title":"Product Removed",
+          "description":"{productName} has been successfully removed from the distributor"
+        },
+        "error":{
+          "title":"Error",
+          "description":"An error occurred while removing the product from the distributor"
+        },
+        "dialog":{
+          "title":"Remove Product",
+          "description":"Are you sure you want to remove {productName} from {distributorName} distributor? This action cannot be undone.",
+          "confirm":"Remove",
+          "cancel":"Cancel",
+          "removing":"Removing..."
+        }
+      },
       "distributorInfo":{
         "title":"Distributor Information",
         "name":"Company Name",
@@ -217,7 +236,8 @@
           "territory":"Territory",
           "commission":"Commission",
           "assignedBy":"Assigned By",
-          "assignedAt":"Assigned At"
+          "assignedAt":"Assigned At",
+          "actions":"Actions"
         },
         "status":{
           "active":"Active",
@@ -228,7 +248,8 @@
           "notSpecified":"Not specified"
         },
         "actions":{
-          "viewProduct":"View Product"
+          "viewProduct":"View Product",
+          "removeProduct":"Remove Product"
         }
       },
       "notes":{
