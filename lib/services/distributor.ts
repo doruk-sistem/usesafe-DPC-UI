@@ -163,7 +163,7 @@ export class DistributorService {
             productId: pd.product_id,
             distributorId: pd.distributor_id,
             assignedBy: pd.assigned_by,
-            assignedByCompany: pd.assigned_by, // assigned_by now contains the company name directly
+            assignedByCompany: "Kullanıcı", // We'll show a generic name since we don't have company info
             assignedAt: pd.assigned_at,
             status: pd.status as 'active' | 'inactive' | 'pending',
             territory: pd.territory,
@@ -215,7 +215,7 @@ export class DistributorService {
             productId: pd.product_id,
             distributorId: pd.distributor_id,
             assignedBy: pd.assigned_by,
-            assignedByCompany: pd.assigned_by, // assigned_by now contains the company name directly
+            assignedByCompany: "Kullanıcı", // We'll show a generic name since we don't have company info
             assignedAt: pd.assigned_at,
             status: pd.status as 'active' | 'inactive' | 'pending',
             territory: pd.territory,
@@ -285,35 +285,36 @@ export class DistributorService {
           .insert([{
             product_id: productId,
             distributor_id: assignment.distributorId,
-            assigned_by: companyName, // Store company name instead of user ID
+            assigned_by: user.id, // Store user ID as required by the schema
             status: 'active',
             territory: assignment.territory,
             commission_rate: assignment.commissionRate,
             notes: assignment.notes,
           }]);
 
-        if (!error) {
-          console.log('Successfully assigned distributor to product in database');
+        if (error) {
+          console.error('Error inserting product distributor:', error);
+          throw new Error(`Failed to assign distributor: ${error.message}`);
+        }
+
+        console.log('Successfully assigned distributor to product in database');
+        
+        // Update assigned_products_count for the distributor
+        const { data: currentDistributor } = await supabase
+          .from("distributors")
+          .select("assigned_products_count")
+          .eq("id", assignment.distributorId)
+          .single();
+        
+        if (currentDistributor) {
+          const newCount = (currentDistributor.assigned_products_count || 0) + 1;
           
-          // Update assigned_products_count for the distributor
-          const { data: currentDistributor } = await supabase
+          await supabase
             .from("distributors")
-            .select("assigned_products_count")
-            .eq("id", assignment.distributorId)
-            .single();
+            .update({ assigned_products_count: newCount })
+            .eq("id", assignment.distributorId);
           
-          if (currentDistributor) {
-            const newCount = (currentDistributor.assigned_products_count || 0) + 1;
-            
-            await supabase
-              .from("distributors")
-              .update({ assigned_products_count: newCount })
-              .eq("id", assignment.distributorId);
-            
-            console.log(`Updated distributor ${assignment.distributorId} count to ${newCount}`);
-          }
-          
-          return;
+          console.log(`Updated distributor ${assignment.distributorId} count to ${newCount}`);
         }
       }
     } catch (error) {
@@ -337,28 +338,29 @@ export class DistributorService {
           .eq("product_id", productId)
           .eq("distributor_id", distributorId);
 
-        if (!error) {
-          console.log('Successfully removed distributor from product');
+        if (error) {
+          console.error('Error removing product distributor:', error);
+          throw new Error(`Failed to remove distributor: ${error.message}`);
+        }
+
+        console.log('Successfully removed distributor from product');
+        
+        // Update assigned_products_count for the distributor
+        const { data: currentDistributor } = await supabase
+          .from("distributors")
+          .select("assigned_products_count")
+          .eq("id", distributorId)
+          .single();
+        
+        if (currentDistributor) {
+          const newCount = Math.max(0, (currentDistributor.assigned_products_count || 0) - 1);
           
-          // Update assigned_products_count for the distributor
-          const { data: currentDistributor } = await supabase
+          await supabase
             .from("distributors")
-            .select("assigned_products_count")
-            .eq("id", distributorId)
-            .single();
+            .update({ assigned_products_count: newCount })
+            .eq("id", distributorId);
           
-          if (currentDistributor) {
-            const newCount = Math.max(0, (currentDistributor.assigned_products_count || 0) - 1);
-            
-            await supabase
-              .from("distributors")
-              .update({ assigned_products_count: newCount })
-              .eq("id", distributorId);
-            
-            console.log(`Updated distributor ${distributorId} count to ${newCount}`);
-          }
-          
-          return;
+          console.log(`Updated distributor ${distributorId} count to ${newCount}`);
         }
       }
     } catch (error) {
@@ -600,11 +602,11 @@ export const distributorService = createService({
   assignDistributorToProduct: async ({ 
     productId, 
     assignment, 
-    assignedBy 
+    assignedBy = "" 
   }: { 
     productId: string; 
     assignment: DistributorAssignment; 
-    assignedBy: string; 
+    assignedBy?: string; 
   }): Promise<void> => {
     return DistributorService.assignDistributorToProduct(productId, assignment, assignedBy);
   },

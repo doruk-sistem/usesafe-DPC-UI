@@ -253,6 +253,38 @@
           "cancel":"İptal",
           "removing":"Kaldırılıyor..."
         }
+      },
+      "add":{
+        "title":"Ürün Ekle",
+        "description":"{distributorName} distribütörüne ürün atayın",
+        "search":{
+          "label":"Ürün Ara",
+          "placeholder":"Ürün adı ile arama yapın..."
+        },
+        "loading":"Ürünler yükleniyor...",
+        "noResults":"Arama kriterlerine uygun ürün bulunamadı",
+        "noProducts":"Atanabilir ürün bulunmuyor",
+        "details":{
+          "title":"Atama Detayları",
+          "description":"Ürün ataması için ek bilgileri belirtin",
+          "territory":"Bölge",
+          "territoryPlaceholder":"Örn: İstanbul, Ankara, Türkiye geneli...",
+          "commission":"Komisyon Oranı (%)",
+          "commissionHelp":"0-100 arası bir değer girin",
+          "notes":"Notlar",
+          "notesPlaceholder":"Atama ile ilgili ek notlar..."
+        },
+        "cancel":"İptal",
+        "assign":"Ürünü Ata",
+        "assigning":"Atanıyor...",
+        "success":{
+          "title":"Ürün Atandı",
+          "description":"{productName} ürünü {distributorName} distribütörüne başarıyla atandı"
+        },
+        "error":{
+          "title":"Hata",
+          "description":"Ürün distribütöre atanırken bir hata oluştu"
+        }
       }
     }
   },

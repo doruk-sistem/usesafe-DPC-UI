@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useState } from "react";
-import { ArrowLeft, Package, ExternalLink, Calendar, User, MapPin, Percent, Trash2 } from "lucide-react";
+import { ArrowLeft, Package, ExternalLink, Calendar, User, MapPin, Percent, Trash2, Plus } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -14,6 +14,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useToast } from "@/components/ui/use-toast";
 import { useDistributor } from "@/lib/hooks/use-distributors";
 import { useDistributorProducts, useRemoveDistributorFromProduct } from "@/lib/hooks/use-distributors";
+import { AddProductModal } from "@/components/dashboard/distributors/add-product-modal";
 
 export default function DistributorProductsPage() {
   const params = useParams();
@@ -53,6 +54,7 @@ function DistributorProducts({ distributorId }: { distributorId: string }) {
   // Modal state
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [productToDelete, setProductToDelete] = useState<{ id: string; name: string } | null>(null);
+  const [showAddProductModal, setShowAddProductModal] = useState(false);
 
   if (distributorLoading || productsLoading) {
     return <DistributorProductsSkeleton />;
@@ -161,8 +163,16 @@ function DistributorProducts({ distributorId }: { distributorId: string }) {
       {/* Ürün Listesi */}
       <Card>
         <CardHeader>
-          <CardTitle>{t("products.list.title")}</CardTitle>
-          <CardDescription>{t("products.list.description")}</CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>{t("products.list.title")}</CardTitle>
+              <CardDescription>{t("products.list.description")}</CardDescription>
+            </div>
+            <Button onClick={() => setShowAddProductModal(true)}>
+              <Plus className="h-4 w-4 mr-2" />
+              {t("products.add.title")}
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           {products.length === 0 ? (
@@ -172,6 +182,10 @@ function DistributorProducts({ distributorId }: { distributorId: string }) {
               <p className="text-sm text-muted-foreground mb-4">
                 {t("products.list.empty.description")}
               </p>
+              <Button onClick={() => setShowAddProductModal(true)}>
+                <Plus className="h-4 w-4 mr-2" />
+                {t("products.add.title")}
+              </Button>
             </div>
           ) : (
             <Table>
@@ -334,6 +348,17 @@ function DistributorProducts({ distributorId }: { distributorId: string }) {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Ürün Ekleme Modalı */}
+      {distributor && (
+        <AddProductModal
+          isOpen={showAddProductModal}
+          onClose={() => setShowAddProductModal(false)}
+          distributorId={distributorId}
+          distributorName={distributor.name}
+          existingProductIds={products.map(p => p.productId)}
+        />
+      )}
     </div>
   );
 }
