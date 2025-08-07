@@ -37,20 +37,32 @@ export class DistributorService {
         const { data: distributors, error } = await query;
 
         if (!error && distributors) {
-          // Transform database format to our interface format
-          return distributors.map(dbDistributor => ({
-            id: dbDistributor.id,
-            name: dbDistributor.name,
-            companyType: dbDistributor.company_type,
-            taxInfo: dbDistributor.tax_info,
-            email: dbDistributor.email,
-            phone: dbDistributor.phone,
-            website: dbDistributor.website,
-            address: dbDistributor.address,
-            assignedProducts: dbDistributor.assigned_products_count,
-            createdAt: dbDistributor.created_at,
-            updatedAt: dbDistributor.updated_at,
-          }));
+          // Get actual product counts for each distributor
+          const distributorsWithCounts = await Promise.all(
+            distributors.map(async (dbDistributor) => {
+              // Count actual assigned products
+              const { count: productCount } = await supabase
+                .from("product_distributors")
+                .select("*", { count: "exact", head: true })
+                .eq("distributor_id", dbDistributor.id);
+
+              return {
+                id: dbDistributor.id,
+                name: dbDistributor.name,
+                companyType: dbDistributor.company_type,
+                taxInfo: dbDistributor.tax_info,
+                email: dbDistributor.email,
+                phone: dbDistributor.phone,
+                website: dbDistributor.website,
+                address: dbDistributor.address,
+                assignedProducts: productCount || 0,
+                createdAt: dbDistributor.created_at,
+                updatedAt: dbDistributor.updated_at,
+              };
+            })
+          );
+
+          return distributorsWithCounts;
         }
       }
     } catch (error) {
@@ -74,6 +86,12 @@ export class DistributorService {
           .single();
 
         if (!error && distributor) {
+          // Count actual assigned products
+          const { count: productCount } = await supabase
+            .from("product_distributors")
+            .select("*", { count: "exact", head: true })
+            .eq("distributor_id", distributor.id);
+
           return {
             id: distributor.id,
             name: distributor.name,
@@ -83,7 +101,7 @@ export class DistributorService {
             phone: distributor.phone,
             website: distributor.website,
             address: distributor.address,
-            assignedProducts: distributor.assigned_products_count,
+            assignedProducts: productCount || 0,
             createdAt: distributor.created_at,
             updatedAt: distributor.updated_at,
           };
@@ -102,23 +120,43 @@ export class DistributorService {
       const { data: { user } } = await supabase.auth.getUser();
       
       if (user) {
-        const { data: distributors, error } = await supabase
+        // Get all distributors
+        const { data: distributors, error: distributorsError } = await supabase
           .from("distributors")
-          .select("assigned_products_count");
+          .select("id");
 
-        if (!error && distributors) {
-          const total = distributors.length;
-          const withProducts = distributors.filter(d => d.assigned_products_count > 0).length;
-          const withoutProducts = total - withProducts;
-          const totalProducts = distributors.reduce((sum, d) => sum + (d.assigned_products_count || 0), 0);
-
-          return {
-            total,
-            withProducts,
-            withoutProducts,
-            totalProducts,
-          };
+        if (distributorsError) {
+          throw distributorsError;
         }
+
+        const total = distributors?.length || 0;
+        let withProducts = 0;
+        let totalProducts = 0;
+
+        // Count actual products for each distributor
+        if (distributors && distributors.length > 0) {
+          for (const distributor of distributors) {
+            const { count: productCount } = await supabase
+              .from("product_distributors")
+              .select("*", { count: "exact", head: true })
+              .eq("distributor_id", distributor.id);
+
+            const count = productCount || 0;
+            if (count > 0) {
+              withProducts++;
+              totalProducts += count;
+            }
+          }
+        }
+
+        const withoutProducts = total - withProducts;
+
+        return {
+          total,
+          withProducts,
+          withoutProducts,
+          totalProducts,
+        };
       }
     } catch (error) {
       console.warn("Failed to fetch stats from real API:", error);
@@ -298,24 +336,6 @@ export class DistributorService {
         }
 
         console.log('Successfully assigned distributor to product in database');
-        
-        // Update assigned_products_count for the distributor
-        const { data: currentDistributor } = await supabase
-          .from("distributors")
-          .select("assigned_products_count")
-          .eq("id", assignment.distributorId)
-          .single();
-        
-        if (currentDistributor) {
-          const newCount = (currentDistributor.assigned_products_count || 0) + 1;
-          
-          await supabase
-            .from("distributors")
-            .update({ assigned_products_count: newCount })
-            .eq("id", assignment.distributorId);
-          
-          console.log(`Updated distributor ${assignment.distributorId} count to ${newCount}`);
-        }
       }
     } catch (error) {
       console.warn("Failed to assign distributor in database:", error);
@@ -344,24 +364,6 @@ export class DistributorService {
         }
 
         console.log('Successfully removed distributor from product');
-        
-        // Update assigned_products_count for the distributor
-        const { data: currentDistributor } = await supabase
-          .from("distributors")
-          .select("assigned_products_count")
-          .eq("id", distributorId)
-          .single();
-        
-        if (currentDistributor) {
-          const newCount = Math.max(0, (currentDistributor.assigned_products_count || 0) - 1);
-          
-          await supabase
-            .from("distributors")
-            .update({ assigned_products_count: newCount })
-            .eq("id", distributorId);
-          
-          console.log(`Updated distributor ${distributorId} count to ${newCount}`);
-        }
       }
     } catch (error) {
       console.warn("Failed to remove distributor from product:", error);

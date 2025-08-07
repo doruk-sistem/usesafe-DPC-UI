@@ -5,7 +5,7 @@ import { ArrowLeft, Save, Truck, Mail, Phone, Globe, MapPin, Building2 } from "l
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useQueryClient } from "@tanstack/react-query";
+
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,9 +14,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
-import { useDistributor } from "@/lib/hooks/use-distributors";
-import { DistributorService } from "@/lib/services/distributor";
+import { useDistributor, useUpdateDistributor } from "@/lib/hooks/use-distributors";
 import type { Distributor } from "@/lib/types/distributor";
+import { DistributorService } from "@/lib/services/distributor";
 
 export default function DistributorEditPage() {
   const params = useParams();
@@ -24,9 +24,9 @@ export default function DistributorEditPage() {
   const distributorId = params.id as string;
   const t = useTranslations("distributors");
   const { toast } = useToast();
-  const queryClient = useQueryClient();
 
   const { distributor, isLoading, error } = useDistributor(distributorId);
+  const updateDistributorMutation = useUpdateDistributor();
   const [isSaving, setIsSaving] = useState(false);
   const [formData, setFormData] = useState<Partial<Distributor>>({});
 
@@ -84,20 +84,15 @@ export default function DistributorEditPage() {
         address: formData.address,
       };
 
-      const { error } = await DistributorService.updateDistributor(distributorId, updateData);
-
-      if (error) {
-        throw new Error(error.message);
-      }
+      await updateDistributorMutation.mutateAsync({
+        id: distributorId,
+        updateData
+      });
 
       toast({
         title: t("edit.success.title"),
         description: t("edit.success.description"),
       });
-
-      // Cache'i temizle
-      queryClient.invalidateQueries({ queryKey: ['getDistributor', distributorId] });
-      queryClient.invalidateQueries({ queryKey: ['getDistributors'] });
 
       // Detay sayfasına yönlendir
       router.push(`/dashboard/distributors/${distributorId}`);

@@ -100,8 +100,20 @@ export const useUpdateDistributorStatus = () => {
   const queryClient = useQueryClient();
   
   return distributorApiHooks.useUpdateDistributorStatusMutation({
-    onSuccess: () => {
-      // Invalidate related queries
+    onSuccess: (_, { distributorId }) => {
+      queryClient.invalidateQueries({ queryKey: ['getDistributor', { id: distributorId }] });
+      queryClient.invalidateQueries({ queryKey: ['getDistributors'] });
+      queryClient.invalidateQueries({ queryKey: ['getDistributorStats'] });
+    }
+  });
+};
+
+export const useUpdateDistributor = () => {
+  const queryClient = useQueryClient();
+  
+  return distributorApiHooks.useUpdateDistributorMutation({
+    onSuccess: (_, { id }) => {
+      queryClient.invalidateQueries({ queryKey: ['getDistributor', { id }] });
       queryClient.invalidateQueries({ queryKey: ['getDistributors'] });
       queryClient.invalidateQueries({ queryKey: ['getDistributorStats'] });
     }

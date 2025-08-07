@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useState } from "react";
-import { ArrowLeft, Package, ExternalLink, Calendar, User, MapPin, Percent, Trash2, Plus } from "lucide-react";
+import { ArrowLeft, Package, ExternalLink, Calendar, Trash2, Plus } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -78,18 +78,7 @@ function DistributorProducts({ distributorId }: { distributorId: string }) {
     return new Date(dateString).toLocaleDateString('tr-TR');
   };
 
-  const getStatusBadgeVariant = (status: string) => {
-    switch (status) {
-      case "active":
-        return "default";
-      case "pending":
-        return "secondary";
-      case "inactive":
-        return "destructive";
-      default:
-        return "outline";
-    }
-  };
+
 
   const handleRemoveProductClick = (productId: string, productName: string) => {
     setProductToDelete({ id: productId, name: productName });
@@ -193,10 +182,6 @@ function DistributorProducts({ distributorId }: { distributorId: string }) {
                 <TableRow>
                   <TableHead>{t("products.list.columns.product")}</TableHead>
                   <TableHead>{t("products.list.columns.type")}</TableHead>
-                  <TableHead>{t("products.list.columns.status")}</TableHead>
-                  <TableHead>{t("products.list.columns.territory")}</TableHead>
-                  <TableHead>{t("products.list.columns.commission")}</TableHead>
-                  <TableHead>{t("products.list.columns.assignedBy")}</TableHead>
                   <TableHead>{t("products.list.columns.assignedAt")}</TableHead>
                   <TableHead>{t("products.list.columns.actions")}</TableHead>
                 </TableRow>
@@ -221,39 +206,6 @@ function DistributorProducts({ distributorId }: { distributorId: string }) {
                       </span>
                     </TableCell>
                     <TableCell>
-                      <Badge variant={getStatusBadgeVariant(productAssignment.status)}>
-                        {t(`products.list.status.${productAssignment.status}`)}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-1">
-                        <MapPin className="h-3 w-3 text-muted-foreground" />
-                        <span className="text-sm">
-                          {productAssignment.territory || t("products.list.territory.notSpecified")}
-                        </span>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      {productAssignment.commissionRate ? (
-                        <div className="flex items-center gap-1">
-                          <Percent className="h-3 w-3 text-muted-foreground" />
-                          <span className="text-sm font-medium">
-                            %{productAssignment.commissionRate}
-                          </span>
-                        </div>
-                      ) : (
-                        <span className="text-sm text-muted-foreground">-</span>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-1">
-                        <User className="h-3 w-3 text-muted-foreground" />
-                        <span className="text-sm">
-                          {productAssignment.assignedByCompany || productAssignment.assignedBy || "-"}
-                        </span>
-                      </div>
-                    </TableCell>
-                    <TableCell>
                       <div className="flex items-center gap-1">
                         <Calendar className="h-3 w-3 text-muted-foreground" />
                         <span className="text-sm">
@@ -265,7 +217,7 @@ function DistributorProducts({ distributorId }: { distributorId: string }) {
                       <div className="flex items-center gap-2">
                         {productAssignment.product && (
                           <Button variant="ghost" size="icon" asChild>
-                            <Link href={`/dashboard/products/${productAssignment.product.id}`}>
+                            <Link href={`/products/${productAssignment.product.id}`}>
                               <ExternalLink className="h-4 w-4" />
                               <span className="sr-only">{t("products.list.actions.viewProduct")}</span>
                             </Link>
