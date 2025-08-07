@@ -38,7 +38,25 @@ export function DistributorSelect({ form }: DistributorSelectProps) {
       try {
         setIsLoading(true);
         const distributors = await DistributorService.getDistributors();
-        setAvailableDistributors(distributors);
+        
+        // Filter out invalid distributors and ensure all fields are present
+        const validDistributors = distributors
+          .filter(d => d.id && d.name)
+          .map(d => ({
+            id: d.id,
+            name: d.name,
+            companyType: d.companyType || 'distributor',
+            taxInfo: d.taxInfo || { taxNumber: 'N/A' },
+            email: d.email || '',
+            phone: d.phone || '',
+            website: d.website || '',
+            address: d.address || {},
+            assignedProducts: d.assignedProducts || 0,
+            createdAt: d.createdAt || '',
+            updatedAt: d.updatedAt || '',
+          }));
+        
+        setAvailableDistributors(validDistributors);
       } catch (error) {
         console.error("Failed to load distributors:", error);
         setAvailableDistributors([]);
@@ -51,15 +69,37 @@ export function DistributorSelect({ form }: DistributorSelectProps) {
   }, []);
 
   // Arama fonksiyonu
-  const filteredDistributors = availableDistributors.filter(distributor =>
-    distributor.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (distributor.taxInfo?.taxNumber && distributor.taxInfo.taxNumber.includes(searchQuery))
-  );
+  const filteredDistributors = availableDistributors
+    .filter(distributor =>
+      distributor.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (distributor.taxInfo?.taxNumber && distributor.taxInfo.taxNumber.includes(searchQuery))
+    );
 
   // Distribütör ekleme
   const handleAddDistributor = (distributor: Distributor) => {
+    // Validate distributor has required fields
+    if (!distributor.id || !distributor.name) {
+      console.warn("Attempted to add invalid distributor:", distributor);
+      return;
+    }
+    
+    // Ensure all required fields are present
+    const validDistributor = {
+      id: distributor.id,
+      name: distributor.name,
+      companyType: distributor.companyType || 'distributor',
+      taxInfo: distributor.taxInfo || { taxNumber: 'N/A' },
+      email: distributor.email || '',
+      phone: distributor.phone || '',
+      website: distributor.website || '',
+      address: distributor.address || {},
+      assignedProducts: distributor.assignedProducts || 0,
+      createdAt: distributor.createdAt || '',
+      updatedAt: distributor.updatedAt || '',
+    };
+    
     if (!selectedDistributors.find(d => d.id === distributor.id)) {
-      const updatedSelection = [...selectedDistributors, distributor];
+      const updatedSelection = [...selectedDistributors, validDistributor];
       setSelectedDistributors(updatedSelection);
       form.setValue("distributors", updatedSelection);
     }
@@ -99,9 +139,9 @@ export function DistributorSelect({ form }: DistributorSelectProps) {
                         <div className="flex items-center gap-3">
                           <Truck className="h-5 w-5 text-primary" />
                           <div>
-                            <p className="font-medium">{distributor.name}</p>
+                            <p className="font-medium">{distributor.name || 'İsimsiz Distribütör'}</p>
                             <p className="text-sm text-muted-foreground">
-                              {distributor.taxInfo.taxNumber}
+                              {distributor.taxInfo?.taxNumber || 'Vergi numarası yok'}
                             </p>
                             {distributor.email && (
                               <p className="text-sm text-muted-foreground">
@@ -198,9 +238,9 @@ export function DistributorSelect({ form }: DistributorSelectProps) {
                                 )}
                               </div>
                               <div>
-                                <p className="font-medium">{distributor.name}</p>
+                                <p className="font-medium">{distributor.name || 'İsimsiz Distribütör'}</p>
                                 <p className="text-sm text-muted-foreground">
-                                  {distributor.taxInfo.taxNumber}
+                                  {distributor.taxInfo?.taxNumber || 'Vergi numarası yok'}
                                 </p>
                                 {distributor.email && (
                                   <p className="text-sm text-muted-foreground">
