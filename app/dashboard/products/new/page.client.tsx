@@ -142,10 +142,14 @@ export default function NewProductPageClient() {
       let sustainabilityMetrics: SustainabilityMetrics | null = null;
       if (data.materials && data.materials.length > 0) {
         try {
+          // Convert weight from kg to grams for the sustainability calculation
+          const weightInGrams = data.weight ? data.weight * 1000 : 500;
+          
           sustainabilityMetrics = await SustainabilityCalculatorService.calculateFromProductType(
             data.product_type,
             data.product_subcategory,
-            data.materials
+            data.materials,
+            weightInGrams
           );
           
           toast({
@@ -178,31 +182,9 @@ export default function NewProductPageClient() {
             userId: user.id,
           },
         ],
-        dpp_config: sustainabilityMetrics ? {
-          sections: [
-            {
-              id: "environmental",
-              title: "Environmental Metrics",
-              fields: [
-                { id: "sustainability-score", name: "Sustainability Score", value: sustainabilityMetrics.sustainability_score },
-                { id: "carbon-footprint", name: "Carbon Footprint", value: sustainabilityMetrics.carbon_footprint },
-                { id: "water-usage", name: "Water Usage", value: sustainabilityMetrics.water_usage },
-                { id: "energy-consumption", name: "Energy Consumption", value: sustainabilityMetrics.energy_consumption },
-                { id: "recycled-materials", name: "Recycled Materials", value: sustainabilityMetrics.recycled_materials },
-                { id: "chemical-reduction", name: "Chemical Reduction", value: sustainabilityMetrics.chemical_reduction },
-                { id: "biodegradability", name: "Biodegradability", value: sustainabilityMetrics.biodegradability },
-                // Senior onaylı yeni metrikler
-                { id: "water-consumption-per-unit", name: "Water Consumption Per Unit", value: sustainabilityMetrics.water_consumption_per_unit },
-                { id: "recycled-content-percentage", name: "Recycled Content Percentage", value: sustainabilityMetrics.recycled_content_percentage },
-                { id: "chemical-consumption-per-unit", name: "Chemical Consumption Per Unit", value: sustainabilityMetrics.chemical_consumption_per_unit },
-                { id: "greenhouse-gas-emissions", name: "Greenhouse Gas Emissions", value: sustainabilityMetrics.greenhouse_gas_emissions },
-                { id: "co2e-emissions-per-unit", name: "CO2e Emissions Per Unit", value: sustainabilityMetrics.co2e_emissions_per_unit },
-                { id: "minimum-durability-years", name: "Minimum Durability", value: sustainabilityMetrics.minimum_durability_years },
-              ]
-            }
-          ]
-        } : undefined,
+        dpp_config: undefined, // Sustainability artık product_materials tablosunda saklanıyor
         materials,
+        sustainabilityMetrics, // Sustainability metrics'i productService'e gönder
         // Distribütör atamalarını işle
         distributors: distributors?.map((distributor: any) => ({
           id: distributor.id,
