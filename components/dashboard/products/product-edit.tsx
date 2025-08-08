@@ -471,11 +471,14 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
             description: mat.description || ""
           }));
 
+          // Convert weight from kg to grams for the sustainability calculation
+          const weightInGrams = product.weight ? product.weight * 1000 : 500;
+          
           const sustainabilityMetrics = await SustainabilityCalculatorService.calculateFromProductType(
             product.product_type || "",
             product.product_subcategory || "",
             sustainabilityMaterials,
-            product.weight
+            weightInGrams
           );
 
           // Update materials with sustainability metrics using the hook

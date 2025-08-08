@@ -142,11 +142,14 @@ export default function NewProductPageClient() {
       let sustainabilityMetrics: SustainabilityMetrics | null = null;
       if (data.materials && data.materials.length > 0) {
         try {
+          // Convert weight from kg to grams for the sustainability calculation
+          const weightInGrams = data.weight ? data.weight * 1000 : 500;
+          
           sustainabilityMetrics = await SustainabilityCalculatorService.calculateFromProductType(
             data.product_type,
             data.product_subcategory,
             data.materials,
-            data.weight
+            weightInGrams
           );
           
           toast({

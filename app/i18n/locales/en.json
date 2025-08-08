@@ -1951,6 +1951,8 @@
       "editProduct":"Edit Product",
       "materials":"Materials",
       "totalMaterials":"Total Materials",
+      "noMaterialsAdded":"No materials added yet",
+      "noDocumentsFound":"No documents found",
       "material":"Material",
       "percentage":"Percentage",
       "recyclable":"Recyclable",
