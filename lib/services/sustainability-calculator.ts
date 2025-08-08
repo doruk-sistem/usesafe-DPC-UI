@@ -21,6 +21,7 @@ export interface SustainabilityMetrics {
   greenhouse_gas_emissions: string;
   co2e_emissions_per_unit: string;
   minimum_durability_years: string;
+  recycled_materials_percentage: string;
 }
 
 export class SustainabilityCalculatorService {
@@ -81,12 +82,13 @@ export class SustainabilityCalculatorService {
           "recycled_materials": string (percentage of recycled content, e.g., "20% of total materials"),
           "chemical_reduction": string (comparison to industry standard, e.g., "15% less than conventional"),
           "biodegradability": string (actual biodegradable percentage, e.g., "25% biodegradable materials"),
-          "water_consumption_per_unit": string (must match water_usage exactly),
-          "recycled_content_percentage": string (must match recycled_materials),
-          "chemical_consumption_per_unit": string (actual chemical usage, e.g., "0.12 kg"),
-          "greenhouse_gas_emissions": string (must match carbon_footprint exactly),
-          "co2e_emissions_per_unit": string (must match carbon_footprint exactly),
-          "minimum_durability_years": string (based on material composition and usage patterns)
+                  "water_consumption_per_unit": string (must match water_usage exactly),
+        "recycled_content_percentage": string (must match recycled_materials),
+        "chemical_consumption_per_unit": string (actual chemical usage, e.g., "0.12 kg"),
+        "greenhouse_gas_emissions": string (must match carbon_footprint exactly),
+        "co2e_emissions_per_unit": string (must match carbon_footprint exactly),
+        "minimum_durability_years": string (based on material composition and usage patterns),
+        "recycled_materials_percentage": string (must match recycled_materials)
         }
 
         Critical Requirements:
@@ -125,7 +127,8 @@ export class SustainabilityCalculatorService {
         sustainability_score: Math.min(100, Math.max(0, metrics.sustainability_score || 50)),
         greenhouse_gas_emissions: metrics.carbon_footprint,
         co2e_emissions_per_unit: metrics.carbon_footprint,
-        water_consumption_per_unit: metrics.water_usage
+        water_consumption_per_unit: metrics.water_usage,
+        recycled_materials_percentage: metrics.recycled_materials
       };
 
       return finalMetrics;
@@ -157,7 +160,8 @@ export class SustainabilityCalculatorService {
         chemical_consumption_per_unit: `${(weightInKg * industryAverages.chemicalIntensity).toFixed(2)} kg`,
         greenhouse_gas_emissions: `${(weightInKg * industryAverages.carbonIntensity).toFixed(1)} kg CO2e`,
         co2e_emissions_per_unit: `${(weightInKg * industryAverages.carbonIntensity).toFixed(1)} kg CO2e`,
-        minimum_durability_years: "3-4 years"
+        minimum_durability_years: "3-4 years",
+        recycled_materials_percentage: "15%"
       };
     }
   }

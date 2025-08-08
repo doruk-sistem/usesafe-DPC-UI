@@ -79,6 +79,21 @@ export type BaseProduct = Database["public"]["Tables"]["products"]["Row"] & {
         value: any;
       }>;
     }>;
+    sustainability_metrics?: {
+      sustainability_score?: number;
+      carbon_footprint?: string;
+      water_usage?: string;
+      energy_consumption?: string;
+      chemical_usage?: string;
+      co2_emissions?: string;
+      recycled_content_percentage?: number;
+      biodegradability_percentage?: number;
+      minimum_durability_years?: number;
+      water_consumption_per_unit?: string;
+      greenhouse_gas_emissions?: string;
+      chemical_consumption_per_unit?: string;
+      recycled_materials_percentage?: number;
+    };
   };
 };
 

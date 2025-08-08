@@ -11,6 +11,7 @@ import { companyApiHooks } from "@/lib/hooks/use-company";
 import { getDocuments } from "@/lib/services/documents";
 import { Document } from "@/lib/types/document";
 import { BaseProduct } from "@/lib/types/product";
+import { materialsService } from "@/lib/services/materials";
 
 import { BasicInformationCard } from "./product-details/BasicInformationCard";
 import { CertificationsCard } from "./product-details/CertificationsCard";
@@ -85,30 +86,72 @@ export function ProductDetails({ product, additionalComponents }: ProductDetails
     documentUrl: (field.value as any).documentUrl
   }));
 
-  // Çevresel metrikleri al (mock veri ile dolu)
-  const environmentalFields = product.dpp_config?.sections
-    .find(s => s.id === "environmental")
-    ?.fields.map(field => ({
-      id: field.id,
-      name: field.name,
-      value: field.value
-    })) || [
-      // Senior onaylı gerçek sürdürülebilirlik metrikleri
-      { id: "sustainability-score", name: "Sustainability Score", value: 65 },
-      { id: "carbon-footprint", name: "Carbon Footprint", value: "3.2 kg CO2e" },
-      { id: "water-usage", name: "Water Usage", value: "2500 liters" },
-      { id: "energy-consumption", name: "Energy Consumption", value: "7.5 kWh per unit" },
-      { id: "recycled-materials", name: "Recycled Materials", value: "0% of total materials" },
-      { id: "chemical-reduction", name: "Chemical Reduction", value: "30% less than conventional" },
-      { id: "biodegradability", name: "Biodegradability", value: "20% biodegradable materials" },
-      // Yeni eklenen detaylı metrikler
-      { id: "water-consumption-per-unit", name: "Water Consumption Per Unit", value: "15.000 Litre" },
-      { id: "recycled-content-percentage", name: "Recycled Content Percentage", value: "40%" },
-      { id: "chemical-consumption-per-unit", name: "Chemical Consumption Per Unit", value: "8 kg" },
-      { id: "greenhouse-gas-emissions", name: "Greenhouse Gas Emissions", value: "205.4" },
-      { id: "co2e-emissions-per-unit", name: "CO2e Emissions Per Unit", value: "30 kg" },
-      { id: "minimum-durability-years", name: "Minimum Durability", value: "10 yıl" },
-    ];
+  // Çevresel metrikleri al - product_materials tablosundan
+  const [materialsWithSustainability, setMaterialsWithSustainability] = useState<any[]>([]);
+  
+  useEffect(() => {
+    const fetchMaterialsWithSustainability = async () => {
+      try {
+        const materials = await materialsService.getMaterialsWithSustainability(product.id);
+        setMaterialsWithSustainability(materials);
+      } catch (error) {
+        console.error("Error fetching materials with sustainability:", error);
+        setMaterialsWithSustainability([]);
+      }
+    };
+
+    if (product.id) {
+      fetchMaterialsWithSustainability();
+    }
+  }, [product.id]);
+
+  // Sustainability metrics'i materials'dan hesapla
+  const calculateSustainabilityMetrics = () => {
+    if (!materialsWithSustainability || materialsWithSustainability.length === 0) {
+      return [
+        { id: "sustainability-score", name: "Sustainability Score", value: 0 },
+        { id: "carbon-footprint", name: "Carbon Footprint", value: "0 kg CO2e" },
+        { id: "water-usage", name: "Water Usage", value: "0 liters" },
+        { id: "energy-consumption", name: "Energy Consumption", value: "0 kWh per unit" },
+        { id: "recycled-materials", name: "Recycled Materials", value: "0% of total materials" },
+        { id: "chemical-reduction", name: "Chemical Reduction", value: "0 kg" },
+        { id: "biodegradability", name: "Biodegradability", value: "0% biodegradable materials" },
+      ];
+    }
+
+    // Ortalama sustainability score hesapla
+    const avgSustainabilityScore = materialsWithSustainability.reduce((sum, mat) => 
+      sum + (mat.sustainability_score || 0), 0) / materialsWithSustainability.length;
+
+    // Toplam recycled content percentage
+    const totalRecycledContent = materialsWithSustainability.reduce((sum, mat) => 
+      sum + (mat.recycled_content_percentage || 0), 0) / materialsWithSustainability.length;
+
+    // Toplam biodegradability percentage
+    const totalBiodegradability = materialsWithSustainability.reduce((sum, mat) => 
+      sum + (mat.biodegradability_percentage || 0), 0) / materialsWithSustainability.length;
+
+    // İlk material'ın diğer sustainability değerlerini al (örnek olarak)
+    const firstMaterial = materialsWithSustainability[0];
+
+         return [
+       { id: "sustainability-score", name: "Sustainability Score", value: Math.round(avgSustainabilityScore) },
+       { id: "carbon-footprint", name: "Carbon Footprint", value: firstMaterial?.carbon_footprint || "0 kg CO2e" },
+       { id: "water-usage", name: "Water Usage", value: firstMaterial?.water_usage || "0 liters" },
+       { id: "energy-consumption", name: "Energy Consumption", value: firstMaterial?.energy_consumption || "0 kWh per unit" },
+       { id: "recycled-materials", name: "Recycled Materials", value: `${Math.round(totalRecycledContent)}% of total materials` },
+       { id: "chemical-reduction", name: "Chemical Reduction", value: firstMaterial?.chemical_usage || "0 kg" },
+       { id: "biodegradability", name: "Biodegradability", value: `${Math.round(totalBiodegradability)}% biodegradable materials` },
+       { id: "water-consumption-per-unit", name: "Water Consumption Per Unit", value: firstMaterial?.water_consumption_per_unit || "0 liters" },
+       { id: "recycled-content-percentage", name: "Recycled Content Percentage", value: `${Math.round(totalRecycledContent)}%` },
+       { id: "chemical-consumption-per-unit", name: "Chemical Consumption Per Unit", value: firstMaterial?.chemical_consumption_per_unit || "0 kg" },
+       { id: "greenhouse-gas-emissions", name: "Greenhouse Gas Emissions", value: firstMaterial?.greenhouse_gas_emissions || "0 kg CO2e" },
+       { id: "co2e-emissions-per-unit", name: "CO2e Emissions Per Unit", value: firstMaterial?.co2_emissions || "0 kg" },
+       { id: "minimum-durability-years", name: "Minimum Durability", value: `${firstMaterial?.minimum_durability_years || 0} years` },
+     ];
+  };
+
+  const environmentalFields = calculateSustainabilityMetrics();
 
 
   return (

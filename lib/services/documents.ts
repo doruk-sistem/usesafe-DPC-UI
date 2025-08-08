@@ -16,10 +16,29 @@ export async function getDocuments(productId: string): Promise<{ documents: Docu
     if (error) throw error;
     if (!product) throw new Error("Product not found");
 
-    // Fetch materials for this product
+    // Fetch materials for this product with sustainability metrics
     const { data: materials, error: materialsError } = await supabase
       .from("product_materials")
-      .select("id, name, percentage, recyclable, description")
+      .select(`
+        id, 
+        name, 
+        percentage, 
+        recyclable, 
+        description,
+        sustainability_score,
+        carbon_footprint,
+        water_usage,
+        energy_consumption,
+        chemical_usage,
+        co2_emissions,
+        recycled_content_percentage,
+        biodegradability_percentage,
+        minimum_durability_years,
+        water_consumption_per_unit,
+        greenhouse_gas_emissions,
+        chemical_consumption_per_unit,
+        recycled_materials_percentage
+      `)
       .eq("product_id", productId);
 
     if (!materialsError && materials) {

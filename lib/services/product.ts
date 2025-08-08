@@ -198,10 +198,10 @@ export const productService = createService({
       };
     }
   },
-  createProduct: async (product: NewProduct & { materials?: any[]; distributors?: any[] }): Promise<ProductResponse> => {
+  createProduct: async (product: NewProduct & { materials?: any[]; distributors?: any[]; sustainabilityMetrics?: any }): Promise<ProductResponse> => {
     try {
       // Extract documents, key_features, materials, and distributors if they exist
-      const { documents = {}, manufacturer_id, key_features = [], materials = [], distributors = [], ...productData } = product;
+      const { documents = {}, manufacturer_id, key_features = [], materials = [], distributors = [], sustainabilityMetrics, ...productData } = product;
 
       // Create the product WITHOUT documents in JSONB - documents are now stored in separate table
       const { data, error } = await supabase
@@ -247,7 +247,7 @@ export const productService = createService({
         }
       }
 
-      // Insert materials if provided
+      // Insert materials with sustainability metrics if provided
       if (data && materials && materials.length > 0) {
         const materialRows = materials.map((mat: any) => ({
           product_id: data.id,
@@ -255,6 +255,20 @@ export const productService = createService({
           percentage: mat.percentage,
           recyclable: mat.recyclable,
           description: mat.description || null,
+          // Add sustainability metrics if available
+          sustainability_score: sustainabilityMetrics?.sustainability_score || null,
+          carbon_footprint: sustainabilityMetrics?.carbon_footprint || null,
+          water_usage: sustainabilityMetrics?.water_usage || null,
+          energy_consumption: sustainabilityMetrics?.energy_consumption || null,
+          chemical_usage: sustainabilityMetrics?.chemical_consumption_per_unit || null,
+          co2_emissions: sustainabilityMetrics?.co2e_emissions_per_unit || null,
+          recycled_content_percentage: parseFloat(sustainabilityMetrics?.recycled_content_percentage) || null,
+          biodegradability_percentage: parseFloat(sustainabilityMetrics?.biodegradability) || null,
+          minimum_durability_years: parseInt(sustainabilityMetrics?.minimum_durability_years) || null,
+          water_consumption_per_unit: sustainabilityMetrics?.water_consumption_per_unit || null,
+          greenhouse_gas_emissions: sustainabilityMetrics?.greenhouse_gas_emissions || null,
+          chemical_consumption_per_unit: sustainabilityMetrics?.chemical_consumption_per_unit || null,
+          recycled_materials_percentage: parseFloat(sustainabilityMetrics?.recycled_materials_percentage) || null,
         }));
         const { error: materialsError } = await supabase.from("product_materials").insert(materialRows);
         if (materialsError) {

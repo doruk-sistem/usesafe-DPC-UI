@@ -35,6 +35,8 @@ import { Document } from "@/lib/types/document";
 import { BaseProduct } from "@/lib/types/product";
 import { useProductMaterialsWithManufacturers } from "@/lib/hooks/use-material-manufacturers";
 import { MaterialManufacturerService } from "@/lib/services/material-manufacturer";
+import { SustainabilityCalculatorService } from "@/lib/services/sustainability-calculator";
+import { useMaterials } from "@/lib/hooks/use-materials";
 
 interface ProductEditProps {
   productId: string;
@@ -47,6 +49,19 @@ interface Material {
   percentage: number;
   recyclable: boolean;
   description?: string;
+  sustainability_score?: number;
+  carbon_footprint?: string;
+  water_usage?: string;
+  energy_consumption?: string;
+  chemical_usage?: string;
+  co2_emissions?: string;
+  recycled_content_percentage?: number;
+  biodegradability_percentage?: number;
+  minimum_durability_years?: number;
+  water_consumption_per_unit?: string;
+  greenhouse_gas_emissions?: string;
+  chemical_consumption_per_unit?: string;
+  recycled_materials_percentage?: number;
 }
 
 const documentTypeLabels = (t: any): Record<string, string> => ({
@@ -95,7 +110,17 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
   const router = useRouter();
   const supabase = createClientComponentClient();
   const { data: allProductTypes } = useAllProductTypes();
-  const [materials, setMaterials] = useState<Material[]>([]);
+  const { 
+    materials, 
+    isLoading: materialsLoading, 
+    error: materialsError,
+    totalPercentage,
+    isPercentageValid,
+    getPercentageStatus,
+    addMaterial,
+    removeMaterial,
+    updateMaterialsSustainability
+  } = useMaterials(productId);
   const [newMaterial, setNewMaterial] = useState<Omit<Material, 'id'>>({
     name: "",
     percentage: 0,
@@ -164,16 +189,7 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
           product_type: fetchedProduct.product_type ?? "",
         });
 
-        // Fetch materials
-        if (fetchedProduct.materials && Array.isArray(fetchedProduct.materials)) {
-          setMaterials(fetchedProduct.materials.map(mat => ({
-            id: mat.id,
-            name: mat.name,
-            percentage: mat.percentage,
-            recyclable: mat.recyclable,
-            description: mat.description || ""
-          })));
-        }
+        // Materials are now handled by the useMaterials hook
         
         // If we have a reuploadDocumentId, find the rejected document
         if (reuploadDocumentId) {
@@ -357,7 +373,7 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
     }));
   };
 
-  const handleAddMaterial = () => {
+  const handleAddMaterial = async () => {
     if (!newMaterial.name || newMaterial.percentage <= 0) {
       toast({
         title: t("error"),
@@ -368,8 +384,7 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
     }
 
     // Toplam yüzde kontrolü
-    const totalPercentage = materials.reduce((sum, mat) => sum + mat.percentage, 0) + newMaterial.percentage;
-    if (totalPercentage > 100) {
+    if (totalPercentage + newMaterial.percentage > 100) {
       toast({
         title: t("error"),
         description: "Toplam yüzde 100'ü geçemez",
@@ -378,23 +393,53 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
       return;
     }
 
-    const material: Material = {
-      id: Date.now().toString(),
-      ...newMaterial
-    };
+    try {
+      await addMaterial({
+        product_id: productId,
+        name: newMaterial.name,
+        percentage: newMaterial.percentage,
+        recyclable: newMaterial.recyclable,
+        description: newMaterial.description || ""
+      });
 
-    setMaterials(prev => [...prev, material]);
-    setNewMaterial({
-      name: "",
-      percentage: 0,
-      recyclable: false,
-      description: ""
-    });
-    setShowAddMaterialDialog(false);
+      setNewMaterial({
+        name: "",
+        percentage: 0,
+        recyclable: false,
+        description: ""
+      });
+      setShowAddMaterialDialog(false);
+
+      toast({
+        title: t("success"),
+        description: "Material added successfully",
+      });
+    } catch (error) {
+      console.error("Error adding material:", error);
+      toast({
+        title: t("error"),
+        description: "Failed to add material",
+        variant: "destructive",
+      });
+    }
   };
 
-  const handleRemoveMaterial = (id: string) => {
-    setMaterials(prev => prev.filter(mat => mat.id !== id));
+  const handleRemoveMaterial = async (id: string) => {
+    try {
+      await removeMaterial(id);
+
+      toast({
+        title: t("success"),
+        description: "Material removed successfully",
+      });
+    } catch (error) {
+      console.error("Error removing material:", error);
+      toast({
+        title: t("error"),
+        description: "Failed to remove material",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleSaveChanges = async () => {
@@ -415,18 +460,58 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
 
       if (error) throw error;
 
-      // Update materials
-      await productService.updateProduct({
-        id: productId,
-        product: {
-          materials: materials
-        }
-      });
+      // Calculate sustainability metrics if materials exist
+      if (materials && materials.length > 0) {
+        try {
+          // Convert materials to the format expected by SustainabilityCalculatorService
+          const sustainabilityMaterials = materials.map(mat => ({
+            name: mat.name,
+            percentage: mat.percentage,
+            recyclable: mat.recyclable,
+            description: mat.description || ""
+          }));
 
-      toast({
-        title: t("success"),
-        description: t("productUpdatedSuccess"),
-      });
+          const sustainabilityMetrics = await SustainabilityCalculatorService.calculateFromProductType(
+            product.product_type || "",
+            product.product_subcategory || "",
+            sustainabilityMaterials,
+            product.weight
+          );
+
+          // Update materials with sustainability metrics using the hook
+          await updateMaterialsSustainability({
+            sustainability_score: sustainabilityMetrics.sustainability_score,
+            carbon_footprint: sustainabilityMetrics.carbon_footprint,
+            water_usage: sustainabilityMetrics.water_usage,
+            energy_consumption: sustainabilityMetrics.energy_consumption,
+            chemical_usage: sustainabilityMetrics.chemical_consumption_per_unit,
+            co2_emissions: sustainabilityMetrics.co2e_emissions_per_unit,
+            recycled_content_percentage: parseFloat(sustainabilityMetrics.recycled_content_percentage) || 0,
+            biodegradability_percentage: parseFloat(sustainabilityMetrics.biodegradability) || 0,
+            minimum_durability_years: parseInt(sustainabilityMetrics.minimum_durability_years) || 1,
+            water_consumption_per_unit: sustainabilityMetrics.water_consumption_per_unit,
+            greenhouse_gas_emissions: sustainabilityMetrics.greenhouse_gas_emissions,
+            chemical_consumption_per_unit: sustainabilityMetrics.chemical_consumption_per_unit,
+            recycled_materials_percentage: parseFloat(sustainabilityMetrics.recycled_materials_percentage) || 0
+          });
+
+          toast({
+            title: t("success"),
+            description: "Product updated and sustainability metrics calculated successfully",
+          });
+        } catch (sustainabilityError) {
+          console.error("Error calculating sustainability metrics:", sustainabilityError);
+          toast({
+            title: t("success"),
+            description: "Product updated but sustainability calculation failed",
+          });
+        }
+      } else {
+        toast({
+          title: t("success"),
+          description: t("productUpdatedSuccess"),
+        });
+      }
 
       router.push("/dashboard/products");
     } catch (error) {
@@ -898,17 +983,17 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
                  <Plus className="w-5 h-5" />
                  {t("materials")}
                </CardTitle>
-               <div className="flex items-center justify-between">
-                 <p className="text-sm text-muted-foreground">
-                   {t("totalMaterials")}: {materials.length}
-                 </p>
-                 <div className="flex items-center gap-2">
-                   <span className="text-sm font-medium">{t("totalPercentage")}:</span>
-                   <Badge variant={materials.reduce((sum, mat) => sum + mat.percentage, 0) === 100 ? "default" : materials.reduce((sum, mat) => sum + mat.percentage, 0) > 100 ? "destructive" : "secondary"}>
-                     {materials.reduce((sum, mat) => sum + mat.percentage, 0)}%
-                   </Badge>
+                                <div className="flex items-center justify-between">
+                   <p className="text-sm text-muted-foreground">
+                     {t("totalMaterials")}: {materials.length}
+                   </p>
+                   <div className="flex items-center gap-2">
+                     <span className="text-sm font-medium">{t("totalPercentage")}:</span>
+                     <Badge variant={getPercentageStatus() === "complete" ? "default" : getPercentageStatus() === "exceeded" ? "destructive" : "secondary"}>
+                       {totalPercentage}%
+                     </Badge>
+                   </div>
                  </div>
-               </div>
              </CardHeader>
              <CardContent>
                {materials.length === 0 ? (
