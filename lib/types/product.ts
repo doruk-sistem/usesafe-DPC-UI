@@ -61,6 +61,13 @@ export type BaseProduct = Database["public"]["Tables"]["products"]["Row"] & {
   distributors?: ProductDistributor[]; // ✅ Eklenecek
   key_features?: ProductKeyFeature[]; // Yeni ilişkisel key_features
   documents?: Document[]; // Documents array for the product
+  materials?: Array<{
+    id: string;
+    name: string;
+    percentage: number;
+    recyclable: boolean;
+    description?: string;
+  }>;
   dpp_config?: {
     sections: Array<{
       id: string;

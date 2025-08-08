@@ -16,6 +16,16 @@ export async function getDocuments(productId: string): Promise<{ documents: Docu
     if (error) throw error;
     if (!product) throw new Error("Product not found");
 
+    // Fetch materials for this product
+    const { data: materials, error: materialsError } = await supabase
+      .from("product_materials")
+      .select("id, name, percentage, recyclable, description")
+      .eq("product_id", productId);
+
+    if (!materialsError && materials) {
+      product.materials = materials;
+    }
+
     // Sadece documents tablosundan çek
     const { data: documents, error: docsError } = await supabase
       .from("documents")

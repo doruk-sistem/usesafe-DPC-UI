@@ -25,6 +25,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/components/ui/use-toast";
 import { STANDARD_TO_AI_MAPPING, DOCUMENT_TYPE_CONFIG } from "@/lib/constants/documents";
 import { getDocuments, uploadDocument } from "@/lib/services/documents";
@@ -32,10 +33,20 @@ import { productService } from "@/lib/services/product";
 import { useAllProductTypes } from "@/lib/services/product-types";
 import { Document } from "@/lib/types/document";
 import { BaseProduct } from "@/lib/types/product";
+import { useProductMaterialsWithManufacturers } from "@/lib/hooks/use-material-manufacturers";
+import { MaterialManufacturerService } from "@/lib/services/material-manufacturer";
 
 interface ProductEditProps {
   productId: string;
   reuploadDocumentId?: string;
+}
+
+interface Material {
+  id: string;
+  name: string;
+  percentage: number;
+  recyclable: boolean;
+  description?: string;
 }
 
 const documentTypeLabels = (t: any): Record<string, string> => ({
@@ -84,6 +95,14 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
   const router = useRouter();
   const supabase = createClientComponentClient();
   const { data: allProductTypes } = useAllProductTypes();
+  const [materials, setMaterials] = useState<Material[]>([]);
+  const [newMaterial, setNewMaterial] = useState<Omit<Material, 'id'>>({
+    name: "",
+    percentage: 0,
+    recyclable: false,
+    description: ""
+  });
+  const [showAddMaterialDialog, setShowAddMaterialDialog] = useState(false);
 
   // Helper to get product type name by id
   const getProductTypeName = (typeId: number | string | undefined) => {
@@ -144,6 +163,17 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
           model: fetchedProduct.model ?? "",
           product_type: fetchedProduct.product_type ?? "",
         });
+
+        // Fetch materials
+        if (fetchedProduct.materials && Array.isArray(fetchedProduct.materials)) {
+          setMaterials(fetchedProduct.materials.map(mat => ({
+            id: mat.id,
+            name: mat.name,
+            percentage: mat.percentage,
+            recyclable: mat.recyclable,
+            description: mat.description || ""
+          })));
+        }
         
         // If we have a reuploadDocumentId, find the rejected document
         if (reuploadDocumentId) {
@@ -306,12 +336,74 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
     }
   };
 
+  const handleMaterialChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type } = e.target;
+    let fieldValue: string | number | boolean = value;
+    
+    if (type === "number") {
+      fieldValue = parseFloat(value) || 0;
+    }
+    
+    setNewMaterial(prev => ({
+      ...prev,
+      [name]: fieldValue
+    }));
+  };
+
+  const handleRecyclableChange = (value: string) => {
+    setNewMaterial(prev => ({
+      ...prev,
+      recyclable: value === "true"
+    }));
+  };
+
+  const handleAddMaterial = () => {
+    if (!newMaterial.name || newMaterial.percentage <= 0) {
+      toast({
+        title: t("error"),
+        description: "Malzeme adı ve yüzde gerekli",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Toplam yüzde kontrolü
+    const totalPercentage = materials.reduce((sum, mat) => sum + mat.percentage, 0) + newMaterial.percentage;
+    if (totalPercentage > 100) {
+      toast({
+        title: t("error"),
+        description: "Toplam yüzde 100'ü geçemez",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const material: Material = {
+      id: Date.now().toString(),
+      ...newMaterial
+    };
+
+    setMaterials(prev => [...prev, material]);
+    setNewMaterial({
+      name: "",
+      percentage: 0,
+      recyclable: false,
+      description: ""
+    });
+    setShowAddMaterialDialog(false);
+  };
+
+  const handleRemoveMaterial = (id: string) => {
+    setMaterials(prev => prev.filter(mat => mat.id !== id));
+  };
+
   const handleSaveChanges = async () => {
     if (!product) return;
 
     try {
       setIsSaving(true);
       
+      // Update product basic info
       const { error } = await supabase
         .from("products")
         .update({
@@ -322,6 +414,14 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
         .eq("id", productId);
 
       if (error) throw error;
+
+      // Update materials
+      await productService.updateProduct({
+        id: productId,
+        product: {
+          materials: materials
+        }
+      });
 
       toast({
         title: t("success"),
@@ -653,7 +753,7 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
             </div>
           </div>
           
-          <Separator className="my-6" />
+                     <Separator className="my-6" />
           
           <div className="space-y-4">
             <div className="flex items-center justify-between">
@@ -786,10 +886,152 @@ export function ProductEdit({ productId, reuploadDocumentId }: ProductEditProps)
                   </div>
                 ))}
               </div>
-            )}
-          </div>
-          
-          <div className="flex justify-end space-x-2">
+                         )}
+           </div>
+           
+           <Separator className="my-6" />
+           
+           {/* Materials Section */}
+           <Card>
+             <CardHeader>
+               <CardTitle className="flex items-center gap-2">
+                 <Plus className="w-5 h-5" />
+                 {t("materials")}
+               </CardTitle>
+               <div className="flex items-center justify-between">
+                 <p className="text-sm text-muted-foreground">
+                   {t("totalMaterials")}: {materials.length}
+                 </p>
+                 <div className="flex items-center gap-2">
+                   <span className="text-sm font-medium">{t("totalPercentage")}:</span>
+                   <Badge variant={materials.reduce((sum, mat) => sum + mat.percentage, 0) === 100 ? "default" : materials.reduce((sum, mat) => sum + mat.percentage, 0) > 100 ? "destructive" : "secondary"}>
+                     {materials.reduce((sum, mat) => sum + mat.percentage, 0)}%
+                   </Badge>
+                 </div>
+               </div>
+             </CardHeader>
+             <CardContent>
+               {materials.length === 0 ? (
+                 <div className="text-center py-8 text-muted-foreground">
+                   {t("noMaterialsAdded")}
+                 </div>
+               ) : (
+                 <Table>
+                   <TableHeader>
+                     <TableRow>
+                       <TableHead>{t("material")}</TableHead>
+                       <TableHead>{t("percentage")}</TableHead>
+                       <TableHead>{t("recyclable")}</TableHead>
+                       <TableHead>{t("description")}</TableHead>
+                       <TableHead>{t("actions")}</TableHead>
+                     </TableRow>
+                   </TableHeader>
+                   <TableBody>
+                     {materials.map((material) => (
+                       <TableRow key={material.id}>
+                         <TableCell className="font-medium">{material.name}</TableCell>
+                         <TableCell>{material.percentage}%</TableCell>
+                         <TableCell>
+                           <Badge variant={material.recyclable ? "default" : "secondary"}>
+                             {material.recyclable ? t("yes") : t("no")}
+                           </Badge>
+                         </TableCell>
+                         <TableCell>{material.description}</TableCell>
+                         <TableCell>
+                           <Button
+                             variant="ghost"
+                             size="sm"
+                             onClick={() => handleRemoveMaterial(material.id)}
+                             className="text-destructive hover:text-destructive"
+                           >
+                             <Trash2 className="w-4 h-4" />
+                           </Button>
+                         </TableCell>
+                       </TableRow>
+                     ))}
+                   </TableBody>
+                 </Table>
+               )}
+             </CardContent>
+           </Card>
+
+           {/* Add Material Dialog */}
+           <Dialog open={showAddMaterialDialog} onOpenChange={setShowAddMaterialDialog}>
+             <DialogTrigger asChild>
+               <Button size="sm" className="w-full">
+                 <Plus className="h-4 w-4 mr-2" />
+                 {t("addMaterial")}
+               </Button>
+             </DialogTrigger>
+             <DialogContent>
+               <DialogHeader>
+                 <DialogTitle>{t("addNewMaterial")}</DialogTitle>
+                 <DialogDescription>
+                   {t("addNewMaterialDescription")}
+                 </DialogDescription>
+               </DialogHeader>
+               <div className="space-y-4 py-4">
+                 <div className="grid gap-4 md:grid-cols-2">
+                   <div>
+                     <Label htmlFor="materialName">{t("materialName")}</Label>
+                     <Input
+                       id="materialName"
+                       name="name"
+                       value={newMaterial.name}
+                       onChange={handleMaterialChange}
+                       placeholder={t("materialNamePlaceholder")}
+                     />
+                   </div>
+                   <div>
+                     <Label htmlFor="percentage">{t("percentage")} (%)</Label>
+                     <Input
+                       id="percentage"
+                       name="percentage"
+                       type="number"
+                       min="0"
+                       max="100"
+                       value={newMaterial.percentage}
+                       onChange={handleMaterialChange}
+                       placeholder="0"
+                     />
+                   </div>
+                   <div>
+                     <Label htmlFor="recyclable">{t("recyclable")}</Label>
+                     <Select value={newMaterial.recyclable.toString()} onValueChange={handleRecyclableChange}>
+                       <SelectTrigger>
+                         <SelectValue />
+                       </SelectTrigger>
+                       <SelectContent>
+                         <SelectItem value="true">{t("yes")}</SelectItem>
+                         <SelectItem value="false">{t("no")}</SelectItem>
+                       </SelectContent>
+                     </Select>
+                   </div>
+                   <div>
+                     <Label htmlFor="description">{t("description")}</Label>
+                     <Input
+                       id="description"
+                       name="description"
+                       value={newMaterial.description}
+                       onChange={handleMaterialChange}
+                       placeholder={t("materialDescriptionPlaceholder")}
+                     />
+                   </div>
+                 </div>
+               </div>
+               <DialogFooter>
+                 <Button variant="outline" onClick={() => setShowAddMaterialDialog(false)}>
+                   {t("cancel")}
+                 </Button>
+                 <Button onClick={handleAddMaterial} disabled={!newMaterial.name || newMaterial.percentage <= 0}>
+                   <Plus className="h-4 w-4 mr-2" />
+                   {t("add")}
+                 </Button>
+               </DialogFooter>
+             </DialogContent>
+           </Dialog>
+           
+           <div className="flex justify-end space-x-2">
             <Button variant="outline" asChild>
               <Link href="/dashboard/products">{t("cancel")}</Link>
             </Button>
